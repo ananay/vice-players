@@ -29,6 +29,7 @@
 extern CGame		 *pGame;
 extern CChatWindow   *pChatWindow;
 extern CCmdWindow	 *pCmdWindow;
+extern CPlayerPed	 *pLocalPlayer;
 
 using namespace RakNet;
 extern CNetGame* pNetGame;
@@ -74,6 +75,7 @@ void ServerQuit(RakNet::BitStream *bitStream, Packet *packet)
 	// Delete this client from the player pool.
 	pPlayerPool->Delete(byteSystemAddress,byteReason);
 }
+
 
 //----------------------------------------------------
 // Server is giving us basic init information.
@@ -399,6 +401,177 @@ void ConnectionRejected(RakNet::BitStream *bitStream, Packet *packet)
 }
 
 //----------------------------------------------------
+
+// ============= Scripting RPC's ====================//
+
+// SetHealth
+void Script_SetHealth(RakNet::BitStream *bitStream, Packet *packet)
+{
+	CPlayerPed *pPlayer = pGame->FindPlayerPed();
+
+	float playerHealth;
+
+	bitStream->Read(playerHealth);
+
+	pPlayer->SetHealth(playerHealth);
+}
+// SetArmour
+void Script_SetArmour(RakNet::BitStream *bitStream, Packet *packet)
+{
+	CPlayerPed *pPlayer = pGame->FindPlayerPed();
+
+	float playerArmour;
+
+	bitStream->Read(playerArmour);
+
+	pPlayer->SetArmour(playerArmour);
+}
+// SetPlayerPos
+void Script_SetPos(RakNet::BitStream *bitStream, Packet *packet)
+{
+	CPlayerPed *pPlayer = pGame->FindPlayerPed();
+
+	VECTOR playerPos;
+
+	bitStream->Read((char *)&playerPos, sizeof(VECTOR));
+
+	pPlayer->Teleport(playerPos.X, playerPos.Y, playerPos.Z);
+}
+// PutPlayerInVehicle
+void Script_PutInVehicle(RakNet::BitStream *bitStream, Packet *packet)
+{
+	CPlayerPed *pPlayer = pGame->FindPlayerPed();
+
+	int vehID;
+
+	bitStream->Read(vehID);
+
+	pPlayer->PutDirectlyInVehicle(vehID);
+}
+// GiveWeapon
+void Script_GivePlayerWeapon(RakNet::BitStream *bitStream, Packet *packet)
+{
+	CPlayerPed *pPlayer = pGame->FindPlayerPed();
+
+	int weaponID;
+	int ammoAMT;
+
+	bitStream->Read(weaponID);
+	bitStream->Read(ammoAMT);
+
+	pPlayer->GiveWeapon(weaponID, ammoAMT);
+}
+// SetSkin
+void Script_SetPlayerSkin(RakNet::BitStream *bitStream, Packet *packet)
+{
+	CPlayerPed *pPlayer = pGame->FindPlayerPed();
+
+	int skinID;
+
+	bitStream->Read(skinID);
+
+	pPlayer->SetModel(skinID);
+}
+// SetZAngle
+void Script_SetPlayerZAngle(RakNet::BitStream *bitStream, Packet *packet)
+{
+	CPlayerPed *pPlayer = pGame->FindPlayerPed();
+
+	VECTOR zAngle;
+
+	bitStream->Read(zAngle.Z);
+
+	pPlayer->SetZAngle(zAngle.Z);
+}
+// setAction
+void Script_SetPlayerAction(RakNet::BitStream *bitStream, Packet *packet)
+{
+	CPlayerPed *pPlayer = pGame->FindPlayerPed();
+
+	BYTE Action;
+
+	bitStream->Read(Action);
+
+	pPlayer->SetAction(Action);
+}
+// setPlayerRotation
+void Script_SetPlayerRotation(RakNet::BitStream *bitStream, Packet *packet)
+{
+	CPlayerPed *pPlayer = pGame->FindPlayerPed();
+
+	float playerRot;
+
+	bitStream->Read(playerRot);
+
+	pPlayer->SetRotation(playerRot);
+}
+// resetPlayerWeapons
+void Script_ResetWeapons(RakNet::BitStream *bitStream, Packet *packet)
+{
+	CPlayerPed *pPlayer = pGame->FindPlayerPed();
+
+	pPlayer->ClearAllWeapons();
+}
+// setArmedWeapon
+void Script_SetArmedWeapon(RakNet::BitStream *bitStream, Packet *packet)
+{
+	CPlayerPed *pPlayer = pGame->FindPlayerPed();
+
+	int playerWeapon;
+
+	bitStream->Read(playerWeapon);
+
+	pPlayer->SetArmedWeapon(playerWeapon);
+}
+// removePlayerFromVehicle
+void Script_RemoveFromVehicle(RakNet::BitStream *bitStream, Packet *packet)
+{
+	CPlayerPed *pPlayer = pGame->FindPlayerPed();
+
+	pPlayer->ExitCurrentVehicle();
+}
+// togglecontrols
+void Script_ToggleControls(RakNet::BitStream *bitStream, Packet *packet)
+{
+	CPlayerPed *pPlayer = pGame->FindPlayerPed();
+
+	int ControlValue;
+
+	bitStream->Read(ControlValue);
+
+	pPlayer->TogglePlayerControllable(ControlValue);
+}
+// send message to client
+void Script_ClientMessage(RakNet::BitStream *bitStream, Packet *packet)
+{
+	DWORD dwColor;
+	CHAR szMessage[256];
+	UINT uiLength;
+
+	bitStream->Read(dwColor);
+	bitStream->Read(uiLength);
+	bitStream->Read(szMessage,uiLength);
+	szMessage[uiLength] = '\0';
+
+	pChatWindow->AddClientMessage(dwColor,(CHAR*)szMessage);
+}
+// setworldbounds
+void Script_WorldBounds(RakNet::BitStream *bitStream, Packet *packet)
+{
+	CPlayerPed *pPlayer = pGame->FindPlayerPed();
+
+	float LowX;
+	float LowY;
+	float HighX;
+	float HighY;
+
+	bitStream->Read(LowX);
+	bitStream->Read(LowY);
+	bitStream->Read(HighX);
+	bitStream->Read(HighY);
+
+	pPlayer->EnforceWorldBoundries(HighX, LowX, HighY, LowY);
+}
 
 void RegisterRPCs()
 {

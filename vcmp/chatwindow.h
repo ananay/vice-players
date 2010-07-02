@@ -37,7 +37,8 @@ enum eChatMessageType {
 	CHAT_TYPE_NONE=0,
 	CHAT_TYPE_CHAT,
 	CHAT_TYPE_INFO,
-	CHAT_TYPE_DEBUG
+	CHAT_TYPE_DEBUG,
+	CHAT_TYPE_MESSAGE
 };
 
 //----------------------------------------------------
@@ -53,6 +54,7 @@ private:
 	DWORD				m_dwChatTextColor;
 	DWORD				m_dwChatInfoColor;
 	DWORD				m_dwChatDebugColor;
+	DWORD				m_dwChatMessageColor;
 	DWORD				m_dwChatBackgroundColor;
 
 	float				m_fDrawStartX;
@@ -69,6 +71,7 @@ public:
 	void AddChatMessage(CHAR *szNick, DWORD dwNickColor, CHAR *szMessage);
 	void AddInfoMessage(CHAR *szFormat, ...);
 	void AddDebugMessage(CHAR *szFormat, ...);
+	void AddClientMessage(DWORD dwColor, CHAR *szMessage);
 		
 	void DeleteDeviceObjects();
 

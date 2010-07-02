@@ -123,6 +123,15 @@ void CChatWindow::Draw()
 
 //----------------------------------------------------
 
+void CChatWindow::AddClientMessage(DWORD dwColor, CHAR * szMessage)
+{
+	m_dwChatMessageColor = dwColor;
+	FilterInvalidChars(szMessage);
+	AddToChatWindowBuffer(szMessage,CHAT_TYPE_MESSAGE);	
+}
+
+//----------------------------------------------------
+
 void CChatWindow::AddChatMessage(CHAR *szNick, DWORD dwNickColor, CHAR *szMessage)
 {
 	char tmp_buf[512] = {0};
