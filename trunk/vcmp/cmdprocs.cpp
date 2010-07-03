@@ -90,6 +90,7 @@ void cmdSavePos(PCHAR szCmd)
 	DWORD dwVehicleID;
 	float fZAngle;
 
+	//if(!tSettings.bDebug) return;
 
 	fileOut = fopen("savedpositions.txt","a");
 	if(!fileOut) {
@@ -120,8 +121,8 @@ void cmdSavePos(PCHAR szCmd)
 	pPlayer->GetMatrix(&matMatrix);
 	fZAngle = pPlayer->GetRotation();
 
-	fprintf(fileOut,"Class = 0 0 %.4f %.4f %.4f %.4f 0 0 0 0 0 0\n", matMatrix.vPos.X,matMatrix.vPos.Y,
-		matMatrix.vPos.Z,fZAngle);
+	fprintf(fileOut,"addPlayerClass(0, 0, %.4f, %.4f, %.4f, %.4f, 0, 0, 0, 0, 0, 0);\n",
+		matMatrix.vPos.X,matMatrix.vPos.Y, matMatrix.vPos.Z,fZAngle);
 
 	fclose(fileOut);
 }
