@@ -60,11 +60,7 @@ private:
 	float				m_fRotation;
 	float				m_fVehicleHealth;
 	BYTE				m_byteHealth; // health float casted to a byte.
-<<<<<<< .mine
-	BYTE				m_byteArmour;
-=======
 	BYTE				m_byteArmour; // armour float casted to a byte.
->>>>>>> .r38
 	BYTE				m_byteCurrentWeapon;
 
 	BOOL				m_bIsInVehicle;

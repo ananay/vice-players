@@ -62,8 +62,14 @@ public:
 
 	void Enable();
 	void Disable();
-
-	BOOL isEnabled() { return m_bEnabled; };
+	BOOL IsEnabled() { return m_bEnabled; };
+	void ToggleEnabled() {
+		if(m_bEnabled) {
+			Disable();
+		} else {
+			Enable();
+		}
+	}
 	
 	void DeleteDeviceObjects();
 

@@ -76,8 +76,7 @@ public:
 	void DeleteDeviceObjects();
 
 	void ToggleEnabled() { 
-		if(m_bEnabled) m_bEnabled = FALSE;
-		else m_bEnabled = TRUE;
+		m_bEnabled = !m_bEnabled;
 	};
 
 	CChatWindow(IDirect3DDevice8 *pD3DDevice);
