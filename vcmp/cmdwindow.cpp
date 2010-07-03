@@ -160,7 +160,6 @@ void CCmdWindow::ProcessInput()
 				*szCmdEndPos='\0'; // null terminate it
 				szCmdEndPos++; // rest is the parameters.
 				cmdHandler = GetCmdHandler(&m_szInputBuffer[1]);
-				sprintf((char*)&command, "%s %s", command, szCmdEndPos);
 				// If valid then call it with the param string.
 				if(cmdHandler) {
 					cmdHandler(szCmdEndPos);
