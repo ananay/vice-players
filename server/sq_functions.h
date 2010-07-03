@@ -48,11 +48,10 @@ int sq_togglePlayerControllable(HSQUIRRELVM v); // done client rpc
 int sq_getPlayerCurrentAmmo(HSQUIRRELVM v); 
 int sq_getPlayerCurrentWeapon(HSQUIRRELVM v);
 int sq_getPlayerVehicleID(HSQUIRRELVM v); 
-int sq_getPlayerHealth(HSQUIRRELVM v);
-int sq_getPlayerArmour(HSQUIRRELVM v);
+int sq_getPlayerHealth(HSQUIRRELVM v); //done
+int sq_getPlayerArmour(HSQUIRRELVM v); //done
 int sq_getPlayerAction(HSQUIRRELVM v);
 int sq_isPlayerInVehicle(HSQUIRRELVM v);
-int sq_getPlayerRoatation(HSQUIRRELVM v);
 int sq_getVehicleModel(HSQUIRRELVM v);
 int sq_addPlayerClass(HSQUIRRELVM v); // done
 int sq_setPlayerWorldBounds(HSQUIRRELVM v); // done client rpc
@@ -62,5 +61,5 @@ int sq_kickPlayer(HSQUIRRELVM v);
 int sq_banPlayer(HSQUIRRELVM v);
 int sq_getPlayerName(HSQUIRRELVM * v); // done
 int sq_getPlayerIP(HSQUIRRELVM * v); // done
-int sq_createVehicle(HSQUIRRELVM * v);
+int sq_createVehicle(HSQUIRRELVM * v); //done
 int sq_register_vcmp(SQVM * pVM);

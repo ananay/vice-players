@@ -357,6 +357,43 @@ void CScripts::onPlayerText(int playerId, const char *text)
 	}
 }
 
+void CScripts::onPlayerCommand(int playerId, const char *command)
+{
+	for(int i = 0; i < MAX_SCRIPTS; i++) {
+		if(m_pScripts[i]) {
+			// get the script vm pointer
+			SQVM * pVM = m_pScripts[i];
+
+			// Get the stack top
+			int iTop = sq_gettop(pVM);
+
+			// Push the root table onto the stack
+			sq_pushroottable(pVM);
+
+			// Push the function name onto the stack
+			sq_pushstring(pVM, "onPlayerCommand", -1);
+
+			// Get the closure for the function
+			if(SQ_SUCCEEDED(sq_get(pVM, -2))) {
+				// Push the root table onto the stack
+				sq_pushroottable(pVM);
+
+				// Push the player id onto the stack
+				sq_pushinteger(pVM, playerId);
+
+				// Push the text onto the stack
+				sq_pushstring(pVM, command, -1);
+
+				// Call the function
+				sq_call(pVM, 3, true, true);
+			}
+
+			// Restore the stack top
+			sq_settop(pVM, iTop);
+		}
+	}
+}
+
 void CScripts::onPlayerSpawn(int playerId)
 {
 	for(int i = 0; i < MAX_SCRIPTS; i++) {

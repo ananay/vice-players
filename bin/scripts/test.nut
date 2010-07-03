@@ -52,6 +52,10 @@ function onPlayerText(playerid, text)
 	return 0;
 }
 
+function onPlayerCommand(playerid, cmdtext)
+{
+	print("onPlayerCommand(" + playerid + ", " + cmdtext + ");");
+}
 
 function onPlayerRequestClass(playerid, classid)
 {

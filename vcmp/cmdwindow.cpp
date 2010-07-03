@@ -28,6 +28,7 @@
 
 extern CGame		 *pGame;
 extern CChatWindow   *pChatWindow;
+extern CNetGame		 *pNetGame;
 
 //----------------------------------------------------
 
@@ -131,6 +132,7 @@ void CCmdWindow::ProcessInput()
 {
 	PCHAR szCmdEndPos;
 	CMDPROC cmdHandler;
+	char command[2048];
 
 	if(m_szInputBuffer[0] != '\0')
 	{
@@ -152,9 +154,6 @@ void CCmdWindow::ProcessInput()
 				if(cmdHandler) {
 					cmdHandler("");
 				}
-				else {
-					pChatWindow->AddDebugMessage("I don't know that command.");
-				}
 			}
 			else {
 				*szCmdEndPos='\0'; // null terminate it
@@ -164,12 +163,17 @@ void CCmdWindow::ProcessInput()
 				if(cmdHandler) {
 					cmdHandler(szCmdEndPos);
 				}
-				else {
-					pChatWindow->AddDebugMessage("I don't know that command.");
-				}
+				strcpy((char*)&command, (char*)&m_szInputBuffer);
+				sprintf((char*)&command, "%s %s", command, szCmdEndPos);
 			}
+			RakNet::BitStream bsSend;
+			BYTE byteTextLen = strlen(command);
+			bsSend.Write(byteTextLen);
+			bsSend.Write(command,byteTextLen);
+			pNetGame->GetRPC4()->Call("ChatCommand",&bsSend,HIGH_PRIORITY,RELIABLE,0,UNASSIGNED_SYSTEM_ADDRESS,TRUE);
 		}
 	}
+
 	m_szInputBuffer[0]='\0';
 	
 	if(m_bEnabled) Disable();

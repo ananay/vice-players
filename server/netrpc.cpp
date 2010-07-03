@@ -172,6 +172,24 @@ void Chat(RakNet::BitStream *bitStream, Packet *packet)
 	pScripts->onPlayerText(byteSystemAddress, szText);
 }
 
+void ChatCommand(RakNet::BitStream *bitStream, Packet *packet)
+{
+	CHAR szText[256];
+	BYTE byteTextLen;
+	CPlayerPool *pPool = pNetGame->GetPlayerPool();
+
+	BYTE byteSystemAddress = (BYTE)packet->guid.systemIndex;
+
+	bitStream->Read(byteTextLen);
+	bitStream->Read(szText,byteTextLen);
+	szText[byteTextLen] = '\0';
+
+	if(!pPool->GetSlotState((BYTE)packet->guid.systemIndex)) return;
+
+	pScripts->onPlayerCommand(byteSystemAddress, szText);
+}
+
+
 //----------------------------------------------------
 // Sent by client who wishes to request a class from
 // the gamelogic handler.
@@ -388,6 +406,7 @@ void RegisterRPCs()
 
 	pNetGame->GetRPC4()->RegisterFunction("ClientJoin", ClientJoin);
 	pNetGame->GetRPC4()->RegisterFunction("Chat", Chat);
+	pNetGame->GetRPC4()->RegisterFunction("ChatCommand", ChatCommand);
 	pNetGame->GetRPC4()->RegisterFunction("RequestClass", RequestClass);
 	pNetGame->GetRPC4()->RegisterFunction("Spawn", Spawn);
 	pNetGame->GetRPC4()->RegisterFunction("Death", Death);
@@ -405,6 +424,7 @@ void UnRegisterRPCs()
 {
 	pNetGame->GetRPC4()->UnregisterFunction("ClientJoin");
 	pNetGame->GetRPC4()->UnregisterFunction("Chat");
+	pNetGame->GetRPC4()->UnregisterFunction("ChatCommand");
 	pNetGame->GetRPC4()->UnregisterFunction("RequestClass");
 	pNetGame->GetRPC4()->UnregisterFunction("Spawn");
 	pNetGame->GetRPC4()->UnregisterFunction("Death");
