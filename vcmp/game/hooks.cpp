@@ -523,7 +523,9 @@ NUDE HookedRand_Hook()
 BOOL _stdcall IsFriendlyFire(PED_TYPE *pPlayer,DWORD *pdwEnt, int iWeapon, float fUnk, int PedPiece, BYTE byteUnk)
 {
 	CPlayerPool *pPlayerPool;
+	CVehiclePool *pVehiclePool;
 	CRemotePlayer *pRemotePlayer;
+	CVehicle *pVehicle;
 	CLocalPlayer *pLocalPlayer;
 	BYTE byteRemoteSystemAddress;
 	BYTE byteLocalPlayerTeam;
@@ -548,8 +550,24 @@ BOOL _stdcall IsFriendlyFire(PED_TYPE *pPlayer,DWORD *pdwEnt, int iWeapon, float
 				}
 			}
 
-			// didn't find pdwEnt in the player pool.
-			// this is where we could check for a vehicle.
+			pVehiclePool = pNetGame->GetVehiclePool();
+
+			int iVehicleId = pVehiclePool->FindIDFromGtaPtr((VEHICLE_TYPE *)pdwEnt);
+
+			if(iVehicleId != -1) {
+				pVehicle = pVehiclePool->GetAt(iVehicleId);
+				if(pVehicle->GetDriver()) {
+					byteRemoteSystemAddress = pPlayerPool->FindRemoteSystemAddressFromGtaPtr((PED_TYPE *)pdwEnt);
+					if(byteRemoteSystemAddress != INVALID_PLAYER_ID) {
+						pRemotePlayer = pPlayerPool->GetAt(byteRemoteSystemAddress);
+						if(pRemotePlayer->GetTeam() == byteLocalPlayerTeam) {
+							return TRUE;
+						}
+					}
+				} else {
+					return FALSE;
+				}
+			}
 		}
 	}
 

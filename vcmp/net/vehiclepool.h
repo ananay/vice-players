@@ -39,11 +39,9 @@ typedef struct _VEHICLE_SPAWN_INFO
 
 class CVehiclePool
 {
-private:
-	
+private:	
 	BOOL				m_bVehicleSlotState[MAX_VEHICLES];
 	CVehicle			*m_pVehicles[MAX_VEHICLES];
-	VEHICLE_TYPE		*m_pGTAVehicles[MAX_VEHICLES];
 	VEHICLE_SPAWN_INFO	m_SpawnInfo[MAX_VEHICLES];
 	BOOL				m_bIsActive[MAX_VEHICLES];
 	BOOL				m_bIsWasted[MAX_VEHICLES];

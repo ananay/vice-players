@@ -35,13 +35,9 @@ extern CChatWindow *pChatWindow;
 
 CVehiclePool::CVehiclePool()
 {
-	BYTE byteVehicleID = 0;
-
-	while(byteVehicleID != MAX_VEHICLES) {
-		m_bVehicleSlotState[byteVehicleID] = FALSE;
-		m_pVehicles[byteVehicleID] = NULL;
-		m_pGTAVehicles[byteVehicleID] = NULL;
-		byteVehicleID++;
+	for(BYTE i = 0; i < MAX_VEHICLES; i++) {
+		m_bVehicleSlotState[i] = FALSE;
+		m_pVehicles[i] = NULL;
 	}
 }
 
@@ -49,11 +45,10 @@ CVehiclePool::CVehiclePool()
 
 CVehiclePool::~CVehiclePool()
 {	
-	BYTE byteVehicleID = 0;
-
-	while(byteVehicleID != MAX_VEHICLES) {
-		Delete(byteVehicleID);
-		byteVehicleID++;
+	for(BYTE i = 0; i < MAX_VEHICLES; i++) {
+		if(m_bVehicleSlotState[i]) {
+			Delete(i);
+		}
 	}
 }
 
@@ -112,7 +107,6 @@ BOOL CVehiclePool::Spawn( BYTE byteVehicleID, BYTE byteVehicleType,
 			m_pVehicles[byteVehicleID]->SetColor(iColor1,iColor2);
 		}
 
-		m_pGTAVehicles[byteVehicleID] = m_pVehicles[byteVehicleID]->GetVehicle();
 		m_bVehicleSlotState[byteVehicleID] = TRUE;
 
 		m_bIsActive[byteVehicleID] = TRUE;
@@ -130,13 +124,13 @@ BOOL CVehiclePool::Spawn( BYTE byteVehicleID, BYTE byteVehicleType,
 
 int CVehiclePool::FindIDFromGtaPtr(VEHICLE_TYPE * pGtaVehicle)
 {
-	int x=1;
-	
-	while(x!=MAX_VEHICLES) {
-		if(pGtaVehicle == m_pGTAVehicles[x]) return x;
-		x++;
+	for(int i = 1; i < MAX_VEHICLES; i++) {
+		if(m_bVehicleSlotState[i]) {
+			if(pGtaVehicle == m_pVehicles[i]->GetVehicle()) {
+				return i;
+			}
+		}
 	}
-
 	return (-1);
 }
 
@@ -144,7 +138,11 @@ int CVehiclePool::FindIDFromGtaPtr(VEHICLE_TYPE * pGtaVehicle)
 
 int CVehiclePool::FindGtaIDFromID(int iID)
 {
-	return GamePool_Vehicle_GetIndex(m_pGTAVehicles[iID]);
+	if(m_pVehicles[iID]) {
+		return GamePool_Vehicle_GetIndex(m_pVehicles[iID]->GetVehicle());
+	}
+	// not too sure about this
+	return 0;
 }
 
 //----------------------------------------------------
