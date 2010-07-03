@@ -51,6 +51,9 @@ int			iLogState=1;
 char		*szAdminPass;
 
 //----------------------------------------------------
+#pragma comment (lib ,"squirrel/squirrel.lib")
+#pragma comment (lib ,"squirrel/sqstdlib.lib")
+//----------------------------------------------------
 
 int main (int argc, char* argv[])
 {

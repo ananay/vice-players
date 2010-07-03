@@ -24,37 +24,38 @@
 //
 //-----------------------------------------------------
 
+#include "main.h"
 
 
 //			Functions
 //---------------------------------
-void sq_isConnected(HSQUIRRELVM v);
-void sq_setZAngle(HSQUIRRELVM v); // done client rpc
-void sq_setPlayerHealth(HSQUIRRELVM v); // done client rpc
-void sq_setPlayerArmour(HSQUIRRELVM v); // done client rpc
-void sq_setPlayerAction(HSQUIRRELVM v); // done client rpc
-void sq_setPlayerRoatation(HSQUIRRELVM v); // done client rpc
-void sq_givePlayerWeapon(HSQUIRRELVM v); // done client rpc
-void sq_setPlayerPos(HSQUIRRELVM v); // done client rpc
-void sq_resetWeapons(HSQUIRRELVM v); // done client rpc
-void sq_setArmedWeapon(HSQUIRRELVM v); // done client rpc
-void sq_putPlayerInVehicle(HSQUIRRELVM v); // done client rpc
-void sq_removePlayerFromVehicle(HSQUIRRELVM v); // done client rpc
-void sq_setPlayerSkin(HSQUIRRELVM v); // done client rpc
-void sq_togglePlayerControllable(HSQUIRRELVM v); // done client rpc
-void sq_getPlayerCurrentAmmo(HSQUIRRELVM v); 
-void sq_getPlayerCurrentWeapon(HSQUIRRELVM v);
-void sq_getPlayerVehicleID(HSQUIRRELVM v); 
-void sq_getPlayerHealth(HSQUIRRELVM v);
-void sq_getPlayerArmour(HSQUIRRELVM v);
-void sq_getPlayerAction(HSQUIRRELVM v);
-void sq_isPlayerInVehicle(HSQUIRRELVM v);
-void sq_getPlayerRoatation(HSQUIRRELVM v);
-void sq_getVehicleModel(HSQUIRRELVM v);
-void sq_createVehicle(HSQUIRRELVM v);
-void sq_addPlayerClass(HSQUIRRELVM v);
-void sq_setPlayerWorldBounds(HSQUIRRELVM v); // done client rpc
-void sq_sendPlayerMessage(HSQUIRRELVM v); // done client rpc
-void sq_sendPlayerMessageToAll(HSQUIRRELVM v);
-void sq_kickPlayer(HSQUIRRELVM v);
-void sq_banPlayer(HSQUIRRELVM v);
+int sq_isConnected(HSQUIRRELVM v);
+int sq_setZAngle(HSQUIRRELVM v); // done client rpc
+int sq_setPlayerHealth(HSQUIRRELVM v); // done client rpc
+int sq_setPlayerArmour(HSQUIRRELVM v); // done client rpc
+int sq_setPlayerAction(HSQUIRRELVM v); // done client rpc
+int sq_setPlayerRoatation(HSQUIRRELVM v); // done client rpc
+int sq_givePlayerWeapon(HSQUIRRELVM v); // done client rpc
+int sq_setPlayerPos(HSQUIRRELVM v); // done client rpc
+int sq_resetWeapons(HSQUIRRELVM v); // done client rpc
+int sq_setArmedWeapon(HSQUIRRELVM v); // done client rpc
+int sq_putPlayerInVehicle(HSQUIRRELVM v); // done client rpc
+int sq_removePlayerFromVehicle(HSQUIRRELVM v); // done client rpc
+int sq_setPlayerSkin(HSQUIRRELVM v); // done client rpc
+int sq_togglePlayerControllable(HSQUIRRELVM v); // done client rpc
+int sq_getPlayerCurrentAmmo(HSQUIRRELVM v); 
+int sq_getPlayerCurrentWeapon(HSQUIRRELVM v);
+int sq_getPlayerVehicleID(HSQUIRRELVM v); 
+int sq_getPlayerHealth(HSQUIRRELVM v);
+int sq_getPlayerArmour(HSQUIRRELVM v);
+int sq_getPlayerAction(HSQUIRRELVM v);
+int sq_isPlayerInVehicle(HSQUIRRELVM v);
+int sq_getPlayerRoatation(HSQUIRRELVM v);
+int sq_getVehicleModel(HSQUIRRELVM v);
+int sq_createVehicle(HSQUIRRELVM v);
+int sq_addPlayerClass(HSQUIRRELVM v);
+int sq_setPlayerWorldBounds(HSQUIRRELVM v); // done client rpc
+int sq_sendPlayerMessage(HSQUIRRELVM v); // done client rpc
+int sq_sendPlayerMessageToAll(HSQUIRRELVM v);
+int sq_kickPlayer(HSQUIRRELVM v);
+int sq_banPlayer(HSQUIRRELVM v);
