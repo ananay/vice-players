@@ -43,4 +43,13 @@ public:
 	bool LoadFromConfig(CConfig * pConfig);
 	void onServerInit();
 	void onServerExit();
+	void onPlayerConnect(int playerId, const char *name);
+	void onPlayerDisconnect(int playerId, int reason);
+	void onPlayerText(int playerId, const char *text);
+	void onPlayerSpawn(int playerId);
+	void onPlayerRequestClass(int playerId, int classid);
+	void onPlayerDeath(int playerId, int reason);
+	void onPlayerEnterVehicle(int playerId, int vehicleid);
+	void onPlayerExitVehicle(int playerId, int vehicleid);
+	bool onRconCommand(const char *command, const char *arg);
 };
