@@ -146,6 +146,7 @@ void CCmdWindow::ProcessInput()
 		{// possible valid command
 			// find the end of the name
 			szCmdEndPos = &m_szInputBuffer[1];
+			strcpy((char*)&command, (char*)&m_szInputBuffer);
 			while(*szCmdEndPos && *szCmdEndPos != ' ') szCmdEndPos++;
 			if(*szCmdEndPos == '\0') {
 				// Possible command with no params.
@@ -159,12 +160,11 @@ void CCmdWindow::ProcessInput()
 				*szCmdEndPos='\0'; // null terminate it
 				szCmdEndPos++; // rest is the parameters.
 				cmdHandler = GetCmdHandler(&m_szInputBuffer[1]);
+				sprintf((char*)&command, "%s %s", command, szCmdEndPos);
 				// If valid then call it with the param string.
 				if(cmdHandler) {
 					cmdHandler(szCmdEndPos);
 				}
-				strcpy((char*)&command, (char*)&m_szInputBuffer);
-				sprintf((char*)&command, "%s %s", command, szCmdEndPos);
 			}
 			RakNet::BitStream bsSend;
 			BYTE byteTextLen = strlen(command);

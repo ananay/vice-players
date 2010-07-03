@@ -55,6 +55,20 @@ function onPlayerText(playerid, text)
 function onPlayerCommand(playerid, cmdtext)
 {
 	print("onPlayerCommand(" + playerid + ", " + cmdtext + ");");
+	local cmd = split(cmdtext, " ");
+	if(cmd[0] == "/createcar")
+	{
+		local pos = getPlayerPos(playerid);
+		local carid = cmd[1].tointeger();
+		local car = createVehicle(carid, pos[0], pos[1], pos[2], 0.0, 0, 0);
+		//putPlayerInVehicle(playerid, car);
+		
+	}
+	if(cmd[0] == "/mypos")
+	{
+		local pos = getPlayerPos(playerid);
+		sendPlayerMessage(playerid, 0x00FF00FF, "My Pos: " + pos[0] + " " + pos[1] + " " + pos[2]);
+	}
 }
 
 function onPlayerRequestClass(playerid, classid)
