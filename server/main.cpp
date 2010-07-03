@@ -41,7 +41,6 @@
 
 #include "../raknet/BitStream.h"
 #include "../raknet/RakPeerInterface.h"
-//#include "../raknet/RakNetworkFactory.h"
 
 void fatal_exit(char * szError);
 

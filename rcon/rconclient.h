@@ -11,18 +11,22 @@
 */
 
 #pragma once
+
 #ifndef SAMP_RCONCLIENT_H
 #define SAMP_RCONCLIENT_H
+
+using namespace RakNet;
 
 class CRconClient
 {
 private:
-	RakPeerInterface* m_pRak;
+	RakPeerInterface* m_pRakPeer;
+
 public:
 	CRconClient(char* szHostOrIp, int iPort, char* szPass);
 	~CRconClient();
 
-	bool IsConnected() { return m_pRak->IsConnected(UNASSIGNED_SYSTEM_ADDRESS); };
+	bool IsConnected() { return (m_pRakPeer->GetConnectionState(UNASSIGNED_SYSTEM_ADDRESS) == IS_CONNECTED); };
 
 	void Command(char* szCommand);
 	void Process();

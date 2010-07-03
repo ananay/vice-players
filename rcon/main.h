@@ -1,6 +1,6 @@
 #pragma once
 
-#include <windows.h>
+#include "../raknet/WindowsIncludes.h"
 #include <conio.h>
 #include <stdio.h>
 #include <stdio.h>
@@ -11,7 +11,6 @@
 #include <process.h>
 
 #include "../raknet/RakPeer.h"
-#include "../raknet/RakNetworkFactory.h"
 #include "../raknet/BitStream.h"
 #include "../raknet/MessageIdentifiers.h"
 

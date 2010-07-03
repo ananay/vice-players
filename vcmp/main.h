@@ -53,7 +53,6 @@ typedef struct _GAME_SETTINGS {
 #include "d3dhook/IDirect3DDevice8Hook.h"
 
 #include "../raknet/RakPeer.h"
-//#include "../raknet/RakNetworkFactory.h"
 #include "../raknet/RPC4Plugin.h"
 #include "../raknet/BitStream.h"
 #include "../raknet/MessageIdentifiers.h"

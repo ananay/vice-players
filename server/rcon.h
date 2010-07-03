@@ -41,7 +41,7 @@ public:
 	CRcon(WORD iPort, char* szPass, WORD iMaxAdmins);
 	~CRcon();
 
-	RakNet::RakPeerInterface* GetRakServer() { return m_pRak; };
+	RakNet::RakPeerInterface* GetRakPeer() { return m_pRak; };
 
 	void Process();
 

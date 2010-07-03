@@ -31,18 +31,10 @@
 #include "netgame.h"
 #include "../raknet/RPC4Plugin.h"
 
-extern CConfig *pServerConfig;
-
 using namespace RakNet;
 
-RPC4 rpc1;
-
-//----------------------------------------------------
-
-RakNet::RPC4 * CNetGame::GetRPC4()
-{
-	return &rpc1;
-}
+extern CConfig *pServerConfig;
+RPC4		   *CNetGame::m_pRPC4;
 
 //----------------------------------------------------
 
@@ -51,17 +43,18 @@ CNetGame::CNetGame(int iMaxPlayers, int iPort, int iGameType,
 				   BYTE byteFriendlyFire, BYTE byteShowOnRadar)
 {
 	// Setup raknet
-	m_pRak = RakNet::RakPeerInterface::GetInstance();
+	m_pRakPeer = RakPeerInterface::GetInstance();
+	m_pRPC4 = RPC4::GetInstance();
 
-	//m_pRak->InitializeSecurity(0,0,0,0);
-	m_pRak->Startup(iMaxPlayers,&SocketDescriptor(iPort, 0),1);
-	m_pRak->SetMaximumIncomingConnections(iMaxPlayers);
-	m_pRak->AttachPlugin(&rpc1);
+	//m_pRakPeer->InitializeSecurity(0,0,0,0);
+	m_pRakPeer->Startup(iMaxPlayers,&SocketDescriptor(iPort, 0),1);
+	m_pRakPeer->SetMaximumIncomingConnections(iMaxPlayers);
+	m_pRakPeer->AttachPlugin(m_pRPC4);
 
 	LoadBanList();
 	
 	if(szPassword != NULL) {
-		m_pRak->SetIncomingPassword(szPassword, strlen(szPassword));
+		m_pRakPeer->SetIncomingPassword(szPassword, strlen(szPassword));
 	}
 
 	// Register our RPC handlers
@@ -98,8 +91,10 @@ CNetGame::CNetGame(int iMaxPlayers, int iPort, int iGameType,
 CNetGame::~CNetGame()
 {
 	logprintf("--- Server Shutting Down.");
+	m_pRakPeer->DetachPlugin(m_pRPC4);
 	UnRegisterRPCs();
-	RakNet::RakPeerInterface::DestroyInstance(m_pRak);
+	RPC4::DestroyInstance(m_pRPC4);
+	RakPeerInterface::DestroyInstance(m_pRakPeer);
 	delete m_pPlayerPool;
 }
 
@@ -120,14 +115,11 @@ void CNetGame::Process()
 
 void CNetGame::UpdateNetwork()
 {
-	RakNet::Packet* p;
-	unsigned char packetIdentifier;
+	Packet* p=NULL;
 
-	while(p=m_pRak->Receive())
+	while(p=m_pRakPeer->Receive())
 	{
-		packetIdentifier = GetPacketID(p);
-		
-		switch(packetIdentifier) {
+		switch(p->data[0]) {
 
 		case ID_NEW_INCOMING_CONNECTION:
 			logprintf("Incoming connection from %s", p->systemAddress.ToString(true));
@@ -149,13 +141,13 @@ void CNetGame::UpdateNetwork()
 			break;
 		}
 
-		m_pRak->DeallocatePacket(p);		
+		m_pRakPeer->DeallocatePacket(p);		
 	}
 }
 
 //----------------------------------------------------
 
-void CNetGame::BroadcastData( RakNet::BitStream *bitStream,
+void CNetGame::BroadcastData( BitStream *bitStream,
 							  PacketPriority priority,
 							  PacketReliability reliability,
 							  char orderingStream,
@@ -183,8 +175,8 @@ void CNetGame::BroadcastData( RakNet::BitStream *bitStream,
 			 }
 			
 			 if(bShouldSend) {
-			 	 m_pRak->Send(bitStream,priority,reliability,
-					orderingStream,m_pRak->GetSystemAddressFromIndex(x),FALSE);
+			 	 m_pRakPeer->Send(bitStream,priority,reliability,
+					orderingStream,m_pRakPeer->GetSystemAddressFromIndex(x),FALSE);
 			 }
 		}
 		x++;
@@ -193,12 +185,10 @@ void CNetGame::BroadcastData( RakNet::BitStream *bitStream,
 
 //----------------------------------------------------
 
-void CNetGame::PlayerSync(RakNet::Packet *p)
+void CNetGame::PlayerSync(Packet *p)
 {
 	CPlayer * pPlayer = GetPlayerPool()->GetAt((BYTE)p->systemAddress.systemIndex);
-	RakNet::BitStream bsPlayerSync(p->data, p->length, FALSE);
-
-	BYTE		bytePacketID=0;
+	BitStream bsPlayerSync(p->data, p->length, FALSE);
 
 	WORD		wKeys;
 	VECTOR		vecWorldPos;
@@ -209,7 +199,7 @@ void CNetGame::PlayerSync(RakNet::Packet *p)
 
 	S_CAMERA_AIM	caAiming;
 
-	bsPlayerSync.Read(bytePacketID);
+	bsPlayerSync.IgnoreBytes(sizeof(MessageID));
 	bsPlayerSync.Read(wKeys);
 	bsPlayerSync.Read(vecWorldPos.X);
 	bsPlayerSync.Read(vecWorldPos.Y);
@@ -240,12 +230,11 @@ void CNetGame::PlayerSync(RakNet::Packet *p)
 
 //----------------------------------------------------
 
-void CNetGame::VehicleSync(RakNet::Packet *p)
+void CNetGame::VehicleSync(Packet *p)
 {
 	CPlayer * pPlayer = GetPlayerPool()->GetAt((BYTE)p->systemAddress.systemIndex);
-	RakNet::BitStream bsVehicleSync(p->data, p->length, FALSE);
+	BitStream bsVehicleSync(p->data, p->length, FALSE);
 
-	BYTE		bytePacketID=0;
 	BYTE		byteVehicleID=0;
 
 	WORD		wKeys;
@@ -259,7 +248,7 @@ void CNetGame::VehicleSync(RakNet::Packet *p)
 	float		fHealth;
 	BYTE		bytePlayerHealth;
 
-	bsVehicleSync.Read(bytePacketID);
+	bsVehicleSync.IgnoreBytes(sizeof(MessageID));
 	bsVehicleSync.Read(byteVehicleID);
 	bsVehicleSync.Read(wKeys);
 	bsVehicleSync.Read(cvecRoll.X);
@@ -289,18 +278,17 @@ void CNetGame::VehicleSync(RakNet::Packet *p)
 
 //----------------------------------------------------
 
-void CNetGame::PassengerSync(RakNet::Packet *p)
+void CNetGame::PassengerSync(Packet *p)
 {
 	CPlayer * pPlayer = GetPlayerPool()->GetAt((BYTE)p->systemAddress.systemIndex);
-	RakNet::BitStream bsPassengerSync(p->data, p->length, FALSE);
-	RakNet::BitStream bsPassengerSend;
+	BitStream bsPassengerSync(p->data, p->length, FALSE);
+	BitStream bsPassengerSend;
 
-	BYTE		bytePacketID=0;
 	BYTE		byteVehicleID=0;
 	UINT		uiPassengerSeat;
 	float		x,y,z;
 
-	bsPassengerSync.Read(bytePacketID);
+	bsPassengerSync.IgnoreBytes(sizeof(MessageID));
 	bsPassengerSync.Read(byteVehicleID);
 	bsPassengerSync.Read(uiPassengerSeat);
 	bsPassengerSync.Read(x);
@@ -313,9 +301,7 @@ void CNetGame::PassengerSync(RakNet::Packet *p)
 	bsPassengerSend.Write((BYTE)p->systemAddress.systemIndex);
 	bsPassengerSend.Write(byteVehicleID);
 	bsPassengerSend.Write(uiPassengerSeat);
-	//m_pRak->RPC("Passenger",&bsPassengerSend,
-		//HIGH_PRIORITY,RELIABLE,0,p->systemAddress,TRUE,FALSE,UNASSIGNED_NETWORK_ID,0);
-	GetRPC4()->Call("Passenger", &bsPassengerSend,HIGH_PRIORITY,RELIABLE,0,p->systemAddress,TRUE);
+	m_pRPC4->Call("Passenger", &bsPassengerSend,HIGH_PRIORITY,RELIABLE,0,p->systemAddress,TRUE);
 
 }
 
@@ -375,7 +361,7 @@ void CNetGame::KickPlayer(BYTE byteKickPlayer)
 
 void CNetGame::AddBan(char * ip_mask)
 {
-	m_pRak->AddToBanList(ip_mask);
+	m_pRakPeer->AddToBanList(ip_mask);
 	
 	FILE * fileBanList = fopen("vcmp-svr.banlist","a");
 	if(!fileBanList) return;
@@ -397,7 +383,7 @@ void CNetGame::LoadBanList()
 	while(!feof(fileBanList)) {
 		fgets(ban_ip,256,fileBanList);
 		ban_ip[strlen(ban_ip) - 1] = '\0';
-		m_pRak->AddToBanList(ban_ip);
+		m_pRakPeer->AddToBanList(ban_ip);
 	}
 
 	fclose(fileBanList);

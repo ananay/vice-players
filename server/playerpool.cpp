@@ -81,10 +81,7 @@ BOOL CPlayerPool::New(BYTE byteSystemAddress, PCHAR szPlayerName)
 		bsSend.Write(byteSystemAddress);
 		bsSend.Write(strlen(szPlayerName));
 		bsSend.Write(szPlayerName,strlen(szPlayerName));
-		//pNetGame->GetRakServer()->RPC("ServerJoin",&bsSend,HIGH_PRIORITY,RELIABLE_ORDERED,0,
-			//pNetGame->GetRakServer()->GetSystemAddressFromIndex(byteSystemAddress),TRUE,FALSE,UNASSIGNED_NETWORK_ID,0);
-		
-		pNetGame->GetRPC4()->Call("ServerJoin", &bsSend,HIGH_PRIORITY,RELIABLE_ORDERED,0,pNetGame->GetRakServer()->GetSystemAddressFromIndex(byteSystemAddress),true);
+		pNetGame->GetRPC4()->Call("ServerJoin", &bsSend,HIGH_PRIORITY,RELIABLE_ORDERED,0,pNetGame->GetRakPeer()->GetSystemAddressFromIndex(byteSystemAddress),true);
 
 		pRcon->ConsolePrintf("[join] %u %s",byteSystemAddress,szPlayerName);
 
@@ -115,10 +112,7 @@ BOOL CPlayerPool::Delete(BYTE byteSystemAddress, BYTE byteReason)
 	RakNet::BitStream bsSend;
 	bsSend.Write(byteSystemAddress);
 	bsSend.Write(byteReason);
-	//pNetGame->GetRakServer()->RPC("ServerQuit",&bsSend,HIGH_PRIORITY,RELIABLE_ORDERED,0,
-		//pNetGame->GetRakServer()->GetSystemAddressFromIndex(byteSystemAddress),TRUE,FALSE,UNASSIGNED_NETWORK_ID,0);
-
-	pNetGame->GetRPC4()->Call("ServerQuit", &bsSend,HIGH_PRIORITY,RELIABLE_ORDERED,0,pNetGame->GetRakServer()->GetSystemAddressFromIndex(byteSystemAddress),true);
+	pNetGame->GetRPC4()->Call("ServerQuit", &bsSend,HIGH_PRIORITY,RELIABLE_ORDERED,0,pNetGame->GetRakPeer()->GetSystemAddressFromIndex(byteSystemAddress),true);
 
 	pRcon->ConsolePrintf("[part] %u %s %u",byteSystemAddress,m_szPlayerName[byteSystemAddress],byteReason);
 

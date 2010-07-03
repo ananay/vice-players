@@ -397,7 +397,7 @@ void ConnectionRejected(RakNet::BitStream *bitStream, Packet *packet)
 		pChatWindow->AddInfoMessage("YOUR NICKNAME IS INVALID");
 	}
 
-	pNetGame->GetRakClient()->Shutdown(0);
+	pNetGame->GetRakPeer()->Shutdown(0);
 }
 
 //----------------------------------------------------

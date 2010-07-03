@@ -27,31 +27,14 @@
 #include "../main.h"
 #include <stdlib.h>
 
-extern CGame		 *pGame;
-extern CChatWindow   *pChatWindow;
-extern CCmdWindow	 *pCmdWindow;
-
 #define NETGAME_VERSION 6
 
 using namespace RakNet;
 
-RPC4 rpc1;
-
-//----------------------------------------------------
-
-BYTE GetPacketID(RakNet::Packet *p)
-{
-	if (p==0) return 255;
-
-	if ((unsigned char)p->data[0] == ID_TIMESTAMP)
-	{
-		assert(p->length > sizeof(unsigned char) + sizeof(unsigned long));
-		return (unsigned char) p->data[sizeof(unsigned char) + sizeof(unsigned long)];
-	}
-	else {
-		return (unsigned char) p->data[0];
-	}
-}
+extern CGame		 *pGame;
+extern CChatWindow   *pChatWindow;
+extern CCmdWindow	 *pCmdWindow;
+RPC4				 *CNetGame::m_pRPC4;
 
 //----------------------------------------------------
 
@@ -76,13 +59,6 @@ void DecompressVector1(VECTOR * vec, C_VECTOR1 * c1)
 
 //----------------------------------------------------
 
-RakNet::RPC4 * CNetGame::GetRPC4()
-{
-	return &rpc1;
-}
-
-//----------------------------------------------------
-
 CNetGame::CNetGame(PCHAR szHostOrIp, int iPort, 
 				   PCHAR szPlayerName, PCHAR szPass)
 {
@@ -92,17 +68,14 @@ CNetGame::CNetGame(PCHAR szHostOrIp, int iPort,
 
 	m_pVehiclePool = new CVehiclePool();
 
-	m_pRakClient = RakNet::RakPeerInterface::GetInstance();
-
-	//m_pRakClient->InitializeSecurity(0,0,0,0); // Removed in 0.4 RakNet
+	m_pRakPeer = RakPeerInterface::GetInstance();
+	m_pRPC4 = RPC4::GetInstance();
 
 	RegisterRPCs();
 	
-	m_pRakClient->Startup(1,&SocketDescriptor(),1);
-
-	m_pRakClient->Connect(szHostOrIp,iPort,szPass,strlen(szPass));
-
-	m_pRakClient->AttachPlugin(GetRPC4());
+	m_pRakPeer->Startup(1,&SocketDescriptor(),1);
+	m_pRakPeer->Connect(szHostOrIp,iPort,szPass,strlen(szPass));
+	m_pRakPeer->AttachPlugin(m_pRPC4);
 	
 	m_iGameState = GAMESTATE_CONNECTING;
 	pChatWindow->AddDebugMessage("Vice City: Players started.");
@@ -120,9 +93,11 @@ CNetGame::CNetGame(PCHAR szHostOrIp, int iPort,
 
 CNetGame::~CNetGame()
 {
-	m_pRakClient->Shutdown(0);
+	m_pRakPeer->Shutdown(0);
+	m_pRakPeer->DetachPlugin(m_pRPC4);
 	UnRegisterRPCs();
-	RakNet::RakPeerInterface::DestroyInstance(m_pRakClient);
+	RPC4::DestroyInstance(m_pRPC4);
+	RakPeerInterface::DestroyInstance(m_pRakPeer);
 	delete m_pPlayerPool;
 	delete m_pGameLogic;
 }
@@ -146,8 +121,8 @@ void CNetGame::Process()
 	}
 
 	// For syncing rand()
-	/*if(m_pRakClient->GetSynchronizedRandomInteger() != m_uiLastRandSeed) {
-		m_uiLastRandSeed = m_pRakClient->GetSynchronizedRandomInteger();
+	/*if(m_pRakPeer->GetSynchronizedRandomInteger() != m_uiLastRandSeed) {
+		m_uiLastRandSeed = m_pRakPeer->GetSynchronizedRandomInteger();
 		srand(m_uiLastRandSeed);
 	}*/
 }
@@ -156,11 +131,11 @@ void CNetGame::Process()
 
 void CNetGame::UpdateNetwork()
 {
-	RakNet::Packet* pkt=NULL;
+	Packet* pkt=NULL;
 
-	while((pkt = m_pRakClient->Receive()))
+	while((pkt = m_pRakPeer->Receive()))
 	{
-		switch(GetPacketID(pkt))
+		switch(pkt->data[0])
 		{
 			/*
 		case ID_RSA_PUBLIC_KEY_MISMATCH:
@@ -184,7 +159,7 @@ void CNetGame::UpdateNetwork()
 			break;
 			/*
 		case ID_MODIFIED_PACKET:
-			m_pRakClient->Shutdown(100);
+			m_pRakPeer->Shutdown(100);
 			break;
 			*/
 		case ID_CONNECTION_ATTEMPT_FAILED:
@@ -202,18 +177,17 @@ void CNetGame::UpdateNetwork()
 
 		}
 
-		m_pRakClient->DeallocatePacket(pkt);		
+		m_pRakPeer->DeallocatePacket(pkt);		
 	}
 
 }
 
 //----------------------------------------------------
 
-void CNetGame::PlayerSync(RakNet::Packet *p)
+void CNetGame::PlayerSync(Packet *p)
 {
 	CRemotePlayer * pPlayer;
-	RakNet::BitStream bsPlayerSync(p->data, p->length, FALSE);
-	BYTE bytePacketID=0;
+	BitStream bsPlayerSync(p->data, p->length, FALSE);
 	BYTE byteSystemAddress=0;
 
 	WORD wKeys=0;
@@ -226,7 +200,7 @@ void CNetGame::PlayerSync(RakNet::Packet *p)
 
 	CAMERA_AIM caAiming;
 
-	bsPlayerSync.Read(bytePacketID);
+	bsPlayerSync.IgnoreBytes(sizeof(MessageID));
 	bsPlayerSync.Read(byteSystemAddress);
 	bsPlayerSync.Read(wKeys);
 
@@ -276,11 +250,10 @@ void CNetGame::PlayerSync(RakNet::Packet *p)
 
 //----------------------------------------------------
 
-void CNetGame::VehicleSync(RakNet::Packet *p)
+void CNetGame::VehicleSync(Packet *p)
 {
 	CRemotePlayer * pPlayer;
-	RakNet::BitStream bsVehicleSync(p->data, p->length, FALSE);
-	BYTE		bytePacketID=0;
+	BitStream bsVehicleSync(p->data, p->length, FALSE);
 	BYTE		byteSystemAddress=0;
 	BYTE		byteVehicleID=0;
 
@@ -295,7 +268,7 @@ void CNetGame::VehicleSync(RakNet::Packet *p)
 	BYTE		byteReadVehicleHealth;
 	BYTE		bytePlayerHealth;
 
-	bsVehicleSync.Read(bytePacketID);
+	bsVehicleSync.IgnoreBytes(sizeof(MessageID));
 	bsVehicleSync.Read(byteSystemAddress);
 	bsVehicleSync.Read(byteVehicleID);
 	bsVehicleSync.Read(wKeys);
@@ -334,7 +307,7 @@ void CNetGame::VehicleSync(RakNet::Packet *p)
 
 //----------------------------------------------------
 
-void CNetGame::ConnectionSucceeded(RakNet::Packet *p)
+void CNetGame::ConnectionSucceeded(Packet *p)
 {
 	if(pChatWindow) {
 		pChatWindow->AddDebugMessage("Connection success. Loading network game...");
@@ -345,12 +318,11 @@ void CNetGame::ConnectionSucceeded(RakNet::Packet *p)
 	BYTE byteVersion = NETGAME_VERSION;
 	BYTE byteNameLen = (BYTE)strlen(m_pPlayerPool->GetLocalPlayerName());
 	
-	RakNet::BitStream bsSend;
+	BitStream bsSend;
 	bsSend.Write(byteVersion);
 	bsSend.Write(byteNameLen);
 	bsSend.Write(m_pPlayerPool->GetLocalPlayerName(),byteNameLen);
-	//m_pRakClient->RPC("ClientJoin",&bsSend,HIGH_PRIORITY,RELIABLE,0,UNASSIGNED_SYSTEM_ADDRESS,TRUE,FALSE,UNASSIGNED_NETWORK_ID,0);
-	GetRPC4()->Call("ClientJoin",&bsSend,HIGH_PRIORITY,RELIABLE,0,UNASSIGNED_SYSTEM_ADDRESS,TRUE);
+	m_pRPC4->Call("ClientJoin",&bsSend,HIGH_PRIORITY,RELIABLE,0,UNASSIGNED_SYSTEM_ADDRESS,TRUE);
 }
 
 //----------------------------------------------------
@@ -360,9 +332,7 @@ void CNetGame::UpdatePlayerScoresAndPings()
 	if( (GetTickCount() - m_dwLastScoreUpdateTick) > 1000 ) {
 		m_dwLastScoreUpdateTick = GetTickCount();
 
-		RakNet::BitStream bsSend;
-		//m_pRakClient->RPC("UpdateScoreAndPing",&bsSend,HIGH_PRIORITY,RELIABLE,0,UNASSIGNED_SYSTEM_ADDRESS,TRUE,FALSE,UNASSIGNED_NETWORK_ID,0);
-		GetRPC4()->Call("UpdateScoreAndPing",&bsSend,HIGH_PRIORITY,RELIABLE,0,UNASSIGNED_SYSTEM_ADDRESS,TRUE);
+		m_pRPC4->Call("UpdateScoreAndPing",NULL,HIGH_PRIORITY,RELIABLE,0,UNASSIGNED_SYSTEM_ADDRESS,TRUE);
 	}
 }
 

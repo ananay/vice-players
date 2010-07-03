@@ -54,7 +54,8 @@ private:
 
 	CPlayerPool			*m_pPlayerPool;
 	CVehiclePool		*m_pVehiclePool;
-	RakNet::RakPeerInterface	*m_pRakClient;
+	RakPeerInterface	*m_pRakPeer;
+	static RPC4			*m_pRPC4;
 	CGameModeGeneric	*m_pGameLogic;
 
 	int					m_iGameState;
@@ -64,9 +65,9 @@ private:
 
 	void UpdateNetwork();
 
-	void PlayerSync(RakNet::Packet *p);
-	void VehicleSync(RakNet::Packet *p);
-	void ConnectionSucceeded(RakNet::Packet *p);
+	void PlayerSync(Packet *p);
+	void VehicleSync(Packet *p);
+	void ConnectionSucceeded(Packet *p);
 
 public:
 	VECTOR m_vecInitPlayerPos;
@@ -85,12 +86,12 @@ public:
 
 	CPlayerPool * GetPlayerPool() { return m_pPlayerPool; };
 	CVehiclePool * GetVehiclePool() { return m_pVehiclePool; };
-	RakNet::RakPeerInterface * GetRakClient() { return m_pRakClient; };
+	RakPeerInterface * GetRakPeer() { return m_pRakPeer; };
+	RPC4 * GetRPC4() { return m_pRPC4; };
 	CGameModeGeneric * GetGameLogic() { return m_pGameLogic; };
 	void InitGameLogic();
 	void Process();	
 	void UpdatePlayerScoresAndPings();
-	RakNet::RPC4 * GetRPC4();
 };
 
 //----------------------------------------------------

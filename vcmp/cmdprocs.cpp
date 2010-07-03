@@ -68,7 +68,7 @@ void cmdDefaultCmdProc(PCHAR szCmd)
 void cmdQuit(PCHAR szCmd)
 {
 	if(pNetGame && pNetGame->GetGameState() == GAMESTATE_CONNECTED) {
-		pNetGame->GetRakClient()->Shutdown(0);
+		pNetGame->GetRakPeer()->Shutdown(0);
 	}
 
 	ExitProcess(0);
@@ -207,7 +207,6 @@ void cmdAdmin(PCHAR szCmd)
 		if(iPassLen > 64) return;
 		bsSend.Write(iPassLen);
 		bsSend.Write(szCmd,iPassLen);
-		//pNetGame->GetRakClient()->RPC("Admin",&bsSend,HIGH_PRIORITY,RELIABLE,0,UNASSIGNED_SYSTEM_ADDRESS,TRUE,FALSE,UNASSIGNED_NETWORK_ID,0);	
 		pNetGame->GetRPC4()->Call("Admin",&bsSend,HIGH_PRIORITY,RELIABLE,0,UNASSIGNED_SYSTEM_ADDRESS,TRUE);
 	}
 }
@@ -228,7 +227,6 @@ void cmdKickEm(PCHAR szCmd)
 
 	if(pNetGame) {
 		bsSend.Write(byteSystemAddress);
-		//pNetGame->GetRakClient()->RPC("KickPlayer",&bsSend,HIGH_PRIORITY,RELIABLE,0,UNASSIGNED_SYSTEM_ADDRESS,TRUE,FALSE,UNASSIGNED_NETWORK_ID,0);	
 		pNetGame->GetRPC4()->Call("KickPlayer",&bsSend,HIGH_PRIORITY,RELIABLE,0,UNASSIGNED_SYSTEM_ADDRESS,TRUE);
 	}
 }
@@ -245,7 +243,6 @@ void cmdBanTheirSorryAsses(PCHAR szCmd)
 		if(iIPLen > 64) return;
 		bsSend.Write(iIPLen);
 		bsSend.Write(szCmd,iIPLen);
-		//pNetGame->GetRakClient()->RPC("BanIPAddress",&bsSend,HIGH_PRIORITY,RELIABLE,0,UNASSIGNED_SYSTEM_ADDRESS,TRUE,FALSE,UNASSIGNED_NETWORK_ID,0);	
 		pNetGame->GetRPC4()->Call("BanIPAddress",&bsSend,HIGH_PRIORITY,RELIABLE,0,UNASSIGNED_SYSTEM_ADDRESS,TRUE);
 	}
 }

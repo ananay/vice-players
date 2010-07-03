@@ -141,6 +141,17 @@ public:
 
 	void EnterVehicle(BYTE byteVehicleID,BYTE bytePassenger);
 	void ExitVehicle(BYTE byteVehicleID);
+
+	WORD GetKeys();
+	void GetPosition(VECTOR * vecPosition);
+	void GetMoveSpeed(VECTOR * vecMoveSpeed);
+	void GetTurnSpeed(VECTOR * vecTurnSpeed);
+	float GetRotation();
+	BYTE GetHealth();
+	BYTE GetCurrentWeapon();
+	BYTE GetAction();
+	BOOL IsAPassenger();
+	BYTE GetVehicleID();
 };
 
 //----------------------------------------------------
