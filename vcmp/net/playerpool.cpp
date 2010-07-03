@@ -81,8 +81,6 @@ BOOL CPlayerPool::New(BYTE byteSystemAddress, PCHAR szPlayerName)
 		m_iPing[byteSystemAddress] = 0;
 		m_ulIPAddress[byteSystemAddress] = 0;
 
-		if(pChatWindow) 
-			pChatWindow->AddInfoMessage("*** %s joined the server.",szPlayerName);
 		return TRUE;
 	}
 	else
@@ -103,10 +101,6 @@ BOOL CPlayerPool::Delete(BYTE byteSystemAddress, BYTE byteReason)
 	delete m_pPlayers[byteSystemAddress];
 	m_pPlayers[byteSystemAddress] = NULL;
 
-	if(pChatWindow) {
-		pChatWindow->AddInfoMessage("*** %s left the server. (%s)",
-		m_szPlayerNames[byteSystemAddress],szQuitReasons[byteReason]);
-	}
 
 	return TRUE;
 }
