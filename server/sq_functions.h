@@ -59,4 +59,6 @@ int sq_sendPlayerMessage(HSQUIRRELVM v); // done client rpc
 int sq_sendPlayerMessageToAll(HSQUIRRELVM v);
 int sq_kickPlayer(HSQUIRRELVM v);
 int sq_banPlayer(HSQUIRRELVM v);
+int sq_getPlayerName(HSQUIRRELVM * v);
+int sq_getPlayerName(HSQUIRRELVM * v);
 int sq_register_vcmp(SQVM * pVM);
