@@ -65,7 +65,7 @@ CNetGame::CNetGame(int iMaxPlayers, int iPort, int iGameType,
 
 	// Setup vehicle pool
 	m_pVehiclePool = new CVehiclePool();
-	m_pVehiclePool->InitialiseFromConfig(pServerConfig);
+	//m_pVehiclePool->InitialiseFromConfig(pServerConfig);
 
 	// Setup the init positions.
 	SetupInitPositions();

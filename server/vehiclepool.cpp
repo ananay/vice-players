@@ -40,37 +40,6 @@ CVehiclePool::CVehiclePool()
 
 //----------------------------------------------------
 
-BOOL CVehiclePool::InitialiseFromConfig(CConfig *pConfig)
-{
-    int iVehicleArrayCount;
-    BYTE d=1;
-
-    int iModelID;
-    VECTOR vecPos;
-    float fRotation;
-    int iColor1, iColor2;
-    char * szConfigLine;
-
-    iVehicleArrayCount = pConfig->GetConfigArrayCount("VEHICLE");
-	iVehicleArrayCount++;
-
-    while((int)d < iVehicleArrayCount) {
-
-         szConfigLine = pConfig->GetConfigEntryAsString("VEHICLE",d);
-
-		 sscanf(szConfigLine,"%d%f%f%f%f%d%d",&iModelID,
-                   &vecPos.X,&vecPos.Y,&vecPos.Z,&fRotation,&iColor1,&iColor2);
-
-         New(d,(BYTE)iModelID,&vecPos,fRotation,iColor1,iColor2);
-         d++;
-    }
-
-    return TRUE;
-}
-
-
-//----------------------------------------------------
-
 CVehiclePool::~CVehiclePool()
 {	
 	BYTE byteVehicleID = 0;

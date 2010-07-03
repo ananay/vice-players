@@ -57,7 +57,6 @@ public:
 		return m_bVehicleSlotState[byteVehicleID];
 	};
 
-	BOOL InitialiseFromConfig(CConfig *pConfig);
 	void Process();
 };
 

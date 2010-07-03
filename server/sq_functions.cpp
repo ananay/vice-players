@@ -234,6 +234,22 @@ int sq_sendPlayerMessage(SQVM * pVM)
 	sq_pushbool(pVM, true);
 	return 1;
 }
+// sendMessageAsPlayer
+int sq_sendMessageAsPlayer(SQVM * pVM)
+{
+	int playerSystemAddress;
+	const char * Message;
+
+	sq_getinteger(pVM, -2, &playerSystemAddress);
+	sq_getstring(pVM, -1, &Message);
+
+	RakNet::BitStream bsSend;
+	bsSend.Write(Message);
+	pNetGame->GetRPC4()->Call("Script_sendMessageAsPlayer",&bsSend,HIGH_PRIORITY,RELIABLE,0,pNetGame->GetRakPeer()->GetSystemAddressFromIndex(playerSystemAddress),false);
+
+	sq_pushbool(pVM, true);
+	return 1;
+}
 
 // sendPlayerMessageToAll
 int sq_sendPlayerMessageToAll(SQVM * pVM)
@@ -345,6 +361,7 @@ static SQRegFunction vcmp_funcs[]={
 	_DECL_FUNC(togglePlayerControls, 3, _SC(".n")),
 	_DECL_FUNC(removePlayerFromVehicle, 2, _SC(".n")),
 	_DECL_FUNC(setPlayerArmedWeapon, 3, _SC(".n")),
+	//_DECL_FUNC(sendMessageAsPlayer, 3, _SC(".is")),
 	{0,0}
 };
 
