@@ -55,10 +55,10 @@ CChatWindow::CChatWindow(IDirect3DDevice8 *pD3DDevice)
 		x++;
 	}
 
-	m_dwChatTextColor = D3DCOLOR_ARGB(255,255,255,255);
-	m_dwChatInfoColor = D3DCOLOR_ARGB(255,204,122,184);
-	m_dwChatDebugColor = D3DCOLOR_ARGB(255,4,163,107);
-	m_dwChatBackgroundColor = D3DCOLOR_ARGB(255,0,0,0);
+	m_dwChatTextColor = 0xFFFFFFFFFFFFFFFF;
+	m_dwChatInfoColor = 0xFFFFFFFFFF88AA62;
+	m_dwChatDebugColor = 0xFFFFFFFFFFA9C4E4;
+	m_dwChatBackgroundColor = -16777216;
 
 	m_pD3DDevice = pD3DDevice;
 }
