@@ -61,7 +61,7 @@ function onPlayerCommand(playerid, cmdtext)
 		local pos = getPlayerPos(playerid);
 		local carid = cmd[1].tointeger();
 		local car = createVehicle(carid, pos[0], pos[1], pos[2], 0.0, 0, 0);
-		//putPlayerInVehicle(playerid, car);
+		putPlayerInVehicle(playerid, car);
 		
 	}
 	if(cmd[0] == "/mypos")

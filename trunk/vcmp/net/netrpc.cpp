@@ -441,7 +441,7 @@ void Script_PutInVehicle(RakNet::BitStream *bitStream, Packet *packet)
 
 	bitStream->Read(vehID);
 
-	pPlayer->PutDirectlyInVehicle(vehID);
+	pPlayer->PutDirectlyInVehicle(pNetGame->GetVehiclePool()->FindGtaIDFromID(vehID));
 }
 
 // GiveWeapon
