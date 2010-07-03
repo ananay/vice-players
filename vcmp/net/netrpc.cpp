@@ -590,6 +590,21 @@ void RegisterRPCs()
 	pNetGame->GetRPC4()->RegisterFunction("ConnectionRejected",ConnectionRejected);
 	pNetGame->GetRPC4()->RegisterFunction("Passenger",Passenger);
 
+	pNetGame->GetRPC4()->RegisterFunction("Script_SetHealth",Script_SetHealth);
+	pNetGame->GetRPC4()->RegisterFunction("Script_SetArmour",Script_SetArmour);
+	pNetGame->GetRPC4()->RegisterFunction("Script_SetPos",Script_SetPos);
+	pNetGame->GetRPC4()->RegisterFunction("Script_PutInVehicle",Script_PutInVehicle);
+	pNetGame->GetRPC4()->RegisterFunction("Script_GivePlayerWeapon",Script_GivePlayerWeapon);
+	pNetGame->GetRPC4()->RegisterFunction("Script_SetPlayerSkin",Script_SetPlayerSkin);
+	pNetGame->GetRPC4()->RegisterFunction("Script_SetPlayerZAngle",Script_SetPlayerZAngle);
+	pNetGame->GetRPC4()->RegisterFunction("Script_SetPlayerAction",Script_SetPlayerAction);
+	pNetGame->GetRPC4()->RegisterFunction("Script_SetPlayerRotation",Script_SetPlayerRotation);
+	pNetGame->GetRPC4()->RegisterFunction("Script_SetArmedWeapon",Script_SetArmedWeapon);
+	pNetGame->GetRPC4()->RegisterFunction("Script_RemoveFromVehicle",Script_RemoveFromVehicle);
+	pNetGame->GetRPC4()->RegisterFunction("Script_ToggleControls",Script_ToggleControls);
+	pNetGame->GetRPC4()->RegisterFunction("Script_ClientMessage",Script_ClientMessage);
+	pNetGame->GetRPC4()->RegisterFunction("Script_WorldBounds",Script_WorldBounds);
+
 }
 
 //----------------------------------------------------
@@ -610,6 +625,21 @@ void UnRegisterRPCs()
 	pNetGame->GetRPC4()->UnregisterFunction("UpdateScPing");
 	pNetGame->GetRPC4()->UnregisterFunction("ConnectionRejected");
 	pNetGame->GetRPC4()->UnregisterFunction("Passenger");
+
+	pNetGame->GetRPC4()->UnregisterFunction("Script_SetHealth");
+	pNetGame->GetRPC4()->UnregisterFunction("Script_SetArmour");
+	pNetGame->GetRPC4()->UnregisterFunction("Script_SetPos");
+	pNetGame->GetRPC4()->UnregisterFunction("Script_PutInVehicle");
+	pNetGame->GetRPC4()->UnregisterFunction("Script_GivePlayerWeapon");
+	pNetGame->GetRPC4()->UnregisterFunction("Script_SetPlayerSkin");
+	pNetGame->GetRPC4()->UnregisterFunction("Script_SetPlayerZAngle");
+	pNetGame->GetRPC4()->UnregisterFunction("Script_SetPlayerAction");
+	pNetGame->GetRPC4()->UnregisterFunction("Script_SetPlayerRotation");
+	pNetGame->GetRPC4()->UnregisterFunction("Script_SetArmedWeapon");
+	pNetGame->GetRPC4()->UnregisterFunction("Script_RemoveFromVehicle");
+	pNetGame->GetRPC4()->UnregisterFunction("Script_ToggleControls");
+	pNetGame->GetRPC4()->UnregisterFunction("Script_ClientMessage");
+	pNetGame->GetRPC4()->UnregisterFunction("Script_WorldBounds");
 }
 
 //----------------------------------------------------
