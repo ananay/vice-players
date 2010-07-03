@@ -151,7 +151,7 @@ void CLocalPlayer::SendOnFootFullSyncData()
 {
 	RakNet::BitStream bsPlayerSync;
 	CPlayerPed *pGamePlayer = pGame->FindPlayerPed();
-	MATRIX4X4 matPlayer;
+	VECTOR vPos;
 	WORD wKeys = pGamePlayer->GetKeys();
 	BYTE bytePlayerHealth;
 	CAMERA_AIM * pCameraAim = pGamePlayer->GetCurrentAim();
@@ -172,14 +172,14 @@ void CLocalPlayer::SendOnFootFullSyncData()
 
 		// contents
 		bsPlayerSync.Write(wKeys);
-		m_pPlayerPed->GetMatrix(&matPlayer);
+		m_pPlayerPed->GetPosition(&vPos);
 
 		// PART OF THE ANTI-CHEAT
-		if(matPlayer.vPos.Z > 499.1f) exit(1);
+		if(vPos.Z > 499.1f) exit(1);
 
-		bsPlayerSync.Write(matPlayer.vPos.X);
-		bsPlayerSync.Write(matPlayer.vPos.Y);
-		bsPlayerSync.Write(matPlayer.vPos.Z);
+		bsPlayerSync.Write(vPos.X);
+		bsPlayerSync.Write(vPos.Y);
+		bsPlayerSync.Write(vPos.Z);
 		bsPlayerSync.Write(m_pPlayerPed->GetRotation());
 		bsPlayerSync.Write(m_pPlayerPed->GetShootingFlags());
 	
@@ -295,7 +295,7 @@ void CLocalPlayer::SendInCarFullSyncData()
 void CLocalPlayer::SendInCarPassengerData()
 {
 	RakNet::BitStream bsPassengerSync;
-	MATRIX4X4 matPlayer;
+	VECTOR vPos;
 	CVehiclePool *pVehiclePool = pNetGame->GetVehiclePool();
 
 	BYTE byteVehicleID = (BYTE)pVehiclePool->FindIDFromGtaPtr(m_pPlayerPed->GetGtaVehicle());
@@ -303,14 +303,14 @@ void CLocalPlayer::SendInCarPassengerData()
 
 	UINT uiPassengerSeat = m_pPlayerPed->GetPassengerSeat();
 	
-	m_pPlayerPed->GetMatrix(&matPlayer);
+	m_pPlayerPed->GetPosition(&vPos);
 	
 	bsPassengerSync.Write((BYTE)ID_PASSENGER_SYNC);
 	bsPassengerSync.Write((BYTE)byteVehicleID);
 	bsPassengerSync.Write(uiPassengerSeat);
-	bsPassengerSync.Write(matPlayer.vPos.X);
-	bsPassengerSync.Write(matPlayer.vPos.Y);
-	bsPassengerSync.Write(matPlayer.vPos.Z);
+	bsPassengerSync.Write(vPos.X);
+	bsPassengerSync.Write(vPos.Y);
+	bsPassengerSync.Write(vPos.Z);
 	pNetGame->GetRakPeer()->Send(&bsPassengerSync,HIGH_PRIORITY,UNRELIABLE,0,UNASSIGNED_SYSTEM_ADDRESS,TRUE);
 }
 

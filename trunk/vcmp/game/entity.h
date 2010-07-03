@@ -37,6 +37,8 @@ public:
 
 	void		 GetMatrix(PMATRIX4X4 Matrix);
 	void		 SetMatrix(MATRIX4X4 Matrix);
+	void         GetPosition(PVECTOR Vector);
+	void         SetPosition(VECTOR Vector);
 
 	WORD		 GetModelIndex();
 

@@ -85,9 +85,9 @@ void InitGame(RakNet::BitStream *bitStream, Packet *packet)
 	CPlayerPool *pPlayerPool = pNetGame->GetPlayerPool();
 	BYTE byteMySystemAddress;
 
-	bitStream->Read((char*)pNetGame->m_vecInitPlayerPos, sizeof(VECTOR));
-	bitStream->Read((char*)pNetGame->m_vecInitCameraPos, sizeof(VECTOR));
-	bitStream->Read((char*)pNetGame->m_vecInitCameraLook, sizeof(VECTOR));
+	bitStream->Read((char*)&pNetGame->m_vecInitPlayerPos, sizeof(VECTOR));
+	bitStream->Read((char*)&pNetGame->m_vecInitCameraPos, sizeof(VECTOR));
+	bitStream->Read((char*)&pNetGame->m_vecInitCameraLook, sizeof(VECTOR));
 	bitStream->Read(pNetGame->m_WorldBounds[0]);
 	bitStream->Read(pNetGame->m_WorldBounds[1]);
 	bitStream->Read(pNetGame->m_WorldBounds[2]);
@@ -158,7 +158,7 @@ void RequestClass(RakNet::BitStream *bitStream, Packet *packet)
 	bitStream->Read(byteRequestOutcome);
 	bitStream->Read(SpawnInfo.byteTeam);
 	bitStream->Read(SpawnInfo.byteSkin);
-	bitStream->Read((char*)SpawnInfo.vecPos, sizeof(VECTOR));
+	bitStream->Read((char*)&SpawnInfo.vecPos, sizeof(VECTOR));
 	bitStream->Read(SpawnInfo.fRotation);
 	bitStream->Read(SpawnInfo.iSpawnWeapons[0]);
 	bitStream->Read(SpawnInfo.iSpawnWeaponsAmmo[0]);

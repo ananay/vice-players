@@ -93,9 +93,9 @@ void ClientJoin(RakNet::BitStream *bitStream, Packet *packet)
 
 	// Send this client back an 'InitGame' RPC
 	RakNet::BitStream bsInitGame;
-	bsInitGame.Write((char*)pNetGame->m_vecInitPlayerPos, sizeof(VECTOR));
-	bsInitGame.Write((char*)pNetGame->m_vecInitCameraPos, sizeof(VECTOR));
-	bsInitGame.Write((char*)pNetGame->m_vecInitCameraLook, sizeof(VECTOR));
+	bsInitGame.Write((char*)&pNetGame->m_vecInitPlayerPos, sizeof(VECTOR));
+	bsInitGame.Write((char*)&pNetGame->m_vecInitCameraPos, sizeof(VECTOR));
+	bsInitGame.Write((char*)&pNetGame->m_vecInitCameraLook, sizeof(VECTOR));
 	bsInitGame.Write(pNetGame->m_WorldBounds[0]);
 	bsInitGame.Write(pNetGame->m_WorldBounds[1]);
 	bsInitGame.Write(pNetGame->m_WorldBounds[2]);
@@ -112,9 +112,9 @@ void ClientJoin(RakNet::BitStream *bitStream, Packet *packet)
 	for(BYTE x = 0; x < MAX_PLAYERS; x++) {
 		if((pPlayerPool->GetSlotState(x) == TRUE) && (x != byteSystemAddress)) {
 			pbsExistingClient.Reset();
-			pbsExistingClient->Write(x);
-			pbsExistingClient->Write(strlen(pPlayerPool->GetPlayerName(x)));
-			pbsExistingClient->Write(pPlayerPool->GetPlayerName(x),strlen(pPlayerPool->GetPlayerName(x)));
+			pbsExistingClient.Write(x);
+			pbsExistingClient.Write(strlen(pPlayerPool->GetPlayerName(x)));
+			pbsExistingClient.Write(pPlayerPool->GetPlayerName(x),strlen(pPlayerPool->GetPlayerName(x)));
 			pNetGame->GetRPC4()->Call("ServerJoin", &pbsExistingClient,HIGH_PRIORITY,RELIABLE_ORDERED,0,packet->guid,false);
 
 			// Now also spawn the player for them if they're active.
@@ -198,7 +198,7 @@ void RequestClass(RakNet::BitStream *bitStream, Packet *packet)
 	bsSpawnRequestReply.Write(byteRequestOutcome);
 	bsSpawnRequestReply.Write(SpawnInfo->byteTeam);
 	bsSpawnRequestReply.Write(SpawnInfo->byteSkin);
-	bsSpawnRequestReply.Write((char*)SpawnInfo->vecPos, sizeof(VECTOR));
+	bsSpawnRequestReply.Write((char*)&SpawnInfo->vecPos, sizeof(VECTOR));
 	bsSpawnRequestReply.Write(SpawnInfo->fRotation);
 	bsSpawnRequestReply.Write(SpawnInfo->iSpawnWeapons[0]);
 	bsSpawnRequestReply.Write(SpawnInfo->iSpawnWeaponsAmmo[0]);

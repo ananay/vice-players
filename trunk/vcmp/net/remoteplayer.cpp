@@ -105,7 +105,7 @@ void CRemotePlayer::Process()
 				}
 
 				// Update the ingame player.
-				UpdateOnFootMatrix(&m_matWorld);
+				UpdateOnFootPosition(m_matWorld.vPos);
 
 				// Update aiming.
 				m_Aim.pos2x = m_Aim.pos1x;
@@ -178,14 +178,9 @@ void CRemotePlayer::HandleVehicleEntryExit()
 
 //----------------------------------------------------
 
-void CRemotePlayer::UpdateOnFootMatrix(MATRIX4X4 * matWorld)
+void CRemotePlayer::UpdateOnFootPosition(VECTOR vPos)
 {
-	MATRIX4X4 matPlayer;
-	m_pPlayerPed->GetMatrix(&matPlayer);
-	matPlayer.vPos.X = matWorld->vPos.X;
-	matPlayer.vPos.Y = matWorld->vPos.Y;
-	matPlayer.vPos.Z = matWorld->vPos.Z;
-	m_pPlayerPed->SetMatrix(matPlayer);
+	m_pPlayerPed->SetPosition(vPos);
 }
 
 //----------------------------------------------------
@@ -388,19 +383,18 @@ void CRemotePlayer::Say(char *szText)
 
 float CRemotePlayer::GetDistanceFromRemotePlayer(CRemotePlayer *pFromPlayer)
 {
-	MATRIX4X4	matFromPlayer;
-	MATRIX4X4	matThisPlayer;
-
-	float		fSX,fSY;
+	VECTOR vecThisPlayer;
+	VECTOR vecFromPlayer;
+	float  fSX,fSY;
 
 	if(!pFromPlayer->IsActive()) return 10000.0f; // very far away
 	if(!m_pPlayerPed) return 10000.0f; // very far away
 	
-	m_pPlayerPed->GetMatrix(&matThisPlayer);
-	pFromPlayer->GetPlayerPed()->GetMatrix(&matFromPlayer);
+	m_pPlayerPed->GetPosition(&vecThisPlayer);
+	pFromPlayer->GetPlayerPed()->GetPosition(&vecFromPlayer);
 	
-	fSX = (matThisPlayer.vPos.X - matFromPlayer.vPos.X) * (matThisPlayer.vPos.X - matFromPlayer.vPos.X);
-	fSY = (matThisPlayer.vPos.Y - matFromPlayer.vPos.Y) * (matThisPlayer.vPos.Y - matFromPlayer.vPos.Y);
+	fSX = (vecThisPlayer.X - vecFromPlayer.X) * (vecThisPlayer.X - vecFromPlayer.X);
+	fSY = (vecThisPlayer.Y - vecFromPlayer.Y) * (vecThisPlayer.Y - vecFromPlayer.Y);
 	
 	return (float)sqrt(fSX + fSY);	
 }
@@ -409,9 +403,9 @@ float CRemotePlayer::GetDistanceFromRemotePlayer(CRemotePlayer *pFromPlayer)
 
 float CRemotePlayer::GetDistanceFromLocalPlayer()
 {
-	MATRIX4X4	matFromPlayer;
-	MATRIX4X4	matThisPlayer;
-	float		fSX,fSY;
+	VECTOR vecThisPlayer;
+	VECTOR vecFromPlayer;
+	float  fSX,fSY;
 
 	CLocalPlayer *pLocalPlayer = pNetGame->GetPlayerPool()->GetLocalPlayer();
 	CPlayerPed *pLocalPlayerPed = pLocalPlayer->GetPlayerPed();
@@ -419,11 +413,11 @@ float CRemotePlayer::GetDistanceFromLocalPlayer()
 	if(!m_pPlayerPed) return 10000.0f; // very far away
 	if(!pLocalPlayerPed) return 10000.0f; // very far away
 	
-	m_pPlayerPed->GetMatrix(&matThisPlayer);
-	pLocalPlayerPed->GetMatrix(&matFromPlayer);
+	m_pPlayerPed->GetPosition(&vecThisPlayer);
+	pLocalPlayerPed->GetPosition(&vecFromPlayer);
 	
-	fSX = (matThisPlayer.vPos.X - matFromPlayer.vPos.X) * (matThisPlayer.vPos.X - matFromPlayer.vPos.X);
-	fSY = (matThisPlayer.vPos.Y - matFromPlayer.vPos.Y) * (matThisPlayer.vPos.Y - matFromPlayer.vPos.Y);
+	fSX = (vecThisPlayer.X - vecFromPlayer.X) * (vecThisPlayer.X - vecFromPlayer.X);
+	fSY = (vecThisPlayer.Y - vecFromPlayer.Y) * (vecThisPlayer.Y - vecFromPlayer.Y);
 	
 	return (float)sqrt(fSX + fSY);	
 }

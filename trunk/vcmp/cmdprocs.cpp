@@ -90,8 +90,6 @@ void cmdSavePos(PCHAR szCmd)
 	DWORD dwVehicleID;
 	float fZAngle;
 
-	//if(!tSettings.bDebug) return;
-
 	fileOut = fopen("savedpositions.txt","a");
 	if(!fileOut) {
 		pChatWindow->AddDebugMessage("I can't open the savepositions.txt file for append.");
@@ -117,12 +115,11 @@ void cmdSavePos(PCHAR szCmd)
 	}
 
 	// onfoot savepos
-	MATRIX4X4 matMatrix;
-	pPlayer->GetMatrix(&matMatrix);
+	VECTOR vPos;
+	pPlayer->GetPosition(&vPos);
 	fZAngle = pPlayer->GetRotation();
 
-	fprintf(fileOut,"addPlayerClass(0, 0, %.4f, %.4f, %.4f, %.4f, 0, 0, 0, 0, 0, 0);\n",
-		matMatrix.vPos.X,matMatrix.vPos.Y, matMatrix.vPos.Z,fZAngle);
+	fprintf(fileOut,"addPlayerClass(0, 0, %.4f, %.4f, %.4f, %.4f, 0, 0, 0, 0, 0, 0);\n", vPos.X, vPos.Y, vPos.Z, fZAngle);
 
 	fclose(fileOut);
 }
@@ -153,11 +150,9 @@ void cmdCreateVehicle(PCHAR szCmd)
 
 	if(pPlayer) 
 	{
-		MATRIX4X4 matPlayer;
-		pPlayer->GetMatrix(&matPlayer);
-		CVehicle *pTestVehicle = pGame->NewVehicle(iVehicleType,
-			(matPlayer.vPos.X - 5.0f), (matPlayer.vPos.Y - 5.0f),
-			matPlayer.vPos.Z, 0.0f);
+		VECTOR vPos;
+		pPlayer->GetPosition(&vPos);
+		CVehicle *pTestVehicle = pGame->NewVehicle(iVehicleType, (vPos.X - 5.0f), (vPos.Y - 5.0f), vPos.Z, 0.0f);
 	}
 }
 
@@ -305,13 +300,10 @@ void cmdNewPlayer(PCHAR szCmd)
 	CRemotePlayer *pRemotePlayer = pPlayerPool->GetAt(1);
 	CPlayerPed *pPlayerPed = pGame->FindPlayerPed();
 	BYTE byteSkin = (BYTE)pPlayerPed->GetModelIndex();
-	MATRIX4X4 matMatrix;
-	pPlayerPed->GetMatrix(&matMatrix);
+	VECTOR vPos;
+	pPlayerPed->GetPosition(&vPos);
 	float fRotation = pPlayerPed->GetRotation();
-	pRemotePlayer->SpawnPlayer(255,byteSkin,&matMatrix.vPos,fRotation,
-		0,0,
-		0,0,
-		0,0);
+	pRemotePlayer->SpawnPlayer(255, byteSkin, &vPos, fRotation, 0,0, 0,0, 0,0);
 }
 
 //----------------------------------------------------
