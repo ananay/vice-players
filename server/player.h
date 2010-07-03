@@ -49,6 +49,7 @@ typedef struct _PLAYER_SPAWN_INFO
 	float fRotation;
 	int iSpawnWeapons[3];
 	int iSpawnWeaponsAmmo[3];
+	BOOL loaded;
 } PLAYER_SPAWN_INFO;
 
 typedef struct _S_CAMERA_AIM
