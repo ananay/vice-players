@@ -46,6 +46,7 @@ public:
 	void onPlayerConnect(int playerId);
 	void onPlayerDisconnect(int playerId, int reason);
 	void onPlayerText(int playerId, const char *text);
+	void onPlayerCommand(int playerId, const char *command);
 	void onPlayerSpawn(int playerId);
 	void onPlayerRequestClass(int playerId, int classid);
 	void onPlayerDeath(int playerId, int reason);
