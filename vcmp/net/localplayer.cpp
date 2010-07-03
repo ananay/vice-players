@@ -276,7 +276,7 @@ void CLocalPlayer::SendInCarFullSyncData()
 		bsVehicleSync.Write(matPlayer.vPos.Z);
 
 		// speed vectors
-		pGameVehicle->GetMoveSpeedVector(&vecMoveSpeed);
+		pGameVehicle->GetMoveSpeed(&vecMoveSpeed);
 		bsVehicleSync.Write(vecMoveSpeed.X);
 		bsVehicleSync.Write(vecMoveSpeed.Y);
 		
@@ -330,7 +330,7 @@ int CLocalPlayer::GetOptimumInCarSendRate()
 
 		if(pGameVehicle) {
 
-			pGameVehicle->GetMoveSpeedVector(&vecMoveSpeed);
+			pGameVehicle->GetMoveSpeed(&vecMoveSpeed);
 
 			if( (vecMoveSpeed.X == 0.0f) &&
 				(vecMoveSpeed.Y == 0.0f) ) {
@@ -353,7 +353,7 @@ int CLocalPlayer::GetOptimumOnFootSendRate()
 
 	if(m_pPlayerPed) {
 
-		m_pPlayerPed->GetMoveSpeedVector(&vecMoveSpeed);
+		m_pPlayerPed->GetMoveSpeed(&vecMoveSpeed);
 
 		if( (vecMoveSpeed.X == 0.0f) &&
 			(vecMoveSpeed.Y == 0.0f) ) {
@@ -463,7 +463,7 @@ BOOL CLocalPlayer::SpawnPlayer( BYTE byteTeam,
 		m_pPlayerPed = pGamePlayer;
 
 		// Set skin stuff.. logic is because of temperament
-		if(pGamePlayer->GetModel() != byteSkin && (byteSkin < 107)) {
+		if(pGamePlayer->GetModelIndex() != byteSkin && (byteSkin < 107)) {
 			if(!pGame->IsModelLoaded(byteSkin)) {
 				pGame->RequestModel(byteSkin);
 				pGame->LoadRequestedModels();
@@ -485,7 +485,7 @@ BOOL CLocalPlayer::SpawnPlayer( BYTE byteTeam,
 		}
 
 		pGamePlayer->Teleport(vecPos->X,vecPos->Y,vecPos->Z);
-		pGamePlayer->SetZAngle(fRotation);
+		pGamePlayer->SetRotation(fRotation);
 		pGamePlayer->SetInitialState();
 
 		m_bIsWasted = FALSE;

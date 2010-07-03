@@ -271,6 +271,14 @@
 				>
 			</File>
 			<File
+				RelativePath=".\game\entity.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\game\entity.h"
+				>
+			</File>
+			<File
 				RelativePath="game\game.cpp"
 				>
 				<FileConfiguration

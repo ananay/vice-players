@@ -155,5 +155,3 @@ const SCRIPT_COMMAND play_sound					= { 0x018c, "fffi" };
 const SCRIPT_COMMAND create_sound				= { 0x018d,	"fffiv" };
 const SCRIPT_COMMAND get_player_weapon_ammo		= { 0x0419, "iiv" };
 const SCRIPT_COMMAND get_car_z_angle			= { 0x0174, "iv" };
-
-

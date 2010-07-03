@@ -51,7 +51,6 @@ void GameResetLocalKeys();
 
 //-----------------------------------------------------------
 
-
 #define	KEY_INCAR_TURRETLR			0
 #define	KEY_INCAR_TURRETUD			1
 #define	KEY_INCAR_RADIO				2

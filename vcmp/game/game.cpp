@@ -200,7 +200,7 @@ void CGame::StartGame()
 	*(BYTE *)0x5EA1FC = 0x75; // jnz
 	VirtualProtect((PVOID)0x5EA1FC,1,dwVP,&dwVP2);
 
-	/* ProcessVehicleOneShots (Reverse logic for CPed::IsPlayer()
+	/* ProcessVehicleOneShots (Reverse logic for CPed::IsPlayer())
 	VirtualProtect((PVOID)0x5EB6CD,1,PAGE_EXECUTE_READWRITE,&dwVP);
 	*(BYTE *)0x5EB6CD = 0x85; // jnz
 	VirtualProtect((PVOID)0x5EB6CD,1,dwVP,&dwVP2);*/
@@ -266,23 +266,51 @@ BOOL CGame::IsMenuActive()
 
 //-----------------------------------------------------------
 
+int CheckModel(int iModelID)
+{
+	if(iModelID < 0) {
+		DWORD * dwUnknown = (DWORD *)0x7D1DE0;
+		return dwUnknown[-7 * iModelID];
+	}
+	return iModelID;
+}
+
+//-----------------------------------------------------------
+
 void CGame::RequestModel(int iModelID)
 {
-	ScriptCommand(&request_model, iModelID);
+	DWORD dwModelID = CheckModel(iModelID);
+	DWORD dwFlags = 0x16;
+	DWORD dwFunc = FUNC_RequestModel;
+	_asm
+	{
+		push dwFlags
+		push dwModelID
+		call dwFunc
+		add esp, 8
+	}
 }
 
 //-----------------------------------------------------------
 
 void CGame::LoadRequestedModels()
 {
-	ScriptCommand(&load_requested_models);
+	DWORD dwFunc = FUNC_LoadRequestedModels;
+	_asm
+	{
+		push 0
+		call dwFunc
+		add esp, 4
+	}
 }
 
 //-----------------------------------------------------------
 
 BOOL CGame::IsModelLoaded(int iModelID)
 {
-	if(ScriptCommand(&is_model_available, iModelID)) {
+	DWORD dwModelID = CheckModel(iModelID);
+	BYTE * byteModelInfo = (BYTE *)VAR_ModelInfo;
+	if(byteModelInfo[20 * dwModelID] == 1) {
 		return TRUE;
 	} else {
 		return FALSE;
@@ -319,4 +347,3 @@ void CGame::DisplayTextMessage(PCHAR szText)
 }
 
 //-----------------------------------------------------------
-
