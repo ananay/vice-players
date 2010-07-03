@@ -75,6 +75,8 @@ public:
 	void  SetInvulnerable(BOOL bInv);
 	BOOL  IsInvulnerable() { return m_bIsInvulnerable; };
 
+	PED_TYPE *GetDriver();
+
 	DWORD GetTimeSinceLastDriven();
 	void  SetTimeSinceLastDriven(DWORD dwTime);
 

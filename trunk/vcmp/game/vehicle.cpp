@@ -348,6 +348,16 @@ BYTE CVehicle::GetMaxPassengers()
 
 //-----------------------------------------------------------
 
+PED_TYPE *CVehicle::GetDriver()
+{
+	if(m_pVehicle) {
+		return m_pVehicle->pDriver;
+	}
+	return NULL;
+}
+
+//-----------------------------------------------------------
+
 DWORD CVehicle::GetTimeSinceLastDriven()
 {
 	return m_dwTimeSinceLastDriven;
