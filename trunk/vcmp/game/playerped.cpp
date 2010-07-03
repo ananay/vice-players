@@ -867,8 +867,7 @@ void CPlayerPed::RestartIfWastedAt(VECTOR *vecRestart, float fRotation)
 
 void CPlayerPed::TogglePlayerControllable(int iControllable)
 {
-	DWORD dwSystemAddress=0;
-	ScriptCommand(&toggle_player_controllable,dwSystemAddress,iControllable);
+	ScriptCommand(&toggle_player_controllable,m_bytePlayerNumber,iControllable);
 }
 
 //-----------------------------------------------------------
@@ -981,12 +980,12 @@ UINT CPlayerPed::GetPassengerSeat()
 	VEHICLE_TYPE *pVehicle = (VEHICLE_TYPE *)m_pPed->pVehicle;
 
 	if(pVehicle) {
-		while(x!=7) {
+		for(BYTE i = 0; i < pVehicle->byteMaxPassengers; i++) {
 			if(pVehicle->pPassengers[x] == m_pPed) {
-				return (x+1);
+				return (i + 1);
 			}
 			x++;
-		}	
+		}
 	}
 	return 0;
 }
