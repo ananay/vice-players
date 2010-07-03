@@ -56,6 +56,7 @@ char		*szAdminPass;
 
 int main (int argc, char* argv[])
 {
+
 	int iMaxPlayers=0;
 	int iListenPort=0;
 	char *szPass=NULL;
@@ -100,6 +101,14 @@ int main (int argc, char* argv[])
 		iListenPort = DEFAULT_LISTEN_PORT;
 	}
 
+	logprintf("------------------------------------------");
+	logprintf("	GTA:Online - Vice City");
+	logprintf("	(c) 2010 GTA:Online Team");
+	logprintf("    Server started. Build: %s", __DATE__);
+	logprintf("    Server Port: %d. Max Players: %d", iListenPort, iMaxPlayers);
+	logprintf("------------------------------------------");
+
+
 	// set the server pass if one is required.
 	if(pServerConfig->GetConfigEntryAsBool("NeedPassword")==1) {
 		szPass=pServerConfig->GetConfigEntryAsString("Password");
@@ -133,14 +142,6 @@ int main (int argc, char* argv[])
 	}
 
 	pScripts->onServerInit();
-
-	//printf("-- VC-MP Server Started. Port: %d Max players: %d\n",iListenPort,iMaxPlayers);
-	logprintf("------------------------------------------");
-	logprintf("	GTA:Online - Vice City");
-	logprintf("	(c) 2010 GTA:Online Team");
-	logprintf("    Server started. Build: %s", __DATE__);
-	logprintf("    Server Port: %d. Max Players: %d", iListenPort, iMaxPlayers);
-	logprintf("------------------------------------------");
 
 	// Get the remote console port.
 	if (iRconPort = pServerConfig->GetConfigEntryAsInt("RconPort") == -1) {
