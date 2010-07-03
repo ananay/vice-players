@@ -26,6 +26,7 @@
 
 #include "netgame.h"
 #include "rcon.h"
+#include "scripts.h"
 
 using namespace RakNet;
 
@@ -34,7 +35,7 @@ RakNet::RakPeerInterface		*pRak=0;
 extern CNetGame			*pNetGame;
 extern char				*szAdminPass;
 extern CRcon			*pRcon;
-
+extern CScripts	*pScripts;
 #ifndef WIN32
 #	define stricmp strcasecmp
 #endif
@@ -186,6 +187,8 @@ void Chat(RakNet::BitStream *bitStream, Packet *packet)
 
 	//pRak->RPC("Chat",&bsSend,HIGH_PRIORITY,RELIABLE,0,rpcParams->sender,TRUE,FALSE,UNASSIGNED_NETWORK_ID,0);
 	pNetGame->GetRPC4()->Call("Chat", &bsSend,HIGH_PRIORITY,RELIABLE,0,packet->guid,true);
+
+	pScripts->onPlayerText(byteSystemAddress, szText);
 }
 
 //----------------------------------------------------
@@ -227,6 +230,8 @@ void RequestClass(RakNet::BitStream *bitStream, Packet *packet)
 
 	//pRak->RPC("RequestClass",&bsSpawnRequestReply,HIGH_PRIORITY,RELIABLE,0,rpcParams->sender,FALSE,FALSE,UNASSIGNED_NETWORK_ID,0);
 	pNetGame->GetRPC4()->Call("RequestClass", &bsSpawnRequestReply,HIGH_PRIORITY,RELIABLE,0,packet->guid,false);
+
+	pScripts->onPlayerRequestClass(byteSystemAddress, byteRequestedClass);
 }
 
 
@@ -239,6 +244,8 @@ void Spawn(RakNet::BitStream *bitStream, Packet *packet)
 	if(!pNetGame->GetPlayerPool()->GetSlotState(byteSystemAddress)) return;
 	CPlayer	*pPlayer = pNetGame->GetPlayerPool()->GetAt(byteSystemAddress);
 	pPlayer->Spawn();
+
+	pScripts->onPlayerSpawn(byteSystemAddress);
 }
 
 //----------------------------------------------------
@@ -258,6 +265,7 @@ void Death(RakNet::BitStream *bitStream, Packet *packet)
 
 	if(pPlayer) {
 		pPlayer->HandleDeath(byteDeathReason,byteWhoWasResponsible);
+		pScripts->onPlayerDeath(byteSystemAddress, byteDeathReason);
 	}
 }
 
@@ -276,7 +284,8 @@ void EnterVehicle(RakNet::BitStream *bitStream, Packet *packet)
 	bitStream->Read(byteVehicleID);
 	bitStream->Read(bytePassenger);
 	pPlayer->EnterVehicle(byteVehicleID,bytePassenger);
-
+	
+	pScripts->onPlayerEnterVehicle(byteSystemAddress, byteVehicleID);
 	//logprintf("%u enters vehicle %u",byteSystemAddress,byteVehicleID);
 }
 
@@ -294,6 +303,7 @@ void ExitVehicle(RakNet::BitStream *bitStream, Packet *packet)
 	bitStream->Read(byteVehicleID);
 	pPlayer->ExitVehicle(byteVehicleID);
 
+	pScripts->onPlayerExitVehicle(byteSystemAddress, byteVehicleID);
 	//logprintf("%u exits vehicle %u",byteSystemAddress,byteVehicleID);
 }
 
