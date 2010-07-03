@@ -264,17 +264,29 @@ int sq_setPlayerWorldBounds(SQVM * pVM)
 int sq_getPlayerName(SQVM * pVM)
 {
 	int playerSystemAddress;
-	sq_getinteger(pVM, -5, &playerSystemAddress);
+	sq_getinteger(pVM, -1, &playerSystemAddress);
 	const char *pName = pNetGame->GetPlayerPool()->GetPlayerName(playerSystemAddress);
 
 	sq_pushstring(pVM, pName, -1);
 	return 1;
 }
 
-#define _DECL_FUNC(name,nparams,pmask) {_SC(#name),_system_##name,nparams,pmask}
+int sq_getPlayerIP(SQVM * pVM)
+{
+	int playerSystemAddress;
+	sq_getinteger(pVM, -1, &playerSystemAddress);
+	const char *ip = pNetGame->GetRakPeer()->GetSystemAddressFromIndex(playerSystemAddress).ToString(false);
+
+	sq_pushstring(pVM, ip, -1);
+	return 1;
+}
+
+#define _DECL_FUNC(name,nparams,pmask) {_SC(#name),sq_##name,nparams,pmask}
 static SQRegFunction vcmp_funcs[]={
 	// put functions here
 	//_DECL_FUNC(func_name,func_params,_SC(func_param_template)),
+	_DECL_FUNC(getPlayerName, 2, _SC(".n")),
+	_DECL_FUNC(getPlayerIP, 2, _SC(".n")),
 	{0,0}
 };
 
