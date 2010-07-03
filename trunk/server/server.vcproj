@@ -1344,6 +1344,18 @@
 				>
 			</File>
 		</Filter>
+		<Filter
+			Name="scripting"
+			>
+			<File
+				RelativePath=".\sq_functions.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\sq_functions.h"
+				>
+			</File>
+		</Filter>
 		<File
 			RelativePath="main.cpp"
 			>
