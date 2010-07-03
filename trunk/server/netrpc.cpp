@@ -82,7 +82,6 @@ void ClientJoin(RakNet::BitStream *bitStream, Packet *packet)
 	if(byteNickLen==0 || byteNickLen > 16 || pPlayerPool->IsNickInUse(szPlayerName)) {
 		byteRejectReason = REJECT_REASON_BAD_NICKNAME;
 		bsReject.Write(byteRejectReason);
-		//pRak->RPC("ConnectionRejected",&bsReject,HIGH_PRIORITY,RELIABLE,0,rpcParams->sender,FALSE,FALSE,UNASSIGNED_NETWORK_ID,0);
 		pNetGame->GetRPC4()->Call("ConnectionRejected", &bsReject,HIGH_PRIORITY,RELIABLE,0,packet->guid,false);
 		return;
 	}
@@ -94,43 +93,29 @@ void ClientJoin(RakNet::BitStream *bitStream, Packet *packet)
 
 	// Send this client back an 'InitGame' RPC
 	RakNet::BitStream bsInitGame;
-	bsInitGame.Write((float)pNetGame->m_vecInitPlayerPos.X);
-	bsInitGame.Write((float)pNetGame->m_vecInitPlayerPos.Y);
-	bsInitGame.Write((float)pNetGame->m_vecInitPlayerPos.Z);
-	bsInitGame.Write((float)pNetGame->m_vecInitCameraPos.X);
-	bsInitGame.Write((float)pNetGame->m_vecInitCameraPos.Y);
-	bsInitGame.Write((float)pNetGame->m_vecInitCameraPos.Z);
-	bsInitGame.Write((float)pNetGame->m_vecInitCameraLook.X);
-	bsInitGame.Write((float)pNetGame->m_vecInitCameraLook.Y);
-	bsInitGame.Write((float)pNetGame->m_vecInitCameraLook.Z);
-	bsInitGame.Write((float)pNetGame->m_WorldBounds[0]);
-	bsInitGame.Write((float)pNetGame->m_WorldBounds[1]);
-	bsInitGame.Write((float)pNetGame->m_WorldBounds[2]);
-	bsInitGame.Write((float)pNetGame->m_WorldBounds[3]);
+	bsInitGame.Write((char*)pNetGame->m_vecInitPlayerPos, sizeof(VECTOR));
+	bsInitGame.Write((char*)pNetGame->m_vecInitCameraPos, sizeof(VECTOR));
+	bsInitGame.Write((char*)pNetGame->m_vecInitCameraLook, sizeof(VECTOR));
+	bsInitGame.Write(pNetGame->m_WorldBounds[0]);
+	bsInitGame.Write(pNetGame->m_WorldBounds[1]);
+	bsInitGame.Write(pNetGame->m_WorldBounds[2]);
+	bsInitGame.Write(pNetGame->m_WorldBounds[3]);
 	bsInitGame.Write(pNetGame->m_iSpawnsAvailable);
 	bsInitGame.Write(pNetGame->m_byteFriendlyFire);
 	bsInitGame.Write(pNetGame->m_byteShowOnRadar);
 	bsInitGame.Write(byteSystemAddress);
-	//pRak->RPC("InitGame",&bsInitGame,HIGH_PRIORITY,RELIABLE_ORDERED,0,rpcParams->sender,FALSE,FALSE,UNASSIGNED_NETWORK_ID,0);
 	pNetGame->GetRPC4()->Call("InitGame", &bsInitGame,HIGH_PRIORITY,RELIABLE_ORDERED,0,packet->guid,false);
 
 	// Send this client ServerJoins for every existing player
-	BYTE x=0;
-	RakNet::BitStream * pbsExistingClient;
+	RakNet::BitStream pbsExistingClient;
 
-	while(x!=MAX_PLAYERS) {
-		if( (pPlayerPool->GetSlotState(x) == TRUE) && 
-			(x != byteSystemAddress) ) {
-
-			pbsExistingClient = new RakNet::BitStream();
-
+	for(BYTE x = 0; x < MAX_PLAYERS; x++) {
+		if((pPlayerPool->GetSlotState(x) == TRUE) && (x != byteSystemAddress)) {
+			pbsExistingClient.Reset();
 			pbsExistingClient->Write(x);
 			pbsExistingClient->Write(strlen(pPlayerPool->GetPlayerName(x)));
 			pbsExistingClient->Write(pPlayerPool->GetPlayerName(x),strlen(pPlayerPool->GetPlayerName(x)));
-			//pRak->RPC("ServerJoin",pbsExistingClient,HIGH_PRIORITY,RELIABLE_ORDERED,0,rpcParams->sender,FALSE,FALSE,UNASSIGNED_NETWORK_ID,0);
-			pNetGame->GetRPC4()->Call("ServerJoin", pbsExistingClient,HIGH_PRIORITY,RELIABLE_ORDERED,0,packet->guid,false);
-	
-			delete pbsExistingClient;
+			pNetGame->GetRPC4()->Call("ServerJoin", &pbsExistingClient,HIGH_PRIORITY,RELIABLE_ORDERED,0,packet->guid,false);
 
 			// Now also spawn the player for them if they're active.
 			CPlayer *pSpawnPlayer = pPlayerPool->GetAt(x);
@@ -138,19 +123,16 @@ void ClientJoin(RakNet::BitStream *bitStream, Packet *packet)
 				pSpawnPlayer->SpawnForPlayer(byteSystemAddress);
 			}
 		}
-		x++;
 	}
 
 	// Spawn all existing vehicles for player.
 	CVehicle *pVehicle;
-	x=0;
 
-	while(x!=MAX_VEHICLES) {
+	for(BYTE x = 0; x < MAX_VEHICLES; x++) {
 		if(pVehiclePool->GetSlotState(x) == TRUE) {
 			pVehicle = pVehiclePool->GetAt(x);
 			if(pVehicle->IsActive()) pVehicle->SpawnForPlayer(byteSystemAddress);
 		}
-		x++;
 	}
 
 	pNetGame->GetGameLogic()->HandleClientJoin(byteSystemAddress);
@@ -185,7 +167,6 @@ void Chat(RakNet::BitStream *bitStream, Packet *packet)
 	bsSend.Write(byteTextLen);
 	bsSend.Write(szText,byteTextLen);
 
-	//pRak->RPC("Chat",&bsSend,HIGH_PRIORITY,RELIABLE,0,rpcParams->sender,TRUE,FALSE,UNASSIGNED_NETWORK_ID,0);
 	pNetGame->GetRPC4()->Call("Chat", &bsSend,HIGH_PRIORITY,RELIABLE,0,packet->guid,true);
 
 	pScripts->onPlayerText(byteSystemAddress, szText);
@@ -217,10 +198,8 @@ void RequestClass(RakNet::BitStream *bitStream, Packet *packet)
 	bsSpawnRequestReply.Write(byteRequestOutcome);
 	bsSpawnRequestReply.Write(SpawnInfo->byteTeam);
 	bsSpawnRequestReply.Write(SpawnInfo->byteSkin);
-	bsSpawnRequestReply.Write((float)SpawnInfo->vecPos.X);
-	bsSpawnRequestReply.Write((float)SpawnInfo->vecPos.Y);
-	bsSpawnRequestReply.Write((float)SpawnInfo->vecPos.Z);
-	bsSpawnRequestReply.Write((float)SpawnInfo->fRotation);
+	bsSpawnRequestReply.Write((char*)SpawnInfo->vecPos, sizeof(VECTOR));
+	bsSpawnRequestReply.Write(SpawnInfo->fRotation);
 	bsSpawnRequestReply.Write(SpawnInfo->iSpawnWeapons[0]);
 	bsSpawnRequestReply.Write(SpawnInfo->iSpawnWeaponsAmmo[0]);
 	bsSpawnRequestReply.Write(SpawnInfo->iSpawnWeapons[1]);
@@ -228,7 +207,6 @@ void RequestClass(RakNet::BitStream *bitStream, Packet *packet)
 	bsSpawnRequestReply.Write(SpawnInfo->iSpawnWeapons[2]);
 	bsSpawnRequestReply.Write(SpawnInfo->iSpawnWeaponsAmmo[2]);
 
-	//pRak->RPC("RequestClass",&bsSpawnRequestReply,HIGH_PRIORITY,RELIABLE,0,rpcParams->sender,FALSE,FALSE,UNASSIGNED_NETWORK_ID,0);
 	pNetGame->GetRPC4()->Call("RequestClass", &bsSpawnRequestReply,HIGH_PRIORITY,RELIABLE,0,packet->guid,false);
 
 	pScripts->onPlayerRequestClass(byteSystemAddress, byteRequestedClass);
@@ -341,8 +319,7 @@ void UpdateScoreAndPing(RakNet::BitStream *bitStream, Packet *packet)
 		}
 		x++;
 	}
-		
-	//pRak->RPC("UpdateScPing",&bsSend,HIGH_PRIORITY,RELIABLE,0,rpcParams->sender,FALSE,FALSE,UNASSIGNED_NETWORK_ID,0);
+
 	pNetGame->GetRPC4()->Call("UpdateScPing", &bsSend,HIGH_PRIORITY,RELIABLE,0,packet->guid,false);
 }
 

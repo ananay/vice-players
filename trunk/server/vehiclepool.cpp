@@ -30,11 +30,9 @@
 
 CVehiclePool::CVehiclePool()
 {
-	BYTE byteVehicleID = 0;
-	while(byteVehicleID != MAX_VEHICLES) {
-		m_bVehicleSlotState[byteVehicleID] = FALSE;
-		m_pVehicles[byteVehicleID] = NULL;
-		byteVehicleID++;
+	for(BYTE i = 0; i < MAX_VEHICLES; i++) {
+		m_bVehicleSlotState[i] = FALSE;
+		m_pVehicles[i] = NULL;
 	}
 }
 

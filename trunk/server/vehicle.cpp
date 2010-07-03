@@ -88,16 +88,12 @@ void CVehicle::SpawnForPlayer(BYTE byteForSystemAddress)
 {
 	RakNet::BitStream bsVehicleSpawn;
 
-	// This system originally spawned at the last
-	// reported location. Now it simply spawns
-	// directly to the config entry point.
-	// p.s. remove this comment if/when fixed.
-
 	bsVehicleSpawn.Write(m_byteVehicleID);
 	bsVehicleSpawn.Write(m_SpawnInfo.byteVehicleType);
-	bsVehicleSpawn.Write(m_SpawnInfo.vecPos.X); // use spawn pos (having problems)
-	bsVehicleSpawn.Write(m_SpawnInfo.vecPos.Y);
-	bsVehicleSpawn.Write(m_SpawnInfo.vecPos.Z);
+	bsVehicleSpawn.Write(m_matWorld.vPos.X);
+	bsVehicleSpawn.Write(m_matWorld.vPos.Y);
+	bsVehicleSpawn.Write(m_matWorld.vPos.Z);
+	// TODO: This should use the current rotation, not the spawn rotation
 	bsVehicleSpawn.Write(m_SpawnInfo.fRotation);
 	bsVehicleSpawn.Write(m_SpawnInfo.iColor1);
 	bsVehicleSpawn.Write(m_SpawnInfo.iColor2);
@@ -116,11 +112,9 @@ void CVehicle::SpawnForPlayer(BYTE byteForSystemAddress)
 
 void CVehicle::SpawnForWorld()
 {
-	CPlayerPool *pPlayerPool = pNetGame->GetPlayerPool();
-	for(BYTE i = 0; i < MAX_PLAYERS; i++)
-	{
-		if(pPlayerPool->GetSlotState(i)) 
-		{
+	CPlayerPool * pPlayerPool = pNetGame->GetPlayerPool();
+	for(BYTE i = 0; i < MAX_PLAYERS; i++) {
+		if(pPlayerPool->GetSlotState(i)) {
 			SpawnForPlayer(i);
 		}
 	}
