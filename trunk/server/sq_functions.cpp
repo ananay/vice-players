@@ -85,6 +85,27 @@ int sq_setPlayerPos(SQVM * pVM)
 	return 1;
 }
 
+// getPlayerPos
+int sq_getPlayerPos(SQVM * pVM)
+{
+	VECTOR pos;
+	int playerSystemAddress;
+	sq_getinteger(pVM, -1, &playerSystemAddress);
+
+	CPlayer *pPlayer = pNetGame->GetPlayerPool()->GetAt(playerSystemAddress);
+	pPlayer->GetPosition(&pos);
+
+	sq_newarray(pVM, 0);
+	sq_pushfloat(pVM, pos.X);
+	sq_arrayappend(pVM, -2);
+	sq_pushfloat(pVM, pos.Y);
+	sq_arrayappend(pVM, -2);
+	sq_pushfloat(pVM, pos.Z);
+	sq_arrayappend(pVM, -2);
+	sq_push(pVM, -1);
+	return 1;
+}
+
 // setPlayerZAngle
 int sq_setPlayerZAngle(SQVM * pVM)
 {
@@ -154,7 +175,21 @@ int sq_setPlayerRotation(SQVM * pVM)
 	return 1;
 }
 
-// setPlayerRotation
+// getPlayerRotation
+int sq_getPlayerRotation(SQVM *pVM)
+{
+	int playerSystemAddress;
+	float fRot;
+
+	sq_getinteger(pVM, -1, &playerSystemAddress);
+	
+	fRot = pNetGame->GetPlayerPool()->GetAt(playerSystemAddress)->GetRotation();
+
+	sq_pushfloat(pVM, fRot);
+	return 1;
+}
+
+// resetPlayerWeapons
 int sq_resetPlayerWeapons(SQVM * pVM)
 {
 	int playerSystemAddress;
@@ -323,6 +358,30 @@ int sq_setPlayerWorldBounds(SQVM * pVM)
 	return 1;
 }
 
+// getPlayerHealth
+int sq_getPlayerHealth(SQVM * pVM)
+{
+	int playerSystemAddress;
+	sq_getinteger(pVM, -1, &playerSystemAddress);
+
+	int health = pNetGame->GetPlayerPool()->GetAt(playerSystemAddress)->GetHealth();
+
+	sq_pushinteger(pVM, health);
+	return 1;
+}
+
+// getPlayerArmour
+int sq_getPlayerArmour(SQVM * pVM)
+{
+	int playerSystemAddress;
+	sq_getinteger(pVM, -1, &playerSystemAddress);
+
+	int armour = pNetGame->GetPlayerPool()->GetAt(playerSystemAddress)->GetArmour();
+
+	sq_pushinteger(pVM, armour);
+	return 1;
+}
+
 // getPlayerName
 int sq_getPlayerName(SQVM * pVM)
 {
@@ -392,6 +451,8 @@ int sq_addPlayerClass(SQVM * pVM)
 	return 1;
 }
 
+
+
 #define _DECL_FUNC(name,nparams,pmask) {_SC(#name),sq_##name,nparams,pmask}
 static SQRegFunction vcmp_funcs[]={
 	// put functions here
@@ -413,6 +474,10 @@ static SQRegFunction vcmp_funcs[]={
 	_DECL_FUNC(setPlayerRotation, 3, _SC(".nn")),
 	_DECL_FUNC(setPlayerSkin, 3, _SC(".nn")),
 	_DECL_FUNC(setPlayerPos, 5, _SC(".nnnn")),
+	_DECL_FUNC(getPlayerPos, 2, _SC(".n")),
+	_DECL_FUNC(getPlayerRotation, 2, _SC(".n")),
+	_DECL_FUNC(getPlayerHealth, 2, _SC(".n")),
+	_DECL_FUNC(getPlayerArmour, 2, _SC(".n")),
 	{0,0}
 };
 
