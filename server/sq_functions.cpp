@@ -261,6 +261,16 @@ int sq_setPlayerWorldBounds(SQVM * pVM)
 	return 1;
 }
 
+int sq_getPlayerName(SQVM * pVM)
+{
+	int playerSystemAddress;
+	sq_getinteger(pVM, -5, &playerSystemAddress);
+	const char *pName = pNetGame->GetPlayerPool()->GetPlayerName(playerSystemAddress);
+
+	sq_pushstring(pVM, pName, -1);
+	return 1;
+}
+
 #define _DECL_FUNC(name,nparams,pmask) {_SC(#name),_system_##name,nparams,pmask}
 static SQRegFunction vcmp_funcs[]={
 	// put functions here
