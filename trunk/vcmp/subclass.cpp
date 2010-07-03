@@ -91,7 +91,7 @@ BOOL HandleKeyPress(DWORD vKey)
 
 BOOL HandleCharacterInput(DWORD dwChar)
 {
-	if(pCmdWindow->isEnabled()) {
+	if(pCmdWindow->IsEnabled()) {
 		if(dwChar == 8) { // backspace
 			pCmdWindow->BackSpace();
 			return TRUE;
