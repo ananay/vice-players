@@ -26,9 +26,11 @@
 
 #include "netgame.h"
 #include "rcon.h"
+#include "scripts.h"
 
 extern CNetGame *pNetGame;
 extern CRcon	*pRcon;
+extern CScripts	*pScripts;
 
 #ifndef WIN32
 #	define stricmp strcasecmp
@@ -85,6 +87,8 @@ BOOL CPlayerPool::New(BYTE byteSystemAddress, PCHAR szPlayerName)
 
 		pRcon->ConsolePrintf("[join] %u %s",byteSystemAddress,szPlayerName);
 
+		pScripts->onPlayerConnect(byteSystemAddress, szPlayerName);
+
 		logprintf("[join] %u %s",byteSystemAddress,szPlayerName);
 
 		return TRUE;
@@ -115,6 +119,8 @@ BOOL CPlayerPool::Delete(BYTE byteSystemAddress, BYTE byteReason)
 	pNetGame->GetRPC4()->Call("ServerQuit", &bsSend,HIGH_PRIORITY,RELIABLE_ORDERED,0,pNetGame->GetRakPeer()->GetSystemAddressFromIndex(byteSystemAddress),true);
 
 	pRcon->ConsolePrintf("[part] %u %s %u",byteSystemAddress,m_szPlayerName[byteSystemAddress],byteReason);
+
+	pScripts->onPlayerDisconnect(byteSystemAddress, byteReason);
 
 	logprintf("[part] %u %s %u",byteSystemAddress,m_szPlayerName[byteSystemAddress],byteReason);
 	
