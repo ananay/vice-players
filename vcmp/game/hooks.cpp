@@ -719,7 +719,7 @@ void GameInstallHooks()
 	InstallHook(0x405AC0,(DWORD)CantFindFuckingAnim,0x405A95,
 		CantFindFuckingAnim_HookJmpCode,sizeof(CantFindFuckingAnim_HookJmpCode));*/
 
-	// Install Hook for CRunningScript::Process
+	// Install Hook for CRunningScript::Process (thx Merlin)
 	DWORD dwVP, dwVP2;
 	VirtualProtect((LPVOID)0x450246, 4, PAGE_EXECUTE_READWRITE, &dwVP);
 	*(PDWORD)0x450246 = ((DWORD)CRunningScript_Process_Hook - (0x450245 + 5));
