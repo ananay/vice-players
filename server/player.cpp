@@ -104,6 +104,7 @@ void CPlayer::BroadcastSyncData()
 		bsSync.Write(m_fRotation);
 		bsSync.Write(m_byteAction);
 		bsSync.Write(m_byteHealth);
+		bsSync.Write(m_byteArmour);
 		bsSync.Write(m_byteCurrentWeapon);
 
 		if(IS_FIRING(m_wKeys)) {
@@ -149,6 +150,7 @@ void CPlayer::BroadcastSyncData()
 
 		bsSync.Write(byteWriteVehicleHealth);
 		bsSync.Write(m_byteHealth);
+		bsSync.Write(m_byteArmour);
 
 		// sending...
 		pNetGame->BroadcastData(&bsSync,HIGH_PRIORITY,UNRELIABLE,0,m_byteSystemAddress);
