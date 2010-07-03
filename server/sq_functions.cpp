@@ -203,7 +203,7 @@ int sq_togglePlayerControls(SQVM * pVM)
 
 	RakNet::BitStream bsSend;
 	bsSend.Write(toggleValue);
-	pNetGame->GetRPC4()->Call("Script_RemoveFromVehicle",&bsSend,HIGH_PRIORITY,RELIABLE,0,pNetGame->GetRakPeer()->GetSystemAddressFromIndex(playerSystemAddress),false);
+	pNetGame->GetRPC4()->Call("Script_ToggleControls",&bsSend,HIGH_PRIORITY,RELIABLE,0,pNetGame->GetRakPeer()->GetSystemAddressFromIndex(playerSystemAddress),false);
 
 	sq_pushbool(pVM, true);
 	return 1;
