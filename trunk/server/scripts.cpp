@@ -32,11 +32,9 @@ CScripts::CScripts()
 
 bool CScripts::LoadScript(const char * szScriptName)
 {
-	// make sure a script with the same name isnt already loaded
-	for(int i = 0; i < MAX_SCRIPTS; i++)
-	{
-		if(!strcmp(m_szScriptNames[i], szScriptName))
-		{
+	// make sure a script with the same name isn't already loaded
+	for(int i = 0; i < MAX_SCRIPTS; i++) {
+		if(!strcmp(m_szScriptNames[i], szScriptName)) {
 			// a script with the same name already exists
 			return false;
 		}
@@ -59,10 +57,8 @@ bool CScripts::LoadScript(const char * szScriptName)
 	// find a free script slot
 	int iSlot = -1;
 
-	for(int i = 0; i < MAX_SCRIPTS; i++)
-	{
-		if(!m_pScripts[i])
-		{
+	for(int i = 0; i < MAX_SCRIPTS; i++) {
+		if(!m_pScripts[i]) {
 			// found a free slot
 			iSlot = i;
 			break;
@@ -77,11 +73,11 @@ bool CScripts::LoadScript(const char * szScriptName)
 	// set the script name
 	strcpy(m_szScriptNames[iSlot], szScriptName);
 
+	// create the squirrel VM with an initial stack size of 1024
+	m_pScripts[iSlot] = sq_open(1024);
+
 	// get the script vm pointer
 	SQVM * pVM = m_pScripts[iSlot];
-
-	// create the squirrel VM with an initial stack size of 1024
-	pVM = sq_open(1024);
 
 	// register the default error handles
 	sqstd_seterrorhandlers(pVM);
@@ -126,10 +122,8 @@ bool CScripts::LoadScript(const char * szScriptName)
 bool CScripts::UnloadScript(const char * szScriptName)
 {
 	// find the script slot
-	for(int i = 0; i < MAX_SCRIPTS; i++)
-	{
-		if(!strcmp(m_szScriptNames[i], szScriptName))
-		{
+	for(int i = 0; i < MAX_SCRIPTS; i++) {
+		if(!strcmp(m_szScriptNames[i], szScriptName)) {
 			// found the script slot, unload the script
 
 			// get the script vm pointer
@@ -155,8 +149,7 @@ bool CScripts::LoadFromConfig(CConfig * pConfig)
 	int iScriptCount = pConfig->GetConfigArrayCount("SCRIPT");
 	int iScriptsLoaded = 0;
 	
-	for(int i = 0; i < iScriptCount; i++)
-	{
+	for(int i = 0; i < iScriptCount; i++) {
 		char * szScriptName = pConfig->GetConfigEntryAsString("SCRIPT", i);
 
 		if(!LoadScript(szScriptName)) {
@@ -172,62 +165,62 @@ bool CScripts::LoadFromConfig(CConfig * pConfig)
 
 void CScripts::onServerInit()
 {
-	for(int i = 0; i < MAX_SCRIPTS; i++)
-	{
-		// get the script vm pointer
-		SQVM * pVM = m_pScripts[i];
+	for(int i = 0; i < MAX_SCRIPTS; i++) {
+		if(m_pScripts[i]) {
+			// get the script vm pointer
+			SQVM * pVM = m_pScripts[i];
 
-		// Get the stack top
-		int iTop = sq_gettop(pVM);
+			// Get the stack top
+			int iTop = sq_gettop(pVM);
 
-		// Push the root table onto the stack
-		sq_pushroottable(pVM);
-
-		// Push the function name onto the stack
-		sq_pushstring(pVM, "onScriptInit", -1);
-
-		// Get the closure for the function
-		if(SQ_SUCCEEDED(sq_get(pVM, -2)))
-		{
 			// Push the root table onto the stack
 			sq_pushroottable(pVM);
 
-			// Call the function
-			sq_call(pVM, 1, true, true);
-		}
+			// Push the function name onto the stack
+			sq_pushstring(pVM, "onServerInit", -1);
 
-		// Restore the stack top
-		sq_settop(pVM, iTop);
+			// Get the closure for the function
+			if(SQ_SUCCEEDED(sq_get(pVM, -2))) {
+				// Push the root table onto the stack
+				sq_pushroottable(pVM);
+
+				// Call the function
+				sq_call(pVM, 1, true, true);
+			}
+
+			// Restore the stack top
+			sq_settop(pVM, iTop);
+		}
 	}
 }
 
 void CScripts::onServerExit()
 {
-	for(int i = 0; i < MAX_SCRIPTS; i++)
-	{
-		// get the script vm pointer
-		SQVM * pVM = m_pScripts[i];
+	for(int i = 0; i < MAX_SCRIPTS; i++) {
+		if(m_pScripts[i]) {
+			// get the script vm pointer
+			SQVM * pVM = m_pScripts[i];
 
-		// Get the stack top
-		int iTop = sq_gettop(pVM);
+			// Get the stack top
+			int iTop = sq_gettop(pVM);
 
-		// Push the root table onto the stack
-		sq_pushroottable(pVM);
-
-		// Push the function name onto the stack
-		sq_pushstring(pVM, "onScriptExit", -1);
-
-		// Get the closure for the function
-		if(SQ_SUCCEEDED(sq_get(pVM, -2)))
-		{
 			// Push the root table onto the stack
 			sq_pushroottable(pVM);
 
-			// Call the function
-			sq_call(pVM, 1, true, true);
-		}
+			// Push the function name onto the stack
+			sq_pushstring(pVM, "onServerExit", -1);
 
-		// Restore the stack top
-		sq_settop(pVM, iTop);
+			// Get the closure for the function
+			if(SQ_SUCCEEDED(sq_get(pVM, -2))) {
+				// Push the root table onto the stack
+				sq_pushroottable(pVM);
+
+				// Call the function
+				sq_call(pVM, 1, true, true);
+			}
+
+			// Restore the stack top
+			sq_settop(pVM, iTop);
+		}
 	}
 }
