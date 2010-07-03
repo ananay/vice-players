@@ -59,12 +59,13 @@ BOOL HandleKeyPress(DWORD vKey)
 					break;
 				}
 			}
-
 		case VK_F6:
-			pCmdWindow->Enable();
-			break;
-
-		case VK_F7:			
+			if(!pCmdWindow->isEnabled()) {
+				pCmdWindow->Enable();
+			} else {
+				pCmdWindow->Disable();
+			} break;
+		case VK_F7:
 			pChatWindow->ToggleEnabled();
 			break;
 
@@ -80,7 +81,6 @@ BOOL HandleKeyPress(DWORD vKey)
 				}
 			}
 			break;
-
 		case VK_RETURN:
 			pCmdWindow->ProcessInput();
 			break;
