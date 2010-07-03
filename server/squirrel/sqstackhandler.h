@@ -1,3 +1,4 @@
+/*	see copyright notice in squirrel.h */
 #pragma once
 
 #include "sqpcheader.h"

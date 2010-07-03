@@ -45,7 +45,6 @@ IDirect3D8Hook			*pD3DHook;
 IDirect3DDevice8		*pD3DDevice;
 IDirect3DDevice8Hook	*pD3DDeviceHook;
 
-int						iStartGameDelay=200;
 HANDLE					hInstance;
 CScoreBoard				*pScoreBoard;
 CNameTags				*pNameTags;
