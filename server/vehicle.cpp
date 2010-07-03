@@ -42,12 +42,13 @@ CVehicle::CVehicle( BYTE byteModel, VECTOR *vecPos,
 				    int iColor2)
 {
 
+
 	// Store the spawn info.
 	m_SpawnInfo.byteVehicleType = byteModel;
 	m_SpawnInfo.fRotation = fRotation;
 	m_SpawnInfo.vecPos.X = vecPos->X;
 	m_SpawnInfo.vecPos.Y = vecPos->Y;
-	m_SpawnInfo.vecPos.Z = vecPos->Z;
+	m_SpawnInfo.vecPos.Z = vecPos->Z + (float)1.1; // the Z-coord fixer
 	m_SpawnInfo.iColor1 = iColor1;
 	m_SpawnInfo.iColor2 = iColor2;
 
@@ -109,6 +110,20 @@ void CVehicle::SpawnForPlayer(BYTE byteForSystemAddress)
 	bsVehicleSpawn.Write(m_SpawnInfo.fRotation);
 	
 	pNetGame->GetRPC4()->Call("VehicleSpawn", &bsVehicleSpawn,HIGH_PRIORITY,RELIABLE_ORDERED,0,pNetGame->GetRakPeer()->GetSystemAddressFromIndex(byteForSystemAddress),false);
+}
+
+//----------------------------------------------------------
+
+void CVehicle::SpawnForWorld()
+{
+	CPlayerPool *pPlayerPool = pNetGame->GetPlayerPool();
+	for(BYTE i = 0; i < MAX_PLAYERS; i++)
+	{
+		if(pPlayerPool->GetSlotState(i)) 
+		{
+			SpawnForPlayer(i);
+		}
+	}
 }
 
 //----------------------------------------------------------

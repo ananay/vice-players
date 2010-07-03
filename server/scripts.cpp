@@ -273,9 +273,8 @@ void CScripts::onPlayerConnect(int playerId)
 				// Push the player id onto the stack
 				sq_pushinteger(pVM, playerId);
 
-
 				// Call the function
-				sq_call(pVM, 3, true, true);
+				sq_call(pVM, 2, true, true);
 			}
 
 			// Restore the stack top

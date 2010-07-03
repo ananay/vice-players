@@ -106,6 +106,19 @@ BOOL CVehiclePool::New(BYTE byteVehicleID, BYTE byteVehicleType,
 
 //----------------------------------------------------
 
+BYTE CVehiclePool::New(BYTE byteVehicleType,
+					   VECTOR * vecPos, float fRotation,
+					   int iColor1, int iColor2)
+{
+	BYTE vehicleID = GetFreeSlot();
+	if(New(vehicleID, byteVehicleType, vecPos, fRotation, iColor1, iColor2))
+		return vehicleID;
+
+	return false;
+}
+
+//----------------------------------------------------
+
 BOOL CVehiclePool::Delete(BYTE byteVehicleID)
 {
 	if(!GetSlotState(byteVehicleID) || !m_pVehicles[byteVehicleID])
@@ -125,6 +138,18 @@ BOOL CVehiclePool::Delete(BYTE byteVehicleID)
 void CVehiclePool::Process()
 {
 	
+}
+
+//----------------------------------------------------
+
+BYTE CVehiclePool::GetFreeSlot()
+{
+	for(BYTE id = 0; id < MAX_VEHICLES; id++)
+	{
+		if(m_pVehicles[id] == NULL)
+			return id;
+	}
+	return false;
 }
 
 //----------------------------------------------------
