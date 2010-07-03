@@ -310,7 +310,7 @@ int sq_sendPlayerMessage(SQVM * pVM)
 	sq_getstring(pVM, -1, &messageValue);
 
 	RakNet::BitStream bsSend;
-	bsSend.Write(colourMessage);
+	bsSend.Write((DWORD)colourMessage);
 	bsSend.Write(strlen(messageValue));
 	bsSend.Write(messageValue,strlen(messageValue));
 	pNetGame->GetRPC4()->Call("Script_ClientMessage",&bsSend,HIGH_PRIORITY,RELIABLE,0,pNetGame->GetRakPeer()->GetSystemAddressFromIndex(playerSystemAddress),false);

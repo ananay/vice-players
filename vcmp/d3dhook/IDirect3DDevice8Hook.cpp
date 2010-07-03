@@ -21,8 +21,8 @@ extern CNetGame		 *pNetGame;
 extern CBBFont		 *bbfont;
 extern D3DMATRIX	 matView;
 
-extern DWORD HealthBarOldStateBlock;
-extern DWORD HealthBarNewStateBlock;
+extern DWORD BarOldStateBlock;
+extern DWORD BarNewStateBlock;
 
 // Functions
 HRESULT __stdcall IDirect3DDevice8Hook::Present(CONST RECT* pSourceRect, CONST RECT* pDestRect, HWND hDestWindowOverride, CONST RGNDATA* pDirtyRegion)
@@ -41,8 +41,6 @@ HRESULT __stdcall IDirect3DDevice8Hook::Reset(D3DPRESENT_PARAMETERS* pPresentati
 		pPresentationParameters->Flags = 0;
 		pPresentationParameters->FullScreen_RefreshRateInHz = 0;
 		pPresentationParameters->FullScreen_PresentationInterval = 0;
-		LONG_PTR style = GetWindowLongPtr(pPresentationParameters->hDeviceWindow, GWL_STYLE);
-		SetWindowLongPtr(pPresentationParameters->hDeviceWindow, GWL_STYLE, style | WS_POPUPWINDOW | WS_CAPTION | WS_MINIMIZEBOX | WS_MAXIMIZEBOX | WS_THICKFRAME);
 		SetWindowPos(pPresentationParameters->hDeviceWindow, HWND_NOTOPMOST, 0, 0, pPresentationParameters->BackBufferWidth, pPresentationParameters->BackBufferHeight, SWP_SHOWWINDOW);
 	}
 
@@ -52,10 +50,10 @@ HRESULT __stdcall IDirect3DDevice8Hook::Reset(D3DPRESENT_PARAMETERS* pPresentati
 		bbfont = NULL;
 	}
 
-	pD3DDevice->DeleteStateBlock(HealthBarOldStateBlock);
-	pD3DDevice->DeleteStateBlock(HealthBarNewStateBlock);
-	HealthBarOldStateBlock = 0;
-	HealthBarNewStateBlock = 0;
+	pD3DDevice->DeleteStateBlock(BarOldStateBlock);
+	pD3DDevice->DeleteStateBlock(BarNewStateBlock);
+	BarOldStateBlock = 0;
+	BarNewStateBlock = 0;
 
 	if(pChatWindow) pChatWindow->DeleteDeviceObjects();
 	if(pCmdWindow) pCmdWindow->DeleteDeviceObjects();

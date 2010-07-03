@@ -29,11 +29,13 @@
 #include "util.h"
 #include "keystuff.h"
 
-extern CNetGame* pNetGame;
-extern CGame* pGame;
+extern CNetGame*          pNetGame;
+extern CGame*             pGame;
 
-extern DWORD dwGameLoop;
-extern DWORD dwRenderLoop;
+extern DWORD              dwGameLoop;
+extern DWORD              dwRenderLoop;
+extern GAME_SCRIPT_THREAD gst;
+BOOL                      bScriptInited=FALSE;
 
 #define NUDE void _declspec(naked) 
 
@@ -599,6 +601,48 @@ NUDE CPed_InflictDamageHook()
 
 //-----------------------------------------------------------
 
+void CRunningScript_Process()
+{
+	if(!bScriptInited) {
+		DWORD PLAYER_ACTOR,PLAYER_CHAR;
+		int iPlayerNumber = 0;
+		ScriptCommand(&name_thread, "MAIN");
+		ScriptCommand(&set_current_time, 12, 0);
+		ScriptCommand(&create_player, &iPlayerNumber, -1000.0, 195.5, 11.0, &PLAYER_ACTOR);
+		ScriptCommand(&create_actor_from_player, &PLAYER_ACTOR, &PLAYER_CHAR);
+		ScriptCommand(&create_forbidden_for_peds_cube, -100000.0f, -100000.0f, -100000.0f, 100000.0f, 100000.0f, 100000.0f);
+		ScriptCommand(&create_forbidden_for_cars_cube, -100000.0f, -100000.0f, -100000.0f, 100000.0f, 100000.0f, 100000.0f);
+		ScriptCommand(&set_max_wanted_level, 0);
+		ScriptCommand(&set_pedestrians_density_multiplier_to, 0);
+		ScriptCommand(&set_traffic_density_multiplier_to, 0);
+		ScriptCommand(&toggle_player_controllable, PLAYER_ACTOR, 1);
+		ScriptCommand(&set_camera_position, -1000.0, 191.5, 12.0, 0.0, 0.0, 0.0);
+		ScriptCommand(&point_camera, -1000.0, 185.5, 11.5, 2);
+		ScriptCommand(&force_weather, 0);
+		bScriptInited = TRUE;
+	}
+}
+
+//-----------------------------------------------------------
+
+NUDE CRunningScript_Process_Hook()
+{
+	_asm
+	{
+		pushad
+	}
+
+	CRunningScript_Process();
+
+	_asm
+	{
+		popad
+		retn
+	}
+}
+
+//-----------------------------------------------------------
+
 void InstallMethodHook(DWORD dwInstallAddress,DWORD dwHookFunction)
 {
 	DWORD dwVP, dwVP2;
@@ -623,9 +667,9 @@ void InstallHook( DWORD dwInstallAddress,
 	VirtualProtect((PVOID)dwHookStorage,4,dwVP,&dwVP2);
 
 	// Install the Jmp code.
-	VirtualProtect((PVOID)dwInstallAddress,iJmpCodeSize,PAGE_EXECUTE_READWRITE,&dwVP);		
+	VirtualProtect((PVOID)dwInstallAddress,iJmpCodeSize,PAGE_EXECUTE_READWRITE,&dwVP);
 	memcpy((PVOID)dwInstallAddress,pbyteJmpCode,iJmpCodeSize);
-	VirtualProtect((PVOID)dwInstallAddress,iJmpCodeSize,dwVP,&dwVP2);	
+	VirtualProtect((PVOID)dwInstallAddress,iJmpCodeSize,dwVP,&dwVP2);
 }
 
 //-----------------------------------------------------------
@@ -674,6 +718,12 @@ void GameInstallHooks()
 	/* Hook/patch code to get around 0x405AC5 animation bug
 	InstallHook(0x405AC0,(DWORD)CantFindFuckingAnim,0x405A95,
 		CantFindFuckingAnim_HookJmpCode,sizeof(CantFindFuckingAnim_HookJmpCode));*/
+
+	// Install Hook for CRunningScript::Process
+	DWORD dwVP, dwVP2;
+	VirtualProtect((LPVOID)0x450246, 4, PAGE_EXECUTE_READWRITE, &dwVP);
+	*(PDWORD)0x450246 = ((DWORD)CRunningScript_Process_Hook - (0x450245 + 5));
+	VirtualProtect((LPVOID)0x450246, 4, dwVP, &dwVP2);
 }
 
 //-----------------------------------------------------------

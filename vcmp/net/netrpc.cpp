@@ -551,7 +551,7 @@ void Script_ClientMessage(RakNet::BitStream *bitStream, Packet *packet)
 	bitStream->Read(szMessage,uiLength);
 	szMessage[uiLength] = '\0';
 
-	pChatWindow->AddClientMessage(dwColor,(CHAR*)szMessage);
+	pChatWindow->AddClientMessage(dwColor,szMessage);
 }
 
 // setworldbounds

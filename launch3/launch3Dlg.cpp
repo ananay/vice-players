@@ -32,8 +32,9 @@ void CLaunch3Dlg::DoDataExchange(CDataExchange* pDX)
 {
 	CDialog::DoDataExchange(pDX);
 	//{{AFX_DATA_MAP(CLaunch3Dlg)
-		// NOTE: the ClassWizard will add DDX and DDV calls here
+	// NOTE: the ClassWizard will add DDX and DDV calls here
 	//}}AFX_DATA_MAP
+	DDX_Control(pDX, IDC_CHECK1, m_windowedCheckBox);
 }
 
 BEGIN_MESSAGE_MAP(CLaunch3Dlg, CDialog)
@@ -122,6 +123,8 @@ BOOL CLaunch3Dlg::OnInitDialog()
 	}
 
 	SetDlgItemText(IDC_SERVER_CONFIG,"vcmp\\vanilla.ini");
+
+	m_windowedCheckBox.SetCheck(0);
 
 	if(strlen((char *)GetCommandLine())) {
 		CString csCmdLine((char *)GetCommandLine());
@@ -248,6 +251,10 @@ void CLaunch3Dlg::OnLaunch()
 	if(strlen(szPassword) > 0) {
 		strcat(szParams," -z ");
 		strcat(szParams,szPassword);
+	}
+
+	if(m_windowedCheckBox.GetCheck()) {
+		strcat(szParams, " -w ");
 	}
 
 	char szGtaExe[1024];

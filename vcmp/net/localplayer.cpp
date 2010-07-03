@@ -68,6 +68,11 @@ BOOL CLocalPlayer::Process()
 
 	if(m_bIsActive && !m_bIsWasted && (NULL != m_pPlayerPed))
 	{
+		// If they're in a vehicle and their health reaches 0 we need to
+		// kill them manually or they don't actually die
+		if(m_pPlayerPed->IsInVehicle() && m_pPlayerPed->GetHealth() == 0.0f) {
+			m_pPlayerPed->SetDead();
+		}
 		if((m_pPlayerPed->GetAction() == ACTION_WASTED) && !m_bIsWasted)
 		{
 			m_bIsWasted = TRUE;

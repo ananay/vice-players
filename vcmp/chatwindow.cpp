@@ -125,9 +125,9 @@ void CChatWindow::Draw()
 
 void CChatWindow::AddClientMessage(DWORD dwColor, CHAR * szMessage)
 {
-	m_dwChatMessageColor = dwColor;
+	m_dwChatMessageColor = (dwColor >> 8) | 0xFF000000;
 	FilterInvalidChars(szMessage);
-	AddToChatWindowBuffer(szMessage,CHAT_TYPE_MESSAGE);	
+	AddToChatWindowBuffer(szMessage,CHAT_TYPE_MESSAGE);
 }
 
 //----------------------------------------------------

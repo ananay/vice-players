@@ -103,6 +103,7 @@ void CPlayerPed::Create(int iModel, float fX, float fY,float fZ,float fRotation)
 		while(!pGame->IsModelLoaded(iModel)) { Sleep(1); }
 	}
 
+	// TODO: I think this is wrong (the opcode calls), if it is fix it
 	DWORD dwPlayerHandle;
 	int iPlayerNumber = m_bytePlayerNumber;
 	ScriptCommand(&create_player, &iPlayerNumber, fX, fY, fZ, &dwPlayerHandle);
