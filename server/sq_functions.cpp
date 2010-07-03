@@ -184,6 +184,26 @@ int sq_setPlayerArmedWeapon(SQVM * pVM)
 	return 1;
 }
 
+// givePlayerWeapon
+int sq_givePlayerWeapon(SQVM * pVM)
+{
+	int playerSystemAddress;
+	int newWeaponID;
+	int Ammo;
+
+	sq_getinteger(pVM, -3, &playerSystemAddress);
+	sq_getinteger(pVM, -2, &Ammo);
+    sq_getinteger(pVM, -1, &newWeaponID);
+
+	RakNet::BitStream bsSend;
+	bsSend.Write(newWeaponID);
+	bsSend.Write(Ammo);
+	pNetGame->GetRPC4()->Call("Script_GivePlayerWeapon",&bsSend,HIGH_PRIORITY,RELIABLE,0,pNetGame->GetRakPeer()->GetSystemAddressFromIndex(playerSystemAddress),false);
+
+	sq_pushbool(pVM, true);
+	return 1;
+}
+
 // removePlayerFromVehicle
 int sq_removePlayerFromVehicle(SQVM * pVM)
 {
@@ -388,7 +408,7 @@ static SQRegFunction vcmp_funcs[]={
 	_DECL_FUNC(togglePlayerControls, 3, _SC(".n")),
 	_DECL_FUNC(removePlayerFromVehicle, 2, _SC(".n")),
 	_DECL_FUNC(setPlayerArmedWeapon, 3, _SC(".n")),
-	//_DECL_FUNC(sendMessageAsPlayer, 3, _SC(".is")),
+	_DECL_FUNC(givePlayerWeapon, 4, _SC(".iii")),
 	{0,0}
 };
 
