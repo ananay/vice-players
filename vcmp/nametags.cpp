@@ -168,9 +168,8 @@ void CNameTags::Draw()
 			{ 
 				CRemotePlayer* Player = pPlayerPool->GetAt(x); 
 
-				if( Player->IsActive() && 
-					(Player->GetDistanceFromLocalPlayer() <= 80.0f) ) // Active and within reasonable distance 
-				{ 
+				if(Player->IsActive() && (Player->GetDistanceFromLocalPlayer() <= 80.0f))
+				{ // Active and within reasonable distance 
 					CPlayerPed* PlayerPed = Player->GetPlayerPed(); 
 
 					if(PlayerPed->IsOnScreen()) 
@@ -183,7 +182,7 @@ void CNameTags::Draw()
 						m_pD3DDevice->SetTransform(D3DTS_WORLD, &matTransposed); 
 
 						float Health = Player->GetReportedHealth(); 
-						if (Health > 100.0f) Health = 100.0f; 
+						if(Health > 100.0f) Health = 100.0f; 
 
 						HealthBarBGVertices[0].x = HealthBarBGVertices[1].x = (0.0058f * Health) - 0.29f; 
 						m_pD3DDevice->DrawPrimitiveUP(D3DPT_TRIANGLEFAN, 2, HealthBarBDRVertices, sizeof(HealthBarVertices_s)); 
