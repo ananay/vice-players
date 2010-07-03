@@ -84,6 +84,7 @@ public:
 	float					m_fRotation;
 	float					m_fVehicleHealth;
 	BYTE					m_byteHealth;
+	BYTE					m_byteArmour;
 	BYTE					m_byteCurrentWeapon;
 	BYTE					m_byteAction;
 
@@ -149,6 +150,7 @@ public:
 	void GetTurnSpeed(VECTOR * vecTurnSpeed);
 	float GetRotation();
 	BYTE GetHealth();
+	BYTE GetArmour();
 	BYTE GetCurrentWeapon();
 	BYTE GetAction();
 	BOOL IsAPassenger();

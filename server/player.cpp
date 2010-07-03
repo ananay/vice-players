@@ -412,6 +412,13 @@ BYTE CPlayer::GetHealth()
 
 //----------------------------------------------------
 
+BYTE CPlayer::GetArmour()
+{
+	return m_byteArmour;
+}
+
+//----------------------------------------------------
+
 BYTE CPlayer::GetCurrentWeapon()
 {
 	return m_byteCurrentWeapon;
