@@ -1,4 +1,4 @@
-//Microsoft Developer Studio generated resource script.
+// Microsoft Visual C++ generated resource script.
 //
 #include "resource.h"
 
@@ -27,18 +27,18 @@ LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
 // TEXTINCLUDE
 //
 
-1 TEXTINCLUDE DISCARDABLE 
+1 TEXTINCLUDE 
 BEGIN
     "resource.h\0"
 END
 
-2 TEXTINCLUDE DISCARDABLE 
+2 TEXTINCLUDE 
 BEGIN
     "#include ""afxres.h""\r\n"
     "\0"
 END
 
-3 TEXTINCLUDE DISCARDABLE 
+3 TEXTINCLUDE 
 BEGIN
     "#define _AFX_NO_SPLITTER_RESOURCES\r\n"
     "#define _AFX_NO_OLE_RESOURCES\r\n"
@@ -66,7 +66,7 @@ END
 
 // Icon with lowest ID value placed first to ensure application icon
 // remains consistent on all systems.
-IDR_MAINFRAME           ICON    DISCARDABLE     "res\\launch3.ico"
+IDR_MAINFRAME           ICON                    "res\\launch3.ico"
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -74,14 +74,13 @@ IDR_MAINFRAME           ICON    DISCARDABLE     "res\\launch3.ico"
 //
 
 IDD_LAUNCH3_DIALOG DIALOGEX 0, 0, 267, 228
-STYLE DS_MODALFRAME | WS_MINIMIZEBOX | WS_VISIBLE | WS_CAPTION | WS_SYSMENU
+STYLE DS_SETFONT | DS_MODALFRAME | WS_MINIMIZEBOX | WS_VISIBLE | WS_CAPTION | WS_SYSMENU
 EXSTYLE WS_EX_APPWINDOW
 CAPTION "VC:MP dev-release 0.1b launcher"
-FONT 8, "MS Sans Serif"
+FONT 8, "MS Sans Serif", 0, 0, 0x1
 BEGIN
     GROUPBOX        "Host Game",IDC_STATIC,7,104,253,45
-    LTEXT           "Use Server Configuration (make sure it has a password set)",
-                    IDC_STATIC,15,116,229,8
+    LTEXT           "Use Server Configuration (make sure it has a password set)",IDC_STATIC,15,116,229,8
     EDITTEXT        IDC_SERVER_CONFIG,15,127,170,12,ES_AUTOHSCROLL
     PUSHBUTTON      "Start Server",IDC_START_SERVER,193,127,59,15
     GROUPBOX        "Remote Admin Console",IDC_STATIC,7,154,253,64
@@ -104,10 +103,10 @@ BEGIN
     LTEXT           "Server Password",IDC_STATIC,97,69,74,8
     EDITTEXT        IDC_SERVER_PASSWORD,98,78,85,12,ES_AUTOHSCROLL
     PUSHBUTTON      "Help",IDC_HELP_BUTTON,192,59,62,14
+    CONTROL         "Windowed",IDC_CHECK1,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,198,79,50,10
 END
 
 
-#ifndef _MAC
 /////////////////////////////////////////////////////////////////////////////
 //
 // Version
@@ -130,18 +129,13 @@ BEGIN
     BEGIN
         BLOCK "040904b0"
         BEGIN
-            VALUE "Comments", "\0"
-            VALUE "CompanyName", "\0"
-            VALUE "FileDescription", "VC-MP launcher\0"
-            VALUE "FileVersion", "1, 0, 0, 1\0"
-            VALUE "InternalName", "launch3\0"
-            VALUE "LegalCopyright", "Copyright (C) 2005\0"
-            VALUE "LegalTrademarks", "\0"
-            VALUE "OriginalFilename", "vc-mp.EXE\0"
-            VALUE "PrivateBuild", "\0"
-            VALUE "ProductName", "launch3 Application\0"
-            VALUE "ProductVersion", "1, 0, 0, 1\0"
-            VALUE "SpecialBuild", "\0"
+            VALUE "FileDescription", "VC-MP launcher"
+            VALUE "FileVersion", "1, 0, 0, 1"
+            VALUE "InternalName", "launch3"
+            VALUE "LegalCopyright", "Copyright (C) 2005"
+            VALUE "OriginalFilename", "vc-mp.EXE"
+            VALUE "ProductName", "launch3 Application"
+            VALUE "ProductVersion", "1, 0, 0, 1"
         END
     END
     BLOCK "VarFileInfo"
@@ -150,8 +144,6 @@ BEGIN
     END
 END
 
-#endif    // !_MAC
-
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -159,7 +151,7 @@ END
 //
 
 #ifdef APSTUDIO_INVOKED
-GUIDELINES DESIGNINFO DISCARDABLE 
+GUIDELINES DESIGNINFO 
 BEGIN
     IDD_LAUNCH3_DIALOG, DIALOG
     BEGIN

@@ -1,6 +1,7 @@
 // launch3Dlg.h : header file
 //
 
+#include "afxwin.h"
 #if !defined(AFX_LAUNCH3DLG_H__D2D144EB_AE74_4340_9B02_485CDD4A8666__INCLUDED_)
 #define AFX_LAUNCH3DLG_H__D2D144EB_AE74_4340_9B02_485CDD4A8666__INCLUDED_
 
@@ -46,6 +47,8 @@ protected:
 	afx_msg void OnButton3();
 	//}}AFX_MSG
 	DECLARE_MESSAGE_MAP()
+public:
+	CButton m_windowedCheckBox;
 };
 
 //{{AFX_INSERT_LOCATION}}

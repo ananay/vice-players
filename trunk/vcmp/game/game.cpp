@@ -100,15 +100,9 @@ void CGame::ToggleKeyInputsDisabled(BOOL bDisable)
 
 LONG WINAPI exc_handler(_EXCEPTION_POINTERS* exc_inf);
 
-void CGame::StartGame()
+void GameInstallPatches()
 {
 	DWORD dwVP, dwVP2;
-	
-	InitPlayerPedPtrRecords();
-	GameKeyStatesInit();
-	GameAimSyncInit();
-	
-//	SetUnhandledExceptionFilter(exc_handler);
 
 	// Patch to prevent game stopping during a pause
 	// (Credits to Luke)
@@ -125,7 +119,7 @@ void CGame::StartGame()
 	VirtualProtect((PVOID)0x4FF970,1,PAGE_EXECUTE_READWRITE,&dwVP);
 	*(BYTE *)0x4FF970 = 0x9D; // turns mov [eax+.. to mov [ebp+..
 	VirtualProtect((PVOID)0x4FF970,1,dwVP,&dwVP2);
-	
+
 	// Player weapon pickups.
 	VirtualProtect((PVOID)0x4F6538,1,PAGE_EXECUTE_READWRITE,&dwVP);
 	*(BYTE *)0x4F6538 = 0x75;
@@ -135,7 +129,7 @@ void CGame::StartGame()
 	VirtualProtect((PVOID)0x4D1405,5,PAGE_EXECUTE_READWRITE,&dwVP);
 	memset((PVOID)0x4D1405,0x90,5); // nop * 5
 	VirtualProtect((PVOID)0x4D1405,5,dwVP,&dwVP2);
-	
+
 	// Patch CPed::RefreshSkin() so that it doesn't try to set any
 	// animations 50D96A
 	VirtualProtect((PVOID)0x50D96A,5,PAGE_EXECUTE_READWRITE,&dwVP);
@@ -146,21 +140,11 @@ void CGame::StartGame()
 	VirtualProtect((PVOID)0x4FF767,7,PAGE_EXECUTE_READWRITE,&dwVP);
 	memset((PVOID)0x4FF767,0x90,7); // nop * 7
 	VirtualProtect((PVOID)0x4FF767,7,dwVP,&dwVP2);
-	
+
 	/* DoDriveByShootings CWeapon::Update call. 5C9817
 	VirtualProtect((PVOID)0x5C9817,8,PAGE_EXECUTE_READWRITE,&dwVP);
 	memset((PVOID)0x5C9817,0x90,8); // nop * 8
 	VirtualProtect((PVOID)0x5C9817,8,dwVP,&dwVP2);*/
-
-	// Patch to modify the scm path
-	VirtualProtect((PVOID)0x6886AC,9,PAGE_EXECUTE_READWRITE,&dwVP);
-	strcpy((PCHAR)0x6886AC,"vcmp.scm");	
-	VirtualProtect((PVOID)0x6886AC,9,dwVP,&dwVP2);
-
-	// Patch to modify the scm path
-	VirtualProtect((PVOID)0x6D7368,14,PAGE_EXECUTE_READWRITE,&dwVP);
-	strcpy((PCHAR)0x6D7368,"data\vcmp.scm");	
-	VirtualProtect((PVOID)0x6D7368,14,dwVP,&dwVP2);
 
 	/* Patch to modify the gxt path
 	VirtualProtect((PVOID)0x69A4B0,256,PAGE_EXECUTE_READWRITE,&dwVP);
@@ -183,7 +167,7 @@ void CGame::StartGame()
 	VirtualProtect((PVOID)0x68E6F4,16,PAGE_EXECUTE_READWRITE,&dwVP);
 	strcpy((PCHAR)0x68E6F4,"ldvcmp0");
 	VirtualProtect((PVOID)0x68E6F4,16,dwVP,&dwVP2);
-	
+
 	// Patch to increase vehicle pool limit from 110 to 200
 	VirtualProtect((PVOID)0x4C02E4,128,PAGE_EXECUTE_READWRITE,&dwVP);
 	*(BYTE *)0x4C02E4 = 0x6A;
@@ -244,6 +228,28 @@ void CGame::StartGame()
 	VirtualProtect((PVOID)0x440B2C,5,PAGE_EXECUTE_READWRITE,&dwVP);
 	memset((PVOID)0x440B2C,0x90,5); // nop * 5
 	VirtualProtect((PVOID)0x440B2C,5,dwVP,&dwVP2);
+
+	// Don't load the main scm
+	VirtualProtect((PVOID)0x608C7C,2,PAGE_EXECUTE_READWRITE,&dwVP);
+	*(BYTE *)0x608C7C = 0xEB;
+	*(BYTE *)0x608C7D = 0x6C;
+	VirtualProtect((PVOID)0x608C7C,2,dwVP,&dwVP2);
+	VirtualProtect((PVOID)0x4506DC,2,PAGE_EXECUTE_READWRITE,&dwVP);
+	*(BYTE *)0x4506DC = 0xEB;
+	*(BYTE *)0x4506DD = 0x62;
+	VirtualProtect((PVOID)0x4506DC,2,dwVP,&dwVP2);
+}
+
+void CGame::StartGame()
+{	
+	InitPlayerPedPtrRecords();
+	GameKeyStatesInit();
+	GameAimSyncInit();
+	
+//	SetUnhandledExceptionFilter(exc_handler);
+
+	// Install all patches
+	GameInstallPatches();
 	
 	// Install all hooks
 	GameInstallHooks();

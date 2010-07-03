@@ -91,22 +91,6 @@ BOOL FileCheckSum()
 
 		mdCheckSumFile = new mdFile;
 
-		sprintf(mdCheckSumFile->szFileLocation, "data/VCMP.SCM");
-		mdCheckSumFile->iCorrectDigestArray[0] = 0;
-		mdCheckSumFile->iCorrectDigestArray[1] = 2765929653;
-		mdCheckSumFile->iCorrectDigestArray[2] = 3336330548;
-		mdCheckSumFile->iCorrectDigestArray[3] = 3956973352;
-
-		if (!CheckFile(mdCheckSumFile))
-		{
-			bGameInited = TRUE;
-			return FALSE;
-		}
-		
-		delete mdCheckSumFile;
-
-		mdCheckSumFile = new mdFile;
-
 		sprintf(mdCheckSumFile->szFileLocation, "data/pedstats.dat");
 		mdCheckSumFile->iCorrectDigestArray[0] = 0;
 		mdCheckSumFile->iCorrectDigestArray[1] = 1903937073;

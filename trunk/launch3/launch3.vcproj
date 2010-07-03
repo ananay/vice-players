@@ -325,5 +325,9 @@
 		</Filter>
 	</Files>
 	<Globals>
+		<Global
+			Name="RESOURCE_FILE"
+			Value="launch3.rc"
+		/>
 	</Globals>
 </VisualStudioProject>

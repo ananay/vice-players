@@ -1,5 +1,5 @@
 //{{NO_DEPENDENCIES}}
-// Microsoft Developer Studio generated include file.
+// Microsoft Visual C++ generated include file.
 // Used by launch3.rc
 //
 #define IDD_LAUNCH3_DIALOG              102
@@ -20,6 +20,7 @@
 #define IDC_SERVER_PORT_ADMIN           1011
 #define IDC_SERVER_PASS_ADMIN           1012
 #define IDC_BUTTON3                     1014
+#define IDC_CHECK1                      1015
 
 // Next default values for new objects
 // 
@@ -27,7 +28,7 @@
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        130
 #define _APS_NEXT_COMMAND_VALUE         32771
-#define _APS_NEXT_CONTROL_VALUE         1015
+#define _APS_NEXT_CONTROL_VALUE         1016
 #define _APS_NEXT_SYMED_VALUE           101
 #endif
 #endif

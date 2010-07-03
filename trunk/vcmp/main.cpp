@@ -72,7 +72,7 @@ void HookD3DReset(IDirect3DDevice8 *pD3DDeviceHook);
 
 BOOL WINAPI DllMain(HINSTANCE hinstDLL, DWORD fdwReason, LPVOID lpvReserved)
 {
-	if(DLL_PROCESS_ATTACH==fdwReason)
+	if(fdwReason == DLL_PROCESS_ATTACH)
 	{
 		hInstance = hinstDLL;
 		
@@ -120,11 +120,17 @@ BOOL WINAPI DllMain(HINSTANCE hinstDLL, DWORD fdwReason, LPVOID lpvReserved)
 			pNameTags = new CNameTags(pD3DDevice);
 			pNetStats = new CNetStats();
 
-			SetupCommands();			
+			SetupCommands();
 		}
 		// else they must want to play single
 		// player or they got the command line
 		// arguments wrong.
+	}
+	else if(fdwReason == DLL_PROCESS_DETACH)
+	{
+		if(pNetGame) {
+			pNetGame->GetRakPeer()->Shutdown(500);
+		}
 	}
 
 	return TRUE;

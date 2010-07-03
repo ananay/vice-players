@@ -304,6 +304,8 @@ void cmdNewPlayer(PCHAR szCmd)
 	pPlayerPed->GetPosition(&vPos);
 	float fRotation = pPlayerPed->GetRotation();
 	pRemotePlayer->SpawnPlayer(255, byteSkin, &vPos, fRotation, 0,0, 0,0, 0,0);
+	pRemotePlayer->SetReportedHealth(100);
+	pRemotePlayer->SetReportedArmour(100);
 }
 
 //----------------------------------------------------
