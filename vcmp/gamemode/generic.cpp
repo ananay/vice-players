@@ -50,7 +50,7 @@ void CGameModeGeneric::ProcessLocalPlayer(CLocalPlayer *pLocalPlayer)
 	CCamera *pGameCamera;
 	CPlayerPed *pGamePlayer;
 	DWORD dwTicksSinceLastSelection;
-	MATRIX4X4 matPlayer;
+	VECTOR vPlayerPos;
 	float fDrawX=25.0f;
 	float fDrawY=250.0f;
 	char szMsg[256];
@@ -69,12 +69,8 @@ void CGameModeGeneric::ProcessLocalPlayer(CLocalPlayer *pLocalPlayer)
 			pLocalPlayer->SpawnPlayer();
 			pGame->DisplayHud(TRUE);
 			pGameCamera->SetBehindPlayer();
-			pGamePlayer->GetMatrix(&matPlayer);			
-			ScriptCommand(&play_sound,
-				matPlayer.vPos.X,
-				matPlayer.vPos.Y,
-				matPlayer.vPos.Z,
-				10);
+			pGamePlayer->GetPosition(&vPlayerPos);		
+			ScriptCommand(&play_sound, vPlayerPos.X, vPlayerPos.Y, vPlayerPos.Z, 10);
 
 			pGame->ToggleKeyInputsDisabled(FALSE);
 			return;
@@ -91,7 +87,7 @@ void CGameModeGeneric::ProcessLocalPlayer(CLocalPlayer *pLocalPlayer)
 
 			// GRAB PLAYER MATRIX FOR SOUND POSITION
 			pGamePlayer = pGame->FindPlayerPed();
-			pGamePlayer->GetMatrix(&matPlayer);
+			pGamePlayer->GetPosition(&vPlayerPos);
 
 			dwTicksSinceLastSelection = GetTickCount() - m_dwLastSpawnSelectionTick; // used to delay reselection.
 
@@ -108,11 +104,7 @@ void CGameModeGeneric::ProcessLocalPlayer(CLocalPlayer *pLocalPlayer)
 					m_byteSelectedClass--;
 				}
 		
-				ScriptCommand(&play_sound,
-					matPlayer.vPos.X,
-					matPlayer.vPos.Y,
-					matPlayer.vPos.Z,
-					14);
+				ScriptCommand(&play_sound, vPlayerPos.X, vPlayerPos.Y, vPlayerPos.Z, 14);
 
 				pLocalPlayer->RequestClass(m_byteSelectedClass);
 				return;
@@ -131,11 +123,7 @@ void CGameModeGeneric::ProcessLocalPlayer(CLocalPlayer *pLocalPlayer)
 					m_byteSelectedClass++;
 				}
 
-				ScriptCommand(&play_sound,
-					matPlayer.vPos.X,
-					matPlayer.vPos.Y,
-					matPlayer.vPos.Z,
-					13);
+				ScriptCommand(&play_sound, vPlayerPos.X, vPlayerPos.Y, vPlayerPos.Z, 13);
 
 				pLocalPlayer->RequestClass(m_byteSelectedClass);
 				return;

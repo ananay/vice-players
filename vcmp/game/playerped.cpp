@@ -351,15 +351,15 @@ void CPlayerPed::SetCurrentAim(CAMERA_AIM *pAim)
 
 BOOL CPlayerPed::EnforceWorldBoundries(float fPX, float fZX, float fPY, float fNY)
 {
-	MATRIX4X4 matWorld;
+	VECTOR vPos;
 	VECTOR vecMoveSpeed;
 
 	if(!m_pPed) return FALSE;
 
-	GetMatrix(&matWorld);
+	GetPosition(&vPos);
 	GetMoveSpeed(&vecMoveSpeed);
 
-	if(matWorld.vPos.X > fPX) // greatest X coord check
+	if(vPos.X > fPX) // greatest X coord check
 	{
 		if(vecMoveSpeed.X != 0.0f) {
 			vecMoveSpeed.X = -0.25f;
@@ -367,7 +367,7 @@ BOOL CPlayerPed::EnforceWorldBoundries(float fPX, float fZX, float fPY, float fN
 		SetMoveSpeed(vecMoveSpeed);
 		return TRUE;
 	}
-	else if(matWorld.vPos.X < fZX)  // least X coord check
+	else if(vPos.X < fZX)  // least X coord check
 	{
 		if(vecMoveSpeed.X != 0.0f) {
 			vecMoveSpeed.X = 0.25f;
@@ -375,7 +375,7 @@ BOOL CPlayerPed::EnforceWorldBoundries(float fPX, float fZX, float fPY, float fN
 		SetMoveSpeed(vecMoveSpeed);
 		return TRUE;
 	}
-	else if(matWorld.vPos.Y > fPY) // Y coord check
+	else if(vPos.Y > fPY) // Y coord check
 	{
 		if(vecMoveSpeed.Y != 0.0f) {
 			vecMoveSpeed.Y = -0.25f;
@@ -384,7 +384,7 @@ BOOL CPlayerPed::EnforceWorldBoundries(float fPX, float fZX, float fPY, float fN
 		SetMoveSpeed(vecMoveSpeed);
 		return TRUE;
 	}
-	else if(matWorld.vPos.Y < fNY)
+	else if(vPos.Y < fNY)
 	{
 		if(vecMoveSpeed.Y != 0.0f) {
 			vecMoveSpeed.Y = 0.25f;

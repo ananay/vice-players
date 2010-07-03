@@ -80,6 +80,28 @@ void CEntity::SetMatrix(MATRIX4X4 Matrix)
 
 //-----------------------------------------------------------
 
+void CEntity::GetPosition(PVECTOR Vector)
+{
+	if(m_pEntity) {
+		Vector->X = m_pEntity->mat.vPos.X;
+		Vector->Y = m_pEntity->mat.vPos.Y;
+		Vector->Z = m_pEntity->mat.vPos.Z;
+	}
+}
+
+//-----------------------------------------------------------
+
+void CEntity::SetPosition(VECTOR Vector)
+{
+	if(m_pEntity) {
+		m_pEntity->mat.vPos.X = Vector.X;
+		m_pEntity->mat.vPos.Y = Vector.Y;
+		m_pEntity->mat.vPos.Z = Vector.Z;
+	}
+}
+
+//-----------------------------------------------------------
+
 WORD CEntity::GetModelIndex()
 {
 	if(m_pEntity) {

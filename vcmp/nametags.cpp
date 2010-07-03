@@ -175,11 +175,11 @@ void CNameTags::Draw()
 
 					if(PlayerPed->IsOnScreen()) 
 					{ // They're onscreen 
-						MATRIX4X4 matPlayer; 
-						PlayerPed->GetMatrix(&matPlayer); 
-						matTransposed._41 = matPlayer.vPos.X; 
-						matTransposed._42 = matPlayer.vPos.Y; 
-						matTransposed._43 = matPlayer.vPos.Z + 1.0f; 
+						VECTOR vPos;
+						PlayerPed->GetPosition(&vPos);
+						matTransposed._41 = vPos.X; 
+						matTransposed._42 = vPos.Y; 
+						matTransposed._43 = vPos.Z + 1.0f; 
 						m_pD3DDevice->SetTransform(D3DTS_WORLD, &matTransposed); 
 
 						float Health = Player->GetReportedHealth(); 

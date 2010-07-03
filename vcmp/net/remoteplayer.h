@@ -99,7 +99,7 @@ public:
 
 	float GetReportedHealth() { return (float)m_byteHealth; };
 
-	void UpdateOnFootMatrix(MATRIX4X4 * matWorld);
+	void UpdateOnFootPosition(VECTOR vPos);
 
 	void UpdateInCarMatrixAndSpeed(MATRIX4X4 * matWorld,
 								   VECTOR * vecMoveSpeed);

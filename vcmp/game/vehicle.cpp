@@ -105,15 +105,15 @@ void CVehicle::UpdateLastDrivenTime()
 
 void CVehicle::EnforceWorldBoundries(float fPX, float fZX, float fPY, float fNY)
 {
-	MATRIX4X4 matWorld;
+	VECTOR vPos;
 	VECTOR vecMoveSpeed;
 
 	if(!m_pVehicle) return;
 
-	GetMatrix(&matWorld);
+	GetPosition(&vPos);
 	GetMoveSpeed(&vecMoveSpeed);
 
-	if(matWorld.vPos.X > fPX) // greatest X coord check
+	if(vPos.X > fPX) // greatest X coord check
 	{
 		if(vecMoveSpeed.X != 0.0f) {
 			vecMoveSpeed.X = -0.3f;
@@ -121,7 +121,7 @@ void CVehicle::EnforceWorldBoundries(float fPX, float fZX, float fPY, float fNY)
 		SetMoveSpeed(vecMoveSpeed);
 		return;
 	}
-	else if(matWorld.vPos.X < fZX)  // least X coord check
+	else if(vPos.X < fZX)  // least X coord check
 	{
 		if(vecMoveSpeed.X != 0.0f) {
 			vecMoveSpeed.X = 0.3f;
@@ -129,7 +129,7 @@ void CVehicle::EnforceWorldBoundries(float fPX, float fZX, float fPY, float fNY)
 		SetMoveSpeed(vecMoveSpeed);
 		return;
 	}
-	else if(matWorld.vPos.Y > fPY) // Y coord check
+	else if(vPos.Y > fPY) // Y coord check
 	{
 		if(vecMoveSpeed.Y != 0.0f) {
 			vecMoveSpeed.Y = -0.3f;
@@ -138,7 +138,7 @@ void CVehicle::EnforceWorldBoundries(float fPX, float fZX, float fPY, float fNY)
 		SetMoveSpeed(vecMoveSpeed);
 		return;
 	}
-	else if(matWorld.vPos.Y < fNY)
+	else if(vPos.Y < fNY)
 	{
 		if(vecMoveSpeed.Y != 0.0f) {
 			vecMoveSpeed.Y = 0.3f;
@@ -153,22 +153,22 @@ void CVehicle::EnforceWorldBoundries(float fPX, float fZX, float fPY, float fNY)
 
 BOOL CVehicle::HasExceededWorldBoundries(float fPX, float fZX, float fPY, float fNY)
 {
-	MATRIX4X4 matWorld;
+	VECTOR vPos;
 
 	if(!m_pVehicle) return FALSE;
 
-	GetMatrix(&matWorld);
+	GetPosition(&vPos);
 
-	if(matWorld.vPos.X > fPX) {
+	if(vPos.X > fPX) {
 		return TRUE;
 	}
-	else if(matWorld.vPos.X < fZX) {
+	else if(vPos.X < fZX) {
 		return TRUE;
 	}
-	else if(matWorld.vPos.Y > fPY) {
+	else if(vPos.Y > fPY) {
 		return TRUE;
 	}
-	else if(matWorld.vPos.Y < fNY) {
+	else if(vPos.Y < fNY) {
 		return TRUE;
 	}
 	return FALSE;
@@ -178,20 +178,20 @@ BOOL CVehicle::HasExceededWorldBoundries(float fPX, float fZX, float fPY, float 
 
 float CVehicle::GetDistanceFromLocalPlayerPed()
 {
-	MATRIX4X4	matFromPlayer;
-	MATRIX4X4	matThisVehicle;
-	float		fSX,fSY;
+	VECTOR vThisVehicle;
+	VECTOR vFromPlayer;
+	float  fSX,fSY;
 
 	CPlayerPed *pLocalPlayerPed = pGame->FindPlayerPed();
 
 	if(!m_pVehicle) return 10000.0f; // very far away
 	if(!pLocalPlayerPed) return 10000.0f; // very far away
 	
-	GetMatrix(&matThisVehicle);
-	pLocalPlayerPed->GetMatrix(&matFromPlayer);
+	GetPosition(&vThisVehicle);
+	pLocalPlayerPed->GetPosition(&vFromPlayer);
 	
-	fSX = (matThisVehicle.vPos.X - matFromPlayer.vPos.X) * (matThisVehicle.vPos.X - matFromPlayer.vPos.X);
-	fSY = (matThisVehicle.vPos.Y - matFromPlayer.vPos.Y) * (matThisVehicle.vPos.Y - matFromPlayer.vPos.Y);
+	fSX = (vThisVehicle.X - vFromPlayer.X) * (vThisVehicle.X - vFromPlayer.X);
+	fSY = (vThisVehicle.Y - vFromPlayer.Y) * (vThisVehicle.Y - vFromPlayer.Y);
 	
 	return (float)sqrt(fSX + fSY);
 }
