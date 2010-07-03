@@ -90,7 +90,6 @@ void cmdSavePos(PCHAR szCmd)
 	DWORD dwVehicleID;
 	float fZAngle;
 
-	if(!tSettings.bDebug) return;
 
 	fileOut = fopen("savedpositions.txt","a");
 	if(!fileOut) {
@@ -107,7 +106,7 @@ void cmdSavePos(PCHAR szCmd)
 		dwVehicleID = GamePool_Vehicle_GetIndex(pVehicle);
 		ScriptCommand(&get_car_z_angle,dwVehicleID,&fZAngle);
 
-		fprintf(fileOut,"Vehicle = %u %.4f %.4f %.4f %.4f %u %u\n",
+		fprintf(fileOut,"createVehicle(%u, %.4f, %.4f, %.4f, %.4f, %u, %u)\n",
 			pVehicle->entity.nModelIndex,pVehicle->entity.mat.vPos.X,pVehicle->entity.mat.vPos.Y,pVehicle->entity.mat.vPos.Z,
 			fZAngle,pVehicle->byteColor1,pVehicle->byteColor2);
 

@@ -572,7 +572,20 @@ void Script_WorldBounds(RakNet::BitStream *bitStream, Packet *packet)
 
 	pPlayer->EnforceWorldBoundries(HighX, LowX, HighY, LowY);
 }
+/*
+// sendMessageAsPlayer
+void Script_sendMessageAsPlayer(RakNet::BitStream *bitStream, Packet *packet)
+{
+	CPlayerPed *pPlayer = pGame->FindPlayerPed();
+	CLocalPlayer *pLocalPed = pNetGame->GetPlayerPool()->GetLocalPlayer();
 
+	CHAR szMessage[256];
+
+	bitStream->Read(szMessage);
+
+	pChatWindow->AddChatMessage(pNetGame->GetPlayerPool()->GetLocalPlayerName(),pLocalPed->GetTeamColorAsARGB(),szMessage);
+}
+*/
 void RegisterRPCs()
 {
 	pNetGame->GetRPC4()->RegisterFunction("ServerJoin",ServerJoin);
@@ -604,6 +617,7 @@ void RegisterRPCs()
 	pNetGame->GetRPC4()->RegisterFunction("Script_ToggleControls",Script_ToggleControls);
 	pNetGame->GetRPC4()->RegisterFunction("Script_ClientMessage",Script_ClientMessage);
 	pNetGame->GetRPC4()->RegisterFunction("Script_WorldBounds",Script_WorldBounds);
+	//pNetGame->GetRPC4()->RegisterFunction("Script_sendMessageAsPlayer",Script_sendMessageAsPlayer);
 
 }
 
@@ -640,6 +654,7 @@ void UnRegisterRPCs()
 	pNetGame->GetRPC4()->UnregisterFunction("Script_ToggleControls");
 	pNetGame->GetRPC4()->UnregisterFunction("Script_ClientMessage");
 	pNetGame->GetRPC4()->UnregisterFunction("Script_WorldBounds");
+	//pNetGame->GetRPC4()->UnregisterFunction("Script_sendMessageAsPlayer");
 }
 
 //----------------------------------------------------

@@ -396,26 +396,6 @@ void CLocalPlayer::HandleDeath(BYTE byteReason, BYTE byteWhoKilled, BYTE byteSco
 	if(byteWhoKilled != INVALID_PLAYER_ID) {
 		szWhoKilledName = pNetGame->GetPlayerPool()->GetPlayerName(byteWhoKilled);
 	}
-
-	switch(byteScoringModifier) {
-
-		case VALID_KILL:
-			pChatWindow->AddInfoMessage(">> %s was killed by %s",szPlayerName,szWhoKilledName);
-			break;
-
-		case TEAM_KILL:
-			pChatWindow->AddInfoMessage(">> %s killed team-mate %s",szWhoKilledName,szPlayerName);
-			break;
-
-		case SELF_KILL:
-			if(byteReason == WEAPON_DROWN) {
-				pChatWindow->AddInfoMessage(">> %s drowned",szPlayerName);
-			}
-			else {
-				pChatWindow->AddInfoMessage(">> %s died",szPlayerName);
-			}
-			break;
-	}
 }
 
 //----------------------------------------------------------
