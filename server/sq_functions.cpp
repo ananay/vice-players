@@ -287,6 +287,11 @@ static SQRegFunction vcmp_funcs[]={
 	//_DECL_FUNC(func_name,func_params,_SC(func_param_template)),
 	_DECL_FUNC(getPlayerName, 2, _SC(".n")),
 	_DECL_FUNC(getPlayerIP, 2, _SC(".n")),
+	_DECL_FUNC(sendPlayerMessage, 4, _SC(".iis")),
+	_DECL_FUNC(setPlayerWorldBounds, 5, _SC(".n")),
+	_DECL_FUNC(togglePlayerControls, 3, _SC(".n")),
+	_DECL_FUNC(removePlayerFromVehicle, 2, _SC(".n")),
+	_DECL_FUNC(setPlayerArmedWeapon, 3, _SC(".n")),
 	{0,0}
 };
 

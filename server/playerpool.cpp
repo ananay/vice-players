@@ -87,9 +87,9 @@ BOOL CPlayerPool::New(BYTE byteSystemAddress, PCHAR szPlayerName)
 
 		pRcon->ConsolePrintf("[join] %u %s",byteSystemAddress,szPlayerName);
 
-		pScripts->onPlayerConnect(byteSystemAddress, szPlayerName);
-
 		logprintf("[join] %u %s",byteSystemAddress,szPlayerName);
+
+		pScripts->onPlayerConnect(byteSystemAddress);
 
 		return TRUE;
 	}
