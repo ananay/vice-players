@@ -39,12 +39,6 @@
 #include "../raknet/RPC4Plugin.h"
 #include "../raknet/BitStream.h"
 
-#include "squirrel/squirrel.h"
-#include "squirrel/sqstdio.h" 
-#include "squirrel/sqstdaux.h"
-
-#include "sq_functions.h"
-
 #include "system.h"
 #include "config.h"
 

@@ -21,18 +21,15 @@
 // Copyright 2010 GTA:Online team
 //
 // File Author: Christopher
-// Support From: Jenksta
+//
 //-----------------------------------------------------
 
 #include "sq_functions.h"
-#include "main.h"
 #include "netgame.h"
 
-
-extern CNetGame		 *pNetGame;
+extern CNetGame *pNetGame;
 
 using namespace RakNet;
-
 
 // setPlayerHealth
 int sq_setPlayerHealth(SQVM * pVM)
@@ -50,6 +47,7 @@ int sq_setPlayerHealth(SQVM * pVM)
 	sq_pushbool(pVM, true);
 	return 1;
 }
+
 // setPlayerArmour
 int sq_setPlayerArmour(SQVM * pVM)
 {
@@ -86,6 +84,7 @@ int sq_setPlayerPos(SQVM * pVM)
 	sq_pushbool(pVM, true);
 	return 1;
 }
+
 // setPlayerZAngle
 int sq_setPlayerZAngle(SQVM * pVM)
 {
@@ -120,6 +119,7 @@ int sq_setPlayerSkin(SQVM * pVM)
 	sq_pushbool(pVM, true);
 	return 1;
 }
+
 // setPlayerAction
 int sq_setPlayerAction(SQVM * pVM)
 {
@@ -136,6 +136,7 @@ int sq_setPlayerAction(SQVM * pVM)
 	sq_pushbool(pVM, true);
 	return 1;
 }
+
 // setPlayerRotation
 int sq_setPlayerRotation(SQVM * pVM)
 {
@@ -152,6 +153,7 @@ int sq_setPlayerRotation(SQVM * pVM)
 	sq_pushbool(pVM, true);
 	return 1;
 }
+
 // setPlayerRotation
 int sq_resetPlayerWeapons(SQVM * pVM)
 {
@@ -164,6 +166,7 @@ int sq_resetPlayerWeapons(SQVM * pVM)
 	sq_pushbool(pVM, true);
 	return 1;
 }
+
 // setPlayerArmedWeapon
 int sq_setPlayerArmedWeapon(SQVM * pVM)
 {
@@ -180,6 +183,7 @@ int sq_setPlayerArmedWeapon(SQVM * pVM)
 	sq_pushbool(pVM, true);
 	return 1;
 }
+
 // removePlayerFromVehicle
 int sq_removePlayerFromVehicle(SQVM * pVM)
 {
@@ -192,6 +196,7 @@ int sq_removePlayerFromVehicle(SQVM * pVM)
 	sq_pushbool(pVM, true);
 	return 1;
 }
+
 // togglePlayerControls
 int sq_togglePlayerControls(SQVM * pVM)
 {
@@ -208,6 +213,7 @@ int sq_togglePlayerControls(SQVM * pVM)
 	sq_pushbool(pVM, true);
 	return 1;
 }
+
 // sendPlayerMessage
 int sq_sendPlayerMessage(SQVM * pVM)
 {
@@ -228,6 +234,7 @@ int sq_sendPlayerMessage(SQVM * pVM)
 	sq_pushbool(pVM, true);
 	return 1;
 }
+
 // setPlayerWorldBounds
 int sq_setPlayerWorldBounds(SQVM * pVM)
 {
@@ -251,5 +258,27 @@ int sq_setPlayerWorldBounds(SQVM * pVM)
 	pNetGame->GetRPC4()->Call("Script_WorldBounds",&bsSend,HIGH_PRIORITY,RELIABLE,0,pNetGame->GetRakPeer()->GetSystemAddressFromIndex(playerSystemAddress),false);
 
 	sq_pushbool(pVM, true);
+	return 1;
+}
+
+#define _DECL_FUNC(name,nparams,pmask) {_SC(#name),_system_##name,nparams,pmask}
+static SQRegFunction vcmp_funcs[]={
+	// put functions here
+	//_DECL_FUNC(func_name,func_params,_SC(func_param_template)),
+	{0,0}
+};
+
+int sq_register_vcmp(SQVM * pVM)
+{
+	SQInteger i=0;
+	while(vcmp_funcs[i].name!=0)
+	{
+		sq_pushstring(pVM,vcmp_funcs[i].name,-1);
+		sq_newclosure(pVM,vcmp_funcs[i].f,0);
+		sq_setparamscheck(pVM,vcmp_funcs[i].nparamscheck,vcmp_funcs[i].typemask);
+		sq_setnativeclosurename(pVM,-1,vcmp_funcs[i].name);
+		sq_createslot(pVM,-3);
+		i++;
+	}
 	return 1;
 }
