@@ -247,7 +247,11 @@ void CNetGame::PlayerSync(Packet *p)
 		pPlayer->StoreOnFootFullSyncData(wKeys,&matWorld,fRotation,byteCurrentWeapon,byteAction);
 		if(IS_FIRING(wKeys)) pPlayer->StoreAimSyncData(&caAiming);
 		pPlayer->SetReportedHealth(bytePlayerHealth);
+<<<<<<< .mine
+		pPlayer->SetReportedHealth
+=======
 		pPlayer->SetReportedArmour(bytePlayerArmour);
+>>>>>>> .r38
 	}
 }
 
