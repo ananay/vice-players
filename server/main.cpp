@@ -38,6 +38,7 @@
 #include "main.h"
 #include "netgame.h"
 #include "rcon.h"
+#include "scripts.h"
 
 #include "../raknet/BitStream.h"
 #include "../raknet/RakPeerInterface.h"
@@ -47,12 +48,10 @@ void fatal_exit(char * szError);
 CNetGame	*pNetGame;
 CRcon		*pRcon;
 CConfig		*pServerConfig;
+CScripts	*pScripts;
 int			iLogState=1;
 char		*szAdminPass;
 
-//----------------------------------------------------
-#pragma comment (lib ,"squirrel/squirrel.lib")
-#pragma comment (lib ,"squirrel/sqstdlib.lib")
 //----------------------------------------------------
 
 int main (int argc, char* argv[])
@@ -125,6 +124,16 @@ int main (int argc, char* argv[])
 	// create the NetGame.
 	pNetGame = new CNetGame(iMaxPlayers,iListenPort,0,szPass,0,byteFriendlyFire,byteShowOnRadarOption);
 
+	// create the scripts
+	pScripts = new CScripts();
+
+	// load the scripts from the config file
+	if(!pScripts->LoadFromConfig(pServerConfig)) {
+		fatal_exit("I need at least one script loaded before I can start the server.\n");
+	}
+
+	pScripts->onServerInit();
+
 	//printf("-- VC-MP Server Started. Port: %d Max players: %d\n",iListenPort,iMaxPlayers);
 	logprintf("------------------------------------------");
 	logprintf("	GTA:Online - Vice City");
@@ -163,7 +172,10 @@ int main (int argc, char* argv[])
 #endif
 
 	}
+
+	pScripts->onServerExit();
 	
+	delete pScripts;
 	delete pRcon;
 	delete pNetGame;
 
