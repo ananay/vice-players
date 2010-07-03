@@ -12,11 +12,13 @@
 
 #include "main.h"
 
+using namespace RakNet;
+
 CRconClient::CRconClient(char* szHostOrIp, int iPort, char* szPass)
 {
-	m_pRak = RakNetworkFactory::GetRakPeerInterface();
-	m_pRak->Startup(1, 5, &SocketDescriptor(), 1);
-	if (!m_pRak->Connect(szHostOrIp, (WORD)iPort, szPass, strlen(szPass)))
+	m_pRakPeer = RakPeerInterface::GetInstance();
+	m_pRakPeer->Startup(1, &SocketDescriptor(), 1);
+	if (!m_pRakPeer->Connect(szHostOrIp, (WORD)iPort, szPass, strlen(szPass)))
 	{
 		logprintf("Connection failed.");
 	} else {
@@ -26,8 +28,8 @@ CRconClient::CRconClient(char* szHostOrIp, int iPort, char* szPass)
 
 CRconClient::~CRconClient()
 {
-	m_pRak->Shutdown(100);
-	RakNetworkFactory::DestroyRakPeerInterface(m_pRak);
+	m_pRakPeer->Shutdown(100);
+	RakPeerInterface::DestroyInstance(m_pRakPeer);
 }
 
 void CRconClient::Command(char* szCommand)
@@ -35,21 +37,21 @@ void CRconClient::Command(char* szCommand)
 	if (!szCommand) return;
 
 	BYTE bytePacketId = ID_RCON_COMMAND;
-	RakNet::BitStream bsCommand;
+	BitStream bsCommand;
 	bsCommand.Write(bytePacketId);
 	DWORD dwCmdLen = (DWORD)strlen(szCommand);
 	bsCommand.Write(dwCmdLen);
 	bsCommand.Write(szCommand, dwCmdLen);
-	m_pRak->Send(&bsCommand, HIGH_PRIORITY, RELIABLE, 0, UNASSIGNED_SYSTEM_ADDRESS, TRUE);
+	m_pRakPeer->Send(&bsCommand, HIGH_PRIORITY, RELIABLE, 0, UNASSIGNED_SYSTEM_ADDRESS, TRUE);
 }
 
 void CRconClient::Process()
 {
-	if (!m_pRak)
+	if (!m_pRakPeer)
 		return;
 
 	Packet* pPacket;
-	while(pPacket = m_pRak->Receive())
+	while(pPacket = m_pRakPeer->Receive())
 	{
 		switch (pPacket->data[0])
 		{
@@ -75,7 +77,7 @@ void CRconClient::Process()
 			Packet_RconResponce(pPacket);
 			break;
 		}
-		m_pRak->DeallocatePacket(pPacket);		
+		m_pRakPeer->DeallocatePacket(pPacket);		
 	}
 }
 

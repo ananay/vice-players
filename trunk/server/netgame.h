@@ -50,6 +50,8 @@
 
 #define INVALID_ID			0xFF
 
+using namespace RakNet;
+
 //----------------------------------------------------
 
 class CNetGame
@@ -58,24 +60,12 @@ private:
 
 	CPlayerPool					*m_pPlayerPool;
 	CVehiclePool				*m_pVehiclePool;
-	RakNet::RakPeerInterface			*m_pRak;
+	RakPeerInterface			*m_pRakPeer;
+	static RPC4					*m_pRPC4;
 	CGameModeGeneric			*m_pGameLogic;
 	int							m_iGameState;
 		
 	void UpdateNetwork();
-
-	// This is from RakNet sources.
-	inline BYTE GetPacketID(RakNet::Packet *p) {
-		if (p==0) return 255;
-
-		if ((unsigned char)p->data[0] == ID_TIMESTAMP) {
-			assert(p->length > sizeof(unsigned char) + sizeof(unsigned long));
-			return (unsigned char) p->data[sizeof(unsigned char) + sizeof(unsigned long)];
-		}
-		else
-			return (unsigned char) p->data[0];
-	};
-
 	void SetupInitPositions();
 
 public:
@@ -89,18 +79,19 @@ public:
 	int GetGameState() { return m_iGameState; };
 	CPlayerPool * GetPlayerPool() { return m_pPlayerPool; };
 	CVehiclePool * GetVehiclePool() { return m_pVehiclePool; };
-	RakNet::RakPeerInterface * GetRakServer() { return m_pRak; };
+	RakPeerInterface * GetRakPeer() { return m_pRakPeer; };
+	RPC4 * GetRPC4() { return m_pRPC4; }
 	CGameModeGeneric * GetGameLogic() { return m_pGameLogic; };
 	
 	void Process();
-	void BroadcastData( RakNet::BitStream *bitStream, PacketPriority priority,
+	void BroadcastData( BitStream *bitStream, PacketPriority priority,
 						PacketReliability reliability,
 						char orderingStream,
 						BYTE byteExcludedPlayer );
 
-	void PlayerSync(RakNet::Packet *p);
-	void VehicleSync(RakNet::Packet *p);
-	void PassengerSync(RakNet::Packet *p);
+	void PlayerSync(Packet *p);
+	void VehicleSync(Packet *p);
+	void PassengerSync(Packet *p);
 	void KickPlayer(BYTE byteKickPlayer);
 	void AddBan(char * ip_mask);
 	void LoadBanList();
@@ -112,7 +103,6 @@ public:
 	int			m_iSpawnsAvailable;
 	BYTE		m_byteFriendlyFire;
 	BYTE		m_byteShowOnRadar;
-	RakNet::RPC4 * GetRPC4();
 };
 
 //----------------------------------------------------

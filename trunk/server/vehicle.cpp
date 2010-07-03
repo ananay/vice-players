@@ -108,10 +108,7 @@ void CVehicle::SpawnForPlayer(BYTE byteForSystemAddress)
 	bsVehicleSpawn.Write(m_SpawnInfo.vecPos.Z);
 	bsVehicleSpawn.Write(m_SpawnInfo.fRotation);
 	
-//	pNetGame->GetRakServer()->RPC("VehicleSpawn",&bsVehicleSpawn,HIGH_PRIORITY,RELIABLE_ORDERED,
-	//	0,pNetGame->GetRakServer()->GetSystemAddressFromIndex(byteForSystemAddress),FALSE,FALSE,UNASSIGNED_NETWORK_ID,0);
-
-	pNetGame->GetRPC4()->Call("VehicleSpawn", &bsVehicleSpawn,HIGH_PRIORITY,RELIABLE_ORDERED,0,pNetGame->GetRakServer()->GetSystemAddressFromIndex(byteForSystemAddress),false);
+	pNetGame->GetRPC4()->Call("VehicleSpawn", &bsVehicleSpawn,HIGH_PRIORITY,RELIABLE_ORDERED,0,pNetGame->GetRakPeer()->GetSystemAddressFromIndex(byteForSystemAddress),false);
 }
 
 //----------------------------------------------------------

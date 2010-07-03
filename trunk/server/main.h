@@ -36,7 +36,6 @@
 #define MAX_VEHICLES		200
 
 #include "../raknet/RakPeer.h"
-//#include "../raknet/RakNetworkFactory.h"
 #include "../raknet/RPC4Plugin.h"
 #include "../raknet/BitStream.h"
 

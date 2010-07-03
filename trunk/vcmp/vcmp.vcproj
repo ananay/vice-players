@@ -75,9 +75,10 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalDependencies="ws2_32.lib d3d8/d3dx8.lib winmm.lib"
-				OutputFile="c:\gtavc\mss\vc-mp.flt"
+				OutputFile="..\bin\mss\vc-mp.flt"
 				LinkIncremental="1"
 				SuppressStartupBanner="true"
+				IgnoreDefaultLibraryNames="libci.lib"
 				ProgramDatabaseFile=".\Release/vc-mp.pdb"
 				SubSystem="2"
 				RandomizedBaseAddress="1"
@@ -170,7 +171,7 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalDependencies="ws2_32.lib d3d8/d3dx8.lib winmm.lib"
-				OutputFile="c:\gtavc\mss\vc-mp.flt"
+				OutputFile="..\bin\mss\vc-mp.flt"
 				LinkIncremental="2"
 				SuppressStartupBanner="true"
 				IgnoreDefaultLibraryNames="libci.lib"

@@ -49,7 +49,7 @@ void CNetStats::Draw()
 	char szDispBuf[1024];
 	char szStatBuf[1024];
 	D3DDISPLAYMODE dDisplayMode;
-	//RakNet::RakNetStatistics *pRakStats = pNetGame->GetRakClient()->GetStatistics(UNASSIGNED_SYSTEM_ADDRESS);
+	//RakNet::RakNetStatistics *pRakStats = pNetGame->GetRakPeer()->GetStatistics(UNASSIGNED_SYSTEM_ADDRESS);
 	float fDown,fUp;
 
 	if((GetTickCount() - m_dwLastUpdateTick) > 1000) {

@@ -210,7 +210,7 @@ void CPlayer::Say(PCHAR szText, BYTE byteTextLength)
 void CPlayer::HandleDeath(BYTE byteReason, BYTE byteWhoWasResponsible)
 {
 	RakNet::BitStream bsPlayerDeath;
-	SystemAddress playerid = pNetGame->GetRakServer()->GetSystemAddressFromIndex(m_byteSystemAddress);
+	SystemAddress playerid = pNetGame->GetRakPeer()->GetSystemAddressFromIndex(m_byteSystemAddress);
 
 	m_bIsActive = FALSE;
 	m_bIsWasted = TRUE;
@@ -226,15 +226,9 @@ void CPlayer::HandleDeath(BYTE byteReason, BYTE byteWhoWasResponsible)
 	bsPlayerDeath.Write(byteScoringModifier);
 	
 	// Broadcast it
-	//pNetGame->GetRakServer()->RPC("Death",&bsPlayerDeath,
-	//	HIGH_PRIORITY,RELIABLE,0,playerid,TRUE,FALSE,UNASSIGNED_NETWORK_ID,0);
-
 	pNetGame->GetRPC4()->Call("Death", &bsPlayerDeath,HIGH_PRIORITY,RELIABLE,0,playerid,true);
 
 	// Now let the player who died know aswell.
-	//pNetGame->GetRakServer()->RPC("OwnDeath",&bsPlayerDeath,
-		//HIGH_PRIORITY,RELIABLE,0,playerid,FALSE,FALSE,UNASSIGNED_NETWORK_ID,0);
-
 	pNetGame->GetRPC4()->Call("OwnDeath", &bsPlayerDeath,HIGH_PRIORITY,RELIABLE,0,playerid,false);
 	
 	logprintf("<%s> died",
@@ -293,7 +287,7 @@ void CPlayer::SpawnForWorld( BYTE byteTeam, BYTE byteSkin, VECTOR * vecPos,
 							  float fRotation )
 {
 	RakNet::BitStream bsPlayerSpawn;
-	SystemAddress playerid = pNetGame->GetRakServer()->GetSystemAddressFromIndex(m_byteSystemAddress);
+	SystemAddress playerid = pNetGame->GetRakPeer()->GetSystemAddressFromIndex(m_byteSystemAddress);
 
 	bsPlayerSpawn.Write(m_byteSystemAddress);
 	bsPlayerSpawn.Write(byteTeam);
@@ -309,8 +303,6 @@ void CPlayer::SpawnForWorld( BYTE byteTeam, BYTE byteSkin, VECTOR * vecPos,
 	bsPlayerSpawn.Write(m_SpawnInfo.iSpawnWeapons[2]);
 	bsPlayerSpawn.Write(m_SpawnInfo.iSpawnWeaponsAmmo[2]);
 	
-	//pNetGame->GetRakServer()->RPC("Spawn",&bsPlayerSpawn,
-		//HIGH_PRIORITY,RELIABLE_ORDERED,0,playerid,TRUE,FALSE,UNASSIGNED_NETWORK_ID,0);
 	pNetGame->GetRPC4()->Call("Spawn", &bsPlayerSpawn,HIGH_PRIORITY,RELIABLE_ORDERED,0,playerid,true);
 
 	m_bIsActive = TRUE;
@@ -346,9 +338,7 @@ void CPlayer::SpawnForPlayer(BYTE byteForSystemAddress)
 	bsPlayerSpawn.Write(m_SpawnInfo.iSpawnWeapons[2]);
 	bsPlayerSpawn.Write(m_SpawnInfo.iSpawnWeaponsAmmo[2]);
 
-	//pNetGame->GetRakServer()->RPC("Spawn",&bsPlayerSpawn,HIGH_PRIORITY,RELIABLE_ORDERED,
-		//0,pNetGame->GetRakServer()->GetSystemAddressFromIndex(byteForSystemAddress),FALSE,FALSE,UNASSIGNED_NETWORK_ID,0);
-	pNetGame->GetRPC4()->Call("Spawn", &bsPlayerSpawn,HIGH_PRIORITY,RELIABLE_ORDERED,0,pNetGame->GetRakServer()->GetSystemAddressFromIndex(byteForSystemAddress),false);
+	pNetGame->GetRPC4()->Call("Spawn", &bsPlayerSpawn,HIGH_PRIORITY,RELIABLE_ORDERED,0,pNetGame->GetRakPeer()->GetSystemAddressFromIndex(byteForSystemAddress),false);
 }
 
 //----------------------------------------------------
@@ -356,14 +346,12 @@ void CPlayer::SpawnForPlayer(BYTE byteForSystemAddress)
 void CPlayer::EnterVehicle(BYTE byteVehicleID, BYTE bytePassenger)
 {
 	RakNet::BitStream bsVehicle;
-	SystemAddress playerid = pNetGame->GetRakServer()->GetSystemAddressFromIndex(m_byteSystemAddress);
+	SystemAddress playerid = pNetGame->GetRakPeer()->GetSystemAddressFromIndex(m_byteSystemAddress);
 
 	bsVehicle.Write(m_byteSystemAddress);
 	bsVehicle.Write(byteVehicleID);
 	bsVehicle.Write(bytePassenger);
 
-	//pNetGame->GetRakServer()->RPC("EnterVehicle",&bsVehicle,HIGH_PRIORITY,RELIABLE_ORDERED,
-		//0,playerid,TRUE,FALSE,UNASSIGNED_NETWORK_ID,0);
 	pNetGame->GetRPC4()->Call("EnterVehicle", &bsVehicle,HIGH_PRIORITY,RELIABLE_ORDERED,0,playerid,true);
 }
 
@@ -372,14 +360,82 @@ void CPlayer::EnterVehicle(BYTE byteVehicleID, BYTE bytePassenger)
 void CPlayer::ExitVehicle(BYTE byteVehicleID)
 {
 	RakNet::BitStream bsVehicle;
-	SystemAddress playerid = pNetGame->GetRakServer()->GetSystemAddressFromIndex(m_byteSystemAddress);
+	SystemAddress playerid = pNetGame->GetRakPeer()->GetSystemAddressFromIndex(m_byteSystemAddress);
 
 	bsVehicle.Write(m_byteSystemAddress);
 	bsVehicle.Write(byteVehicleID);
 
-	//pNetGame->GetRakServer()->RPC("ExitVehicle",&bsVehicle,HIGH_PRIORITY,RELIABLE_ORDERED,
-		//0,playerid,TRUE,FALSE,UNASSIGNED_NETWORK_ID,0);
 	pNetGame->GetRPC4()->Call("ExitVehicle", &bsVehicle,HIGH_PRIORITY,RELIABLE_ORDERED,0,playerid,true);
+}
+
+//----------------------------------------------------
+
+WORD CPlayer::GetKeys()
+{
+	return m_wKeys;
+}
+
+//----------------------------------------------------
+
+void CPlayer::GetPosition(VECTOR * vecPosition)
+{
+	memcpy(vecPosition, &m_vecPos, sizeof(VECTOR));
+}
+
+//----------------------------------------------------
+
+void CPlayer::GetMoveSpeed(VECTOR * vecMoveSpeed)
+{
+	memcpy(vecMoveSpeed, &m_vecMoveSpeed, sizeof(VECTOR));
+}
+
+//----------------------------------------------------
+
+void CPlayer::GetTurnSpeed(VECTOR * vecTurnSpeed)
+{
+	memcpy(vecTurnSpeed, &m_vecTurnSpeed, sizeof(VECTOR));
+}
+
+//----------------------------------------------------
+
+float CPlayer::GetRotation()
+{
+	return m_fRotation;
+}
+
+//----------------------------------------------------
+
+BYTE CPlayer::GetHealth()
+{
+	return m_byteHealth;
+}
+
+//----------------------------------------------------
+
+BYTE CPlayer::GetCurrentWeapon()
+{
+	return m_byteCurrentWeapon;
+}
+
+//----------------------------------------------------
+
+BYTE CPlayer::GetAction()
+{
+	return m_byteAction;
+}
+
+//----------------------------------------------------
+
+BOOL CPlayer::IsAPassenger()
+{
+	return m_bIsAPassenger;
+}
+
+//----------------------------------------------------
+
+BYTE CPlayer::GetVehicleID()
+{
+	return m_byteVehicleID;
 }
 
 //----------------------------------------------------

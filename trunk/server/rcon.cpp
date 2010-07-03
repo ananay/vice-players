@@ -146,7 +146,7 @@ void CRcon::Packet_RconCommand(RakNet::Packet* pPacket)
 		if (stricmp(rconcmd, "players") == 0)
 		{
 			CPlayerPool* pPlayerPool = pNetGame->GetPlayerPool();
-			RakPeerInterface* pRak = pNetGame->GetRakServer();
+			RakPeerInterface* pRak = pNetGame->GetRakPeer();
 			ConsoleOutput("\n id\tname\t\tip");
 			ConsoleOutput(" --\t----\t\t--\n");
 			char output[1024];
@@ -178,7 +178,7 @@ void CRcon::Packet_RconCommand(RakNet::Packet* pPacket)
 		}
 		else if (stricmp(rconcmd, "password") == 0)
 		{
-			pNetGame->GetRakServer()->SetIncomingPassword(arg, strlen(arg));
+			pNetGame->GetRakPeer()->SetIncomingPassword(arg, strlen(arg));
 			if(arg) {
 				ConsolePrintf("Password set to: %s", arg);
 			} else {
@@ -191,7 +191,7 @@ void CRcon::Packet_RconCommand(RakNet::Packet* pPacket)
 			{
 				int iMaxPlayers = atoi(arg);
 				if(iMaxPlayers > 32) iMaxPlayers = 32;
-				pNetGame->GetRakServer()->SetMaximumIncomingConnections(iMaxPlayers);
+				pNetGame->GetRakPeer()->SetMaximumIncomingConnections(iMaxPlayers);
 				ConsolePrintf("MaxPlayers set to: %d", iMaxPlayers);
 			} else {
 				ConsoleOutput("RCON: MaxPlayers Usage: maxplayers <num>");

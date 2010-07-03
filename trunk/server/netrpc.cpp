@@ -67,7 +67,6 @@ void ClientJoin(RakNet::BitStream *bitStream, Packet *packet)
 	if(byteVersion != NETGAME_VERSION) {
 		byteRejectReason = REJECT_REASON_BAD_VERSION;
 		bsReject.Write(byteRejectReason);
-		//pRak->RPC("ConnectionRejected",&bsReject,HIGH_PRIORITY,RELIABLE,0,rpcParams->sender,FALSE,FALSE,UNASSIGNED_NETWORK_ID,0);
 		pNetGame->GetRPC4()->Call("ConnectionRejected", &bsReject,HIGH_PRIORITY,RELIABLE,0,packet->guid,false);
 		return;
 	}
