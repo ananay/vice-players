@@ -30,8 +30,8 @@ class CGameModeGeneric
 private:
 	BOOL m_bClearedToSpawn;
 	BYTE m_byteSelectedClass;
-	DWORD m_dwLastSpawnSelectionTick;// delays left and right selection
-	DWORD m_dwInitialSelectionTick;// delays initial selection
+	DWORD m_dwLastSpawnSelectionTick; // delays left and right selection
+	DWORD m_dwInitialSelectionTick; // delays initial selection
 
 public:
 	CGameModeGeneric();
