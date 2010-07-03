@@ -32,6 +32,7 @@
 #include "main.h"
 #include "rcon.h"
 #include "netgame.h"
+#include "scripts.h"
 #include "../raknet/MessageIdentifiers.h"
 
 using namespace RakNet;
@@ -41,6 +42,7 @@ using namespace RakNet;
 #endif
 
 extern CNetGame			*pNetGame;
+extern CScripts	*pScripts;
 
 CRcon::CRcon(WORD iPort, char* szPass, WORD iMaxAdmins)
 {
@@ -211,7 +213,10 @@ void CRcon::Packet_RconCommand(RakNet::Packet* pPacket)
 		}
 		else
 		{
-			ConsoleOutput("Unknown command.");
+			if(!pScripts->onRconCommand(rconcmd, arg))
+			{
+				ConsoleOutput("Unknown command.");
+			}
 		}
 	}
 
