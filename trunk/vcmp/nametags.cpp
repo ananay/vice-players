@@ -238,7 +238,7 @@ void CNameTags::Draw()
 						m_pD3DDevice->DrawPrimitiveUP(D3DPT_TRIANGLEFAN, 2, HealthBarVertices,    sizeof(HealthBarVertices_s)); 
 						m_pD3DDevice->DrawPrimitiveUP(D3DPT_TRIANGLEFAN, 2, HealthBarBGVertices,  sizeof(HealthBarVertices_s)); 
 
-						if(Armour < 1.0f)
+						if(Armour > 0.0f)
 						{
 							matTransposed._41 = vPos.X; 
 							matTransposed._42 = vPos.Y; 
