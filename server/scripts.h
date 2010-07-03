@@ -43,7 +43,7 @@ public:
 	bool LoadFromConfig(CConfig * pConfig);
 	void onServerInit();
 	void onServerExit();
-	void onPlayerConnect(int playerId, const char *name);
+	void onPlayerConnect(int playerId);
 	void onPlayerDisconnect(int playerId, int reason);
 	void onPlayerText(int playerId, const char *text);
 	void onPlayerSpawn(int playerId);

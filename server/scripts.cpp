@@ -249,7 +249,7 @@ void CScripts::onServerExit()
 	}
 }
 
-void CScripts::onPlayerConnect(int playerId, const char *name)
+void CScripts::onPlayerConnect(int playerId)
 {
 	for(int i = 0; i < MAX_SCRIPTS; i++) {
 		if(m_pScripts[i]) {
@@ -273,8 +273,6 @@ void CScripts::onPlayerConnect(int playerId, const char *name)
 				// Push the player id onto the stack
 				sq_pushinteger(pVM, playerId);
 
-				// Push the player name onto the stack
-				sq_pushstring(pVM, name, -1);
 
 				// Call the function
 				sq_call(pVM, 3, true, true);
