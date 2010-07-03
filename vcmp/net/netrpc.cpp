@@ -94,7 +94,6 @@ void InitGame(RakNet::BitStream *bitStream, Packet *packet)
 	bitStream->Read(pNetGame->m_WorldBounds[3]);
 	bitStream->Read(pNetGame->m_iSpawnsAvailable);
 	bitStream->Read(pNetGame->m_byteFriendlyFire);
-	bitStream->Read(pNetGame->m_byteShowOnRadar);
 	bitStream->Read(byteMySystemAddress);
 
 	pPlayerPool->SetLocalSystemAddress(byteMySystemAddress);
@@ -572,20 +571,15 @@ void Script_WorldBounds(RakNet::BitStream *bitStream, Packet *packet)
 
 	pPlayer->EnforceWorldBoundries(HighX, LowX, HighY, LowY);
 }
-/*
-// sendMessageAsPlayer
-void Script_sendMessageAsPlayer(RakNet::BitStream *bitStream, Packet *packet)
+
+void Script_showMarkersForPlayer(RakNet::BitStream *bitStream, Packet *packet)
 {
 	CPlayerPed *pPlayer = pGame->FindPlayerPed();
 	CLocalPlayer *pLocalPed = pNetGame->GetPlayerPool()->GetLocalPlayer();
 
-	CHAR szMessage[256];
+	pPlayer->ShowMarker(pLocalPed->GetTeamColorAsRGBA());
 
-	bitStream->Read(szMessage);
-
-	pChatWindow->AddChatMessage(pNetGame->GetPlayerPool()->GetLocalPlayerName(),pLocalPed->GetTeamColorAsARGB(),szMessage);
 }
-*/
 void RegisterRPCs()
 {
 	pNetGame->GetRPC4()->RegisterFunction("ServerJoin",ServerJoin);
@@ -617,7 +611,7 @@ void RegisterRPCs()
 	pNetGame->GetRPC4()->RegisterFunction("Script_ToggleControls",Script_ToggleControls);
 	pNetGame->GetRPC4()->RegisterFunction("Script_ClientMessage",Script_ClientMessage);
 	pNetGame->GetRPC4()->RegisterFunction("Script_WorldBounds",Script_WorldBounds);
-	//pNetGame->GetRPC4()->RegisterFunction("Script_sendMessageAsPlayer",Script_sendMessageAsPlayer);
+	pNetGame->GetRPC4()->RegisterFunction("Script_showMarkersForPlayer",Script_showMarkersForPlayer);
 
 }
 
@@ -654,7 +648,7 @@ void UnRegisterRPCs()
 	pNetGame->GetRPC4()->UnregisterFunction("Script_ToggleControls");
 	pNetGame->GetRPC4()->UnregisterFunction("Script_ClientMessage");
 	pNetGame->GetRPC4()->UnregisterFunction("Script_WorldBounds");
-	//pNetGame->GetRPC4()->UnregisterFunction("Script_sendMessageAsPlayer");
+	pNetGame->GetRPC4()->UnregisterFunction("Script_showMarkersForPlayer");
 }
 
 //----------------------------------------------------
