@@ -154,6 +154,7 @@ void CLocalPlayer::SendOnFootFullSyncData()
 	VECTOR vPos;
 	WORD wKeys = pGamePlayer->GetKeys();
 	BYTE bytePlayerHealth;
+	BYTE bytePlayerArmour;
 	CAMERA_AIM * pCameraAim = pGamePlayer->GetCurrentAim();
 		
 	C_VECTOR1 cvecAimRoll;
@@ -184,7 +185,9 @@ void CLocalPlayer::SendOnFootFullSyncData()
 		bsPlayerSync.Write(m_pPlayerPed->GetShootingFlags());
 	
 		bytePlayerHealth = (BYTE)m_pPlayerPed->GetHealth();
+		bytePlayerArmour = (BYTE)m_pPlayerPed->GetArmour();
 		bsPlayerSync.Write(bytePlayerHealth);
+		bsPlayerSync.Write(bytePlayerArmour);
 		bsPlayerSync.Write(m_pPlayerPed->GetCurrentWeapon());
 
 		// send aiming data if the firing button is held
@@ -238,6 +241,7 @@ void CLocalPlayer::SendInCarFullSyncData()
 
 	BYTE		byteWriteVehicleHealth;
 	BYTE		bytePlayerHealth;
+	BYTE		bytePlayerArmour;
 
 	if(m_pPlayerPed)
 	{
@@ -283,7 +287,9 @@ void CLocalPlayer::SendInCarFullSyncData()
 		bsVehicleSync.Write(byteWriteVehicleHealth);
 
 		bytePlayerHealth = (BYTE)m_pPlayerPed->GetHealth();
+		bytePlayerArmour = (BYTE)m_pPlayerPed->GetArmour();
 		bsVehicleSync.Write(bytePlayerHealth);
+		bsVehicleSync.Write(bytePlayerArmour);
 
 		// ..sending
 		pNetGame->GetRakPeer()->Send(&bsVehicleSync,HIGH_PRIORITY,UNRELIABLE,0,UNASSIGNED_SYSTEM_ADDRESS,TRUE);

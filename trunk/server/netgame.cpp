@@ -194,6 +194,7 @@ void CNetGame::PlayerSync(Packet *p)
 	VECTOR		vecWorldPos;
 	float		fRotation;
 	BYTE		bytePlayerHealth;
+	BYTE		bytePlayerArmour;
 	BYTE		byteCurrentWeapon;
 	BYTE		byteAction;
 
@@ -207,6 +208,7 @@ void CNetGame::PlayerSync(Packet *p)
 	bsPlayerSync.Read(fRotation);
 	bsPlayerSync.Read(byteAction);
 	bsPlayerSync.Read(bytePlayerHealth);
+	bsPlayerSync.Read(bytePlayerArmour);
 	bsPlayerSync.Read(byteCurrentWeapon);
 
 	if(IS_FIRING(wKeys)) {
@@ -225,6 +227,7 @@ void CNetGame::PlayerSync(Packet *p)
 		pPlayer->StoreOnFootFullSyncData(wKeys,&vecWorldPos,fRotation,byteCurrentWeapon,byteAction);
 		if(IS_FIRING(wKeys)) pPlayer->StoreAimSyncData(&caAiming);		
 		pPlayer->SetReportedHealth(bytePlayerHealth);
+		pPlayer->SetReportedArmour(bytePlayerArmour);
 	}
 }
 
@@ -247,6 +250,7 @@ void CNetGame::VehicleSync(Packet *p)
 	BYTE		byteReadVehicleHealth;
 	float		fHealth;
 	BYTE		bytePlayerHealth;
+	BYTE		bytePlayerArmour;
 
 	bsVehicleSync.IgnoreBytes(sizeof(MessageID));
 	bsVehicleSync.Read(byteVehicleID);
@@ -266,6 +270,7 @@ void CNetGame::VehicleSync(Packet *p)
 	bsVehicleSync.Read(vecMoveSpeed.Y);
 	bsVehicleSync.Read(byteReadVehicleHealth);
 	bsVehicleSync.Read(bytePlayerHealth);
+	bsVehicleSync.Read(bytePlayerArmour);
 
 	fHealth = UNPACK_VEHICLE_HEALTH(byteReadVehicleHealth);
 
@@ -273,6 +278,7 @@ void CNetGame::VehicleSync(Packet *p)
 		pPlayer->StoreInCarFullSyncData(byteVehicleID,wKeys,&cvecRoll,
 			&cvecDirection,&vecWorldPos,&vecMoveSpeed,fHealth);
 		pPlayer->SetReportedHealth(bytePlayerHealth);
+		pPlayer->SetReportedArmour(bytePlayerArmour);
 	}
 }
 

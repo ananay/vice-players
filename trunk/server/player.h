@@ -114,6 +114,7 @@ public:
 	void StoreAimSyncData(S_CAMERA_AIM * pAim) { memcpy(&m_Aiming,pAim,sizeof(S_CAMERA_AIM)); };
 
 	void SetReportedHealth(BYTE byteHealth) { m_byteHealth = byteHealth; };
+	void SetReportedArmour(BYTE byteArmour) { m_byteArmour = byteArmour; };
 
 	void StoreInCarFullSyncData(BYTE byteVehicleID,WORD wKeys,
 		C_VECTOR1 * cvecRoll, C_VECTOR1 * cvecDirection,

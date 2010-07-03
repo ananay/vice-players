@@ -60,6 +60,7 @@ private:
 	float				m_fRotation;
 	float				m_fVehicleHealth;
 	BYTE				m_byteHealth; // health float casted to a byte.
+	BYTE				m_byteArmour; // armour float casted to a byte.
 	BYTE				m_byteCurrentWeapon;
 
 	BOOL				m_bIsInVehicle;
@@ -95,6 +96,9 @@ public:
 
 	void SetReportedHealth(BYTE byteReportHealth) { 
 		m_byteHealth = byteReportHealth;
+	}
+	void SetReportedArmour(BYTE byteReportArmour) { 
+		m_byteArmour = byteReportArmour;
 	}
 
 	float GetReportedHealth() { return (float)m_byteHealth; };

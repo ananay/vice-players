@@ -193,6 +193,7 @@ void CNetGame::PlayerSync(Packet *p)
 	WORD wKeys=0;
 	float fRotation;
 	BYTE  bytePlayerHealth;
+	BYTE  bytePlayerArmour;
 	BYTE  byteCurrentWeapon;
 	BYTE  byteAction;
 
@@ -211,6 +212,7 @@ void CNetGame::PlayerSync(Packet *p)
 	bsPlayerSync.Read(fRotation);
 	bsPlayerSync.Read(byteAction);
 	bsPlayerSync.Read(bytePlayerHealth);
+	bsPlayerSync.Read(bytePlayerArmour);
 	bsPlayerSync.Read(byteCurrentWeapon);
 
 	if(IS_FIRING(wKeys)) {
@@ -245,6 +247,7 @@ void CNetGame::PlayerSync(Packet *p)
 		pPlayer->StoreOnFootFullSyncData(wKeys,&matWorld,fRotation,byteCurrentWeapon,byteAction);
 		if(IS_FIRING(wKeys)) pPlayer->StoreAimSyncData(&caAiming);
 		pPlayer->SetReportedHealth(bytePlayerHealth);
+		pPlayer->SetReportedArmour(bytePlayerArmour);
 	}
 }
 
@@ -267,6 +270,7 @@ void CNetGame::VehicleSync(Packet *p)
 
 	BYTE		byteReadVehicleHealth;
 	BYTE		bytePlayerHealth;
+	BYTE		bytePlayerArmour;
 
 	bsVehicleSync.IgnoreBytes(sizeof(MessageID));
 	bsVehicleSync.Read(byteSystemAddress);
@@ -288,6 +292,7 @@ void CNetGame::VehicleSync(Packet *p)
 
 	bsVehicleSync.Read(byteReadVehicleHealth);
 	bsVehicleSync.Read(bytePlayerHealth);
+	bsVehicleSync.Read(bytePlayerArmour);
 
 	// now unpack the roll, direction vectors from the shorts.
 	DecompressVector1(&matWorld.vLookRight,&cvecRoll);
@@ -302,6 +307,7 @@ void CNetGame::VehicleSync(Packet *p)
 		pPlayer->StoreInCarFullSyncData(byteVehicleID,wKeys,&matWorld,
 			&vecMoveSpeed,fHealth);
 		pPlayer->SetReportedHealth(bytePlayerHealth);
+		pPlayer->SetReportedArmour(bytePlayerArmour);
 	}
 }
 
