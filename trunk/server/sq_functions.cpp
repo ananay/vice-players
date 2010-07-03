@@ -235,6 +235,32 @@ int sq_sendPlayerMessage(SQVM * pVM)
 	return 1;
 }
 
+// sendPlayerMessageToAll
+int sq_sendPlayerMessageToAll(SQVM * pVM)
+{
+	int colourMessage;
+	const char * messageValue;
+
+	sq_getinteger(pVM, -2, &colourMessage);
+	sq_getstring(pVM, -1, &messageValue);
+	
+	RakNet::BitStream bsSend;
+	bsSend.Write(colourMessage);
+	bsSend.Write(strlen(messageValue));
+	bsSend.Write(messageValue,strlen(messageValue));
+
+	CPlayerPool *pPlayerPool = pNetGame->GetPlayerPool();
+	for(BYTE i = 0; i < MAX_PLAYERS; i++)
+	{
+		if(pPlayerPool->GetSlotState(i)) 
+		{
+			pNetGame->GetRPC4()->Call("Script_ClientMessage",&bsSend,HIGH_PRIORITY,RELIABLE,0,pNetGame->GetRakPeer()->GetSystemAddressFromIndex(i),false);
+		}
+	}
+	sq_pushbool(pVM, true);
+	return 1;
+}
+
 // setPlayerWorldBounds
 int sq_setPlayerWorldBounds(SQVM * pVM)
 {
@@ -261,6 +287,7 @@ int sq_setPlayerWorldBounds(SQVM * pVM)
 	return 1;
 }
 
+// getPlayerName
 int sq_getPlayerName(SQVM * pVM)
 {
 	int playerSystemAddress;
@@ -271,6 +298,7 @@ int sq_getPlayerName(SQVM * pVM)
 	return 1;
 }
 
+// getPlayerIP
 int sq_getPlayerIP(SQVM * pVM)
 {
 	int playerSystemAddress;
@@ -281,13 +309,38 @@ int sq_getPlayerIP(SQVM * pVM)
 	return 1;
 }
 
+// createVehicle
+int sq_createVehicle(SQVM * pVM)
+{
+	int byteVehicleType;
+	VECTOR pos;
+	float fRotation;
+	int iColor1, iColor2;
+	sq_getinteger(pVM, -7, &byteVehicleType);
+	sq_getfloat(pVM, -6, &pos.X);
+	sq_getfloat(pVM, -5, &pos.Y);
+	sq_getfloat(pVM, -4, &pos.Z);
+	sq_getfloat(pVM, -3, &fRotation);
+	sq_getinteger(pVM, -2, &iColor1);
+	sq_getinteger(pVM, -1, &iColor2);
+	int vehID = pNetGame->GetVehiclePool()->New(byteVehicleType, &pos, fRotation, iColor1, iColor2);
+	CVehicle *pVehicle = pNetGame->GetVehiclePool()->GetAt(vehID);
+	pVehicle->SpawnForWorld();
+	sq_pushinteger(pVM, vehID);
+	return 1;
+}
+
 #define _DECL_FUNC(name,nparams,pmask) {_SC(#name),sq_##name,nparams,pmask}
 static SQRegFunction vcmp_funcs[]={
 	// put functions here
 	//_DECL_FUNC(func_name,func_params,_SC(func_param_template)),
 	_DECL_FUNC(getPlayerName, 2, _SC(".n")),
 	_DECL_FUNC(getPlayerIP, 2, _SC(".n")),
+	_DECL_FUNC(createVehicle, 8, _SC(".nnnnnnn")),
+	_DECL_FUNC(setPlayerHealth, 3, _SC(".nn")),
+	_DECL_FUNC(setPlayerArmour, 3, _SC(".nn")),
 	_DECL_FUNC(sendPlayerMessage, 4, _SC(".iis")),
+	_DECL_FUNC(sendPlayerMessageToAll, 3, _SC(".is")),
 	_DECL_FUNC(setPlayerWorldBounds, 5, _SC(".n")),
 	_DECL_FUNC(togglePlayerControls, 3, _SC(".n")),
 	_DECL_FUNC(removePlayerFromVehicle, 2, _SC(".n")),

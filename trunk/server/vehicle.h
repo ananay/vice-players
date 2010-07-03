@@ -64,6 +64,7 @@ public:
 	VEHICLE_SPAWN_INFO * GetSpawnInfo() { return &m_SpawnInfo; };
 
 	void SpawnForPlayer(BYTE byteForSystemAddress);
+	void SpawnForWorld();
 
 	void Update(BYTE byteSystemAddress, MATRIX4X4 * matWorld,
 		VECTOR * vecMoveSpeed, float fHealth);
