@@ -72,7 +72,6 @@ int CGameModeGeneric::addPlayerClass(int team, int model, float x, float y, floa
 void CGameModeGeneric::HandleClientJoin(BYTE byteSystemAddress) 
 {
 	
-
 }
 
 //----------------------------------------------------
