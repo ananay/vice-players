@@ -35,15 +35,16 @@ HRESULT __stdcall IDirect3DDevice8Hook::Present(CONST RECT* pSourceRect, CONST R
 
 HRESULT __stdcall IDirect3DDevice8Hook::Reset(D3DPRESENT_PARAMETERS* pPresentationParameters)
 {
-	/*
-	if (bWindowedMode)
+	if(bWindowedMode)
 	{
 		pPresentationParameters->Windowed = 1;
 		pPresentationParameters->Flags = 0;
 		pPresentationParameters->FullScreen_RefreshRateInHz = 0;
 		pPresentationParameters->FullScreen_PresentationInterval = 0;
+		LONG_PTR style = GetWindowLongPtr(pPresentationParameters->hDeviceWindow, GWL_STYLE);
+		SetWindowLongPtr(pPresentationParameters->hDeviceWindow, GWL_STYLE, style | WS_POPUPWINDOW | WS_CAPTION | WS_MINIMIZEBOX | WS_MAXIMIZEBOX | WS_THICKFRAME);
 		SetWindowPos(pPresentationParameters->hDeviceWindow, HWND_NOTOPMOST, 0, 0, pPresentationParameters->BackBufferWidth, pPresentationParameters->BackBufferHeight, SWP_SHOWWINDOW);
-	}*/
+	}
 
 	if(bbfont)
 	{
