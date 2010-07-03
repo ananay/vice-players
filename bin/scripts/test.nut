@@ -1,14 +1,21 @@
 
 function onServerInit()
 {
-	print("onServerInit()");
+	createVehicle(159, 301.7180, 796.4058, 10.7562, 155.0758, 42, 42);
+	createVehicle(154, 296.7950, 787.2752, 10.7558, 151.6805, 42, 42);
+	createVehicle(226, 289.9197, 777.5255, 10.7558, 143.8585, 42, 42);
+	createVehicle(234, 279.5420, 763.7482, 10.7558, 141.6185, 42, 42);
+	createVehicle(235, 272.8984, 756.0524, 10.7558, 136.2074, 42, 42);
+	createVehicle(236, 261.3709, 744.7074, 10.7558, 134.1633, 42, 42);
+	print("---------------------------\n");
+	print("Vice Madness started\n");
+	print("---------------------------\n");
 }
 
 function onPlayerConnect(playerid)
 {
-	local message = "Connect: [ID: " + playerid + "] [Name: " + getPlayerName(playerid) + "] [IP: " + getPlayerIP(playerid) + "]";
-	print(message);
-	sendPlayerMessageToAll(1,message); 
+	print("Connect: [ID: " + playerid + "] [Name: " + getPlayerName(playerid) + "] [IP: " + getPlayerIP(playerid) + "]");
+	sendPlayerMessage(playerid, 0xE60000FF, "Connected to the server " + getPlayerName(playerid));
 }
 
 function onPlayerDisconnect(playerid, reason)
@@ -19,12 +26,14 @@ function onPlayerDisconnect(playerid, reason)
 function onPlayerSpawn(playerid)
 {
 	print("Spawn: [ID: " + playerid + "]");
-	setPlayerArmour(playerid, 50.0);
+	sendPlayerMessage(playerid, 0xE60000FF, "Spawned on the server " + getPlayerName(playerid));
+	
 }
 
 function onPlayerText(playerid, text)
 {
-	print("OnPlayerText(" + playerid + ", " + text + ")");
+	sendMessageAsPlayer(playerid, "[" + playerid + "] " + text);
+	return 0;
 }
 
 function onPlayerRequestClass(playerid, classid)
