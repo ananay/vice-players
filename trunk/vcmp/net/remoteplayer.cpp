@@ -257,10 +257,10 @@ void CRemotePlayer::UpdateInCarMatrixAndSpeed(MATRIX4X4 * matWorld,
 
 		pVehicle->SetMatrix(matVehicle);
 		
-		pVehicle->GetMoveSpeedVector(&vecInternalMoveSpeed);
+		pVehicle->GetMoveSpeed(&vecInternalMoveSpeed);
 		vecInternalMoveSpeed.X = vecMoveSpeed->X;
 		vecInternalMoveSpeed.Y = vecMoveSpeed->Y;
-		pVehicle->SetMoveSpeedVector(vecInternalMoveSpeed);
+		pVehicle->SetMoveSpeed(vecInternalMoveSpeed);
 	}
 }
 

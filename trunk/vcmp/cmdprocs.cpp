@@ -116,12 +116,12 @@ void cmdSavePos(PCHAR szCmd)
 	}
 
 	// onfoot savepos
+	MATRIX4X4 matMatrix;
+	pPlayer->GetMatrix(&matMatrix);
+	fZAngle = pPlayer->GetRotation();
 
-	PED_TYPE *pActor = pPlayer->GetGtaActor();
-	ScriptCommand(&get_player_z_angle,0,&fZAngle);
-
-	fprintf(fileOut,"Class = 0 0 %.4f %.4f %.4f %.4f 0 0 0 0 0 0\n",
-		pActor->entity.mat.vPos.X,pActor->entity.mat.vPos.Y,pActor->entity.mat.vPos.Z,fZAngle);
+	fprintf(fileOut,"Class = 0 0 %.4f %.4f %.4f %.4f 0 0 0 0 0 0\n", matMatrix.vPos.X,matMatrix.vPos.Y,
+		matMatrix.vPos.Z,fZAngle);
 
 	fclose(fileOut);
 }
@@ -297,6 +297,23 @@ void cmdGenComp(PCHAR szCmd)
 
 //----------------------------------------------------
 
+void cmdNewPlayer(PCHAR szCmd)
+{
+	CPlayerPool *pPlayerPool = pNetGame->GetPlayerPool();
+	pPlayerPool->New(1, "jaja");
+	CRemotePlayer *pRemotePlayer = pPlayerPool->GetAt(1);
+	CPlayerPed *pPlayerPed = pGame->FindPlayerPed();
+	BYTE byteSkin = (BYTE)pPlayerPed->GetModelIndex();
+	MATRIX4X4 matMatrix;
+	pPlayerPed->GetMatrix(&matMatrix);
+	float fRotation = pPlayerPed->GetRotation();
+	pRemotePlayer->SpawnPlayer(255,byteSkin,&matMatrix.vPos,fRotation,
+		0,0,
+		0,0,
+		0,0);
+}
+
+//----------------------------------------------------
 
 void SetupCommands()
 {
@@ -314,6 +331,7 @@ void SetupCommands()
 	pCmdWindow->AddCmdProc("vehicle",cmdCreateVehicle);
 	pCmdWindow->AddCmdProc("skin",cmdSkin);
 	pCmdWindow->AddCmdProc("build",cmdBuild);
+	pCmdWindow->AddCmdProc("np", cmdNewPlayer);
 }
 
 //----------------------------------------------------

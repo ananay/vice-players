@@ -137,7 +137,7 @@ BYTE CPlayerPool::FindRemoteSystemAddressFromGtaPtr(PED_TYPE * pActor)
 			pPlayerPed = m_pPlayers[byteSystemAddress]->GetPlayerPed();
 
 			if(pPlayerPed) {
-				PED_TYPE *pTestActor = pPlayerPed->GetGtaActor();
+				PED_TYPE *pTestActor = pPlayerPed->GetPed();
 				if((pTestActor != NULL) && (pActor == pTestActor)) // found it
 					return (BYTE)m_pPlayers[byteSystemAddress]->GetID();
 			}

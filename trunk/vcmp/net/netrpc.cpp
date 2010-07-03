@@ -415,6 +415,7 @@ void Script_SetHealth(RakNet::BitStream *bitStream, Packet *packet)
 
 	pPlayer->SetHealth(playerHealth);
 }
+
 // SetArmour
 void Script_SetArmour(RakNet::BitStream *bitStream, Packet *packet)
 {
@@ -426,6 +427,7 @@ void Script_SetArmour(RakNet::BitStream *bitStream, Packet *packet)
 
 	pPlayer->SetArmour(playerArmour);
 }
+
 // SetPlayerPos
 void Script_SetPos(RakNet::BitStream *bitStream, Packet *packet)
 {
@@ -437,6 +439,7 @@ void Script_SetPos(RakNet::BitStream *bitStream, Packet *packet)
 
 	pPlayer->Teleport(playerPos.X, playerPos.Y, playerPos.Z);
 }
+
 // PutPlayerInVehicle
 void Script_PutInVehicle(RakNet::BitStream *bitStream, Packet *packet)
 {
@@ -448,6 +451,7 @@ void Script_PutInVehicle(RakNet::BitStream *bitStream, Packet *packet)
 
 	pPlayer->PutDirectlyInVehicle(vehID);
 }
+
 // GiveWeapon
 void Script_GivePlayerWeapon(RakNet::BitStream *bitStream, Packet *packet)
 {
@@ -461,6 +465,7 @@ void Script_GivePlayerWeapon(RakNet::BitStream *bitStream, Packet *packet)
 
 	pPlayer->GiveWeapon(weaponID, ammoAMT);
 }
+
 // SetSkin
 void Script_SetPlayerSkin(RakNet::BitStream *bitStream, Packet *packet)
 {
@@ -472,39 +477,37 @@ void Script_SetPlayerSkin(RakNet::BitStream *bitStream, Packet *packet)
 
 	pPlayer->SetModel(skinID);
 }
+
 // SetZAngle
 void Script_SetPlayerZAngle(RakNet::BitStream *bitStream, Packet *packet)
 {
 	CPlayerPed *pPlayer = pGame->FindPlayerPed();
+	float fRotation;
 
-	VECTOR zAngle;
-
-	bitStream->Read(zAngle.Z);
-
-	pPlayer->SetZAngle(zAngle.Z);
+	bitStream->Read(fRotation);
+	pPlayer->SetRotation(fRotation);
 }
+
 // setAction
 void Script_SetPlayerAction(RakNet::BitStream *bitStream, Packet *packet)
 {
 	CPlayerPed *pPlayer = pGame->FindPlayerPed();
-
 	BYTE Action;
 
 	bitStream->Read(Action);
-
 	pPlayer->SetAction(Action);
 }
+
 // setPlayerRotation
 void Script_SetPlayerRotation(RakNet::BitStream *bitStream, Packet *packet)
 {
 	CPlayerPed *pPlayer = pGame->FindPlayerPed();
-
 	float playerRot;
 
 	bitStream->Read(playerRot);
-
 	pPlayer->SetRotation(playerRot);
 }
+
 // resetPlayerWeapons
 void Script_ResetWeapons(RakNet::BitStream *bitStream, Packet *packet)
 {
@@ -512,6 +515,7 @@ void Script_ResetWeapons(RakNet::BitStream *bitStream, Packet *packet)
 
 	pPlayer->ClearAllWeapons();
 }
+
 // setArmedWeapon
 void Script_SetArmedWeapon(RakNet::BitStream *bitStream, Packet *packet)
 {
@@ -523,6 +527,7 @@ void Script_SetArmedWeapon(RakNet::BitStream *bitStream, Packet *packet)
 
 	pPlayer->SetArmedWeapon(playerWeapon);
 }
+
 // removePlayerFromVehicle
 void Script_RemoveFromVehicle(RakNet::BitStream *bitStream, Packet *packet)
 {
@@ -530,6 +535,7 @@ void Script_RemoveFromVehicle(RakNet::BitStream *bitStream, Packet *packet)
 
 	pPlayer->ExitCurrentVehicle();
 }
+
 // togglecontrols
 void Script_ToggleControls(RakNet::BitStream *bitStream, Packet *packet)
 {
@@ -541,6 +547,7 @@ void Script_ToggleControls(RakNet::BitStream *bitStream, Packet *packet)
 
 	pPlayer->TogglePlayerControllable(ControlValue);
 }
+
 // send message to client
 void Script_ClientMessage(RakNet::BitStream *bitStream, Packet *packet)
 {
@@ -555,6 +562,7 @@ void Script_ClientMessage(RakNet::BitStream *bitStream, Packet *packet)
 
 	pChatWindow->AddClientMessage(dwColor,(CHAR*)szMessage);
 }
+
 // setworldbounds
 void Script_WorldBounds(RakNet::BitStream *bitStream, Packet *packet)
 {

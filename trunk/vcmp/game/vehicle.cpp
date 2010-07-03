@@ -54,6 +54,7 @@ CVehicle::CVehicle(int iType, float fPosX, float fPosY,
 	ScriptCommand(&set_car_z_angle,dwRetID,fRotation);
 
 	m_pVehicle = GamePool_Vehicle_GetAt(dwRetID);
+	SetEntity((ENTITY_TYPE*)m_pVehicle);
 	m_dwGTAId = dwRetID;
 	
 	m_pVehicle->entity.mat.vPos.Z = fPosZ;
@@ -72,6 +73,20 @@ CVehicle::CVehicle(int iType, float fPosX, float fPosY,
 CVehicle::~CVehicle() 
 {
 	ScriptCommand(&destroy_car,m_dwGTAId);
+}
+
+//-----------------------------------------------------------
+
+VEHICLE_TYPE *CVehicle::GetVehicle()
+{
+	return m_pVehicle;
+}
+
+//-----------------------------------------------------------
+
+void CVehicle::SetVehicle(VEHICLE_TYPE *pVehicle)
+{
+	m_pVehicle = pVehicle;
 }
 
 //-----------------------------------------------------------
@@ -96,14 +111,14 @@ void CVehicle::EnforceWorldBoundries(float fPX, float fZX, float fPY, float fNY)
 	if(!m_pVehicle) return;
 
 	GetMatrix(&matWorld);
-	GetMoveSpeedVector(&vecMoveSpeed);
+	GetMoveSpeed(&vecMoveSpeed);
 
 	if(matWorld.vPos.X > fPX) // greatest X coord check
 	{
 		if(vecMoveSpeed.X != 0.0f) {
 			vecMoveSpeed.X = -0.3f;
 		}
-		SetMoveSpeedVector(vecMoveSpeed);
+		SetMoveSpeed(vecMoveSpeed);
 		return;
 	}
 	else if(matWorld.vPos.X < fZX)  // least X coord check
@@ -111,7 +126,7 @@ void CVehicle::EnforceWorldBoundries(float fPX, float fZX, float fPY, float fNY)
 		if(vecMoveSpeed.X != 0.0f) {
 			vecMoveSpeed.X = 0.3f;
 		}
-		SetMoveSpeedVector(vecMoveSpeed);
+		SetMoveSpeed(vecMoveSpeed);
 		return;
 	}
 	else if(matWorld.vPos.Y > fPY) // Y coord check
@@ -120,7 +135,7 @@ void CVehicle::EnforceWorldBoundries(float fPX, float fZX, float fPY, float fNY)
 			vecMoveSpeed.Y = -0.3f;
 		}
 
-		SetMoveSpeedVector(vecMoveSpeed);
+		SetMoveSpeed(vecMoveSpeed);
 		return;
 	}
 	else if(matWorld.vPos.Y < fNY)
@@ -129,7 +144,7 @@ void CVehicle::EnforceWorldBoundries(float fPX, float fZX, float fPY, float fNY)
 			vecMoveSpeed.Y = 0.3f;
 		}
 
-		SetMoveSpeedVector(vecMoveSpeed);
+		SetMoveSpeed(vecMoveSpeed);
 		return;
 	}
 }
@@ -240,13 +255,6 @@ void CVehicle::VerifyControlState()
 
 //-----------------------------------------------------------
 
-int CVehicle::GetVehicleType()
-{	
-	return m_pVehicle->entity.nModelIndex;
-}
-
-//-----------------------------------------------------------
-
 float CVehicle::GetHealth()
 {	
 	if(m_pVehicle) return m_pVehicle->fHealth;
@@ -269,90 +277,6 @@ void CVehicle::SetColor(int iColor1, int iColor2)
 	if(m_pVehicle)  {
 		m_pVehicle->byteColor1 = (BYTE)iColor1;
 		m_pVehicle->byteColor2 = (BYTE)iColor2;
-	}
-}
-
-//-----------------------------------------------------------
-
-void CVehicle::GetMatrix(PMATRIX4X4 Matrix)
-{
-	if(m_pVehicle) {
-		Matrix->vLookRight.X = m_pVehicle->entity.mat.vLookRight.X;
-		Matrix->vLookRight.Y = m_pVehicle->entity.mat.vLookRight.Y;
-		Matrix->vLookRight.Z = m_pVehicle->entity.mat.vLookRight.Z;
-		Matrix->vLookUp.X = m_pVehicle->entity.mat.vLookUp.X;
-		Matrix->vLookUp.Y = m_pVehicle->entity.mat.vLookUp.Y;
-		Matrix->vLookUp.Z = m_pVehicle->entity.mat.vLookUp.Z;
-		Matrix->vLookAt.X = m_pVehicle->entity.mat.vLookAt.X;
-		Matrix->vLookAt.Y = m_pVehicle->entity.mat.vLookAt.Y;
-		Matrix->vLookAt.Z = m_pVehicle->entity.mat.vLookAt.Z;
-		Matrix->vPos.X = m_pVehicle->entity.mat.vPos.X;
-		Matrix->vPos.Y = m_pVehicle->entity.mat.vPos.Y;
-		Matrix->vPos.Z = m_pVehicle->entity.mat.vPos.Z;
-	}
-}
-
-//-----------------------------------------------------------
-
-void CVehicle::SetMatrix(MATRIX4X4 Matrix)
-{
-	if(m_pVehicle) {
-		m_pVehicle->entity.mat.vLookRight.X = Matrix.vLookRight.X;
-		m_pVehicle->entity.mat.vLookRight.Y = Matrix.vLookRight.Y;
-		m_pVehicle->entity.mat.vLookRight.Z = Matrix.vLookRight.Z;
-		m_pVehicle->entity.mat.vLookUp.X = Matrix.vLookUp.X;
-		m_pVehicle->entity.mat.vLookUp.Y = Matrix.vLookUp.Y;
-		m_pVehicle->entity.mat.vLookUp.Z = Matrix.vLookUp.Z;
-		m_pVehicle->entity.mat.vLookAt.X = Matrix.vLookAt.X;
-		m_pVehicle->entity.mat.vLookAt.Y = Matrix.vLookAt.Y;
-		m_pVehicle->entity.mat.vLookAt.Z = Matrix.vLookAt.Z;
-		m_pVehicle->entity.mat.vPos.X = Matrix.vPos.X;
-		m_pVehicle->entity.mat.vPos.Y = Matrix.vPos.Y;
-		m_pVehicle->entity.mat.vPos.Z = Matrix.vPos.Z;
-	}
-}
-
-//-----------------------------------------------------------
-
-void CVehicle::GetMoveSpeedVector(PVECTOR Vector)
-{
-	if(m_pVehicle) {
-		Vector->X = m_pVehicle->entity.vecMoveSpeed.X;
-		Vector->Y = m_pVehicle->entity.vecMoveSpeed.Y;
-		Vector->Z = m_pVehicle->entity.vecMoveSpeed.Z;
-	}
-}
-
-//-----------------------------------------------------------
-
-void CVehicle::SetMoveSpeedVector(VECTOR Vector)
-{
-	if(m_pVehicle) {
-		m_pVehicle->entity.vecMoveSpeed.X = Vector.X;
-		m_pVehicle->entity.vecMoveSpeed.Y = Vector.Y;
-		m_pVehicle->entity.vecMoveSpeed.Z = Vector.Z;
-	}
-}
-
-//-----------------------------------------------------------
-
-void CVehicle::GetTurnSpeedVector(PVECTOR Vector)
-{
-	if(m_pVehicle) {
-		Vector->X = m_pVehicle->entity.vecTurnSpeed.X;
-		Vector->Y = m_pVehicle->entity.vecTurnSpeed.Y;
-		Vector->Z = m_pVehicle->entity.vecTurnSpeed.Z;
-	}
-}
-
-//-----------------------------------------------------------
-
-void CVehicle::SetTurnSpeedVector(VECTOR Vector)
-{
-	if(m_pVehicle) {
-		m_pVehicle->entity.vecTurnSpeed.X = Vector.X;
-		m_pVehicle->entity.vecTurnSpeed.Y = Vector.Y;
-		m_pVehicle->entity.vecTurnSpeed.Z = Vector.Z;
 	}
 }
 
@@ -424,3 +348,30 @@ BYTE CVehicle::GetMaxPassengers()
 
 //-----------------------------------------------------------
 
+DWORD CVehicle::GetTimeSinceLastDriven()
+{
+	return m_dwTimeSinceLastDriven;
+}
+
+//-----------------------------------------------------------
+
+void CVehicle::SetTimeSinceLastDriven(DWORD dwTime)
+{
+	m_dwTimeSinceLastDriven = dwTime;
+}
+
+//-----------------------------------------------------------
+
+BOOL CVehicle::HasBeenDriven()
+{
+	return m_bHasBeenDriven;
+}
+
+//-----------------------------------------------------------
+
+void CVehicle::SetHasBeenDriven(BOOL bDriven)
+{
+	m_bHasBeenDriven = bDriven;
+}
+
+//-----------------------------------------------------------

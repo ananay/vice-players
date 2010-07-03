@@ -112,7 +112,7 @@ BOOL CVehiclePool::Spawn( BYTE byteVehicleID, BYTE byteVehicleType,
 			m_pVehicles[byteVehicleID]->SetColor(iColor1,iColor2);
 		}
 
-		m_pGTAVehicles[byteVehicleID] = m_pVehicles[byteVehicleID]->m_pVehicle;
+		m_pGTAVehicles[byteVehicleID] = m_pVehicles[byteVehicleID]->GetVehicle();
 		m_bVehicleSlotState[byteVehicleID] = TRUE;
 
 		m_bIsActive[byteVehicleID] = TRUE;
@@ -201,8 +201,8 @@ void CVehiclePool::Process()
 					// code to respawn vehicle after it has been idle for 4 minutes
 					pVehicle->UpdateLastDrivenTime();
 
-					if(pVehicle->m_bHasBeenDriven) {
-						if((dwThisTime - pVehicle->m_dwTimeSinceLastDriven) > 250000) {
+					if(pVehicle->HasBeenDriven()) {
+						if((dwThisTime - pVehicle->GetTimeSinceLastDriven()) > 250000) {
 							SetForRespawn(x);
 						}
 					}						

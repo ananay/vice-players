@@ -45,11 +45,9 @@ BYTE   *pbyteDriveByRight = (BYTE *)0x7E4819;
 
 void GameKeyStatesInit()
 {
-	int x=0;
 	memset(&GcsLocalPlayerKeys,0,sizeof(GTA_CONTROLSET));
-	while(x!=MAX_PLAYERS) {		
-		memset(&GcsRemotePlayerKeys[x],0,sizeof(GTA_CONTROLSET));
-		x++;
+	for(int i = 0; i < MAX_PLAYERS; i++) {
+		memset(&GcsRemotePlayerKeys[i],0,sizeof(GTA_CONTROLSET));
 	}
 }
 

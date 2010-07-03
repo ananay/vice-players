@@ -27,37 +27,38 @@
 #pragma once
 
 #include "game.h"
+#include "entity.h"
 
 //-----------------------------------------------------------
 
-class CVehicle
+class CVehicle : public CEntity
 {
+private:
+	VEHICLE_TYPE	*m_pVehicle;
+	DWORD			m_dwGTAId;
+	BOOL			m_bIsInvulnerable;
+	DWORD			m_dwTimeSinceLastDriven;
+	BOOL			m_bHasBeenDriven;
 
 public:
-
 	CVehicle(int iType, float fPosX, float fPosY,
 			 float fPosZ, float fRotation = 0.0f);
 
 	~CVehicle();
 
+	VEHICLE_TYPE *GetVehicle();
+	void SetVehicle(VEHICLE_TYPE *pVehicle);
+
 	float GetDistanceFromLocalPlayerPed();
 	void  SetLockedState(int iLocked);
 	void  UpdateLastDrivenTime();
 
-	int   GetVehicleType();
 	BYTE  GetVehicleSubtype();
 
 	float GetHealth();
 	void  SetHealth(float fHealth);
 	void  SetColor(int iColor1, int iColor2);
 	void  VerifyControlState();
-
-	void  GetMatrix(PMATRIX4X4 Matrix);
-	void  SetMatrix(MATRIX4X4 Matrix);
-	void  GetMoveSpeedVector(PVECTOR Vector);
-	void  SetMoveSpeedVector(VECTOR Vector);
-	void  GetTurnSpeedVector(PVECTOR Vector);
-	void  SetTurnSpeedVector(VECTOR Vector);
 
 	BOOL  HasSunk();
 	BOOL  IsDriverLocalPlayer();
@@ -71,16 +72,16 @@ public:
 	BYTE  GetEntityFlags();
 	void  SetEnitityFlags(BYTE byteEntityFlags);
 
-	void SetInvulnerable(BOOL bInv);
-	BOOL IsInvulnerable() { return m_bIsInvulnerable; };
+	void  SetInvulnerable(BOOL bInv);
+	BOOL  IsInvulnerable() { return m_bIsInvulnerable; };
+
+	DWORD GetTimeSinceLastDriven();
+	void  SetTimeSinceLastDriven(DWORD dwTime);
+
+	BOOL  HasBeenDriven();
+	void  SetHasBeenDriven(BOOL bDriven);
 
 	BOOL IsOkToRespawn();
-		
-	VEHICLE_TYPE	*m_pVehicle;
-	DWORD		m_dwGTAId;
-	BOOL		m_bIsInvulnerable;
-	DWORD		m_dwTimeSinceLastDriven;
-	BOOL		m_bHasBeenDriven;
 };
 
 //-----------------------------------------------------------

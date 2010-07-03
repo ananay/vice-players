@@ -53,6 +53,7 @@ CPlayerPed::CPlayerPed()
 {
 	m_dwGTAId = 1; // 0x001
 	m_pPed = GamePool_FindPlayerPed();
+	SetEntity((ENTITY_TYPE*)m_pPed);
 	m_bytePlayerNumber = 0;
 }
 
@@ -66,30 +67,57 @@ CPlayerPed::CPlayerPed( int iPlayerNumber, int iModel, float fX,
 
 	m_pPed=0;
 	m_dwGTAId=0;
+	m_bytePlayerNumber = (BYTE)iPlayerNumber;
 
+	Create(iModel, fX, fY, fZ, fRotation);
+}
+
+//-----------------------------------------------------------
+
+CPlayerPed::~CPlayerPed()
+{
+
+}
+
+//-----------------------------------------------------------
+
+PED_TYPE *CPlayerPed::GetPed()
+{
+	return m_pPed;
+}
+
+//-----------------------------------------------------------
+
+void CPlayerPed::SetPed(PED_TYPE *pPed)
+{
+	m_pPed = pPed;
+}
+
+//-----------------------------------------------------------
+
+void CPlayerPed::Create(int iModel, float fX, float fY,float fZ,float fRotation)
+{
 	if((iModel < 107) && !pGame->IsModelLoaded(iModel)) {
 		pGame->RequestModel(iModel);
 		pGame->LoadRequestedModels();
 		while(!pGame->IsModelLoaded(iModel)) { Sleep(1); }
 	}
 
-	ScriptCommand(&create_player, &iPlayerNumber, fX, fY, fZ, &dwSystemAddress);
-	ScriptCommand(&create_actor_from_player,&iPlayerNumber,&dwSystemAddress);
+	DWORD dwPlayerHandle;
+	int iPlayerNumber = m_bytePlayerNumber;
+	ScriptCommand(&create_player, &iPlayerNumber, fX, fY, fZ, &dwPlayerHandle);
+	ScriptCommand(&create_actor_from_player,&iPlayerNumber,&dwPlayerHandle);
 	ScriptCommand(&toggle_player_infinite_run,iPlayerNumber,1);
-	SetZAngle(fRotation);
-	
-	m_dwGTAId = dwSystemAddress;
+	SetRotation(fRotation);
+
+	m_dwGTAId = dwPlayerHandle;
 	m_pPed = GamePool_Ped_GetAt(m_dwGTAId);
-	m_bytePlayerNumber = (BYTE)iPlayerNumber;
+	SetEntity((ENTITY_TYPE*)m_pPed);	
 	SetPlayerPedPtrRecord(m_bytePlayerNumber,(DWORD)m_pPed);
 	ScriptCommand(&set_actor_immunities,m_dwGTAId,1,1,1,1,1);
 
 	SetModel(iModel);
 }
-
-//-----------------------------------------------------------
-
-CPlayerPed::~CPlayerPed(){}
 
 //-----------------------------------------------------------
 
@@ -100,6 +128,7 @@ void CPlayerPed::Destroy()
 	_asm mov ebx, [ecx] ; vtable
 	_asm push 1
 	_asm call [ebx+8] ; destroy
+	SetEntity(NULL);
 	m_pPed = NULL;
 }
 
@@ -328,14 +357,14 @@ BOOL CPlayerPed::EnforceWorldBoundries(float fPX, float fZX, float fPY, float fN
 	if(!m_pPed) return FALSE;
 
 	GetMatrix(&matWorld);
-	GetMoveSpeedVector(&vecMoveSpeed);
+	GetMoveSpeed(&vecMoveSpeed);
 
 	if(matWorld.vPos.X > fPX) // greatest X coord check
 	{
 		if(vecMoveSpeed.X != 0.0f) {
 			vecMoveSpeed.X = -0.25f;
 		}
-		SetMoveSpeedVector(vecMoveSpeed);
+		SetMoveSpeed(vecMoveSpeed);
 		return TRUE;
 	}
 	else if(matWorld.vPos.X < fZX)  // least X coord check
@@ -343,7 +372,7 @@ BOOL CPlayerPed::EnforceWorldBoundries(float fPX, float fZX, float fPY, float fN
 		if(vecMoveSpeed.X != 0.0f) {
 			vecMoveSpeed.X = 0.25f;
 		}
-		SetMoveSpeedVector(vecMoveSpeed);
+		SetMoveSpeed(vecMoveSpeed);
 		return TRUE;
 	}
 	else if(matWorld.vPos.Y > fPY) // Y coord check
@@ -352,7 +381,7 @@ BOOL CPlayerPed::EnforceWorldBoundries(float fPX, float fZX, float fPY, float fN
 			vecMoveSpeed.Y = -0.25f;
 		}
 
-		SetMoveSpeedVector(vecMoveSpeed);
+		SetMoveSpeed(vecMoveSpeed);
 		return TRUE;
 	}
 	else if(matWorld.vPos.Y < fNY)
@@ -361,7 +390,7 @@ BOOL CPlayerPed::EnforceWorldBoundries(float fPX, float fZX, float fPY, float fN
 			vecMoveSpeed.Y = 0.25f;
 		}
 
-		SetMoveSpeedVector(vecMoveSpeed);
+		SetMoveSpeed(vecMoveSpeed);
 		return TRUE;
 	}
 
@@ -485,15 +514,6 @@ void CPlayerPed::Say(UINT uiNum)
 
 //-----------------------------------------------------------
 
-void CPlayerPed::SetZAngle(float z)
-{
-	if(m_pPed) {
-		ScriptCommand(&set_player_z_angle,m_bytePlayerNumber,z);
-	}
-}
-
-//-----------------------------------------------------------
-
 float CPlayerPed::GetHealth()
 {	
 	return m_pPed->fHealth;
@@ -569,15 +589,19 @@ BOOL CPlayerPed::IsInVehicle()
 
 float CPlayerPed::GetRotation()
 {
-	return (m_pPed->fRotation1);
+	//return (m_pPed->fRotation1);
+	float fRotation;
+	ScriptCommand(&get_player_z_angle, m_bytePlayerNumber, &fRotation);
+	return fRotation;
 }
 
 //-----------------------------------------------------------
 
 void CPlayerPed::SetRotation(float fRotation)
 {
-	m_pPed->fRotation1 = fRotation;
-	m_pPed->fRotation2 = fRotation;
+	//m_pPed->fRotation1 = fRotation;
+	//m_pPed->fRotation2 = fRotation;
+	ScriptCommand(&set_player_z_angle, m_bytePlayerNumber, fRotation);
 }
 
 //-----------------------------------------------------------
@@ -609,78 +633,6 @@ VEHICLE_TYPE * CPlayerPed::GetGtaVehicle()
 
 //-----------------------------------------------------------
 
-void CPlayerPed::GetMatrix(PMATRIX4X4 Matrix)
-{
-	Matrix->vLookRight.X = m_pPed->entity.mat.vLookRight.X;
-	Matrix->vLookRight.Y = m_pPed->entity.mat.vLookRight.Y;
-	Matrix->vLookRight.Z = m_pPed->entity.mat.vLookRight.Z;
-	Matrix->vLookUp.X = m_pPed->entity.mat.vLookUp.X;
-	Matrix->vLookUp.Y = m_pPed->entity.mat.vLookUp.Y;
-	Matrix->vLookUp.Z = m_pPed->entity.mat.vLookUp.Z;
-	Matrix->vLookAt.X = m_pPed->entity.mat.vLookAt.X;
-	Matrix->vLookAt.Y = m_pPed->entity.mat.vLookAt.Y;
-	Matrix->vLookAt.Z = m_pPed->entity.mat.vLookAt.Z;
-	Matrix->vPos.X = m_pPed->entity.mat.vPos.X;
-	Matrix->vPos.Y = m_pPed->entity.mat.vPos.Y;
-	Matrix->vPos.Z = m_pPed->entity.mat.vPos.Z;
-}
-
-//-----------------------------------------------------------
-
-void CPlayerPed::SetMatrix(MATRIX4X4 Matrix)
-{
-	m_pPed->entity.mat.vLookRight.X = Matrix.vLookRight.X;
-	m_pPed->entity.mat.vLookRight.Y = Matrix.vLookRight.Y;
-	m_pPed->entity.mat.vLookRight.Z = Matrix.vLookRight.Z;
-	m_pPed->entity.mat.vLookUp.X = Matrix.vLookUp.X;
-	m_pPed->entity.mat.vLookUp.Y = Matrix.vLookUp.Y;
-	m_pPed->entity.mat.vLookUp.Z = Matrix.vLookUp.Z;
-	m_pPed->entity.mat.vLookAt.X = Matrix.vLookAt.X;
-	m_pPed->entity.mat.vLookAt.Y = Matrix.vLookAt.Y;
-	m_pPed->entity.mat.vLookAt.Z = Matrix.vLookAt.Z;
-	m_pPed->entity.mat.vPos.X = Matrix.vPos.X;
-	m_pPed->entity.mat.vPos.Y = Matrix.vPos.Y;
-	m_pPed->entity.mat.vPos.Z = Matrix.vPos.Z;
-}
-
-//-----------------------------------------------------------
-
-void CPlayerPed::GetMoveSpeedVector(PVECTOR Vector)
-{
-	Vector->X = m_pPed->entity.vecMoveSpeed.X;
-	Vector->Y = m_pPed->entity.vecMoveSpeed.Y;
-	Vector->Z = m_pPed->entity.vecMoveSpeed.Z;
-}
-
-//-----------------------------------------------------------
-
-void CPlayerPed::SetMoveSpeedVector(VECTOR Vector)
-{
-	m_pPed->entity.vecMoveSpeed.X = Vector.X;
-	m_pPed->entity.vecMoveSpeed.Y = Vector.Y;
-	m_pPed->entity.vecMoveSpeed.Z = Vector.Z;
-}
-
-//-----------------------------------------------------------
-
-void CPlayerPed::GetTurnSpeedVector(PVECTOR Vector)
-{
-	Vector->X = m_pPed->entity.vecTurnSpeed.X;
-	Vector->Y = m_pPed->entity.vecTurnSpeed.Y;
-	Vector->Z = m_pPed->entity.vecTurnSpeed.Z;
-}
-
-//-----------------------------------------------------------
-
-void CPlayerPed::SetTurnSpeedVector(VECTOR Vector)
-{
-	m_pPed->entity.vecTurnSpeed.X = Vector.X;
-	m_pPed->entity.vecTurnSpeed.Y = Vector.Y;
-	m_pPed->entity.vecTurnSpeed.Z = Vector.Z;
-}
-
-//-----------------------------------------------------------
-
 void CPlayerPed::GiveWeapon(int iWeaponID, int iAmmo)
 {
 	int iModelID = GameGetWeaponModelFromWeapon(iWeaponID);
@@ -700,9 +652,7 @@ void CPlayerPed::GiveWeapon(int iWeaponID, int iAmmo)
 void CPlayerPed::CheckAndRepairInvisProblems()
 {
 	if( (m_pPed->byteAction != ACTION_EXITING_VEHICLE) &&
-		((m_pPed->byteIsInVehicle) || (m_pPed->byteAction == 50)) ) {
-		// action 50 is driving vehicle.
-
+		((m_pPed->byteIsInVehicle) || (m_pPed->byteAction == ACTION_DRIVING_VEHICLE)) ) {
 		m_pPed->byteIsInVehicle = 0;
 		m_pPed->byteAction = 1;
 	}
@@ -886,13 +836,6 @@ void CPlayerPed::SetModel(int iModel)
 		_asm mov edx, ADDR_SET_ACTOR_SKIN
 		_asm call edx
 	}
-}
-
-//-----------------------------------------------------------
-
-int CPlayerPed::GetModel()
-{
-	return m_pPed->entity.nModelIndex;	
 }
 
 //-----------------------------------------------------------

@@ -25,8 +25,6 @@
 // Globals
 const FARPROC ProcessOneCommand	= (FARPROC)0x44FBE0;	// tnx for the name CyQ.
 
-/*	The four offsets below need modifying for vice city 1.1.
-	This is done dynamically in Custom.cpp inside CustomInitialize()	*/
 DWORD SCRIPT_BASE = 0x821280;	// Script memory location in v1.0.
 GAME_SCRIPT_THREAD gst;				// Structure needed to call ProcessOneCommand. [mov ecx, offset gst]
 BYTE ScriptBuf[MAX_SCRIPT_SIZE];	// Buffer for generating our script stub.
@@ -210,6 +208,5 @@ int ScriptCommand(const SCRIPT_COMMAND* ScriptCommand, ...)
 		return ExecuteScriptBuf();	// If we didn't have any variables, just return.
 	}
 }
-
 
 //--------------------------------------------------------------------------------
