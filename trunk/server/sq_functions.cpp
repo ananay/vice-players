@@ -90,13 +90,13 @@ int sq_setPlayerZAngle(SQVM * pVM)
 {
 	int playerSystemAddress;
 
-	VECTOR pZVec;
+	float fZAngle;
 
 	sq_getinteger(pVM, -2, &playerSystemAddress);
-	sq_getfloat(pVM, -1, &pZVec.Z);
+	sq_getfloat(pVM, -1, &fZAngle);
 
 	RakNet::BitStream bsSend;
-	bsSend.Write(pZVec.Z);
+	bsSend.Write(fZAngle);
 	pNetGame->GetRPC4()->Call("Script_SetPlayerZAngle",&bsSend,HIGH_PRIORITY,RELIABLE,0,pNetGame->GetRakPeer()->GetSystemAddressFromIndex(playerSystemAddress),false);
 
 	sq_pushbool(pVM, true);
