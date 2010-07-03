@@ -40,6 +40,7 @@ private:
 public:
 
 	int Init();
+	int addPlayerClass(int team, int model, float x, float y, float z, float rot, int weapon1, int ammo1, int weapon2, int ammo2, int weapon3, int ammo3);
 	void HandleClientJoin(BYTE byteSystemAddress);
 	BOOL HandleSpawnClassRequest(BYTE byteSystemAddress,int iSpawnType);
 	

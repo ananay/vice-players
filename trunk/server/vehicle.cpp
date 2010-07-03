@@ -48,7 +48,7 @@ CVehicle::CVehicle( BYTE byteModel, VECTOR *vecPos,
 	m_SpawnInfo.fRotation = fRotation;
 	m_SpawnInfo.vecPos.X = vecPos->X;
 	m_SpawnInfo.vecPos.Y = vecPos->Y;
-	m_SpawnInfo.vecPos.Z = vecPos->Z + (float)1.1; // the Z-coord fixer
+	m_SpawnInfo.vecPos.Z = vecPos->Z;
 	m_SpawnInfo.iColor1 = iColor1;
 	m_SpawnInfo.iColor2 = iColor2;
 

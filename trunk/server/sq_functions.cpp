@@ -346,6 +346,32 @@ int sq_createVehicle(SQVM * pVM)
 	return 1;
 }
 
+// addPlayerClass
+int sq_addPlayerClass(SQVM * pVM)
+{
+	int team, model, weapon1, weapon2, weapon3, ammo1, ammo2, ammo3;
+	float x, y, z, rot;
+	sq_getinteger(pVM, -12, &team);
+	sq_getinteger(pVM, -11, &model);
+	sq_getfloat(pVM, -10, &x);
+	sq_getfloat(pVM, -9, &y);
+	sq_getfloat(pVM, -8, &z);
+	sq_getfloat(pVM, -7, &rot);
+	sq_getinteger(pVM, -6, &weapon1);
+	sq_getinteger(pVM, -5, &ammo1);
+	sq_getinteger(pVM, -4, &weapon2);
+	sq_getinteger(pVM, -3, &ammo2);
+	sq_getinteger(pVM, -2, &weapon3);
+	sq_getinteger(pVM, -1, &ammo3);
+	int classid = pNetGame->GetGameLogic()->addPlayerClass(team, model, x, y, z, rot,
+								weapon1, ammo1,
+								weapon2, ammo2,
+								weapon3, ammo3);
+
+	sq_pushinteger(pVM, classid);
+	return 1;
+}
+
 #define _DECL_FUNC(name,nparams,pmask) {_SC(#name),sq_##name,nparams,pmask}
 static SQRegFunction vcmp_funcs[]={
 	// put functions here
@@ -353,6 +379,7 @@ static SQRegFunction vcmp_funcs[]={
 	_DECL_FUNC(getPlayerName, 2, _SC(".n")),
 	_DECL_FUNC(getPlayerIP, 2, _SC(".n")),
 	_DECL_FUNC(createVehicle, 8, _SC(".nnnnnnn")),
+	_DECL_FUNC(addPlayerClass, 13, _SC(".nnnnnnnnnnnn")),
 	_DECL_FUNC(setPlayerHealth, 3, _SC(".nn")),
 	_DECL_FUNC(setPlayerArmour, 3, _SC(".nn")),
 	_DECL_FUNC(sendPlayerMessage, 4, _SC(".iis")),

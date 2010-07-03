@@ -35,32 +35,41 @@ extern CConfig *pServerConfig;
 
 int CGameModeGeneric::Init()
 {
-	// Load up all the spawns.
-	int iSpawnConfigCount = pServerConfig->GetConfigArrayCount("CLASS");
-	int x=1;
-	char * szSpawnConf;
-
-	while(x<=iSpawnConfigCount) {
-		szSpawnConf = pServerConfig->GetConfigEntryAsString("CLASS",x);
-		if(szSpawnConf != NULL) {
-			sscanf(szSpawnConf,"%d%u%f%f%f%f%d%d%d%d%d%d",
-				&m_AvailableSpawns[x - 1].byteTeam,
-				&m_AvailableSpawns[x - 1].byteSkin,
-				&m_AvailableSpawns[x - 1].vecPos.X,
-				&m_AvailableSpawns[x - 1].vecPos.Y,
-				&m_AvailableSpawns[x - 1].vecPos.Z,
-				&m_AvailableSpawns[x - 1].fRotation,
-				&m_AvailableSpawns[x - 1].iSpawnWeapons[0],
-				&m_AvailableSpawns[x - 1].iSpawnWeaponsAmmo[0],
-				&m_AvailableSpawns[x - 1].iSpawnWeapons[1],
-				&m_AvailableSpawns[x - 1].iSpawnWeaponsAmmo[1],
-				&m_AvailableSpawns[x - 1].iSpawnWeapons[2],
-				&m_AvailableSpawns[x - 1].iSpawnWeaponsAmmo[2]);
-		}
-		x++;
+	int i = 0;
+	while(i<MAX_SPAWNS)
+	{
+		m_AvailableSpawns[i].loaded = false;
+		i++;
 	}
 
-	return iSpawnConfigCount;
+	return true;
+}
+
+//----------------------------------------------------
+
+int CGameModeGeneric::addPlayerClass(int team, int model, float x, float y, float z, float rot, int weapon1, int ammo1, int weapon2, int ammo2, int weapon3, int ammo3)
+{
+	for(int i = 0; i < MAX_SPAWNS; i++)
+	{
+		if(m_AvailableSpawns[i].loaded == false)
+		{
+			m_AvailableSpawns[i].byteTeam = team;
+			m_AvailableSpawns[i].byteSkin = model;
+			m_AvailableSpawns[i].vecPos.X = x;
+			m_AvailableSpawns[i].vecPos.Y = y;
+			m_AvailableSpawns[i].vecPos.Z = z;
+			m_AvailableSpawns[i].fRotation = rot;
+			m_AvailableSpawns[i].iSpawnWeapons[0] = weapon1;
+			m_AvailableSpawns[i].iSpawnWeaponsAmmo[0] = ammo1;
+			m_AvailableSpawns[i].iSpawnWeapons[1] = weapon2;
+			m_AvailableSpawns[i].iSpawnWeaponsAmmo[1] = ammo2;
+			m_AvailableSpawns[i].iSpawnWeapons[2] = weapon3;
+			m_AvailableSpawns[i].iSpawnWeaponsAmmo[2] = ammo3;
+			m_AvailableSpawns[i].loaded = true;
+			return i;
+		}
+	}
+	return false;
 }
 
 //----------------------------------------------------
