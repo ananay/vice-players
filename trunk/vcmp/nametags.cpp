@@ -32,8 +32,16 @@ extern CNetGame *pNetGame;
 
 DWORD HealthBarOldStateBlock = 0;
 DWORD HealthBarNewStateBlock = 0;
+DWORD ArmourBarOldStateBlock = 0;
+DWORD ArmourBarNewStateBlock = 0;
 
 struct HealthBarVertices_s
+{
+	float x, y, z;
+	D3DCOLOR c;
+};
+
+struct ArmourBarVertices_s
 {
 	float x, y, z;
 	D3DCOLOR c;
@@ -46,7 +54,45 @@ HealthBarVertices_s HealthBarBDRVertices[4] = {
 	{ 0.3f,   0.03f, 0.0f, D3DCOLOR_XRGB(0, 0, 0)},
 	{ 0.3f,  -0.03f, 0.0f, D3DCOLOR_XRGB(0, 0, 0)}
 };
+HealthBarVertices_s HealthBarBGVertices[4] = {
+	//  x     y      z     rhw   c
+	{-0.29f, -0.02f, 0.0f, D3DCOLOR_XRGB(33, 33, 33)},  // 1 . . 4
+	{-0.29f,  0.02f, 0.0f, D3DCOLOR_XRGB(33, 33, 33)},  // 2 . . 3
+	{ 0.29f,  0.02f, 0.0f, D3DCOLOR_XRGB(33, 33, 33)},
+	{ 0.29f, -0.02f, 0.0f, D3DCOLOR_XRGB(33, 33, 33)}
+};
 
+HealthBarVertices_s HealthBarVertices[4] = {
+	//  x     y      z     rhw   c
+	{-0.29f, -0.02f, 0.0f, D3DCOLOR_XRGB(255, 0, 0)},  // 1 . . 4
+	{-0.29f,  0.02f, 0.0f, D3DCOLOR_XRGB(255, 0, 0)},  // 2 . . 3
+	{ 0.29f,  0.02f, 0.0f, D3DCOLOR_XRGB(255, 0, 0)},
+	{ 0.29f, -0.02f, 0.0f, D3DCOLOR_XRGB(255, 0, 0)}
+};
+
+ArmourBarVertices_s ArmourBarBDRVertices[4] = {
+	//  x     y      z     rhw   c
+	{-0.3f,  -0.03f, 0.0f, D3DCOLOR_XRGB(0, 0, 0)},  // 1 . . 4
+	{-0.3f,   0.03f, 0.0f, D3DCOLOR_XRGB(0, 0, 0)},  // 2 . . 3
+	{ 0.3f,   0.03f, 0.0f, D3DCOLOR_XRGB(0, 0, 0)},
+	{ 0.3f,  -0.03f, 0.0f, D3DCOLOR_XRGB(0, 0, 0)}
+};
+ArmourBarVertices_s ArmourBarBGVertices[4] = {
+	//  x     y      z     rhw   c
+	{-0.29f, -0.02f, 0.0f, D3DCOLOR_XRGB(33, 33, 33)},  // 1 . . 4
+	{-0.29f,  0.02f, 0.0f, D3DCOLOR_XRGB(33, 33, 33)},  // 2 . . 3
+	{ 0.29f,  0.02f, 0.0f, D3DCOLOR_XRGB(33, 33, 33)},
+	{ 0.29f, -0.02f, 0.0f, D3DCOLOR_XRGB(33, 33, 33)}
+};
+
+ArmourBarVertices_s ArmourBarVertices[4] = {
+	//  x     y      z     rhw   c
+	{-0.29f, -0.02f, 0.0f, D3DCOLOR_XRGB(125, 125, 125)},  // 1 . . 4
+	{-0.29f,  0.02f, 0.0f, D3DCOLOR_XRGB(125, 125, 125)},  // 2 . . 3
+	{ 0.29f,  0.02f, 0.0f, D3DCOLOR_XRGB(125, 125, 125)},
+	{ 0.29f, -0.02f, 0.0f, D3DCOLOR_XRGB(125, 125, 125)}
+};
+/*
 HealthBarVertices_s HealthBarBGVertices[4] = {
 	//  x     y      z     rhw   c
 	{-0.29f, -0.02f, 0.0f, D3DCOLOR_XRGB(33, 33, 33)},  // 1 . . 4
@@ -62,7 +108,7 @@ HealthBarVertices_s HealthBarVertices[4] = {
 	{ 0.29f,  0.02f, 0.0f, D3DCOLOR_XRGB(0, 255, 0)},
 	{ 0.29f, -0.02f, 0.0f, D3DCOLOR_XRGB(0, 255, 0)}
 };
-
+*/
 D3DMATRIX matView;
 CBBFont* bbfont;
 
@@ -182,12 +228,28 @@ void CNameTags::Draw()
 						m_pD3DDevice->SetTransform(D3DTS_WORLD, &matTransposed); 
 
 						float Health = Player->GetReportedHealth(); 
+						float Armour = Player->GetReportedArmour();
+
 						if(Health > 100.0f) Health = 100.0f; 
+						if(Armour > 100.0f) Armour = 100.0f; 
 
 						HealthBarBGVertices[0].x = HealthBarBGVertices[1].x = (0.0058f * Health) - 0.29f; 
 						m_pD3DDevice->DrawPrimitiveUP(D3DPT_TRIANGLEFAN, 2, HealthBarBDRVertices, sizeof(HealthBarVertices_s)); 
 						m_pD3DDevice->DrawPrimitiveUP(D3DPT_TRIANGLEFAN, 2, HealthBarVertices,    sizeof(HealthBarVertices_s)); 
 						m_pD3DDevice->DrawPrimitiveUP(D3DPT_TRIANGLEFAN, 2, HealthBarBGVertices,  sizeof(HealthBarVertices_s)); 
+
+						if(Armour < 1.0f)
+						{
+							matTransposed._41 = vPos.X; 
+							matTransposed._42 = vPos.Y; 
+							matTransposed._43 = vPos.Z + 1.1f; 
+							m_pD3DDevice->SetTransform(D3DTS_WORLD, &matTransposed);
+
+							ArmourBarBGVertices[0].x = ArmourBarBGVertices[1].x = (0.0058f * Armour) - 0.29f; 
+							m_pD3DDevice->DrawPrimitiveUP(D3DPT_TRIANGLEFAN, 2, ArmourBarBDRVertices, sizeof(ArmourBarVertices_s)); 
+							m_pD3DDevice->DrawPrimitiveUP(D3DPT_TRIANGLEFAN, 2, ArmourBarVertices,    sizeof(ArmourBarVertices_s)); 
+							m_pD3DDevice->DrawPrimitiveUP(D3DPT_TRIANGLEFAN, 2, ArmourBarBGVertices,  sizeof(ArmourBarVertices_s)); 
+						}
 
 						if(bbfont) { 
 							bbfont->Begin(); 
