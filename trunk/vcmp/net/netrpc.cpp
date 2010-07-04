@@ -606,6 +606,15 @@ void Script_SetVehicleColor(RakNet::BitStream *bitStream, Packet *packet)
 	pVehicle->SetColor(color1, color2);
 }
 
+// SetVehicleColor
+void Script_DestroyVehicle(RakNet::BitStream *bitStream, Packet *packet)
+{
+	BYTE vehicle;
+	bitStream->Read(vehicle);
+	
+	pNetGame->GetVehiclePool()->Delete(vehicle);
+}
+
 void RegisterRPCs()
 {
 	pNetGame->GetRPC4()->RegisterFunction("ServerJoin",ServerJoin);
@@ -640,6 +649,7 @@ void RegisterRPCs()
 	pNetGame->GetRPC4()->RegisterFunction("Script_showMarkersForPlayer",Script_showMarkersForPlayer);
 	pNetGame->GetRPC4()->RegisterFunction("Script_SetVehicleHealth",Script_SetVehicleHealth);
 	pNetGame->GetRPC4()->RegisterFunction("Script_SetVehicleColor",Script_SetVehicleColor);
+	pNetGame->GetRPC4()->RegisterFunction("Script_DestroyVehicle",Script_DestroyVehicle);
 
 }
 
@@ -679,6 +689,7 @@ void UnRegisterRPCs()
 	pNetGame->GetRPC4()->UnregisterFunction("Script_showMarkersForPlayer");
 	pNetGame->GetRPC4()->UnregisterFunction("Script_SetVehicleHealth");
 	pNetGame->GetRPC4()->UnregisterFunction("Script_SetVehicleColor");
+	pNetGame->GetRPC4()->UnregisterFunction("Script_DestroyVehicle");
 }
 
 //----------------------------------------------------

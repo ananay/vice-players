@@ -55,7 +55,7 @@ public:
 	BOOL					m_bHasHadUpdate;
 
 	CVehicle(BYTE byteModel,VECTOR *vecPos,float fRotation,int iColor1,int iColor2);
-	~CVehicle(){};
+	~CVehicle();
 
 	void SetHealth(float newHealth);
 	void SetColor(int color1, int color2);

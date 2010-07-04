@@ -65,6 +65,13 @@ function onPlayerCommand(playerid, cmdtext)
 		setVehicleColor(car, 5, 5);
 		
 	}
+	if(cmd[0] == "/destroycar")
+	{
+		local car = getPlayerVehicleID(playerid);
+		if(car == false) return 0;
+		destroyVehicle(car);
+		
+	}
 	if(cmd[0] == "/mypos")
 	{
 		local pos = getPlayerPos(playerid);
