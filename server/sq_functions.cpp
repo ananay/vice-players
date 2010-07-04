@@ -472,6 +472,24 @@ int sq_isPlayerInVehicle(SQVM * pVM)
 	return 1;
 }
 
+// getPlayerVehicleID
+int sq_getPlayerVehicleID(SQVM * pVM)
+{
+	int playerSystemAddress;
+	sq_getinteger(pVM, -1, &playerSystemAddress);
+
+	CPlayer *pPlayer = pNetGame->GetPlayerPool()->GetAt(playerSystemAddress);
+	if(pPlayer->IsInVehicle())
+	{
+		BYTE vehID = pPlayer->GetVehicleID();
+		sq_pushinteger(pVM, vehID);
+	}
+	else
+		sq_pushbool(pVM, false);
+
+	return 1;
+}
+
 // setVehicleColor
 int sq_setVehicleColor(SQVM * pVM)
 {
@@ -505,6 +523,17 @@ int sq_createVehicle(SQVM * pVM)
 	CVehicle *pVehicle = pNetGame->GetVehiclePool()->GetAt(vehID);
 	pVehicle->SpawnForWorld();
 	sq_pushinteger(pVM, vehID);
+	return 1;
+}
+
+int sq_destroyVehicle(SQVM * pVM)
+{
+	int byteVehicle;
+	sq_getinteger(pVM, -1, &byteVehicle);
+
+	pNetGame->GetVehiclePool()->Delete(byteVehicle);
+	sq_pushbool(pVM, true);
+
 	return 1;
 }
 
@@ -543,6 +572,7 @@ static SQRegFunction vcmp_funcs[]={
 	_DECL_FUNC(getPlayerName, 2, _SC(".n")),
 	_DECL_FUNC(getPlayerIP, 2, _SC(".n")),
 	_DECL_FUNC(createVehicle, 8, _SC(".nnnnnnn")),
+	_DECL_FUNC(destroyVehicle, 2, _SC(".n")),
 	_DECL_FUNC(addPlayerClass, 13, _SC(".nnnnnnnnnnnn")),
 	_DECL_FUNC(setPlayerHealth, 3, _SC(".nn")),
 	_DECL_FUNC(setPlayerArmour, 3, _SC(".nn")),
@@ -555,6 +585,7 @@ static SQRegFunction vcmp_funcs[]={
 	_DECL_FUNC(setPlayerArmedWeapon, 3, _SC(".n")),
 	//_DECL_FUNC(sendMessageAsPlayer, 3, _SC(".is")),
 	_DECL_FUNC(givePlayerWeapon, 4, _SC(".iii")),
+	_DECL_FUNC(resetPlayerWeapons, 2, _SC(".n")),
 	_DECL_FUNC(setPlayerRotation, 3, _SC(".nn")),
 	_DECL_FUNC(setPlayerSkin, 3, _SC(".nn")),
 	_DECL_FUNC(setPlayerPos, 5, _SC(".nnnn")),
@@ -567,6 +598,7 @@ static SQRegFunction vcmp_funcs[]={
 	_DECL_FUNC(isPlayerInVehicle, 2, _SC(".n")),
 	_DECL_FUNC(setVehicleHealth, 3, _SC(".nn")),
 	_DECL_FUNC(setVehicleColor, 4, _SC(".nnn")),
+	_DECL_FUNC(getPlayerVehicleID, 2, _SC(".n")),
 	{0,0}
 };
 

@@ -68,6 +68,18 @@ CVehicle::CVehicle( BYTE byteModel, VECTOR *vecPos,
 	m_fHealth = 1000.0f;
 }
 
+CVehicle::~CVehicle()
+{
+	RakNet::BitStream bsSend;
+	bsSend.Write(m_byteVehicleID);
+	CPlayerPool * pPlayerPool = pNetGame->GetPlayerPool();
+	for(BYTE i = 0; i < MAX_PLAYERS; i++) {
+		if(pPlayerPool->GetSlotState(i)) {
+			pNetGame->GetRPC4()->Call("Script_DestroyVehicle",&bsSend,HIGH_PRIORITY,RELIABLE,0,pNetGame->GetRakPeer()->GetSystemAddressFromIndex(i),false);
+		}
+	}
+}
+
 //----------------------------------------------------
 // Updates our stored data structures for this
 // network vehicle.
