@@ -76,6 +76,7 @@ public:
 	int GetScore(BYTE byteSystemAddress) { return m_iPlayerScore[byteSystemAddress]; };
 
 	BOOL IsNickInUse(PCHAR szNick);
+	BOOL IsConnected(BYTE byteSystemAddress);
 
 	int GetPlayerCount() {
 		BYTE x=0,count=0;

@@ -231,3 +231,12 @@ BOOL CPlayerPool::IsNickInUse(PCHAR szNick)
 }
 
 //----------------------------------------------------
+
+BOOL CPlayerPool::IsConnected(BYTE byteSystemAddress)
+{
+	if(!GetSlotState(byteSystemAddress) || !m_pPlayers[byteSystemAddress])
+	{
+		return FALSE;
+	}
+	return TRUE;
+}
