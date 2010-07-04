@@ -30,6 +30,7 @@
 extern CNetGame *pNetGame;
 
 using namespace RakNet;
+// Player funcs //
 
 // setPlayerHealth
 int sq_setPlayerHealth(SQVM * pVM)
@@ -49,25 +50,8 @@ int sq_setPlayerHealth(SQVM * pVM)
 		sq_pushbool(pVM, true);
 		return 1;
 	}
-	else
-	{
-		sq_pushbool(pVM, false);
-		return 1;
-	}
-}
 
-// setVehicleHealth
-int sq_setVehicleHealth(SQVM * pVM)
-{
-	int vehicle;
-	float newHealthValue;
-
-	sq_getinteger(pVM, -2, &vehicle);
-    sq_getfloat(pVM, -1, &newHealthValue);
-
-	pNetGame->GetVehiclePool()->GetAt(vehicle)->SetHealth(newHealthValue);
-
-	sq_pushbool(pVM, true);
+	sq_pushbool(pVM, false);
 	return 1;
 }
 
@@ -89,11 +73,9 @@ int sq_setPlayerArmour(SQVM * pVM)
 		sq_pushbool(pVM, true);
 		return 1;
 	}
-	else
-	{
-		sq_pushbool(pVM, false);
-		return 1;
-	}
+
+	sq_pushbool(pVM, false);
+	return 1;
 }
 
 // setPlayerPos
@@ -117,11 +99,9 @@ int sq_setPlayerPos(SQVM * pVM)
 		sq_pushbool(pVM, true);
 		return 1;
 	}
-	else
-	{
-		sq_pushbool(pVM, false);
-		return 1;
-	}
+
+	sq_pushbool(pVM, false);
+	return 1;
 }
 
 // getPlayerPos
@@ -146,11 +126,9 @@ int sq_getPlayerPos(SQVM * pVM)
 		sq_push(pVM, -1);
 		return 1;
 	}
-	else
-	{
-		sq_pushbool(pVM, false);
-		return 1;
-	}
+
+	sq_pushbool(pVM, false);
+	return 1;
 }
 
 // setPlayerZAngle
@@ -172,11 +150,9 @@ int sq_setPlayerZAngle(SQVM * pVM)
 		sq_pushbool(pVM, true);
 		return 1;
 	}
-	else
-	{
-		sq_pushbool(pVM, false);
-		return 1;
-	}
+
+	sq_pushbool(pVM, false);
+	return 1;
 }
 
 // setPlayerSkin
@@ -197,11 +173,9 @@ int sq_setPlayerSkin(SQVM * pVM)
 		sq_pushbool(pVM, true);
 		return 1;
 	}
-	else
-	{
-		sq_pushbool(pVM, false);
-		return 1;
-	}
+
+	sq_pushbool(pVM, false);
+	return 1;
 }
 
 // setPlayerAction
@@ -222,11 +196,9 @@ int sq_setPlayerAction(SQVM * pVM)
 		sq_pushbool(pVM, true);
 		return 1;
 	}
-	else
-	{
-		sq_pushbool(pVM, false);
-		return 1;
-	}
+
+	sq_pushbool(pVM, false);
+	return 1;
 }
 
 // setPlayerRotation
@@ -247,11 +219,9 @@ int sq_setPlayerRotation(SQVM * pVM)
 		sq_pushbool(pVM, true);
 		return 1;
 	}
-	else
-	{
-		sq_pushbool(pVM, false);
-		return 1;
-	}
+
+	sq_pushbool(pVM, false);
+	return 1;
 }
 
 // getPlayerRotation
@@ -269,11 +239,9 @@ int sq_getPlayerRotation(SQVM *pVM)
 		sq_pushfloat(pVM, fRot);
 		return 1;
 	}
-	else
-	{
-		sq_pushbool(pVM, false);
-		return 1;
-	}
+
+	sq_pushbool(pVM, false);
+	return 1;
 }
 
 // resetPlayerWeapons
@@ -290,11 +258,9 @@ int sq_resetPlayerWeapons(SQVM * pVM)
 		sq_pushbool(pVM, true);
 		return 1;
 	}
-	else
-	{
-		sq_pushbool(pVM, false);
-		return 1;
-	}
+
+	sq_pushbool(pVM, false);
+	return 1;
 }
 // setPlayerArmedWeapon
 int sq_setPlayerArmedWeapon(SQVM * pVM)
@@ -314,11 +280,9 @@ int sq_setPlayerArmedWeapon(SQVM * pVM)
 		sq_pushbool(pVM, true);
 		return 1;
 	}
-	else
-	{
-		sq_pushbool(pVM, false);
-		return 1;
-	}
+
+	sq_pushbool(pVM, false);
+	return 1;
 }
 
 // givePlayerWeapon
@@ -342,11 +306,9 @@ int sq_givePlayerWeapon(SQVM * pVM)
 		sq_pushbool(pVM, true);
 		return 1;
 	}
-	else
-	{
-		sq_pushbool(pVM, false);
-		return 1;
-	}
+
+	sq_pushbool(pVM, false);
+	return 1;
 }
 
 // removePlayerFromVehicle
@@ -363,11 +325,9 @@ int sq_removePlayerFromVehicle(SQVM * pVM)
 		sq_pushbool(pVM, true);
 		return 1;
 	}
-	else
-	{
-		sq_pushbool(pVM, false);
-		return 1;
-	}
+	
+	sq_pushbool(pVM, false);
+	return 1;
 }
 
 // putPlayerInVehicle
@@ -389,11 +349,9 @@ int sq_putPlayerInVehicle(SQVM * pVM)
 		sq_pushbool(pVM, true);
 		return 1;
 	}
-	else
-	{
-		sq_pushbool(pVM, false);
-		return 1;
-	}
+
+	sq_pushbool(pVM, false);
+	return 1;
 }
 
 // togglePlayerControls
@@ -414,11 +372,9 @@ int sq_togglePlayerControls(SQVM * pVM)
 		sq_pushbool(pVM, true);
 		return 1;
 	}
-	else
-	{
-		sq_pushbool(pVM, false);
-		return 1;
-	}
+
+	sq_pushbool(pVM, false);
+	return 1;
 }
 
 // sendPlayerMessage
@@ -443,11 +399,9 @@ int sq_sendPlayerMessage(SQVM * pVM)
 		sq_pushbool(pVM, true);
 		return 1;
 	}
-	else
-	{
-		sq_pushbool(pVM, false);
-		return 1;
-	}
+
+	sq_pushbool(pVM, false);
+	return 1;
 }
 // sendMessageAsPlayer
 int sq_sendMessageAsPlayer(SQVM * pVM)
@@ -467,11 +421,9 @@ int sq_sendMessageAsPlayer(SQVM * pVM)
 		sq_pushbool(pVM, true);
 		return 1;
 	}
-	else
-	{
-		sq_pushbool(pVM, false);
-		return 1;
-	}
+
+	sq_pushbool(pVM, false);
+	return 1;
 }
 
 // sendPlayerMessageToAll
@@ -527,11 +479,9 @@ int sq_setPlayerWorldBounds(SQVM * pVM)
 		sq_pushbool(pVM, true);
 		return 1;
 	}
-	else
-	{
-		sq_pushbool(pVM, false);
-		return 1;
-	}
+
+	sq_pushbool(pVM, false);
+	return 1;
 }
 
 // getPlayerHealth
@@ -546,11 +496,9 @@ int sq_getPlayerHealth(SQVM * pVM)
 		sq_pushinteger(pVM, health);
 		return 1;
 	}
-	else
-	{
-		sq_pushbool(pVM, false);
-		return 1;
-	}
+
+	sq_pushbool(pVM, false);
+	return 1;
 }
 
 // getPlayerArmour
@@ -565,11 +513,9 @@ int sq_getPlayerArmour(SQVM * pVM)
 		sq_pushinteger(pVM, armour);
 		return 1;
 	}
-	else
-	{
-		sq_pushbool(pVM, false);
-		return 1;
-	}
+	
+	sq_pushbool(pVM, false);
+	return 1;
 }
 
 // getPlayerName
@@ -584,11 +530,9 @@ int sq_getPlayerName(SQVM * pVM)
 		sq_pushstring(pVM, pName, -1);
 		return 1;
 	}
-	else
-	{
-		sq_pushbool(pVM, false);
-		return 1;
-	}
+		
+	sq_pushbool(pVM, false);
+	return 1;
 }
 
 // getPlayerIP
@@ -603,11 +547,9 @@ int sq_getPlayerIP(SQVM * pVM)
 		sq_pushstring(pVM, ip, -1);
 		return 1;
 	}
-	else
-	{
-		sq_pushbool(pVM, false);
-		return 1;
-	}
+
+	sq_pushbool(pVM, false);
+	return 1;
 }
 
 // isConnected
@@ -626,9 +568,13 @@ int sq_isPlayerInVehicle(SQVM * pVM)
 {
 	int playerSystemAddress;
 	sq_getinteger(pVM, -1, &playerSystemAddress);
-
-	BOOL inVehicle = pNetGame->GetPlayerPool()->GetAt(playerSystemAddress)->IsInVehicle();
-	sq_pushbool(pVM, inVehicle);
+	if(pNetGame->GetPlayerPool()->GetSlotState(playerSystemAddress))
+	{
+		BOOL inVehicle = pNetGame->GetPlayerPool()->GetAt(playerSystemAddress)->IsInVehicle();
+		sq_pushbool(pVM, inVehicle);
+		return 1;
+	}
+	sq_pushbool(pVM, false);
 	return 1;
 }
 
@@ -637,65 +583,23 @@ int sq_getPlayerVehicleID(SQVM * pVM)
 {
 	int playerSystemAddress;
 	sq_getinteger(pVM, -1, &playerSystemAddress);
-
-	CPlayer *pPlayer = pNetGame->GetPlayerPool()->GetAt(playerSystemAddress);
-	if(pPlayer->IsInVehicle())
+	if(pNetGame->GetPlayerPool()->GetSlotState(playerSystemAddress))
 	{
-		BYTE vehID = pPlayer->GetVehicleID();
-		sq_pushinteger(pVM, vehID);
+		CPlayer *pPlayer = pNetGame->GetPlayerPool()->GetAt(playerSystemAddress);
+		if(pPlayer->IsInVehicle())
+		{
+			BYTE vehID = pPlayer->GetVehicleID();
+			sq_pushinteger(pVM, vehID);
+		}
+		else
+			sq_pushbool(pVM, false);
+
+		return 1;
 	}
-	else
-		sq_pushbool(pVM, false);
-
+	sq_pushbool(pVM, false);
 	return 1;
 }
 
-// setVehicleColor
-int sq_setVehicleColor(SQVM * pVM)
-{
-	int vehicle, color1, color2;
-
-	sq_getinteger(pVM, -3, &vehicle);
-    sq_getinteger(pVM, -2, &color1);
-	sq_getinteger(pVM, -1, &color2);
-
-	pNetGame->GetVehiclePool()->GetAt(vehicle)->SetColor(color1, color2);
-
-	sq_pushbool(pVM, true);
-	return 1;
-}
-
-// createVehicle
-int sq_createVehicle(SQVM * pVM)
-{
-	int byteVehicleType;
-	VECTOR pos;
-	float fRotation;
-	int iColor1, iColor2;
-	sq_getinteger(pVM, -7, &byteVehicleType);
-	sq_getfloat(pVM, -6, &pos.X);
-	sq_getfloat(pVM, -5, &pos.Y);
-	sq_getfloat(pVM, -4, &pos.Z);
-	sq_getfloat(pVM, -3, &fRotation);
-	sq_getinteger(pVM, -2, &iColor1);
-	sq_getinteger(pVM, -1, &iColor2);
-	int vehID = pNetGame->GetVehiclePool()->New(byteVehicleType, &pos, fRotation, iColor1, iColor2);
-	CVehicle *pVehicle = pNetGame->GetVehiclePool()->GetAt(vehID);
-	pVehicle->SpawnForWorld();
-	sq_pushinteger(pVM, vehID);
-	return 1;
-}
-
-int sq_destroyVehicle(SQVM * pVM)
-{
-	int byteVehicle;
-	sq_getinteger(pVM, -1, &byteVehicle);
-
-	pNetGame->GetVehiclePool()->Delete(byteVehicle);
-	sq_pushbool(pVM, true);
-
-	return 1;
-}
 
 // addPlayerClass
 int sq_addPlayerClass(SQVM * pVM)
@@ -723,6 +627,82 @@ int sq_addPlayerClass(SQVM * pVM)
 	return 1;
 }
 
+// Vehicle natives //
+
+// createVehicle
+int sq_createVehicle(SQVM * pVM)
+{
+	int byteVehicleType;
+	VECTOR pos;
+	float fRotation;
+	int iColor1, iColor2;
+	sq_getinteger(pVM, -7, &byteVehicleType);
+	sq_getfloat(pVM, -6, &pos.X);
+	sq_getfloat(pVM, -5, &pos.Y);
+	sq_getfloat(pVM, -4, &pos.Z);
+	sq_getfloat(pVM, -3, &fRotation);
+	sq_getinteger(pVM, -2, &iColor1);
+	sq_getinteger(pVM, -1, &iColor2);
+	int vehID = pNetGame->GetVehiclePool()->New(byteVehicleType, &pos, fRotation, iColor1, iColor2);
+	CVehicle *pVehicle = pNetGame->GetVehiclePool()->GetAt(vehID);
+	pVehicle->SpawnForWorld();
+	sq_pushinteger(pVM, vehID);
+	return 1;
+}
+
+// destroyVehicle
+int sq_destroyVehicle(SQVM * pVM)
+{
+	int byteVehicle;
+	sq_getinteger(pVM, -1, &byteVehicle);
+	if(pNetGame->GetVehiclePool()->GetSlotState(byteVehicle))
+	{
+		pNetGame->GetVehiclePool()->Delete(byteVehicle);
+		sq_pushbool(pVM, true);
+
+		return 1;
+	}
+	sq_pushbool(pVM, false);
+	return 1;
+}
+
+// setVehicleHealth
+int sq_setVehicleHealth(SQVM * pVM)
+{
+	int vehicle;
+	float newHealthValue;
+
+	sq_getinteger(pVM, -2, &vehicle);
+    sq_getfloat(pVM, -1, &newHealthValue);
+	if(pNetGame->GetVehiclePool()->GetSlotState(vehicle))
+	{
+		pNetGame->GetVehiclePool()->GetAt(vehicle)->SetHealth(newHealthValue);
+
+		sq_pushbool(pVM, true);
+		return 1;
+	}
+	sq_pushbool(pVM, false);
+	return 1;
+}
+
+// setVehicleColor
+int sq_setVehicleColor(SQVM * pVM)
+{
+	int vehicle, color1, color2;
+
+	sq_getinteger(pVM, -3, &vehicle);
+    sq_getinteger(pVM, -2, &color1);
+	sq_getinteger(pVM, -1, &color2);
+	if(pNetGame->GetVehiclePool()->GetSlotState(vehicle))
+	{
+		pNetGame->GetVehiclePool()->GetAt(vehicle)->SetColor(color1, color2);
+
+		sq_pushbool(pVM, true);
+		return 1;
+	}
+	sq_pushbool(pVM, false);
+	return 1;
+}
 
 
 #define _DECL_FUNC(name,nparams,pmask) {_SC(#name),sq_##name,nparams,pmask}
