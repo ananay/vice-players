@@ -132,7 +132,7 @@ bool CScripts::LoadScript(const char * szScriptName)
 
 	// load and compile the script
 	if(SQ_FAILED(sqstd_dofile(pVM, szScriptPath, SQFalse, SQTrue))) {
-		// script compilation failed/script does not exist
+		// script compilation failed
 		return false;
 	}
 
@@ -178,8 +178,7 @@ bool CScripts::LoadFromConfig(CConfig * pConfig)
 
 		if(!LoadScript(szScriptName)) {
 			logprintf("Failed to load script %s.", szScriptName);
-		}
-		else {
+		} else {
 			iScriptsLoaded++;
 		}
 	}

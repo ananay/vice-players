@@ -37,8 +37,6 @@ extern CChatWindow * pChatWindow;
 void CScoreBoard::Draw()
 {
 	CPlayerPool* pPlayerPool = pNetGame->GetPlayerPool();
-	pNetGame->UpdatePlayerScoresAndPings();	
-
 	char szScoreBuf[8192] = {0};
 	char szScoreWrite[1024] = {0};
 	char szColorCodedNick[256] = {0};
@@ -47,7 +45,9 @@ void CScoreBoard::Draw()
 	char * t;
 	char * szNick;
 
-	sprintf(szScoreWrite,"VC-MP dev-shot release 0.1 - %s:%s\n\n",
+	pNetGame->UpdatePlayerScoresAndPings();	
+
+	sprintf(szScoreWrite,"Vice City: Players - %s:%s\n\n",
 		    tSettings.szConnectHost,tSettings.szConnectPort);
 	strcat(szScoreBuf,szScoreWrite);
 

@@ -314,31 +314,28 @@ void UpdateScoreAndPing(RakNet::BitStream *bitStream, Packet *packet)
 
 	CPlayerPool *pPlayerPool = pNetGame->GetPlayerPool();
 
-	int write_counter=0;
-	SystemAddress pID;
+	int write_counter = 0;
+	SystemAddress systemAddress;
 
-	BYTE x=0;
-	while(x!=MAX_PLAYERS) {
-		if(pPlayerPool->GetSlotState(x) == TRUE) {
-
-			pID = pRak->GetSystemAddressFromIndex(x);
-
-			bsSend.Write((BYTE)x);
-			bsSend.Write((int)pPlayerPool->GetScore(x));
-			bsSend.Write((int)pRak->GetLastPing(pRak->GetSystemAddressFromIndex(x)));
+	for(BYTE i = 0; i < MAX_PLAYERS; i++) {
+		if(pPlayerPool->GetSlotState(i)) {
+			bsSend.Write((BYTE)i);
+			bsSend.Write(pPlayerPool->GetScore(i));
+			bsSend.Write(pRak->GetLastPing(pRak->GetSystemAddressFromIndex(i)));
 			
 			if(pPlayerPool->IsAdmin(byteSystemAddress)) {
-				bsSend.Write(pID.binaryAddress);
+				systemAddress = pRak->GetSystemAddressFromIndex(i);
+				bsSend.Write(systemAddress.binaryAddress);
 			} else {
 				bsSend.Write((unsigned long)0UL);
 			}
 
 			write_counter++;
 		}
-		x++;
+		i++;
 	}
 
-	pNetGame->GetRPC4()->Call("UpdateScPing", &bsSend,HIGH_PRIORITY,RELIABLE,0,packet->guid,false);
+	pNetGame->GetRPC4()->Call("UpdateScoreAndPing", &bsSend, HIGH_PRIORITY, RELIABLE, 0, packet->guid, false);
 }
 
 //----------------------------------------------------

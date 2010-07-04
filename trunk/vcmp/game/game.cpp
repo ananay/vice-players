@@ -245,8 +245,8 @@ void CGame::StartGame()
 	InitPlayerPedPtrRecords();
 	GameKeyStatesInit();
 	GameAimSyncInit();
-	
-//	SetUnhandledExceptionFilter(exc_handler);
+
+	SetUnhandledExceptionFilter(exc_handler);
 
 	// Install all patches
 	GameInstallPatches();

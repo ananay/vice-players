@@ -340,33 +340,28 @@ void VehicleSpawn(RakNet::BitStream *bitStream, Packet *packet)
 
 //----------------------------------------------------
 
-void UpdateScPing(RakNet::BitStream *bitStream, Packet *packet)
+void UpdateScoreAndPing(RakNet::BitStream *bitStream, Packet *packet)
 {	
 	CPlayerPool *pPlayerPool = pNetGame->GetPlayerPool();
 
 	int iPlayers = (packet->bitSize/8) / 9;
-	int x=0;
 
 	BYTE byteSystemAddress;
 	int iPlayerScore;
 	int iPlayerPing;
 	ULONG ip;
 
-	while(x!=iPlayers) {
+	for(BYTE i = 0; i < iPlayers; i++) {
 		bitStream->Read(byteSystemAddress);
 		bitStream->Read(iPlayerScore);
 		bitStream->Read(iPlayerPing);
 		bitStream->Read(ip);
 
-		if( pPlayerPool->GetSlotState(byteSystemAddress) == TRUE ||
-			byteSystemAddress == pPlayerPool->GetLocalSystemAddress() ) {
-
+		if(pPlayerPool->GetSlotState(byteSystemAddress) || byteSystemAddress == pPlayerPool->GetLocalSystemAddress()) {
 			pPlayerPool->UpdateScore(byteSystemAddress,iPlayerScore);
 			pPlayerPool->UpdatePing(byteSystemAddress,iPlayerPing);
 			pPlayerPool->UpdateIPAddress(byteSystemAddress,ip);
 		}
-
-		x++;
 	}
 }
 
@@ -619,7 +614,7 @@ void RegisterRPCs()
 	pNetGame->GetRPC4()->RegisterFunction("EnterVehicle",EnterVehicle);
 	pNetGame->GetRPC4()->RegisterFunction("ExitVehicle",ExitVehicle);
 	pNetGame->GetRPC4()->RegisterFunction("VehicleSpawn",VehicleSpawn);
-	pNetGame->GetRPC4()->RegisterFunction("UpdateScPing",UpdateScPing);
+	pNetGame->GetRPC4()->RegisterFunction("UpdateScoreAndPing",UpdateScoreAndPing);
 	pNetGame->GetRPC4()->RegisterFunction("ConnectionRejected",ConnectionRejected);
 	pNetGame->GetRPC4()->RegisterFunction("Passenger",Passenger);
 
@@ -658,7 +653,7 @@ void UnRegisterRPCs()
 	pNetGame->GetRPC4()->UnregisterFunction("EnterVehicle");
 	pNetGame->GetRPC4()->UnregisterFunction("ExitVehicle");
 	pNetGame->GetRPC4()->UnregisterFunction("VehicleSpawn");
-	pNetGame->GetRPC4()->UnregisterFunction("UpdateScPing");
+	pNetGame->GetRPC4()->UnregisterFunction("UpdateScoreAndPing");
 	pNetGame->GetRPC4()->UnregisterFunction("ConnectionRejected");
 	pNetGame->GetRPC4()->UnregisterFunction("Passenger");
 

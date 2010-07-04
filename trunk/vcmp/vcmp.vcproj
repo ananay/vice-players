@@ -853,54 +853,6 @@
 					RelativePath="d3d8\include\dxutil.h"
 					>
 				</File>
-				<File
-					RelativePath="d3dhook\IDirect3D8Hook.cpp"
-					>
-					<FileConfiguration
-						Name="Release|Win32"
-						>
-						<Tool
-							Name="VCCLCompilerTool"
-							PreprocessorDefinitions=""
-						/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Debug|Win32"
-						>
-						<Tool
-							Name="VCCLCompilerTool"
-							PreprocessorDefinitions=""
-						/>
-					</FileConfiguration>
-				</File>
-				<File
-					RelativePath="d3dhook\IDirect3D8Hook.h"
-					>
-				</File>
-				<File
-					RelativePath="d3dhook\IDirect3DDevice8Hook.cpp"
-					>
-					<FileConfiguration
-						Name="Release|Win32"
-						>
-						<Tool
-							Name="VCCLCompilerTool"
-							PreprocessorDefinitions=""
-						/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Debug|Win32"
-						>
-						<Tool
-							Name="VCCLCompilerTool"
-							PreprocessorDefinitions=""
-						/>
-					</FileConfiguration>
-				</File>
-				<File
-					RelativePath="d3dhook\IDirect3DDevice8Hook.h"
-					>
-				</File>
 			</Filter>
 			<Filter
 				Name="jpeg"
@@ -1191,6 +1143,58 @@
 				</File>
 				<File
 					RelativePath="..\jpeg\wrtarga.c"
+					>
+				</File>
+			</Filter>
+			<Filter
+				Name="d3dhook"
+				>
+				<File
+					RelativePath="d3dhook\IDirect3D8Hook.cpp"
+					>
+					<FileConfiguration
+						Name="Release|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							PreprocessorDefinitions=""
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							PreprocessorDefinitions=""
+						/>
+					</FileConfiguration>
+				</File>
+				<File
+					RelativePath="d3dhook\IDirect3D8Hook.h"
+					>
+				</File>
+				<File
+					RelativePath="d3dhook\IDirect3DDevice8Hook.cpp"
+					>
+					<FileConfiguration
+						Name="Release|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							PreprocessorDefinitions=""
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							PreprocessorDefinitions=""
+						/>
+					</FileConfiguration>
+				</File>
+				<File
+					RelativePath="d3dhook\IDirect3DDevice8Hook.h"
 					>
 				</File>
 			</Filter>
