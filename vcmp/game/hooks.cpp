@@ -29,13 +29,12 @@
 #include "util.h"
 #include "keystuff.h"
 
-extern CNetGame*          pNetGame;
-extern CGame*             pGame;
+extern CNetGame*	pNetGame;
+extern CGame*       pGame;
 
-extern DWORD              dwGameLoop;
-extern DWORD              dwRenderLoop;
-extern GAME_SCRIPT_THREAD gst;
-BOOL                      bScriptInited=FALSE;
+extern DWORD        dwGameLoop;
+extern DWORD        dwRenderLoop;
+BOOL                bScriptInited=FALSE;
 
 #define NUDE void _declspec(naked) 
 
@@ -60,6 +59,8 @@ BYTE	byteSavedCameraMode;
 BYTE	*pbyteCameraMode = (BYTE *)0x7E481C;
 BYTE	*pbyteCurrentPlayer = (BYTE *)0xA10AFB; 
 BYTE	byteUnkSave;
+DWORD   dwVFTable;
+DWORD   dwFunc;
 
 BOOL	bUsePassenger=FALSE;
 BOOL	bIsPlayer=FALSE;
@@ -85,13 +86,13 @@ float fCheaterFlingSpeed = 0.0f;
 
 //-----------------------------------------------------------
 
-BYTE PreGameProcess_HookJmpCode[]	= {0xFF,0x25,0x77,0x5D,0x4A,0x00}; //4A5D77
+BYTE PreGameProcess_HookJmpCode[]	= {0xFF,0x25,0x77,0x5D,0x4A,0x00}; // 4A5D77
 BYTE PedSetObjective_HookJmpCode[]	= {0xFF,0x25,0x75,0x11,0x40,0x00,0x90,0x90,0x90};
 BYTE RadarTranslateColor_HookJmpCode[] = {0xFF,0x25,0x44,0x30,0x4C,0x00,0x90}; // 4C3044
 BYTE EnterCarAnimCallback_HookJmpCode[] = {0xFF,0x25,0xD8,0x28,0x51,0x00,0x90,0x90}; // 5128D8
 BYTE HookedRand_HookJmpCode[] = {0xFF,0x25,0xE8,0x99,0x64,0x00,0x90,0x90}; // 6499E8
 BYTE InflictDamage_HookJmpCode[] = {0xFF,0x25,0x15,0x5B,0x52,0x00}; // 525B15
-BYTE InTheGame_HookJmpCode[] = {0xFF,0x25,0x3c,0x5c,0x4a,0x00}; //4A5C3C
+BYTE InTheGame_HookJmpCode[] = {0xFF,0x25,0x3c,0x5c,0x4a,0x00}; // 4A5C3C
 
 //-----------------------------------------------------------
 
@@ -291,127 +292,81 @@ NUDE CPlayerPed_ProcessControl_Hook()
 }
 
 //-----------------------------------------------------------
-// Hook that replaces CBike::ProcessControl(void)
+// Hook for C*::ProcessControl(void)
 
-NUDE CBike_ProcessControl_Hook()
+#define VAR_CPlayerPed__VFTable 0x694D70
+#define VAR_CBike__VFTable 0x6D7B34
+#define VAR_CBoat__VFTable 0x69B0B4
+#define VAR_CAutomobile__VFTable 0x69AD90
+
+#define FUNC_CBike__ProcessControl 0x60E3E0
+#define FUNC_CBoat__ProcessControl 0x59FE90
+#define FUNC_CAutomobile__ProcessControl 0x593030
+
+NUDE Vehicle_ProcessControl_Hook()
 {
-	_asm mov _pVehicle, ecx // store the CBike pointer.
+	_asm mov eax, ecx
+	_asm mov _pVehicle, eax
+	_asm mov eax, [ecx]
+	_asm mov dwVFTable, eax
 	_asm pushad
-
-	byteInternalPlayer = *pbyteCurrentPlayer;
 	
-	if( (_pVehicle->pDriver) &&
-		(_pVehicle->pDriver != GamePool_FindPlayerPed()) &&
-		(byteInternalPlayer==0) ) // not player's car
-	{
-		// get the current driver's player number
-		byteCurPlayer = FindPlayerNumFromPedPtr((DWORD)_pVehicle->pDriver);
-	
-		GameStoreLocalPlayerKeys(); // save local player keys
-		GameSetRemotePlayerKeys(byteCurPlayer); // set remote player keys.
-		*pbyteCurrentPlayer = byteCurPlayer; // set internal ID to this remote player
-
-		// call CBike::ProcessControl(void)
-		_asm popad
-		_asm mov eax, 0x60E3E0
-		_asm call eax
-		_asm pushad
-
-		// restore local player keys and internal ID.
-		*pbyteCurrentPlayer = 0;
-		GameSetLocalPlayerKeys();
+	if(dwVFTable == VAR_CBike__VFTable) {
+		dwFunc = FUNC_CBike__ProcessControl;
 	}
-	else
-	{
-		_asm popad
-		_asm mov eax, 0x60E3E0
-		_asm call eax
-		_asm pushad
+	else if(dwVFTable == VAR_CBoat__VFTable) {
+		dwFunc = FUNC_CBoat__ProcessControl;
 	}
-
-	_asm popad
-	_asm ret
-}
-
-//-----------------------------------------------------------
-// Hook that replaces CBoat::ProcessControl(void)
-
-NUDE CBoat_ProcessControl_Hook()
-{
-	_asm mov _pVehicle, ecx // store the CBoat pointer.
-	_asm pushad
+	else if(dwVFTable == VAR_CAutomobile__VFTable) {
+		dwFunc = FUNC_CAutomobile__ProcessControl;
+	}
 
 	byteInternalPlayer = *(BYTE *)0xA10AFB;
-	
-	if( (_pVehicle->pDriver) &&
-		(_pVehicle->pDriver != GamePool_FindPlayerPed()) &&
-		(byteInternalPlayer==0) ) // not player's car
+
+	if((_pVehicle->pDriver) && 
+		(_pVehicle->pDriver != GamePool_FindPlayerPed()) && 
+		(byteInternalPlayer == 0)) // not player's vehicle
 	{
 		// get the current driver's player number
 		byteCurPlayer = FindPlayerNumFromPedPtr((DWORD)_pVehicle->pDriver);
-	
+
+		// key switching
 		GameStoreLocalPlayerKeys(); // save local player keys
 		GameSetRemotePlayerKeys(byteCurPlayer); // set remote player keys.
+
+		// save the internal cammode.
+		byteSavedCameraMode = *pbyteCameraMode; // save local player camera mode
+		*pbyteCameraMode = 4; // onfoot mouse looking mode.
+
+		// aim switching
+		GameStoreLocalPlayerAim(); // save local player aim
+		GameSetRemotePlayerAim(byteCurPlayer); // set remote player aim
+
+		// internal player ped number switching
 		*pbyteCurrentPlayer = byteCurPlayer; // set internal ID to this remote player
 
-		// call CBoat::ProcessControl(void)
+		// call C*::ProcessControl
 		_asm popad
-		_asm mov eax, 0x59FE90
-		_asm call eax
+		_asm call dwFunc
 		_asm pushad
 
-		// restore local player keys and internal ID.
-		*pbyteCurrentPlayer = 0;
-		GameSetLocalPlayerKeys();
+		// internal player ped number restoration
+		*pbyteCurrentPlayer = 0; // set internal ID to the local player
+
+		// aim restoration
+		GameSetLocalPlayerAim(); // set local player aim
+
+		// camera mode restoration
+		*pbyteCameraMode = byteSavedCameraMode;
+
+		// key restoration
+		GameSetLocalPlayerKeys(); // set local player keys
 	}
-	else
+	else // player's vehicle
 	{
+		// call C*::ProcessControl
 		_asm popad
-		_asm mov eax, 0x59FE90
-		_asm call eax
-		_asm pushad
-	}
-
-	_asm popad
-	_asm ret
-}
-
-//-----------------------------------------------------------
-// Hook for CAutomobile::ProcessControl(void)
-
-NUDE CAutomobile_ProcessControl_Hook()
-{
-	_asm mov _pVehicle, ecx
-	_asm pushad
-
-	byteInternalPlayer = *(BYTE *)0xA10AFB;
-	
-	if( (_pVehicle->pDriver) &&
-		(_pVehicle->pDriver != GamePool_FindPlayerPed()) &&
-		(byteInternalPlayer==0) ) // not player's car
-	{
-		// get the current driver's player number
-		byteCurPlayer = FindPlayerNumFromPedPtr((DWORD)_pVehicle->pDriver);
-	
-		GameStoreLocalPlayerKeys(); // save local player keys
-		GameSetRemotePlayerKeys(byteCurPlayer); // set remote player keys.
-		*pbyteCurrentPlayer = byteCurPlayer; // set internal ID to this remote player
-
-		// call CAutomobile::ProcessControl(void)
-		_asm popad
-		_asm mov edi, 0x593030
-		_asm call edi
-		_asm pushad
-
-		// restore local player keys and internal ID.
-		*pbyteCurrentPlayer = 0;
-		GameSetLocalPlayerKeys();
-	}
-	else
-	{
-		_asm popad
-		_asm mov edi, 0x593030
-		_asm call edi
+		_asm call dwFunc
 		_asm pushad
 	}
 
@@ -622,6 +577,7 @@ NUDE CPed_InflictDamageHook()
 void CRunningScript_Process()
 {
 	if(!bScriptInited) {
+		// Code from VCMP.SCM (Minus the pickups and teleports)
 		DWORD PLAYER_ACTOR,PLAYER_CHAR;
 		int iPlayerNumber = 0;
 		ScriptCommand(&name_thread, "MAIN");
@@ -645,18 +601,12 @@ void CRunningScript_Process()
 
 NUDE CRunningScript_Process_Hook()
 {
-	_asm
-	{
-		pushad
-	}
+	_asm pushad
 
 	CRunningScript_Process();
 
-	_asm
-	{
-		popad
-		retn
-	}
+	_asm popad
+	_asm retn
 }
 
 //-----------------------------------------------------------
@@ -664,9 +614,10 @@ NUDE CRunningScript_Process_Hook()
 void InstallMethodHook(DWORD dwInstallAddress,DWORD dwHookFunction)
 {
 	DWORD dwVP, dwVP2;
-	VirtualProtect((LPVOID)dwInstallAddress,4,PAGE_EXECUTE_READWRITE,&dwVP);
-	*(PDWORD)dwInstallAddress = (DWORD)dwHookFunction;
-	VirtualProtect((LPVOID)dwInstallAddress,4,dwVP,&dwVP2);
+
+	VirtualProtect((PVOID)dwInstallAddress, 4, PAGE_EXECUTE_READWRITE, &dwVP);
+	*(DWORD *)dwInstallAddress = (DWORD)dwHookFunction;
+	VirtualProtect((PVOID)dwInstallAddress, 4, dwVP, &dwVP2);
 }
 
 //-----------------------------------------------------------
@@ -692,56 +643,67 @@ void InstallHook( DWORD dwInstallAddress,
 
 //-----------------------------------------------------------
 
+void InstallCallHook(DWORD dwInstallAddress, DWORD dwHookFunction)
+{
+	DWORD dwOldProt;
+
+	VirtualProtect((void *)dwInstallAddress, 5, PAGE_EXECUTE_READWRITE, &dwOldProt);
+	*(BYTE *)dwInstallAddress = 0xE8;
+	*(DWORD *)(dwInstallAddress + 1) = (dwHookFunction - (dwInstallAddress + 5));
+	VirtualProtect((void *)dwInstallAddress, 5, dwOldProt, &dwOldProt);
+}
+
+//-----------------------------------------------------------
+
 void GameInstallHooks()
-{	
-	InstallHook(0x6499F0,(DWORD)HookedRand_Hook,0x6499E8,HookedRand_HookJmpCode,
+{
+	InstallHook(0x6499F0, (DWORD)HookedRand_Hook, 0x6499E8, HookedRand_HookJmpCode, 
 		sizeof(HookedRand_HookJmpCode));
 
 	// Below is the Render2DStuff hook, don't be confused by the poor naming.
-	InstallHook(ADDR_PRE_GAME_PROCESS,(DWORD)PreGameProcessHook,
-		ADDR_PRE_GAME_PROCESS_STORAGE,PreGameProcess_HookJmpCode,
+	InstallHook(ADDR_PRE_GAME_PROCESS, (DWORD)PreGameProcessHook, 
+		ADDR_PRE_GAME_PROCESS_STORAGE, PreGameProcess_HookJmpCode, 
 		sizeof(PreGameProcess_HookJmpCode));
 
-	InstallHook(0x4A5BE0,(DWORD)InTheGameHook,0x4A5C3C,InTheGame_HookJmpCode,
+	InstallHook(0x4A5BE0, (DWORD)InTheGameHook, 0x4A5C3C, InTheGame_HookJmpCode, 
 		sizeof(InTheGame_HookJmpCode));
 	
-	// Install CPlayerPed::ProcessControl hook.
-	InstallMethodHook(0x694D90,(DWORD)CPlayerPed_ProcessControl_Hook);
+	// Install hook for CPlayerPed::ProcessControl
+	InstallMethodHook((VAR_CPlayerPed__VFTable + 0x20), (DWORD)CPlayerPed_ProcessControl_Hook);
 
-	// Install CBike::ProcessControl hook.
-	InstallMethodHook(0x6D7B54,(DWORD)CBike_ProcessControl_Hook);
+	// Install hook for CBike::ProcessControl
+	InstallMethodHook((VAR_CBike__VFTable + 0x20), (DWORD)Vehicle_ProcessControl_Hook);
 
-	// Install CBoat::ProcessControl hook.
-	InstallMethodHook(0x69B0D4,(DWORD)CBoat_ProcessControl_Hook);
+	// Install hook for CBoat::ProcessControl
+	InstallMethodHook((VAR_CBoat__VFTable + 0x20), (DWORD)Vehicle_ProcessControl_Hook);
 
-	// Install CAutomobile::ProcessControl hook.
-	InstallMethodHook(0x69ADB0,(DWORD)CAutomobile_ProcessControl_Hook);
+	// Install hook for CAutomobile::ProcessControl
+	InstallMethodHook((VAR_CAutomobile__VFTable + 0x20), (DWORD)Vehicle_ProcessControl_Hook);
 	
-	/* Install CPed::SetObjective() hook.
-	InstallHook(ADDR_SET_OBJECTIVE,(DWORD)CPed_SetObjective_Hook,
-		ADDR_SET_OBJECTIVE_STORAGE,PedSetObjective_HookJmpCode,sizeof(PedSetObjective_HookJmpCode));*/
+	/* Install hook for CPed::SetObjective
+	InstallHook(ADDR_SET_OBJECTIVE, (DWORD)CPed_SetObjective_Hook, 
+		ADDR_SET_OBJECTIVE_STORAGE, PedSetObjective_HookJmpCode, 
+		sizeof(PedSetObjective_HookJmpCode));*/
 								
-	// Install Hook for RadarTranslateColor
-	InstallHook(0x4C3050,(DWORD)RadarTranslateColor,0x4C3044,
-		RadarTranslateColor_HookJmpCode,sizeof(RadarTranslateColor_HookJmpCode));
+	// Install hook for RadarTranslateColor
+	InstallHook(0x4C3050, (DWORD)RadarTranslateColor, 0x4C3044, 
+		RadarTranslateColor_HookJmpCode, sizeof(RadarTranslateColor_HookJmpCode));
 	
-	InstallHook(0x525B20,(DWORD)CPed_InflictDamageHook,0x525B15,
-		InflictDamage_HookJmpCode,sizeof(InflictDamage_HookJmpCode));
+	// Install hook for CPed::InflictDamage
+	InstallHook(0x525B20, (DWORD)CPed_InflictDamageHook, 0x525B15, 
+		InflictDamage_HookJmpCode, sizeof(InflictDamage_HookJmpCode));
 
-	// Install Hook for enter car animation callback..
+	// Install hook for enter car animation callback..
 	// Update: Causing even more problems.
-	InstallHook(0x5128E0,(DWORD)EnterCarAnimCallback_Hook,0x5128D8,
-		EnterCarAnimCallback_HookJmpCode,sizeof(EnterCarAnimCallback_HookJmpCode));
+	InstallHook(0x5128E0, (DWORD)EnterCarAnimCallback_Hook, 0x5128D8, 
+		EnterCarAnimCallback_HookJmpCode, sizeof(EnterCarAnimCallback_HookJmpCode));
 	
 	/* Hook/patch code to get around 0x405AC5 animation bug
-	InstallHook(0x405AC0,(DWORD)CantFindFuckingAnim,0x405A95,
-		CantFindFuckingAnim_HookJmpCode,sizeof(CantFindFuckingAnim_HookJmpCode));*/
+	InstallHook(0x405AC0, (DWORD)CantFindFuckingAnim, 0x405A95,
+		CantFindFuckingAnim_HookJmpCode, sizeof(CantFindFuckingAnim_HookJmpCode));*/
 
-	// Install Hook for CRunningScript::Process (thx Merlin)
-	DWORD dwVP, dwVP2;
-	VirtualProtect((LPVOID)0x450246, 4, PAGE_EXECUTE_READWRITE, &dwVP);
-	*(PDWORD)0x450246 = ((DWORD)CRunningScript_Process_Hook - (0x450245 + 5));
-	VirtualProtect((LPVOID)0x450246, 4, dwVP, &dwVP2);
+	// Install hook for CRunningScript::Process (thx Merlin)
+	InstallCallHook(0x450245, (DWORD)CRunningScript_Process_Hook);
 }
 
 //-----------------------------------------------------------
