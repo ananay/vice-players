@@ -407,6 +407,18 @@ void Script_SetHealth(RakNet::BitStream *bitStream, Packet *packet)
 	pPlayer->SetHealth(playerHealth);
 }
 
+// SetVehicleHealth
+void Script_SetVehicleHealth(RakNet::BitStream *bitStream, Packet *packet)
+{
+	BYTE vehicle;
+	float newHealth;
+	bitStream->Read(vehicle);
+	bitStream->Read(newHealth);
+	
+	CVehicle *pVehicle = pNetGame->GetVehiclePool()->GetAt(vehicle);
+	pVehicle->SetHealth(newHealth);
+}
+
 // SetArmour
 void Script_SetArmour(RakNet::BitStream *bitStream, Packet *packet)
 {
@@ -580,6 +592,20 @@ void Script_showMarkersForPlayer(RakNet::BitStream *bitStream, Packet *packet)
 	pPlayer->ShowMarker(pLocalPed->GetTeamColorAsRGBA());
 
 }
+
+// SetVehicleColor
+void Script_SetVehicleColor(RakNet::BitStream *bitStream, Packet *packet)
+{
+	BYTE vehicle;
+	int color1, color2;
+	bitStream->Read(vehicle);
+	bitStream->Read(color1);
+	bitStream->Read(color2);
+	
+	CVehicle *pVehicle = pNetGame->GetVehiclePool()->GetAt(vehicle);
+	pVehicle->SetColor(color1, color2);
+}
+
 void RegisterRPCs()
 {
 	pNetGame->GetRPC4()->RegisterFunction("ServerJoin",ServerJoin);
@@ -612,6 +638,8 @@ void RegisterRPCs()
 	pNetGame->GetRPC4()->RegisterFunction("Script_ClientMessage",Script_ClientMessage);
 	pNetGame->GetRPC4()->RegisterFunction("Script_WorldBounds",Script_WorldBounds);
 	pNetGame->GetRPC4()->RegisterFunction("Script_showMarkersForPlayer",Script_showMarkersForPlayer);
+	pNetGame->GetRPC4()->RegisterFunction("Script_SetVehicleHealth",Script_SetVehicleHealth);
+	pNetGame->GetRPC4()->RegisterFunction("Script_SetVehicleColor",Script_SetVehicleColor);
 
 }
 
@@ -649,6 +677,8 @@ void UnRegisterRPCs()
 	pNetGame->GetRPC4()->UnregisterFunction("Script_ClientMessage");
 	pNetGame->GetRPC4()->UnregisterFunction("Script_WorldBounds");
 	pNetGame->GetRPC4()->UnregisterFunction("Script_showMarkersForPlayer");
+	pNetGame->GetRPC4()->UnregisterFunction("Script_SetVehicleHealth");
+	pNetGame->GetRPC4()->UnregisterFunction("Script_SetVehicleColor");
 }
 
 //----------------------------------------------------

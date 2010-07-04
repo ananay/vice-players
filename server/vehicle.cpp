@@ -121,3 +121,34 @@ void CVehicle::SpawnForWorld()
 }
 
 //----------------------------------------------------------
+
+void CVehicle::SetHealth(float newHealth)
+{
+	RakNet::BitStream bsSend;
+	bsSend.Write(m_byteVehicleID);
+	bsSend.Write(newHealth);
+	CPlayerPool * pPlayerPool = pNetGame->GetPlayerPool();
+	for(BYTE i = 0; i < MAX_PLAYERS; i++) {
+		if(pPlayerPool->GetSlotState(i)) {
+			pNetGame->GetRPC4()->Call("Script_SetVehicleHealth",&bsSend,HIGH_PRIORITY,RELIABLE,0,pNetGame->GetRakPeer()->GetSystemAddressFromIndex(i),false);
+		}
+	}
+}
+
+//----------------------------------------------------------
+
+void CVehicle::SetColor(int color1, int color2)
+{
+	RakNet::BitStream bsSend;
+	bsSend.Write(m_byteVehicleID);
+	bsSend.Write(color1);
+	bsSend.Write(color2);
+	CPlayerPool * pPlayerPool = pNetGame->GetPlayerPool();
+	for(BYTE i = 0; i < MAX_PLAYERS; i++) {
+		if(pPlayerPool->GetSlotState(i)) {
+			pNetGame->GetRPC4()->Call("Script_SetVehicleColor",&bsSend,HIGH_PRIORITY,RELIABLE,0,pNetGame->GetRakPeer()->GetSystemAddressFromIndex(i),false);
+		}
+	}
+}
+
+//----------------------------------------------------------

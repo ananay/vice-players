@@ -48,6 +48,21 @@ int sq_setPlayerHealth(SQVM * pVM)
 	return 1;
 }
 
+// setVehicleHealth
+int sq_setVehicleHealth(SQVM * pVM)
+{
+	int vehicle;
+	float newHealthValue;
+
+	sq_getinteger(pVM, -2, &vehicle);
+    sq_getfloat(pVM, -1, &newHealthValue);
+
+	pNetGame->GetVehiclePool()->GetAt(vehicle)->SetHealth(newHealthValue);
+
+	sq_pushbool(pVM, true);
+	return 1;
+}
+
 // setPlayerArmour
 int sq_setPlayerArmour(SQVM * pVM)
 {
@@ -201,6 +216,7 @@ int sq_resetPlayerWeapons(SQVM * pVM)
 	sq_pushbool(pVM, true);
 	return 1;
 }
+
 // showMarkersForPlayer
 int sq_showMarkersForPlayer(SQVM * pVM)
 {
@@ -213,6 +229,7 @@ int sq_showMarkersForPlayer(SQVM * pVM)
 	sq_pushbool(pVM, true);
 	return 1;
 }
+
 // setPlayerArmedWeapon
 int sq_setPlayerArmedWeapon(SQVM * pVM)
 {
@@ -455,6 +472,21 @@ int sq_isPlayerInVehicle(SQVM * pVM)
 	return 1;
 }
 
+// setVehicleColor
+int sq_setVehicleColor(SQVM * pVM)
+{
+	int vehicle, color1, color2;
+
+	sq_getinteger(pVM, -3, &vehicle);
+    sq_getinteger(pVM, -2, &color1);
+	sq_getinteger(pVM, -1, &color2);
+
+	pNetGame->GetVehiclePool()->GetAt(vehicle)->SetColor(color1, color2);
+
+	sq_pushbool(pVM, true);
+	return 1;
+}
+
 // createVehicle
 int sq_createVehicle(SQVM * pVM)
 {
@@ -533,6 +565,8 @@ static SQRegFunction vcmp_funcs[]={
 	_DECL_FUNC(showMarkersForPlayer, 2, _SC(".n")),
 	_DECL_FUNC(isConnected, 2, _SC(".n")),
 	_DECL_FUNC(isPlayerInVehicle, 2, _SC(".n")),
+	_DECL_FUNC(setVehicleHealth, 3, _SC(".nn")),
+	_DECL_FUNC(setVehicleColor, 4, _SC(".nnn")),
 	{0,0}
 };
 

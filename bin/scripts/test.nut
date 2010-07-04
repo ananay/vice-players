@@ -62,6 +62,7 @@ function onPlayerCommand(playerid, cmdtext)
 		local carid = cmd[1].tointeger();
 		local car = createVehicle(carid, pos[0], pos[1], pos[2], 0.0, 0, 0);
 		putPlayerInVehicle(playerid, car);
+		setVehicleColor(car, 5, 5);
 		
 	}
 	if(cmd[0] == "/mypos")
