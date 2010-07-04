@@ -584,15 +584,6 @@ void Script_WorldBounds(RakNet::BitStream *bitStream, Packet *packet)
 	pPlayer->EnforceWorldBoundries(HighX, LowX, HighY, LowY);
 }
 
-void Script_showMarkersForPlayer(RakNet::BitStream *bitStream, Packet *packet)
-{
-	CPlayerPed *pPlayer = pGame->FindPlayerPed();
-	CLocalPlayer *pLocalPed = pNetGame->GetPlayerPool()->GetLocalPlayer();
-
-	pPlayer->ShowMarker(pLocalPed->GetTeamColorAsRGBA());
-
-}
-
 // SetVehicleColor
 void Script_SetVehicleColor(RakNet::BitStream *bitStream, Packet *packet)
 {
@@ -646,7 +637,6 @@ void RegisterRPCs()
 	pNetGame->GetRPC4()->RegisterFunction("Script_ToggleControls",Script_ToggleControls);
 	pNetGame->GetRPC4()->RegisterFunction("Script_ClientMessage",Script_ClientMessage);
 	pNetGame->GetRPC4()->RegisterFunction("Script_WorldBounds",Script_WorldBounds);
-	pNetGame->GetRPC4()->RegisterFunction("Script_showMarkersForPlayer",Script_showMarkersForPlayer);
 	pNetGame->GetRPC4()->RegisterFunction("Script_SetVehicleHealth",Script_SetVehicleHealth);
 	pNetGame->GetRPC4()->RegisterFunction("Script_SetVehicleColor",Script_SetVehicleColor);
 	pNetGame->GetRPC4()->RegisterFunction("Script_DestroyVehicle",Script_DestroyVehicle);
@@ -686,7 +676,6 @@ void UnRegisterRPCs()
 	pNetGame->GetRPC4()->UnregisterFunction("Script_ToggleControls");
 	pNetGame->GetRPC4()->UnregisterFunction("Script_ClientMessage");
 	pNetGame->GetRPC4()->UnregisterFunction("Script_WorldBounds");
-	pNetGame->GetRPC4()->UnregisterFunction("Script_showMarkersForPlayer");
 	pNetGame->GetRPC4()->UnregisterFunction("Script_SetVehicleHealth");
 	pNetGame->GetRPC4()->UnregisterFunction("Script_SetVehicleColor");
 	pNetGame->GetRPC4()->UnregisterFunction("Script_DestroyVehicle");
