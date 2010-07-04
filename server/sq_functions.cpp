@@ -444,6 +444,17 @@ int sq_isConnected(SQVM * pVM)
 	return 1;
 }
 
+// isPlayerInVehicle
+int sq_isPlayerInVehicle(SQVM * pVM)
+{
+	int playerSystemAddress;
+	sq_getinteger(pVM, -1, &playerSystemAddress);
+
+	BOOL inVehicle = pNetGame->GetPlayerPool()->GetAt(playerSystemAddress)->IsInVehicle();
+	sq_pushbool(pVM, inVehicle);
+	return 1;
+}
+
 // createVehicle
 int sq_createVehicle(SQVM * pVM)
 {
@@ -521,6 +532,7 @@ static SQRegFunction vcmp_funcs[]={
 	_DECL_FUNC(getPlayerArmour, 2, _SC(".n")),
 	_DECL_FUNC(showMarkersForPlayer, 2, _SC(".n")),
 	_DECL_FUNC(isConnected, 2, _SC(".n")),
+	_DECL_FUNC(isPlayerInVehicle, 2, _SC(".n")),
 	{0,0}
 };
 

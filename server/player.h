@@ -155,6 +155,7 @@ public:
 	BYTE GetCurrentWeapon();
 	BYTE GetAction();
 	BOOL IsAPassenger();
+	BOOL IsInVehicle() { return m_bIsInVehicle; };
 	BYTE GetVehicleID();
 };
 

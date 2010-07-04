@@ -29,7 +29,7 @@
 
 //			Functions
 //---------------------------------
-int sq_isConnected(HSQUIRRELVM v);
+int sq_isConnected(HSQUIRRELVM v); // done
 int sq_setZAngle(HSQUIRRELVM v); // done client rpc
 int sq_setPlayerHealth(HSQUIRRELVM v); // done client rpc
 int sq_setPlayerArmour(HSQUIRRELVM v); // done client rpc
@@ -51,7 +51,7 @@ int sq_getPlayerVehicleID(HSQUIRRELVM v);
 int sq_getPlayerHealth(HSQUIRRELVM v); //done
 int sq_getPlayerArmour(HSQUIRRELVM v); //done
 int sq_getPlayerAction(HSQUIRRELVM v);
-int sq_isPlayerInVehicle(HSQUIRRELVM v);
+int sq_isPlayerInVehicle(HSQUIRRELVM v); // done
 int sq_getVehicleModel(HSQUIRRELVM v);
 int sq_addPlayerClass(HSQUIRRELVM v); // done
 int sq_setPlayerWorldBounds(HSQUIRRELVM v); // done client rpc
