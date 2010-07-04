@@ -216,20 +216,6 @@ int sq_resetPlayerWeapons(SQVM * pVM)
 	sq_pushbool(pVM, true);
 	return 1;
 }
-
-// showMarkersForPlayer
-int sq_showMarkersForPlayer(SQVM * pVM)
-{
-	int playerSystemAddress;
-
-	sq_getinteger(pVM, -1, &playerSystemAddress);
-
-	pNetGame->GetRPC4()->Call("Script_showMarkersForPlayer",NULL,HIGH_PRIORITY,RELIABLE,0,pNetGame->GetRakPeer()->GetSystemAddressFromIndex(playerSystemAddress),false);
-
-	sq_pushbool(pVM, true);
-	return 1;
-}
-
 // setPlayerArmedWeapon
 int sq_setPlayerArmedWeapon(SQVM * pVM)
 {
@@ -593,7 +579,6 @@ static SQRegFunction vcmp_funcs[]={
 	_DECL_FUNC(getPlayerRotation, 2, _SC(".n")),
 	_DECL_FUNC(getPlayerHealth, 2, _SC(".n")),
 	_DECL_FUNC(getPlayerArmour, 2, _SC(".n")),
-	_DECL_FUNC(showMarkersForPlayer, 2, _SC(".n")),
 	_DECL_FUNC(isConnected, 2, _SC(".n")),
 	_DECL_FUNC(isPlayerInVehicle, 2, _SC(".n")),
 	_DECL_FUNC(setVehicleHealth, 3, _SC(".nn")),
