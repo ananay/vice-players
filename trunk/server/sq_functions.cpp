@@ -40,6 +40,12 @@ int sq_setPlayerHealth(SQVM * pVM)
 	sq_getinteger(pVM, -2, &playerSystemAddress);
     sq_getfloat(pVM, -1, &newHealthValue);
 
+	if(pNetGame->GetPlayerPool()->IsConnected(playerSystemAddress) == false)
+	{
+		sq_pushbool(pVM, false);
+		return 1;
+	}
+
 	RakNet::BitStream bsSend;
 	bsSend.Write(newHealthValue);
 	pNetGame->GetRPC4()->Call("Script_SetHealth",&bsSend,HIGH_PRIORITY,RELIABLE,0,pNetGame->GetRakPeer()->GetSystemAddressFromIndex(playerSystemAddress),false);
@@ -72,6 +78,12 @@ int sq_setPlayerArmour(SQVM * pVM)
 	sq_getinteger(pVM, -2, &playerSystemAddress);
     sq_getfloat(pVM, -1, &newArmourValue);
 
+	if(pNetGame->GetPlayerPool()->IsConnected(playerSystemAddress) == false)
+	{
+		sq_pushbool(pVM, false);
+		return 1;
+	}
+
 	RakNet::BitStream bsSend;
 	bsSend.Write(newArmourValue);
 	pNetGame->GetRPC4()->Call("Script_SetArmour",&bsSend,HIGH_PRIORITY,RELIABLE,0,pNetGame->GetRakPeer()->GetSystemAddressFromIndex(playerSystemAddress),false);
@@ -92,6 +104,12 @@ int sq_setPlayerPos(SQVM * pVM)
 	sq_getfloat(pVM, -2, &pVec.Y);
 	sq_getfloat(pVM, -1, &pVec.Z);
 
+	if(pNetGame->GetPlayerPool()->IsConnected(playerSystemAddress) == false)
+	{
+		sq_pushbool(pVM, false);
+		return 1;
+	}
+
 	RakNet::BitStream bsSend;
 	bsSend.Write((char *)&pVec, sizeof(VECTOR));
 	pNetGame->GetRPC4()->Call("Script_SetPos",&bsSend,HIGH_PRIORITY,RELIABLE,0,pNetGame->GetRakPeer()->GetSystemAddressFromIndex(playerSystemAddress),false);
@@ -106,6 +124,12 @@ int sq_getPlayerPos(SQVM * pVM)
 	VECTOR pos;
 	int playerSystemAddress;
 	sq_getinteger(pVM, -1, &playerSystemAddress);
+
+	if(pNetGame->GetPlayerPool()->IsConnected(playerSystemAddress) == false)
+	{
+		sq_pushbool(pVM, false);
+		return 1;
+	}
 
 	CPlayer *pPlayer = pNetGame->GetPlayerPool()->GetAt(playerSystemAddress);
 	pPlayer->GetPosition(&pos);
@@ -131,6 +155,12 @@ int sq_setPlayerZAngle(SQVM * pVM)
 	sq_getinteger(pVM, -2, &playerSystemAddress);
 	sq_getfloat(pVM, -1, &fZAngle);
 
+	if(pNetGame->GetPlayerPool()->IsConnected(playerSystemAddress) == false)
+	{
+		sq_pushbool(pVM, false);
+		return 1;
+	}
+
 	RakNet::BitStream bsSend;
 	bsSend.Write(fZAngle);
 	pNetGame->GetRPC4()->Call("Script_SetPlayerZAngle",&bsSend,HIGH_PRIORITY,RELIABLE,0,pNetGame->GetRakPeer()->GetSystemAddressFromIndex(playerSystemAddress),false);
@@ -147,6 +177,12 @@ int sq_setPlayerSkin(SQVM * pVM)
 
 	sq_getinteger(pVM, -2, &playerSystemAddress);
     sq_getinteger(pVM, -1, &newSkinID);
+
+	if(pNetGame->GetPlayerPool()->IsConnected(playerSystemAddress) == false)
+	{
+		sq_pushbool(pVM, false);
+		return 1;
+	}
 
 	RakNet::BitStream bsSend;
 	bsSend.Write(newSkinID);
@@ -165,6 +201,12 @@ int sq_setPlayerAction(SQVM * pVM)
 	sq_getinteger(pVM, -2, &playerSystemAddress);
     sq_getinteger(pVM, -1, &newActionID);
 
+	if(pNetGame->GetPlayerPool()->IsConnected(playerSystemAddress) == false)
+	{
+		sq_pushbool(pVM, false);
+		return 1;
+	}
+
 	RakNet::BitStream bsSend;
 	bsSend.Write(newActionID);
 	pNetGame->GetRPC4()->Call("Script_SetPlayerAction",&bsSend,HIGH_PRIORITY,RELIABLE,0,pNetGame->GetRakPeer()->GetSystemAddressFromIndex(playerSystemAddress),false);
@@ -182,6 +224,12 @@ int sq_setPlayerRotation(SQVM * pVM)
 	sq_getinteger(pVM, -2, &playerSystemAddress);
     sq_getfloat(pVM, -1, &newRot);
 
+	if(pNetGame->GetPlayerPool()->IsConnected(playerSystemAddress) == false)
+	{
+		sq_pushbool(pVM, false);
+		return 1;
+	}
+
 	RakNet::BitStream bsSend;
 	bsSend.Write(newRot);
 	pNetGame->GetRPC4()->Call("Script_SetPlayerRotation",&bsSend,HIGH_PRIORITY,RELIABLE,0,pNetGame->GetRakPeer()->GetSystemAddressFromIndex(playerSystemAddress),false);
@@ -197,6 +245,12 @@ int sq_getPlayerRotation(SQVM *pVM)
 	float fRot;
 
 	sq_getinteger(pVM, -1, &playerSystemAddress);
+
+	if(pNetGame->GetPlayerPool()->IsConnected(playerSystemAddress) == false)
+	{
+		sq_pushbool(pVM, false);
+		return 1;
+	}
 	
 	fRot = pNetGame->GetPlayerPool()->GetAt(playerSystemAddress)->GetRotation();
 
@@ -211,6 +265,12 @@ int sq_resetPlayerWeapons(SQVM * pVM)
 
 	sq_getinteger(pVM, -1, &playerSystemAddress);
 
+	if(pNetGame->GetPlayerPool()->IsConnected(playerSystemAddress) == false)
+	{
+		sq_pushbool(pVM, false);
+		return 1;
+	}
+
 	pNetGame->GetRPC4()->Call("Script_ResetWeapons",NULL,HIGH_PRIORITY,RELIABLE,0,pNetGame->GetRakPeer()->GetSystemAddressFromIndex(playerSystemAddress),false);
 
 	sq_pushbool(pVM, true);
@@ -224,6 +284,12 @@ int sq_setPlayerArmedWeapon(SQVM * pVM)
 
 	sq_getinteger(pVM, -2, &playerSystemAddress);
     sq_getinteger(pVM, -1, &newWeaponID);
+
+	if(pNetGame->GetPlayerPool()->IsConnected(playerSystemAddress) == false)
+	{
+		sq_pushbool(pVM, false);
+		return 1;
+	}
 
 	RakNet::BitStream bsSend;
 	bsSend.Write(newWeaponID);
@@ -244,6 +310,12 @@ int sq_givePlayerWeapon(SQVM * pVM)
 	sq_getinteger(pVM, -2, &Ammo);
     sq_getinteger(pVM, -1, &newWeaponID);
 
+	if(pNetGame->GetPlayerPool()->IsConnected(playerSystemAddress) == false)
+	{
+		sq_pushbool(pVM, false);
+		return 1;
+	}
+
 	RakNet::BitStream bsSend;
 	bsSend.Write(newWeaponID);
 	bsSend.Write(Ammo);
@@ -260,6 +332,12 @@ int sq_removePlayerFromVehicle(SQVM * pVM)
 
 	sq_getinteger(pVM, -1, &playerSystemAddress);
 
+	if(pNetGame->GetPlayerPool()->IsConnected(playerSystemAddress) == false)
+	{
+		sq_pushbool(pVM, false);
+		return 1;
+	}
+
 	pNetGame->GetRPC4()->Call("Script_RemoveFromVehicle",NULL,HIGH_PRIORITY,RELIABLE,0,pNetGame->GetRakPeer()->GetSystemAddressFromIndex(playerSystemAddress),false);
 
 	sq_pushbool(pVM, true);
@@ -274,6 +352,12 @@ int sq_putPlayerInVehicle(SQVM * pVM)
 
 	sq_getinteger(pVM, -2, &playerSystemAddress);
 	sq_getinteger(pVM, -1, &vehID);
+
+	if(pNetGame->GetPlayerPool()->IsConnected(playerSystemAddress) == false)
+	{
+		sq_pushbool(pVM, false);
+		return 1;
+	}
 
 	RakNet::BitStream bsSend;
 	bsSend.Write(vehID);
@@ -292,6 +376,12 @@ int sq_togglePlayerControls(SQVM * pVM)
 
 	sq_getinteger(pVM, -2, &playerSystemAddress);
 	sq_getinteger(pVM, -1, &toggleValue);
+
+	if(pNetGame->GetPlayerPool()->IsConnected(playerSystemAddress) == false)
+	{
+		sq_pushbool(pVM, false);
+		return 1;
+	}
 
 	RakNet::BitStream bsSend;
 	bsSend.Write(toggleValue);
@@ -312,6 +402,12 @@ int sq_sendPlayerMessage(SQVM * pVM)
 	sq_getinteger(pVM, -2, &colourMessage);
 	sq_getstring(pVM, -1, &messageValue);
 
+	if(pNetGame->GetPlayerPool()->IsConnected(playerSystemAddress) == false)
+	{
+		sq_pushbool(pVM, false);
+		return 1;
+	}
+
 	RakNet::BitStream bsSend;
 	bsSend.Write((DWORD)colourMessage);
 	bsSend.Write(strlen(messageValue));
@@ -329,6 +425,12 @@ int sq_sendMessageAsPlayer(SQVM * pVM)
 
 	sq_getinteger(pVM, -2, &playerSystemAddress);
 	sq_getstring(pVM, -1, &Message);
+
+	if(pNetGame->GetPlayerPool()->IsConnected(playerSystemAddress) == false)
+	{
+		sq_pushbool(pVM, false);
+		return 1;
+	}
 
 	RakNet::BitStream bsSend;
 	bsSend.Write(Message);
@@ -379,6 +481,12 @@ int sq_setPlayerWorldBounds(SQVM * pVM)
 	sq_getfloat(pVM, -3, &LowY);
 	sq_getfloat(pVM, -4, &LowX);
 
+	if(pNetGame->GetPlayerPool()->IsConnected(playerSystemAddress) == false)
+	{
+		sq_pushbool(pVM, false);
+		return 1;
+	}
+
 	RakNet::BitStream bsSend;
 	bsSend.Write(LowX);
 	bsSend.Write(LowY);
@@ -395,6 +503,11 @@ int sq_getPlayerHealth(SQVM * pVM)
 {
 	int playerSystemAddress;
 	sq_getinteger(pVM, -1, &playerSystemAddress);
+	if(pNetGame->GetPlayerPool()->IsConnected(playerSystemAddress) == false)
+	{
+		sq_pushbool(pVM, false);
+		return 1;
+	}
 
 	int health = pNetGame->GetPlayerPool()->GetAt(playerSystemAddress)->GetHealth();
 
@@ -407,6 +520,11 @@ int sq_getPlayerArmour(SQVM * pVM)
 {
 	int playerSystemAddress;
 	sq_getinteger(pVM, -1, &playerSystemAddress);
+	if(pNetGame->GetPlayerPool()->IsConnected(playerSystemAddress) == false)
+	{
+		sq_pushbool(pVM, false);
+		return 1;
+	}
 
 	int armour = pNetGame->GetPlayerPool()->GetAt(playerSystemAddress)->GetArmour();
 
@@ -419,6 +537,12 @@ int sq_getPlayerName(SQVM * pVM)
 {
 	int playerSystemAddress;
 	sq_getinteger(pVM, -1, &playerSystemAddress);
+	if(pNetGame->GetPlayerPool()->IsConnected(playerSystemAddress) == false)
+	{
+		sq_pushbool(pVM, false);
+		return 1;
+	}
+
 	const char *pName = pNetGame->GetPlayerPool()->GetPlayerName(playerSystemAddress);
 
 	sq_pushstring(pVM, pName, -1);
@@ -430,6 +554,12 @@ int sq_getPlayerIP(SQVM * pVM)
 {
 	int playerSystemAddress;
 	sq_getinteger(pVM, -1, &playerSystemAddress);
+	if(pNetGame->GetPlayerPool()->IsConnected(playerSystemAddress) == false)
+	{
+		sq_pushbool(pVM, false);
+		return 1;
+	}
+
 	const char *ip = pNetGame->GetRakPeer()->GetSystemAddressFromIndex(playerSystemAddress).ToString(false);
 
 	sq_pushstring(pVM, ip, -1);
