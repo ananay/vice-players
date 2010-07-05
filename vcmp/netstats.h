@@ -29,11 +29,11 @@ class CNetStats
 {
 private:
 
-	DWORD m_dwLastTotalBytesSent;
-	DWORD m_dwLastTotalBytesRecv;
+	float m_dwLastTotalBytesSent;
+	float m_dwLastTotalBytesRecv;
 	DWORD m_dwLastUpdateTick;
-	DWORD m_dwBPSUpload;
-	DWORD m_dwBPSDownload;
+	float m_dwBPSUpload;
+	float m_dwBPSDownload;
 
 public:
 	CNetStats();

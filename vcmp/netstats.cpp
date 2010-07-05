@@ -47,19 +47,18 @@ CNetStats::CNetStats()
 void CNetStats::Draw()
 {
 	char szDispBuf[1024];
-	char szStatBuf[1024];
 	D3DDISPLAYMODE dDisplayMode;
-	//RakNet::RakNetStatistics *pRakStats = pNetGame->GetRakPeer()->GetStatistics(UNASSIGNED_SYSTEM_ADDRESS);
-	float fDown,fUp;
+	RakNet::RakNetStatistics *pRakStats = pNetGame->GetRakPeer()->GetStatistics(UNASSIGNED_SYSTEM_ADDRESS);
+	float fDown,fUp,fDownloaded,fSent;
 
 	if((GetTickCount() - m_dwLastUpdateTick) > 1000) {
 		m_dwLastUpdateTick = GetTickCount();
 		
-		m_dwBPSDownload = ((UINT)(RakNet::ACTUAL_BYTES_RECEIVED / 8)) - m_dwLastTotalBytesRecv;
-		m_dwLastTotalBytesRecv = (UINT)(RakNet::ACTUAL_BYTES_RECEIVED / 8);
+		m_dwBPSDownload = (float)pRakStats->valueOverLastSecond[ACTUAL_BYTES_RECEIVED];
+		m_dwLastTotalBytesRecv = (float)pRakStats->runningTotal[ACTUAL_BYTES_RECEIVED];
 
-		m_dwBPSUpload = ((UINT)(RakNet::ACTUAL_BYTES_SENT / 8)) - m_dwLastTotalBytesSent;
-		m_dwLastTotalBytesSent = (UINT)(RakNet::ACTUAL_BYTES_SENT / 8);
+		m_dwBPSUpload = (float)pRakStats->valueOverLastSecond[ACTUAL_BYTES_SENT];
+		m_dwLastTotalBytesSent = (float)pRakStats->runningTotal[ACTUAL_BYTES_SENT];
 	}
 
 	if(m_dwBPSDownload != 0) {
@@ -74,11 +73,19 @@ void CNetStats::Draw()
 		fUp = 0.0f;
 	}
 
-	sprintf(szDispBuf,"--- Network Stats ---\n\nDownload Rate: %.2f kbps\nUpload Rate: %.2f kbps\n\n",fDown,fUp);
-	
-//	StatisticsToString(pRakStats,szStatBuf,1);
+	if(m_dwLastTotalBytesRecv != 0) {
+		fDownloaded = (float)m_dwLastTotalBytesRecv / 1024;
+	} else {
+		fDownloaded = 0.0f;
+	}
 
-	strcat(szDispBuf,szStatBuf);
+	if(m_dwLastTotalBytesSent != 0) {
+		fSent = (float)m_dwLastTotalBytesSent / 1024;
+	} else {
+		fSent = 0.0f;
+	}
+
+	sprintf(szDispBuf,"--- Network Stats ---\n\nDownload Rate: %.2f kbps\nUpload Rate: %.2f kbps\nDownloaded: %.2f kb\nUploaded: %.2f kb\n\nAverage Packet loss: %.0f%",fDown,fUp,fDownloaded,fSent,pRakStats->packetlossTotal);
 
 	pD3DDevice->GetDisplayMode(&dDisplayMode);
 	pChatWindow->m_pD3DFont->DrawTextBox((float)((dDisplayMode.Width / 2) - 100),50.0f,50.0f,0x50000000,0xFFFFFFFF,szDispBuf,0L);
