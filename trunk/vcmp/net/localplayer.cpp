@@ -223,7 +223,7 @@ void CLocalPlayer::SendOnFootFullSyncData()
 			bsPlayerSync.Write(pCameraAim->pos1z);
 		}
 
-		pNetGame->GetRakPeer()->Send(&bsPlayerSync,HIGH_PRIORITY,UNRELIABLE,0,UNASSIGNED_SYSTEM_ADDRESS,TRUE);
+		pNetGame->GetRakPeer()->Send(&bsPlayerSync,HIGH_PRIORITY,UNRELIABLE_SEQUENCED,0,UNASSIGNED_SYSTEM_ADDRESS,TRUE);
 	}
 }
 
@@ -297,7 +297,7 @@ void CLocalPlayer::SendInCarFullSyncData()
 		bsVehicleSync.Write(bytePlayerArmour);
 
 		// ..sending
-		pNetGame->GetRakPeer()->Send(&bsVehicleSync,HIGH_PRIORITY,UNRELIABLE,0,UNASSIGNED_SYSTEM_ADDRESS,TRUE);
+		pNetGame->GetRakPeer()->Send(&bsVehicleSync,HIGH_PRIORITY,UNRELIABLE_SEQUENCED,0,UNASSIGNED_SYSTEM_ADDRESS,TRUE);
 	}
 }
 
@@ -322,7 +322,7 @@ void CLocalPlayer::SendInCarPassengerData()
 	bsPassengerSync.Write(vPos.X);
 	bsPassengerSync.Write(vPos.Y);
 	bsPassengerSync.Write(vPos.Z);
-	pNetGame->GetRakPeer()->Send(&bsPassengerSync,HIGH_PRIORITY,UNRELIABLE,0,UNASSIGNED_SYSTEM_ADDRESS,TRUE);
+	pNetGame->GetRakPeer()->Send(&bsPassengerSync,HIGH_PRIORITY,UNRELIABLE_SEQUENCED,0,UNASSIGNED_SYSTEM_ADDRESS,TRUE);
 }
 
 //----------------------------------------------------------

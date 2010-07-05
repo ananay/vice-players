@@ -120,7 +120,7 @@ void CPlayer::BroadcastSyncData()
 			bsSync.Write(m_Aiming.pos1z);
 		}
 		
-		pNetGame->BroadcastData(&bsSync,HIGH_PRIORITY,UNRELIABLE,0,m_byteSystemAddress);
+		pNetGame->BroadcastData(&bsSync,HIGH_PRIORITY,UNRELIABLE_SEQUENCED,0,m_byteSystemAddress);
 	}
 	else if(m_byteUpdateFromNetwork == UPDATE_TYPE_FULL_INCAR)
 	{			
@@ -153,7 +153,7 @@ void CPlayer::BroadcastSyncData()
 		bsSync.Write(m_byteArmour);
 
 		// sending...
-		pNetGame->BroadcastData(&bsSync,HIGH_PRIORITY,UNRELIABLE,0,m_byteSystemAddress);
+		pNetGame->BroadcastData(&bsSync,HIGH_PRIORITY,UNRELIABLE_SEQUENCED,0,m_byteSystemAddress);
 	}	
 }
 
