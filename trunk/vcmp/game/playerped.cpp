@@ -280,10 +280,10 @@ WORD CPlayerPed::GetKeys()
 	if(pInternalKeys->wKeys1[KEY_INCAR_TURRETUD] == 0xFF80) wRet |= 1;
 	wRet <<= 1;
 
-	if(pInternalKeys->wKeys2[KEY_INCAR_LOOKL]) wRet |= 1;
+	if(pInternalKeys->wKeys1[KEY_INCAR_LOOKL]) wRet |= 1;
 	wRet <<= 1;
 
-	if(pInternalKeys->wKeys2[KEY_INCAR_LOOKR]) wRet |= 1;
+	if(pInternalKeys->wKeys1[KEY_INCAR_LOOKR]) wRet |= 1;
 	wRet <<= 1;
 
 	if(pInternalKeys->wKeys1[KEY_INCAR_HANDBRAKE]) wRet |= 1;
