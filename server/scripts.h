@@ -49,7 +49,7 @@ public:
 	void onPlayerCommand(int playerId, const char *command);
 	void onPlayerSpawn(int playerId);
 	void onPlayerRequestClass(int playerId, int classid);
-	void onPlayerDeath(int playerId, int reason);
+	void onPlayerDeath(int playerId, int killerId, int reason);
 	void onPlayerEnterVehicle(int playerId, int vehicleid);
 	void onPlayerExitVehicle(int playerId, int vehicleid);
 	bool onRconCommand(const char *command, const char *arg);

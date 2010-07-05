@@ -464,7 +464,7 @@ void CScripts::onPlayerRequestClass(int playerId, int classid)
 	}
 }
 
-void CScripts::onPlayerDeath(int playerId, int reason)
+void CScripts::onPlayerDeath(int playerId, int killerId, int reason)
 {
 	for(int i = 0; i < MAX_SCRIPTS; i++) {
 		if(m_pScripts[i]) {
@@ -488,11 +488,14 @@ void CScripts::onPlayerDeath(int playerId, int reason)
 				// Push the player id onto the stack
 				sq_pushinteger(pVM, playerId);
 
+				// Push the killer id onto the stack
+				sq_pushinteger(pVM, killerId);
+
 				// Push the death reason onto the stack
 				sq_pushinteger(pVM, reason);
 
 				// Call the function
-				sq_call(pVM, 3, true, true);
+				sq_call(pVM, 4, true, true);
 			}
 
 			// Restore the stack top
