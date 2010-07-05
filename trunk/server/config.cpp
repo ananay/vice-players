@@ -162,7 +162,7 @@ int CConfig::ReadFile(char * szFileName)
 
 		// Check for comment char, blank line or a key name. Key names
 		// are currently resevered for future use.
-		if( *szReadPtr == '\0' || *szReadPtr == ';' || 
+		if( *szReadPtr == '\0' || *szReadPtr == ';' ||
 			*szReadPtr == '\n' || *szReadPtr == '[' ) {
 
 			iCurrentLine++;
@@ -170,12 +170,13 @@ int CConfig::ReadFile(char * szFileName)
 		}
 
 		// Parse out the directive name
-		while( *szReadPtr != '\0' && 
+		while( *szReadPtr != '\0' &&
 			 *szReadPtr != ' ' &&
 			 *szReadPtr != '=' &&
 			 *szReadPtr != '\n' &&
 			 *szReadPtr != '\t' &&
-			 *szReadPtr != ';' ) {
+			 *szReadPtr != ';' &&
+			 *szReadPtr != '\r') {
 			szDirectiveName[iDirectiveLength] = toupper(*szReadPtr);
 			iDirectiveLength++;
 			szReadPtr++;
@@ -190,21 +191,21 @@ int CConfig::ReadFile(char * szFileName)
 
 		// Skip any whitespace
 		while(*szReadPtr == ' ' || *szReadPtr == '\t') szReadPtr++;
-	
+
 		// The config entry is delimited by '='
 		if(*szReadPtr != '=') {
 			sprintf(m_szErrorString,"Parse error on line %d. No value for config entry.",iCurrentLine);
 			fclose(fReadFile);
 			return CCONF_ERR_PARSE;
-		}	
-		
+		}
+
 		// The rest is the directive data
 		*szReadPtr++;
 
 		// Skip any whitespace
 		while(*szReadPtr == ' ' || *szReadPtr == '\t') szReadPtr++;
 
-		while( *szReadPtr != '\0' && 
+		while( *szReadPtr != '\0' &&
 			 *szReadPtr != '\n' &&
 			 *szReadPtr != ';' ) {
 			if(*szReadPtr != '\"') {

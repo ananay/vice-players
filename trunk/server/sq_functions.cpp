@@ -33,9 +33,9 @@ using namespace RakNet;
 // Player funcs //
 
 // setPlayerHealth
-int sq_setPlayerHealth(SQVM * pVM)
+SQInteger sq_setPlayerHealth(SQVM * pVM)
 {
-	int playerSystemAddress;
+	SQInteger playerSystemAddress;
 	float newHealthValue;
 
 	sq_getinteger(pVM, -2, &playerSystemAddress);
@@ -56,9 +56,9 @@ int sq_setPlayerHealth(SQVM * pVM)
 }
 
 // setPlayerArmour
-int sq_setPlayerArmour(SQVM * pVM)
+SQInteger sq_setPlayerArmour(SQVM * pVM)
 {
-	int playerSystemAddress;
+	SQInteger playerSystemAddress;
 	float newArmourValue;
 
 	sq_getinteger(pVM, -2, &playerSystemAddress);
@@ -79,9 +79,9 @@ int sq_setPlayerArmour(SQVM * pVM)
 }
 
 // setPlayerPos
-int sq_setPlayerPos(SQVM * pVM)
+SQInteger sq_setPlayerPos(SQVM * pVM)
 {
-	int playerSystemAddress;
+	SQInteger playerSystemAddress;
 
 	VECTOR pVec;
 
@@ -105,10 +105,10 @@ int sq_setPlayerPos(SQVM * pVM)
 }
 
 // getPlayerPos
-int sq_getPlayerPos(SQVM * pVM)
+SQInteger sq_getPlayerPos(SQVM * pVM)
 {
 	VECTOR pos;
-	int playerSystemAddress;
+	SQInteger playerSystemAddress;
 	sq_getinteger(pVM, -1, &playerSystemAddress);
 
 	if(pNetGame->GetPlayerPool()->GetSlotState(playerSystemAddress))
@@ -132,9 +132,9 @@ int sq_getPlayerPos(SQVM * pVM)
 }
 
 // setPlayerZAngle
-int sq_setPlayerZAngle(SQVM * pVM)
+SQInteger sq_setPlayerZAngle(SQVM * pVM)
 {
-	int playerSystemAddress;
+	SQInteger playerSystemAddress;
 
 	float fZAngle;
 
@@ -156,10 +156,10 @@ int sq_setPlayerZAngle(SQVM * pVM)
 }
 
 // setPlayerSkin
-int sq_setPlayerSkin(SQVM * pVM)
+SQInteger sq_setPlayerSkin(SQVM * pVM)
 {
-	int playerSystemAddress;
-	int newSkinID;
+	SQInteger playerSystemAddress;
+	SQInteger newSkinID;
 
 	sq_getinteger(pVM, -2, &playerSystemAddress);
     sq_getinteger(pVM, -1, &newSkinID);
@@ -179,10 +179,10 @@ int sq_setPlayerSkin(SQVM * pVM)
 }
 
 // setPlayerAction
-int sq_setPlayerAction(SQVM * pVM)
+SQInteger sq_setPlayerAction(SQVM * pVM)
 {
-	int playerSystemAddress;
-	int newActionID;
+	SQInteger playerSystemAddress;
+	SQInteger newActionID;
 
 	sq_getinteger(pVM, -2, &playerSystemAddress);
     sq_getinteger(pVM, -1, &newActionID);
@@ -202,9 +202,9 @@ int sq_setPlayerAction(SQVM * pVM)
 }
 
 // setPlayerRotation
-int sq_setPlayerRotation(SQVM * pVM)
+SQInteger sq_setPlayerRotation(SQVM * pVM)
 {
-	int playerSystemAddress;
+	SQInteger playerSystemAddress;
 	float newRot;
 
 	sq_getinteger(pVM, -2, &playerSystemAddress);
@@ -225,9 +225,9 @@ int sq_setPlayerRotation(SQVM * pVM)
 }
 
 // getPlayerRotation
-int sq_getPlayerRotation(SQVM *pVM)
+SQInteger sq_getPlayerRotation(SQVM *pVM)
 {
-	int playerSystemAddress;
+	SQInteger playerSystemAddress;
 	float fRot;
 
 	sq_getinteger(pVM, -1, &playerSystemAddress);
@@ -245,9 +245,9 @@ int sq_getPlayerRotation(SQVM *pVM)
 }
 
 // resetPlayerWeapons
-int sq_resetPlayerWeapons(SQVM * pVM)
+SQInteger sq_resetPlayerWeapons(SQVM * pVM)
 {
-	int playerSystemAddress;
+	SQInteger playerSystemAddress;
 
 	sq_getinteger(pVM, -1, &playerSystemAddress);
 
@@ -263,10 +263,10 @@ int sq_resetPlayerWeapons(SQVM * pVM)
 	return 1;
 }
 // setPlayerArmedWeapon
-int sq_setPlayerArmedWeapon(SQVM * pVM)
+SQInteger sq_setPlayerArmedWeapon(SQVM * pVM)
 {
-	int playerSystemAddress;
-	int newWeaponID;
+	SQInteger playerSystemAddress;
+	SQInteger newWeaponID;
 
 	sq_getinteger(pVM, -2, &playerSystemAddress);
     sq_getinteger(pVM, -1, &newWeaponID);
@@ -286,11 +286,11 @@ int sq_setPlayerArmedWeapon(SQVM * pVM)
 }
 
 // givePlayerWeapon
-int sq_givePlayerWeapon(SQVM * pVM)
+SQInteger sq_givePlayerWeapon(SQVM * pVM)
 {
-	int playerSystemAddress;
-	int newWeaponID;
-	int Ammo;
+	SQInteger playerSystemAddress;
+	SQInteger newWeaponID;
+	SQInteger Ammo;
 
 	sq_getinteger(pVM, -3, &playerSystemAddress);
 	sq_getinteger(pVM, -2, &Ammo);
@@ -312,9 +312,9 @@ int sq_givePlayerWeapon(SQVM * pVM)
 }
 
 // removePlayerFromVehicle
-int sq_removePlayerFromVehicle(SQVM * pVM)
+SQInteger sq_removePlayerFromVehicle(SQVM * pVM)
 {
-	int playerSystemAddress;
+	SQInteger playerSystemAddress;
 
 	sq_getinteger(pVM, -1, &playerSystemAddress);
 
@@ -325,16 +325,16 @@ int sq_removePlayerFromVehicle(SQVM * pVM)
 		sq_pushbool(pVM, true);
 		return 1;
 	}
-	
+
 	sq_pushbool(pVM, false);
 	return 1;
 }
 
 // putPlayerInVehicle
-int sq_putPlayerInVehicle(SQVM * pVM)
+SQInteger sq_putPlayerInVehicle(SQVM * pVM)
 {
-	int playerSystemAddress;
-	int vehID;
+	SQInteger playerSystemAddress;
+	SQInteger vehID;
 
 	sq_getinteger(pVM, -2, &playerSystemAddress);
 	sq_getinteger(pVM, -1, &vehID);
@@ -355,10 +355,10 @@ int sq_putPlayerInVehicle(SQVM * pVM)
 }
 
 // togglePlayerControls
-int sq_togglePlayerControls(SQVM * pVM)
+SQInteger sq_togglePlayerControls(SQVM * pVM)
 {
-	int playerSystemAddress;
-	int toggleValue;
+	SQInteger playerSystemAddress;
+	SQInteger toggleValue;
 
 	sq_getinteger(pVM, -2, &playerSystemAddress);
 	sq_getinteger(pVM, -1, &toggleValue);
@@ -378,10 +378,10 @@ int sq_togglePlayerControls(SQVM * pVM)
 }
 
 // sendPlayerMessage
-int sq_sendPlayerMessage(SQVM * pVM)
+SQInteger sq_sendPlayerMessage(SQVM * pVM)
 {
-	int playerSystemAddress;
-	int colourMessage;
+	SQInteger playerSystemAddress;
+	SQInteger colourMessage;
 	const char * messageValue;
 
 	sq_getinteger(pVM, -3, &playerSystemAddress);
@@ -404,9 +404,9 @@ int sq_sendPlayerMessage(SQVM * pVM)
 	return 1;
 }
 // sendMessageAsPlayer
-int sq_sendMessageAsPlayer(SQVM * pVM)
+SQInteger sq_sendMessageAsPlayer(SQVM * pVM)
 {
-	int playerSystemAddress;
+	SQInteger playerSystemAddress;
 	const char * Message;
 
 	sq_getinteger(pVM, -2, &playerSystemAddress);
@@ -427,14 +427,14 @@ int sq_sendMessageAsPlayer(SQVM * pVM)
 }
 
 // sendPlayerMessageToAll
-int sq_sendPlayerMessageToAll(SQVM * pVM)
+SQInteger sq_sendPlayerMessageToAll(SQVM * pVM)
 {
-	int colourMessage;
+	SQInteger colourMessage;
 	const char * messageValue;
 
 	sq_getinteger(pVM, -2, &colourMessage);
 	sq_getstring(pVM, -1, &messageValue);
-	
+
 	RakNet::BitStream bsSend;
 	bsSend.Write(colourMessage);
 	bsSend.Write(strlen(messageValue));
@@ -443,7 +443,7 @@ int sq_sendPlayerMessageToAll(SQVM * pVM)
 	CPlayerPool *pPlayerPool = pNetGame->GetPlayerPool();
 	for(BYTE i = 0; i < MAX_PLAYERS; i++)
 	{
-		if(pPlayerPool->GetSlotState(i)) 
+		if(pPlayerPool->GetSlotState(i))
 		{
 			pNetGame->GetRPC4()->Call("Script_ClientMessage",&bsSend,HIGH_PRIORITY,RELIABLE,0,pNetGame->GetRakPeer()->GetSystemAddressFromIndex(i),false);
 		}
@@ -453,9 +453,9 @@ int sq_sendPlayerMessageToAll(SQVM * pVM)
 }
 
 // setPlayerWorldBounds
-int sq_setPlayerWorldBounds(SQVM * pVM)
+SQInteger sq_setPlayerWorldBounds(SQVM * pVM)
 {
-	int playerSystemAddress;
+	SQInteger playerSystemAddress;
 	float LowX;
 	float LowY;
 	float HighX;
@@ -485,9 +485,9 @@ int sq_setPlayerWorldBounds(SQVM * pVM)
 }
 
 // getPlayerHealth
-int sq_getPlayerHealth(SQVM * pVM)
+SQInteger sq_getPlayerHealth(SQVM * pVM)
 {
-	int playerSystemAddress;
+	SQInteger playerSystemAddress;
 	sq_getinteger(pVM, -1, &playerSystemAddress);
 	if(pNetGame->GetPlayerPool()->GetSlotState(playerSystemAddress))
 	{
@@ -502,9 +502,9 @@ int sq_getPlayerHealth(SQVM * pVM)
 }
 
 // getPlayerArmour
-int sq_getPlayerArmour(SQVM * pVM)
+SQInteger sq_getPlayerArmour(SQVM * pVM)
 {
-	int playerSystemAddress;
+	SQInteger playerSystemAddress;
 	sq_getinteger(pVM, -1, &playerSystemAddress);
 	if(pNetGame->GetPlayerPool()->GetSlotState(playerSystemAddress))
 	{
@@ -513,15 +513,15 @@ int sq_getPlayerArmour(SQVM * pVM)
 		sq_pushinteger(pVM, armour);
 		return 1;
 	}
-	
+
 	sq_pushbool(pVM, false);
 	return 1;
 }
 
 // getPlayerName
-int sq_getPlayerName(SQVM * pVM)
+SQInteger sq_getPlayerName(SQVM * pVM)
 {
-	int playerSystemAddress;
+	SQInteger playerSystemAddress;
 	sq_getinteger(pVM, -1, &playerSystemAddress);
 	if(pNetGame->GetPlayerPool()->GetSlotState(playerSystemAddress))
 	{
@@ -530,15 +530,15 @@ int sq_getPlayerName(SQVM * pVM)
 		sq_pushstring(pVM, pName, -1);
 		return 1;
 	}
-		
+
 	sq_pushbool(pVM, false);
 	return 1;
 }
 
 // getPlayerIP
-int sq_getPlayerIP(SQVM * pVM)
+SQInteger sq_getPlayerIP(SQVM * pVM)
 {
-	int playerSystemAddress;
+	SQInteger playerSystemAddress;
 	sq_getinteger(pVM, -1, &playerSystemAddress);
 	if(pNetGame->GetPlayerPool()->GetSlotState(playerSystemAddress))
 	{
@@ -553,9 +553,9 @@ int sq_getPlayerIP(SQVM * pVM)
 }
 
 // isConnected
-int sq_isConnected(SQVM * pVM)
+SQInteger sq_isConnected(SQVM * pVM)
 {
-	int playerSystemAddress;
+	SQInteger playerSystemAddress;
 	sq_getinteger(pVM, -1, &playerSystemAddress);
 
 	BOOL connected = pNetGame->GetPlayerPool()->GetSlotState(playerSystemAddress);
@@ -564,9 +564,9 @@ int sq_isConnected(SQVM * pVM)
 }
 
 // isPlayerInVehicle
-int sq_isPlayerInVehicle(SQVM * pVM)
+SQInteger sq_isPlayerInVehicle(SQVM * pVM)
 {
-	int playerSystemAddress;
+	SQInteger playerSystemAddress;
 	sq_getinteger(pVM, -1, &playerSystemAddress);
 	if(pNetGame->GetPlayerPool()->GetSlotState(playerSystemAddress))
 	{
@@ -579,9 +579,9 @@ int sq_isPlayerInVehicle(SQVM * pVM)
 }
 
 // getPlayerVehicleID
-int sq_getPlayerVehicleID(SQVM * pVM)
+SQInteger sq_getPlayerVehicleID(SQVM * pVM)
 {
-	int playerSystemAddress;
+	SQInteger playerSystemAddress;
 	sq_getinteger(pVM, -1, &playerSystemAddress);
 	if(pNetGame->GetPlayerPool()->GetSlotState(playerSystemAddress))
 	{
@@ -602,9 +602,9 @@ int sq_getPlayerVehicleID(SQVM * pVM)
 
 
 // addPlayerClass
-int sq_addPlayerClass(SQVM * pVM)
+SQInteger sq_addPlayerClass(SQVM * pVM)
 {
-	int team, model, weapon1, weapon2, weapon3, ammo1, ammo2, ammo3;
+	SQInteger team, model, weapon1, weapon2, weapon3, ammo1, ammo2, ammo3;
 	float x, y, z, rot;
 	sq_getinteger(pVM, -12, &team);
 	sq_getinteger(pVM, -11, &model);
@@ -630,12 +630,12 @@ int sq_addPlayerClass(SQVM * pVM)
 // Vehicle natives //
 
 // createVehicle
-int sq_createVehicle(SQVM * pVM)
+SQInteger sq_createVehicle(SQVM * pVM)
 {
-	int byteVehicleType;
+	SQInteger byteVehicleType;
 	VECTOR pos;
 	float fRotation;
-	int iColor1, iColor2;
+	SQInteger iColor1, iColor2;
 	sq_getinteger(pVM, -7, &byteVehicleType);
 	sq_getfloat(pVM, -6, &pos.X);
 	sq_getfloat(pVM, -5, &pos.Y);
@@ -651,9 +651,9 @@ int sq_createVehicle(SQVM * pVM)
 }
 
 // destroyVehicle
-int sq_destroyVehicle(SQVM * pVM)
+SQInteger sq_destroyVehicle(SQVM * pVM)
 {
-	int byteVehicle;
+	SQInteger byteVehicle;
 	sq_getinteger(pVM, -1, &byteVehicle);
 	if(pNetGame->GetVehiclePool()->GetSlotState(byteVehicle))
 	{
@@ -667,9 +667,9 @@ int sq_destroyVehicle(SQVM * pVM)
 }
 
 // setVehicleHealth
-int sq_setVehicleHealth(SQVM * pVM)
+SQInteger sq_setVehicleHealth(SQVM * pVM)
 {
-	int vehicle;
+	SQInteger vehicle;
 	float newHealthValue;
 
 	sq_getinteger(pVM, -2, &vehicle);
@@ -686,9 +686,9 @@ int sq_setVehicleHealth(SQVM * pVM)
 }
 
 // setVehicleColor
-int sq_setVehicleColor(SQVM * pVM)
+SQInteger sq_setVehicleColor(SQVM * pVM)
 {
-	int vehicle, color1, color2;
+	SQInteger vehicle, color1, color2;
 
 	sq_getinteger(pVM, -3, &vehicle);
     sq_getinteger(pVM, -2, &color1);
