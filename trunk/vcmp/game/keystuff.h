@@ -24,37 +24,17 @@
 //
 //----------------------------------------------------------
 
-typedef struct _GTA_CONTROL
-{
-	WORD wUpDownAnalog;
-	WORD wLeftRightAnalog;
-	WORD wButton2; // (turn left/right) (turret horizontal)
-	WORD wButton3; // (turret up/down)
-	WORD wButton4; // (action) (next radio)
-	WORD wButton5; // (next weapon) (look left) // next/previous might be mixed up
-	WORD wButton6; // (aim) (handbrake)
-	WORD wButton7; // (previous weapon) (look right) // next/previous might be mixed up
-	WORD wButton8; // (forward)
-	WORD wButton9; // (backward)
-	WORD wButton10; // (left)
-	WORD wButton11; // (right)
-	WORD wButton12; // ?
-	WORD wButton13; // (change camera view)
-	WORD wButton14; // (jump) (brake/reverse)
-	WORD wButton15; // (enter vehicle) (exit vehicle)
-	WORD wButton16; // (sprint) (accelerate)
-	WORD wButton17; // (fire)
-	WORD wButton18; // (crouch)
-	WORD wButton19; // (look behind) (submission)
-	WORD wButton20; // ?
-
-} GTA_CONTROL;
-
 typedef struct _GTA_CONTROLSET
 {
-	GTA_CONTROL currentPadState;
-	GTA_CONTROL previousPadState;
+	DWORD dwFrontPad;
+	WORD wKeys1[19];
+	DWORD dwFrontPad2;
+	WORD wKeys2[19];
+	/*WORD wTurnLeftRightAnalog[10];
+	BYTE bytePadding1[138];
+	BYTE byteCrouchAnalog[5];*/
 	_pad(__pad0, 0xC0);
+	//0x114
 } GTA_CONTROLSET;
 
 //-----------------------------------------------------------
@@ -70,5 +50,37 @@ void GameStoreRemotePlayerKeys(int iPlayer, GTA_CONTROLSET *pGcsKeyStates);
 void GameSetRemotePlayerKeys(int iPlayer);
 void GameResetPlayerKeys(int iPlayer);
 void GameResetLocalKeys();
+
+//-----------------------------------------------------------
+
+#define	KEY_INCAR_TURRETLR			0
+#define	KEY_INCAR_TURRETUD			1
+#define	KEY_INCAR_RADIO				2
+#define	KEY_INCAR_LOOKL				3
+#define	KEY_INCAR_HANDBRAKE			4
+#define	KEY_INCAR_LOOKR				5
+#define	KEY_INCAR_TURNL				8
+#define	KEY_INCAR_TURNR				9
+#define	KEY_INCAR_CAMERA			11
+#define	KEY_INCAR_BACKWARD			12
+#define	KEY_INCAR_EXITVEHICLE		13
+#define	KEY_INCAR_FORWARD			14
+#define	KEY_INCAR_FIRE				15
+#define	KEY_INCAR_HORN				16
+#define	KEY_ONFOOT_TURNLR			0
+#define	KEY_ONFOOT_ACTION			2
+#define	KEY_ONFOOT_NEXTWEAPON		3
+#define	KEY_ONFOOT_TARGET			4
+#define	KEY_ONFOOT_PREVWEAPON		5
+#define	KEY_ONFOOT_FORWARD			6
+#define	KEY_ONFOOT_BACKWARD			7
+#define	KEY_ONFOOT_LEFT				8
+#define	KEY_ONFOOT_RIGHT			9
+#define	KEY_ONFOOT_JUMP				12
+#define	KEY_ONFOOT_ENTERVEHICLE		13
+#define	KEY_ONFOOT_SPRINT			14
+#define	KEY_ONFOOT_FIRE				15
+#define	KEY_ONFOOT_CROUCH			16
+#define	KEY_ONFOOT_LOOKBEHIND		17
 
 //-----------------------------------------------------------

@@ -211,8 +211,8 @@ void _stdcall DoOnFootWorldBoundsStuff()
 				pNetGame->m_WorldBounds[0],pNetGame->m_WorldBounds[1],
 				pNetGame->m_WorldBounds[2],pNetGame->m_WorldBounds[3]))
 			{
-				pGcsInternalKeys->currentPadState.wButton14 = 0xFF;
-				pGcsInternalKeys->previousPadState.wButton14 = 0xFF;
+				pGcsInternalKeys->wKeys1[KEY_ONFOOT_JUMP] = 0xFF;
+				pGcsInternalKeys->wKeys2[KEY_ONFOOT_JUMP] = 0xFF;
 				pPlayerPed->SetArmedWeapon(0);
 				//pGame->DisplayTextMessage("Stay within the world boundries");
 			}
@@ -273,8 +273,8 @@ NUDE CPlayerPed_ProcessControl_Hook()
 		else {
 			// We have a cheater, fuck with them
 			if(!_pPlayer->byteIsInVehicle) {
-				pGcsInternalKeys->currentPadState.wButton14 = 0xFF;
-				pGcsInternalKeys->previousPadState.wButton14 = 0xFF;
+				pGcsInternalKeys->wKeys1[KEY_ONFOOT_JUMP] = 0xFF;
+				pGcsInternalKeys->wKeys2[KEY_ONFOOT_JUMP] = 0xFF;
 				_pPlayer = (PED_TYPE *)dwCurPlayerActor;
 				_pPlayer->physical.vecMoveSpeed.Z = fCheaterFlingSpeed;
 				fCheaterFlingSpeed += 0.025f;
