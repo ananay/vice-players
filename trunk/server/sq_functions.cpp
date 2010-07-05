@@ -155,6 +155,26 @@ SQInteger sq_setPlayerZAngle(SQVM * pVM)
 	return 1;
 }
 
+// getPlayerSkin
+SQInteger sq_getPlayerSkin(SQVM *pVM)
+{
+	SQInteger playerSystemAddress;
+	int iSkin;
+
+	sq_getinteger(pVM, -1, &playerSystemAddress);
+
+	if(pNetGame->GetPlayerPool()->GetSlotState(playerSystemAddress))
+	{
+		iSkin = pNetGame->GetPlayerPool()->GetAt(playerSystemAddress)->GetSkin();
+
+		sq_pushinteger(pVM, iSkin);
+		return 1;
+	}
+
+	sq_pushbool(pVM, false);
+	return 1;
+}
+
 // setPlayerSkin
 SQInteger sq_setPlayerSkin(SQVM * pVM)
 {
@@ -169,6 +189,7 @@ SQInteger sq_setPlayerSkin(SQVM * pVM)
 		RakNet::BitStream bsSend;
 		bsSend.Write(newSkinID);
 		pNetGame->GetRPC4()->Call("Script_SetPlayerSkin",&bsSend,HIGH_PRIORITY,RELIABLE,0,pNetGame->GetRakPeer()->GetSystemAddressFromIndex(playerSystemAddress),false);
+		pNetGame->GetPlayerPool()->GetAt(playerSystemAddress)->SetSpawnSkin(newSkinID);
 
 		sq_pushbool(pVM, true);
 		return 1;
@@ -711,10 +732,10 @@ static SQRegFunction vcmp_funcs[]={
 	//_DECL_FUNC(func_name,func_params,_SC(func_param_template)),
 	_DECL_FUNC(getPlayerName, 2, _SC(".n")),
 	_DECL_FUNC(getPlayerIP, 2, _SC(".n")),
-	_DECL_FUNC(createVehicle, 8, _SC(".nnnnnnn")),
-	_DECL_FUNC(destroyVehicle, 2, _SC(".n")),
 	_DECL_FUNC(addPlayerClass, 13, _SC(".nnnnnnnnnnnn")),
+	_DECL_FUNC(getPlayerHealth, 2, _SC(".n")),
 	_DECL_FUNC(setPlayerHealth, 3, _SC(".nn")),
+	_DECL_FUNC(getPlayerArmour, 2, _SC(".n")),
 	_DECL_FUNC(setPlayerArmour, 3, _SC(".nn")),
 	_DECL_FUNC(sendPlayerMessage, 4, _SC(".iis")),
 	_DECL_FUNC(sendPlayerMessageToAll, 3, _SC(".is")),
@@ -726,18 +747,19 @@ static SQRegFunction vcmp_funcs[]={
 	//_DECL_FUNC(sendMessageAsPlayer, 3, _SC(".is")),
 	_DECL_FUNC(givePlayerWeapon, 4, _SC(".iii")),
 	_DECL_FUNC(resetPlayerWeapons, 2, _SC(".n")),
-	_DECL_FUNC(setPlayerRotation, 3, _SC(".nn")),
-	_DECL_FUNC(setPlayerSkin, 3, _SC(".nn")),
-	_DECL_FUNC(setPlayerPos, 5, _SC(".nnnn")),
-	_DECL_FUNC(getPlayerPos, 2, _SC(".n")),
 	_DECL_FUNC(getPlayerRotation, 2, _SC(".n")),
-	_DECL_FUNC(getPlayerHealth, 2, _SC(".n")),
-	_DECL_FUNC(getPlayerArmour, 2, _SC(".n")),
+	_DECL_FUNC(setPlayerRotation, 3, _SC(".nn")),
+	_DECL_FUNC(getPlayerSkin, 2, _SC(".n")),
+	_DECL_FUNC(setPlayerSkin, 3, _SC(".nn")),
+	_DECL_FUNC(getPlayerPos, 2, _SC(".n")),
+	_DECL_FUNC(setPlayerPos, 5, _SC(".nnnn")),
 	_DECL_FUNC(isConnected, 2, _SC(".n")),
 	_DECL_FUNC(isPlayerInVehicle, 2, _SC(".n")),
+	_DECL_FUNC(getPlayerVehicleID, 2, _SC(".n")),
+	_DECL_FUNC(createVehicle, 8, _SC(".nnnnnnn")),
+	_DECL_FUNC(destroyVehicle, 2, _SC(".n")),
 	_DECL_FUNC(setVehicleHealth, 3, _SC(".nn")),
 	_DECL_FUNC(setVehicleColor, 4, _SC(".nnn")),
-	_DECL_FUNC(getPlayerVehicleID, 2, _SC(".n")),
 	{0,0}
 };
 

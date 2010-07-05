@@ -77,6 +77,12 @@ function onPlayerCommand(playerid, cmdtext)
 		local pos = getPlayerPos(playerid);
 		sendPlayerMessage(playerid, 0x00FF00FF, "My Pos: " + pos[0] + " " + pos[1] + " " + pos[2]);
 	}
+	if(cmd[0] == "/setskin")
+	{
+		local skin = cmd[1].tointeger();
+		setPlayerSkin(playerid, skin);
+		sendPlayerMessage(playerid, 0x00FF00FF, "Skin: " + getPlayerSkin(playerid));
+	}
 }
 
 function onPlayerRequestClass(playerid, classid)
