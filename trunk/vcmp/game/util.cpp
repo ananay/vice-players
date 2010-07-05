@@ -28,6 +28,7 @@
 #include <stdio.h>
 #include "game.h"
 #include "../main.h"
+#include "pools.h"
 
 DWORD dwPlayerPedPtrs[MAX_PLAYERS];
 
@@ -45,75 +46,11 @@ void VCMP_SAFECALL GameDisableCheatCodes()
 }
 
 //-----------------------------------------------------------
-
-PED_TYPE * VCMP_SAFECALL GamePool_Ped_GetAt(int iID)
-{
-	PED_TYPE *pActorRet;
-
-	_asm mov ebx, ADDR_PED_TABLE
-	_asm mov ecx, [ebx]
-	_asm push iID
-	_asm mov ebx, ADDR_ACTOR_FROM_ID
-	_asm call ebx
-	_asm mov pActorRet, eax
-
-	return pActorRet;	
-}
-
-//-----------------------------------------------------------
-
-int VCMP_SAFECALL GamePool_Ped_GetIndex(PED_TYPE *pPed)
-{
-	int iRetVal;
-
-	_asm mov ebx, ADDR_PED_TABLE
-	_asm mov ecx, [ebx]
-	_asm push pPed
-	_asm mov ebx, ADDR_ID_FROM_ACTOR
-	_asm call ebx
-	_asm mov iRetVal, eax
-
-	return iRetVal;
-}
-
-//-----------------------------------------------------------
-
-VEHICLE_TYPE * VCMP_SAFECALL GamePool_Vehicle_GetAt(int iID)
-{	
-	VEHICLE_TYPE *pVehicleRet;
-
-	_asm mov ebx, ADDR_VEHICLE_TABLE
-	_asm mov ecx, [ebx]
-	_asm push iID
-	_asm mov ebx, ADDR_VEHICLE_FROM_ID
-	_asm call ebx
-	_asm mov pVehicleRet, eax
-
-	return pVehicleRet;
-}
-
-//-----------------------------------------------------------
-
-int VCMP_SAFECALL GamePool_Vehicle_GetIndex(VEHICLE_TYPE *pVehicle)
-{
-	int iRetVal;
-
-	_asm mov ebx, ADDR_VEHICLE_TABLE
-	_asm mov ecx, [ebx]
-	_asm push pVehicle
-	_asm mov ebx, ADDR_ID_FROM_VEHICLE
-	_asm call ebx
-	_asm mov iRetVal, eax
-
-	return iRetVal;		
-}
-
-//-----------------------------------------------------------
 // Return the PED_TYPE * of the local player.
 
 PED_TYPE * VCMP_SAFECALL GamePool_FindPlayerPed()
 {
-	return GamePool_Ped_GetAt(1);
+	return CPools::GetPedFromIndex(1);
 }
 
 //-----------------------------------------------------------
@@ -269,7 +206,7 @@ BOOL VCMP_SAFECALL GameIsEntityOnScreen(DWORD * pdwEnt)
 	BYTE byteRet=0;
 
 	_asm mov ecx, pdwEnt
-	_asm mov edx, ADDR_ENTITY_ONSCREEN
+	_asm mov edx, FUNC_CEntity__IsOnScreen
 	_asm call edx
 	_asm mov byteRet, al
 

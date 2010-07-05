@@ -20,26 +20,20 @@
 // VC:MP Multiplayer Modification For GTA:VC
 // Copyright 2004-2005 SA:MP team
 //
-// File Author: kyeman
-//
 //----------------------------------------------------------
 
 #pragma once
 
 #define VCMP_SAFECALL __stdcall
 
-#define ENTITY_TYPE_UNKNOWN		0
-#define ENTITY_TYPE_PED			1
-#define ENTITY_TYPE_VEHICLE		2
+#include "common.h"
+#include "address.h"
 
-int VCMP_SAFECALL GameGetWeaponModelFromWeapon(int iWeaponID);
-void VCMP_SAFECALL GameDisableCheatCodes();
-PED_TYPE * VCMP_SAFECALL GamePool_FindPlayerPed();
-DWORD VCMP_SAFECALL TranslateColorCodeToRGBA(int iCode);
-BOOL VCMP_SAFECALL GameIsEntityOnScreen(DWORD * pdwEnt);
-void VCMP_SAFECALL InitPlayerPedPtrRecords();
-void VCMP_SAFECALL SetPlayerPedPtrRecord(BYTE bytePlayer, DWORD dwPedPtr);
-BYTE VCMP_SAFECALL FindPlayerNumFromPedPtr(DWORD dwPedPtr);
-
-//-----------------------------------------------------------
-
+class CPools
+{
+public:
+	static PED_TYPE *     VCMP_SAFECALL GetPedFromIndex(int iIndex);
+	static int            VCMP_SAFECALL GetIndexFromPed(PED_TYPE * pPed);
+	static VEHICLE_TYPE * VCMP_SAFECALL GetVehicleFromIndex(int iIndex);
+	static int            VCMP_SAFECALL GetIndexFromVehicle(VEHICLE_TYPE * pVehicle);
+};

@@ -25,7 +25,7 @@
 //----------------------------------------------------
 
 #include "main.h"
-#include "game/util.h"
+#include "game/pools.h"
 
 extern CGame		 *pGame;
 extern CChatWindow   *pChatWindow;
@@ -103,7 +103,7 @@ void cmdSavePos(PCHAR szCmd)
 		VEHICLE_TYPE *pVehicle = pPlayer->GetGtaVehicle();
 		WORD wModelIndex = pVehicle->physical.entity.wModelIndex;
 		VECTOR * vPos = &pVehicle->physical.entity.mat.vPos;
-		dwVehicleID = GamePool_Vehicle_GetIndex(pVehicle);
+		dwVehicleID = CPools::GetIndexFromVehicle(pVehicle);
 		ScriptCommand(&get_car_z_angle,dwVehicleID,&fZAngle);
 
 		fprintf(fileOut,"createVehicle(%u, %.4f, %.4f, %.4f, %.4f, %u, %u)\n", wModelIndex, vPos->X, vPos->Y, vPos->Z, 

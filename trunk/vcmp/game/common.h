@@ -65,7 +65,9 @@ typedef struct _ENTITY_TYPE {
 	DWORD *   pRWObject;      // 4C-50
 	BYTE	  nControlFlags;  // 50-51
 	BYTE	  nControlFlags2; // 51-52
-	_pad(__pad1, 0xA);        // 52-5C
+	BYTE      byteUnkFlags1;  // 52-53
+	BYTE      byteUnkFlags2;  // 53-54
+	_pad(__pad1, 0x8);        // 54-5C
 	WORD	  wModelIndex;    // 5C-5E
 	_pad(__pad2, 0x6);        // 5E-64
 } ENTITY_TYPE;
