@@ -240,3 +240,17 @@ BOOL CPlayerPool::IsConnected(BYTE byteSystemAddress)
 	}
 	return TRUE;
 }
+
+//----------------------------------------------------
+
+void CPlayerPool::SetGameTime(BYTE hours, BYTE minutes)
+{
+	CPlayerPool * pPlayerPool = pNetGame->GetPlayerPool();
+	for(BYTE i = 0; i < MAX_PLAYERS; i++) {
+		if(pPlayerPool->GetSlotState(i)) {
+			pPlayerPool->GetAt(i)->SetGameTime(hours, minutes);
+		}
+	}
+}
+
+//----------------------------------------------------

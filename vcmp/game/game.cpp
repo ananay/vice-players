@@ -361,3 +361,10 @@ void CGame::DisplayTextMessage(PCHAR szText)
 }
 
 //-----------------------------------------------------------
+
+void CGame::SetGameTime(BYTE hours, BYTE minutes)
+{
+	ScriptCommand(&set_current_time, hours, minutes);
+}
+
+//-----------------------------------------------------------

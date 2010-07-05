@@ -63,6 +63,7 @@ public:
 	void	SetD3D(DWORD pD3D) {	*(DWORD *)ADDR_ID3D8 = pD3D; };
 	HWND	GetMainWindowHwnd() { return *(HWND *)ADDR_HWND; };
 	void	DisplayTextMessage(PCHAR szText);
+	void	SetGameTime(BYTE hours, BYTE minutes);
 
 	//-----------------------------------------------------------
 

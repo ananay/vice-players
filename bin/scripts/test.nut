@@ -42,7 +42,7 @@ function onPlayerSpawn(playerid)
 {
 	print("Spawn: [ID: " + playerid + "]");
 	sendPlayerMessage(playerid, 0xE60000FF, "Spawned on the server " + getPlayerName(playerid));
-	
+	setPlayerTime(playerid, 0, 0);
 }
 
 

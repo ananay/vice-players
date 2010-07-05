@@ -388,6 +388,15 @@ void ConnectionRejected(RakNet::BitStream *bitStream, Packet *packet)
 
 //----------------------------------------------------
 
+void SetGameTime(RakNet::BitStream *bitStream, Packet *packet)
+{
+	BYTE h, m;
+	bitStream->Read(h);
+	bitStream->Read(m);
+
+	pGame->SetGameTime(h, m);
+}
+
 // ============= Scripting RPC's ====================//
 
 // SetHealth
@@ -617,6 +626,7 @@ void RegisterRPCs()
 	pNetGame->GetRPC4()->RegisterFunction("UpdateScoreAndPing",UpdateScoreAndPing);
 	pNetGame->GetRPC4()->RegisterFunction("ConnectionRejected",ConnectionRejected);
 	pNetGame->GetRPC4()->RegisterFunction("Passenger",Passenger);
+	pNetGame->GetRPC4()->RegisterFunction("SetGameTime",SetGameTime);
 
 	pNetGame->GetRPC4()->RegisterFunction("Script_SetHealth",Script_SetHealth);
 	pNetGame->GetRPC4()->RegisterFunction("Script_SetArmour",Script_SetArmour);
@@ -656,6 +666,7 @@ void UnRegisterRPCs()
 	pNetGame->GetRPC4()->UnregisterFunction("UpdateScoreAndPing");
 	pNetGame->GetRPC4()->UnregisterFunction("ConnectionRejected");
 	pNetGame->GetRPC4()->UnregisterFunction("Passenger");
+	pNetGame->GetRPC4()->UnregisterFunction("SetGameTime");
 
 	pNetGame->GetRPC4()->UnregisterFunction("Script_SetHealth");
 	pNetGame->GetRPC4()->UnregisterFunction("Script_SetArmour");
