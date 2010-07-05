@@ -32,6 +32,24 @@
 
 //-----------------------------------------------------------
 
+enum eObjectiveType
+{
+	OBJECTIVE_TYPE_KILL_1 = 8,
+	OBJECTIVE_TYPE_KILL_2,
+	OBJECTIVE_TYPE_AVOID,
+	OBJECTIVE_TYPE_FOLLOW = 12,
+	OBJECTIVE_TYPE_GO_TO,
+	OBJECTIVE_TYPE_EXIT_CAR = 16,
+	OBJECTIVE_TYPE_ENTER_CAR_AS_PASSENGER,
+	OBJECTIVE_TYPE_ENTER_CAR_AS_DRIVER,
+	OBJECTIVE_TYPE_FIRE_AT_TARGET = 21,
+	OBJECTIVE_TYPE_RUN_AWAY,
+	OBJECTIVE_TYPE_TIE = 29,
+	OBJECTIVE_TYPE_AIM = 46
+};
+
+//-----------------------------------------------------------
+
 class CPlayerPed : public CPhysical
 {
 private:
@@ -90,7 +108,7 @@ public:
 	void           ClearTargetAndVehicle();
 
 	void           ClearLastWeaponDamage();
-	void           SetObjective(PDWORD pObjEntity, int iFunction);
+	void           SetObjective(DWORD * pObjEntity, eObjectiveType objectiveType);
 	void           SetImmunities(BOOL bBullet, BOOL bFire, BOOL bExplosion, BOOL bDamage, BOOL bUnknown);
 
 	void           PutDirectlyInVehicle(int iVehicleID);

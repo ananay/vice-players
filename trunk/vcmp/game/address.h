@@ -66,7 +66,7 @@
 #define FUNC_CPool_CPed_AtHandle				0x451CB0
 #define VAR_PedPool								0x97F2AC
 #define ADDR_SET_CURRENT_WEAPON					0x4FF90D
-#define ADDR_SET_OBJECTIVE						0x521F10
+#define FUNC_CPed__SetObjective					0x521F10
 #define FUNC_CPool_CVehicle_AtHandle			0x451C70
 #define FUNC_CPool_CVehicle__HandleOf			0x42C4B0
 #define VAR_VehiclePool							0xA0FDE4
