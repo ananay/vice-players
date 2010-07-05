@@ -12,8 +12,11 @@
 struct IDirect3DDevice8Hook : public IDirect3DDevice8
 {
 private:
-	int m_iRef;
+	IDirect3D8 * m_pD3D;
+	IDirect3DDevice8 * m_pDevice;
 public:
+	IDirect3DDevice8Hook::IDirect3DDevice8Hook(IDirect3D8 * pDevice, IDirect3DDevice8 * pD3DDevice);
+
     /*** IUnknown methods ***/
     STDMETHOD(QueryInterface)(THIS_ REFIID riid, void** ppvObj);
     STDMETHOD_(ULONG,AddRef)(THIS);

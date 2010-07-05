@@ -39,6 +39,23 @@
 
 //-----------------------------------------------------------
 
+enum eGameState
+{
+	GS_START,
+	GS_SHOWLOGO,
+	GS_LOGOPROCESS,
+	GS_SHOWTITLES,
+	GS_TITLESPROCESS,
+	GS_PREINITGAME,
+	GS_SELVIDEOMODE,
+	GS_MENUPROCESS,
+	GS_LOADGAME,
+	GS_SHUTDOWN,
+};
+
+//-----------------------------------------------------------
+
+
 class CGame
 {
 public:
@@ -56,14 +73,23 @@ public:
 	BOOL	IsModelLoaded(int iModelID);
 	void	DisplayHud(BOOL bSwitch);
 	void	ToggleFrameLimiterState(BOOL bState);
+	BOOL    GetFrameLimiterState();
+	void    SetDrawDistance(DWORD dwDrawDistance);
+	DWORD   GetDrawDistance();
+	void    SetBrightness(DWORD dwBrightness);
+	DWORD   GetBrightness();
+	void    SetWidescreen(BOOL bWidescreen);
+	BOOL    GetWidescreen();
+	void	DisplayTextMessage(PCHAR szText);
+	void    PlaySound(int iSoundId, VECTOR vPosition);
+	void    FadeScreen(int iType, int iTime);
+	void	SetGameTime(BYTE hours, BYTE minutes);
 		
 	DWORD	GetD3DDevice() { return *(DWORD *)ADDR_ID3D8DEVICE; };
 	void	SetD3DDevice(DWORD pD3DDevice) { *(DWORD *)ADDR_ID3D8DEVICE = pD3DDevice; };
 	DWORD	GetD3D() { return *(DWORD *)ADDR_ID3D8DEVICE; };
 	void	SetD3D(DWORD pD3D) {	*(DWORD *)ADDR_ID3D8 = pD3D; };
 	HWND	GetMainWindowHwnd() { return *(HWND *)ADDR_HWND; };
-	void	DisplayTextMessage(PCHAR szText);
-	void	SetGameTime(BYTE hours, BYTE minutes);
 
 	//-----------------------------------------------------------
 
@@ -85,6 +111,16 @@ public:
 		*(BYTE *)0x5F2175 = 0x39;
 		*(BYTE *)0x5F2176 = 0xF0;
 	};
+
+	//-----------------------------------------------------------
+
+	eGameState GetGameState() {
+		return *(eGameState *)VAR_GameState;
+	}
+
+	void SetGameState(eGameState state) {
+		*(eGameState *)VAR_GameState = state;
+	}
 
 	//-----------------------------------------------------------
 

@@ -58,10 +58,15 @@ typedef struct _MATRIX4X4 {
 
 #define _pad(x,y) BYTE x[y]
 
+typedef struct _PLACEABLE {
+	MATRIX4X4 matMatrix;
+	DWORD     pMatrix;
+	DWORD     dwHasMatrix;
+} PLACEABLE;
+
 typedef struct _ENTITY_TYPE {
 	DWORD	  func_table;     // 00-04
-	MATRIX4X4 mat;            // 04-44
-	_pad(__pad0, 0x8);        // 44-4C
+	PLACEABLE placeable;      // 04-4C
 	DWORD *   pRWObject;      // 4C-50
 	BYTE	  nControlFlags;  // 50-51
 	BYTE	  nControlFlags2; // 51-52

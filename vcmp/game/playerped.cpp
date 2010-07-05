@@ -119,10 +119,13 @@ void CPlayerPed::Destroy()
 {
 	PED_TYPE * pPed = (PED_TYPE *)GetEntity();
 	if(pPed) {
-		_asm mov ecx, pPed
-		_asm mov ebx, [ecx] ; vtable
-		_asm push 1
-		_asm call [ebx+8] ; destroy
+		_asm
+		{
+			mov ecx, pPed
+			mov ebx, [ecx] ; vtable
+			push 1
+			call [ebx+8] ; destroy
+		}
 		SetEntity(NULL);
 	}
 }
@@ -433,32 +436,41 @@ void CPlayerPed::ShowMarker(int iMarkerColor)
 
 		dwPedID = CPools::GetIndexFromPed(pPed);
 
-		_asm push 2
-		_asm push 4
-		_asm mov eax, dwPedID
-		_asm push eax
-		_asm push 2
-		_asm mov edx, ADDR_TIE_MARKER_TO_ACTOR
-		_asm call edx
-		_asm mov hndMarker, eax
-		_asm pop ecx
-		_asm pop ecx
-		_asm pop ecx
-		_asm pop ecx
+		DWORD dwFunc = ADDR_TIE_MARKER_TO_ACTOR;
+		_asm
+		{
+			push 2
+			push 4
+			mov eax, dwPedID
+			push eax
+			push 2
+			call dwFunc
+			mov hndMarker, eax
+			pop ecx
+			pop ecx
+			pop ecx
+			pop ecx
+		}
 
-		_asm push iMarkerColor
-		_asm push hndMarker
-		_asm mov edx, ADDR_SET_MARKER_COLOR
-		_asm call edx
-		_asm pop ecx
-		_asm pop ecx
+		dwFunc = ADDR_SET_MARKER_COLOR;
+		_asm
+		{
+			push iMarkerColor
+			push hndMarker
+			call dwFunc
+			pop ecx
+			pop ecx
+		}
 
-		_asm push 2
-		_asm push hndMarker
-		_asm mov edx, ADDR_SHOW_ON_RADAR1
-		_asm call edx
-		_asm pop ecx
-		_asm pop ecx
+		dwFunc = ADDR_SHOW_ON_RADAR1;
+		_asm
+		{
+			push 2
+			push hndMarker
+			call dwFunc
+			pop ecx
+			pop ecx
+		}
 	}
 }
 
@@ -466,9 +478,8 @@ void CPlayerPed::ShowMarker(int iMarkerColor)
 
 BOOL CPlayerPed::IsOnScreen()
 {
-	PED_TYPE * pPed = (PED_TYPE *)GetEntity();
-	if(pPed) {
-		return GameIsEntityOnScreen((DWORD *)pPed);
+	if(GetEntity()) {
+		return CEntity::IsOnScreen();
 	}
 	return FALSE;
 }
@@ -480,11 +491,13 @@ void CPlayerPed::Say(UINT uiNum)
 	PED_TYPE * pPed = (PED_TYPE *)GetEntity();
 	if(pPed)
 	{
-		DWORD dwPedPtr = (DWORD)pPed;
-		_asm mov ecx, dwPedPtr
-		_asm push uiNum
-		_asm mov edx, FUNC_CPed__Say
-		_asm call edx
+		DWORD dwFunc = FUNC_CPed__Say;
+		_asm
+		{
+			push uiNum
+			mov ecx, pPed
+			call dwFunc
+		}
 	}
 }
 
@@ -605,11 +618,17 @@ float CPlayerPed::GetRotation()
 
 //-----------------------------------------------------------
 
+#define PI 3.1415927f
+
 void CPlayerPed::SetRotation(float fRotation)
 {
-	//m_pPed->fRotation1 = fRotation;
-	//m_pPed->fRotation2 = fRotation;
-	ScriptCommand(&set_player_z_angle, m_bytePlayerNumber, fRotation);
+	PED_TYPE * pPed = (PED_TYPE *)GetEntity();
+	if(pPed && !pPed->byteIsInVehicle) {
+		float fRot = (PI * fRotation * 0.0055555557f);
+		pPed->fRotation1 = pPed->fRotation2 = fRot;
+		SetHeading(fRot);
+	}
+	//ScriptCommand(&set_player_z_angle, m_bytePlayerNumber, fRotation);
 }
 
 //-----------------------------------------------------------
@@ -674,13 +693,15 @@ void CPlayerPed::Teleport(float x, float y, float z)
 {
 	PED_TYPE * pPed = (PED_TYPE *)GetEntity();
 	if(pPed) {
-		DWORD dwPedPtr = (DWORD)pPed;
-		_asm mov ecx, dwPedPtr
-		_asm push z
-		_asm push y
-		_asm push x
-		_asm mov edx, 0x4F5690
-		_asm call edx
+		DWORD dwFunc = FUNC_CPed__Teleport;
+		_asm
+		{
+			push z
+			push y
+			push x
+			mov ecx, pPed
+			call dwFunc
+		}
 	}
 }
 
@@ -777,31 +798,40 @@ void CPlayerPed::ForceIntoPassengerSeat(UINT uiVehicleID, UINT uiSeat)
 		pVehicle->pPassengers[uiSeat-1] = pPed;
 		uiPassengerOffset = 424 + (uiSeat * 4);
 
-		_asm mov     eax, pVehicle
-		_asm add	 eax, uiPassengerOffset
-		_asm push    eax
-		_asm mov     eax, pVehicle
-		_asm mov     ecx, pPed
-		_asm mov	 edx, ADDR_ACTOR_PUT_IN_VEHICLE
-		_asm call    edx
+		DWORD dwFunc = ADDR_ACTOR_PUT_IN_VEHICLE;
+		_asm
+		{
+			mov     eax, pVehicle
+			add	    eax, uiPassengerOffset
+			push    eax
+			mov     eax, pVehicle
+			mov     ecx, pPed
+			call    dwFunc
+		}
 
-		_asm mov	 ebx, pPed
-		_asm mov     eax, pVehicle
-		_asm mov     [ebx+936], eax
-		_asm lea     eax, [ebx+936]
-		_asm mov     ecx, [ebx+936]
-		_asm push    eax
-		_asm mov	 edx, ADDR_ACTOR_PUT_IN_VEHICLE
-		_asm call    edx
+		dwFunc = ADDR_ACTOR_PUT_IN_VEHICLE;
+		_asm
+		{
+			mov     ebx, pPed
+			mov     eax, pVehicle
+			mov     [ebx+936], eax
+			lea     eax, [ebx+936]
+			mov     ecx, [ebx+936]
+			push    eax
+			call    dwFunc
+		}
 
 		pPed->byteIsInVehicle = 1;
 		pPed->physical.entity.nControlFlags2 &= 0xFE;
 
-		_asm push 0
-		_asm push pVehicle
-		_asm mov ecx, pPed
-		_asm mov edx, ADDR_VEHICLE_SET_DRIVER
-		_asm call edx
+		dwFunc = ADDR_VEHICLE_SET_DRIVER;
+		_asm
+		{
+			push 0
+			push pVehicle
+			mov ecx, pPed
+			call dwFunc
+		}
 	}
 }
 
@@ -823,19 +853,28 @@ void CPlayerPed::SetModel(int iModel)
 			{
 				szModelName = szSpecialActorModels[iModel];
 
-				_asm mov ecx, pPed
-				_asm push szModelName
-				_asm mov edx, FUNC_CPed__ResetSkin
-				_asm call edx
+				DWORD dwFunc = FUNC_CPed__ResetSkin;
+				_asm
+				{
+					push szModelName
+					mov ecx, pPed
+					call dwFunc
+				}
 
-				_asm push 0
-				_asm mov edx, ADDR_LOAD_REQUESTED_MODELS2
-				_asm call edx
-				_asm pop ecx
+				dwFunc = ADDR_LOAD_REQUESTED_MODELS2;
+				_asm
+				{
+					push 0
+					call dwFunc
+					pop ecx
+				}
 
-				_asm mov ecx, pPed
-				_asm mov edx, FUNC_CPed__Recreate
-				_asm call edx
+				dwFunc = FUNC_CPed__Recreate;
+				_asm
+				{
+					mov ecx, pPed
+					call dwFunc
+				}
 			}
 		}
 		else // default.ide number
@@ -846,10 +885,13 @@ void CPlayerPed::SetModel(int iModel)
 				while(!pGame->IsModelLoaded(iModel)) Sleep(1);
 			}
 
-			_asm mov ecx, pPed
-			_asm push iModel
-			_asm mov edx, FUNC_CPed__SetModelIndex
-			_asm call edx
+			DWORD dwFunc = FUNC_CPed__SetModelIndex;
+			_asm
+			{
+				push iModel
+				mov ecx, pPed
+				call dwFunc
+			}
 		}
 	}
 }
@@ -860,11 +902,14 @@ void CPlayerPed::SetObjective(PDWORD pObjectiveEntity, eObjectiveType objectiveT
 {
 	PED_TYPE * pPed = (PED_TYPE *)GetEntity();
 	if(pPed && pObjectiveEntity) {
-		_asm mov ecx, pPed
-		_asm push pObjectiveEntity
-		_asm push objectiveType
-		_asm mov edx, FUNC_CPed__SetObjective
-		_asm call edx
+		DWORD dwFunc = FUNC_CPed__SetObjective;
+		_asm
+		{
+			push pObjectiveEntity
+			push objectiveType
+			mov ecx, pPed
+			call dwFunc
+		}
 	}
 }
 
@@ -872,15 +917,14 @@ void CPlayerPed::SetObjective(PDWORD pObjectiveEntity, eObjectiveType objectiveT
 
 void CPlayerPed::RestartIfWastedAt(VECTOR *vecRestart, float fRotation)
 {
-	ScriptCommand(&restart_if_wasted_at,vecRestart->X,vecRestart->Y,
-		vecRestart->Z,fRotation);
+	ScriptCommand(&restart_if_wasted_at, vecRestart->X, vecRestart->Y, vecRestart->Z, fRotation);
 }
 
 //-----------------------------------------------------------
 
 void CPlayerPed::TogglePlayerControllable(int iControllable)
 {
-	ScriptCommand(&toggle_player_controllable,m_bytePlayerNumber,iControllable);
+	ScriptCommand(&toggle_player_controllable, m_bytePlayerNumber, iControllable);
 }
 
 //-----------------------------------------------------------
@@ -890,9 +934,12 @@ void CPlayerPed::SetDead()
 	PED_TYPE * pPed = (PED_TYPE *)GetEntity();
 	if(pPed) {
 		pPed->fHealth = 0.0f;
-		_asm mov ecx, pPed
-		_asm mov edx, 0x4F6430
-		_asm call edx
+		DWORD dwFunc = 0x4F6430;
+		_asm
+		{
+			mov ecx, pPed
+			call dwFunc
+		}
 	}
 }
 

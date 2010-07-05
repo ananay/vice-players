@@ -28,12 +28,15 @@ PED_TYPE * VCMP_SAFECALL CPools::GetPedFromIndex(int iIndex)
 {
 	PED_TYPE * pPed;
 
-	_asm mov ebx, VAR_PedPool
-	_asm mov ecx, [ebx]
-	_asm push iIndex
-	_asm mov ebx, FUNC_CPool_CPed_AtHandle
-	_asm call ebx
-	_asm mov pPed, eax
+	DWORD dwFunc = FUNC_CPool_CPed_AtHandle;
+	_asm
+	{
+		mov ebx, VAR_PedPool
+		mov ecx, [ebx]
+		push iIndex
+		call dwFunc
+		mov pPed, eax
+	}
 
 	return pPed;	
 }
@@ -42,12 +45,15 @@ int VCMP_SAFECALL CPools::GetIndexFromPed(PED_TYPE * pPed)
 {
 	int iIndex;
 
-	_asm mov ebx, VAR_PedPool
-	_asm mov ecx, [ebx]
-	_asm push pPed
-	_asm mov ebx, FUNC_CPool_CPed__HandleOf
-	_asm call ebx
-	_asm mov iIndex, eax
+	DWORD dwFunc = FUNC_CPool_CPed__HandleOf;
+	_asm
+	{
+		mov ebx, VAR_PedPool
+		mov ecx, [ebx]
+		push pPed
+		call dwFunc
+		mov iIndex, eax
+	}
 
 	return iIndex;
 }
@@ -56,12 +62,15 @@ VEHICLE_TYPE * VCMP_SAFECALL CPools::GetVehicleFromIndex(int iIndex)
 {
 	VEHICLE_TYPE * pVehicle;
 
-	_asm mov ebx, VAR_VehiclePool
-	_asm mov ecx, [ebx]
-	_asm push iIndex
-	_asm mov ebx, FUNC_CPool_CVehicle_AtHandle
-	_asm call ebx
-	_asm mov pVehicle, eax
+	DWORD dwFunc = FUNC_CPool_CVehicle_AtHandle;
+	_asm
+	{
+		mov ebx, VAR_VehiclePool
+		mov ecx, [ebx]
+		push iIndex
+		call dwFunc
+		mov pVehicle, eax
+	}
 
 	return pVehicle;
 }
@@ -70,12 +79,15 @@ int VCMP_SAFECALL CPools::GetIndexFromVehicle(VEHICLE_TYPE * pVehicle)
 {
 	int iIndex;
 
-	_asm mov ebx, VAR_VehiclePool
-	_asm mov ecx, [ebx]
-	_asm push pVehicle
-	_asm mov ebx, FUNC_CPool_CVehicle__HandleOf
-	_asm call ebx
-	_asm mov iIndex, eax
+	DWORD dwFunc = FUNC_CPool_CVehicle__HandleOf;
+	_asm
+	{
+		mov ebx, VAR_VehiclePool
+		mov ecx, [ebx]
+		push pVehicle
+		call dwFunc
+		mov iIndex, eax
+	}
 
 	return iIndex;	
 }

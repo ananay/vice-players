@@ -23,6 +23,8 @@
 //----------------------------------------------------------
 
 #include "entity.h"
+#include "util.h"
+#include "address.h"
 
 //----------------------------------------------------------
 
@@ -43,18 +45,18 @@ void CEntity::SetEntity(ENTITY_TYPE *pEntity)
 void CEntity::GetMatrix(PMATRIX4X4 Matrix)
 {
 	if(m_pEntity) {
-		Matrix->vLookRight.X = m_pEntity->mat.vLookRight.X;
-		Matrix->vLookRight.Y = m_pEntity->mat.vLookRight.Y;
-		Matrix->vLookRight.Z = m_pEntity->mat.vLookRight.Z;
-		Matrix->vLookUp.X = m_pEntity->mat.vLookUp.X;
-		Matrix->vLookUp.Y = m_pEntity->mat.vLookUp.Y;
-		Matrix->vLookUp.Z = m_pEntity->mat.vLookUp.Z;
-		Matrix->vLookAt.X = m_pEntity->mat.vLookAt.X;
-		Matrix->vLookAt.Y = m_pEntity->mat.vLookAt.Y;
-		Matrix->vLookAt.Z = m_pEntity->mat.vLookAt.Z;
-		Matrix->vPos.X = m_pEntity->mat.vPos.X;
-		Matrix->vPos.Y = m_pEntity->mat.vPos.Y;
-		Matrix->vPos.Z = m_pEntity->mat.vPos.Z;
+		Matrix->vLookRight.X = m_pEntity->placeable.matMatrix.vLookRight.X;
+		Matrix->vLookRight.Y = m_pEntity->placeable.matMatrix.vLookRight.Y;
+		Matrix->vLookRight.Z = m_pEntity->placeable.matMatrix.vLookRight.Z;
+		Matrix->vLookUp.X = m_pEntity->placeable.matMatrix.vLookUp.X;
+		Matrix->vLookUp.Y = m_pEntity->placeable.matMatrix.vLookUp.Y;
+		Matrix->vLookUp.Z = m_pEntity->placeable.matMatrix.vLookUp.Z;
+		Matrix->vLookAt.X = m_pEntity->placeable.matMatrix.vLookAt.X;
+		Matrix->vLookAt.Y = m_pEntity->placeable.matMatrix.vLookAt.Y;
+		Matrix->vLookAt.Z = m_pEntity->placeable.matMatrix.vLookAt.Z;
+		Matrix->vPos.X = m_pEntity->placeable.matMatrix.vPos.X;
+		Matrix->vPos.Y = m_pEntity->placeable.matMatrix.vPos.Y;
+		Matrix->vPos.Z = m_pEntity->placeable.matMatrix.vPos.Z;
 	}
 }
 
@@ -63,18 +65,18 @@ void CEntity::GetMatrix(PMATRIX4X4 Matrix)
 void CEntity::SetMatrix(MATRIX4X4 Matrix)
 {
 	if(m_pEntity) {
-		m_pEntity->mat.vLookRight.X = Matrix.vLookRight.X;
-		m_pEntity->mat.vLookRight.Y = Matrix.vLookRight.Y;
-		m_pEntity->mat.vLookRight.Z = Matrix.vLookRight.Z;
-		m_pEntity->mat.vLookUp.X = Matrix.vLookUp.X;
-		m_pEntity->mat.vLookUp.Y = Matrix.vLookUp.Y;
-		m_pEntity->mat.vLookUp.Z = Matrix.vLookUp.Z;
-		m_pEntity->mat.vLookAt.X = Matrix.vLookAt.X;
-		m_pEntity->mat.vLookAt.Y = Matrix.vLookAt.Y;
-		m_pEntity->mat.vLookAt.Z = Matrix.vLookAt.Z;
-		m_pEntity->mat.vPos.X = Matrix.vPos.X;
-		m_pEntity->mat.vPos.Y = Matrix.vPos.Y;
-		m_pEntity->mat.vPos.Z = Matrix.vPos.Z;
+		m_pEntity->placeable.matMatrix.vLookRight.X = Matrix.vLookRight.X;
+		m_pEntity->placeable.matMatrix.vLookRight.Y = Matrix.vLookRight.Y;
+		m_pEntity->placeable.matMatrix.vLookRight.Z = Matrix.vLookRight.Z;
+		m_pEntity->placeable.matMatrix.vLookUp.X = Matrix.vLookUp.X;
+		m_pEntity->placeable.matMatrix.vLookUp.Y = Matrix.vLookUp.Y;
+		m_pEntity->placeable.matMatrix.vLookUp.Z = Matrix.vLookUp.Z;
+		m_pEntity->placeable.matMatrix.vLookAt.X = Matrix.vLookAt.X;
+		m_pEntity->placeable.matMatrix.vLookAt.Y = Matrix.vLookAt.Y;
+		m_pEntity->placeable.matMatrix.vLookAt.Z = Matrix.vLookAt.Z;
+		m_pEntity->placeable.matMatrix.vPos.X = Matrix.vPos.X;
+		m_pEntity->placeable.matMatrix.vPos.Y = Matrix.vPos.Y;
+		m_pEntity->placeable.matMatrix.vPos.Z = Matrix.vPos.Z;
 	}
 }
 
@@ -83,9 +85,9 @@ void CEntity::SetMatrix(MATRIX4X4 Matrix)
 void CEntity::GetPosition(PVECTOR Vector)
 {
 	if(m_pEntity) {
-		Vector->X = m_pEntity->mat.vPos.X;
-		Vector->Y = m_pEntity->mat.vPos.Y;
-		Vector->Z = m_pEntity->mat.vPos.Z;
+		Vector->X = m_pEntity->placeable.matMatrix.vPos.X;
+		Vector->Y = m_pEntity->placeable.matMatrix.vPos.Y;
+		Vector->Z = m_pEntity->placeable.matMatrix.vPos.Z;
 	}
 }
 
@@ -94,9 +96,23 @@ void CEntity::GetPosition(PVECTOR Vector)
 void CEntity::SetPosition(VECTOR Vector)
 {
 	if(m_pEntity) {
-		m_pEntity->mat.vPos.X = Vector.X;
-		m_pEntity->mat.vPos.Y = Vector.Y;
-		m_pEntity->mat.vPos.Z = Vector.Z;
+		m_pEntity->placeable.matMatrix.vPos.X = Vector.X;
+		m_pEntity->placeable.matMatrix.vPos.Y = Vector.Y;
+		m_pEntity->placeable.matMatrix.vPos.Z = Vector.Z;
+	}
+}
+
+//-----------------------------------------------------------
+
+void CEntity::SetHeading(float fHeading)
+{
+	PLACEABLE * pPlaceable = &m_pEntity->placeable;
+	DWORD dwFunc = FUNC_CPlaceable__SetHeading;
+	_asm
+	{
+		push fHeading
+		mov ecx, pPlaceable
+		call dwFunc
 	}
 }
 
@@ -108,6 +124,16 @@ WORD CEntity::GetModelIndex()
 		return m_pEntity->wModelIndex;
 	}
 	return 0;
+}
+
+//-----------------------------------------------------------
+
+BOOL CEntity::IsOnScreen()
+{
+	if(m_pEntity) {
+		return GameIsEntityOnScreen((DWORD *)m_pEntity);
+	}
+	return FALSE;
 }
 
 //-----------------------------------------------------------

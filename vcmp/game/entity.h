@@ -39,6 +39,9 @@ public:
 	void		 SetMatrix(MATRIX4X4 Matrix);
 	void         GetPosition(PVECTOR Vector);
 	void         SetPosition(VECTOR Vector);
+	void         SetHeading(float fHeading);
 
 	WORD		 GetModelIndex();
+
+	BOOL         IsOnScreen();
 };

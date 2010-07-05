@@ -98,6 +98,7 @@ void InitGame(RakNet::BitStream *bitStream, Packet *packet)
 
 	pPlayerPool->SetLocalSystemAddress(byteMySystemAddress);
 
+	pGame->FadeScreen(1, 0);
 	pNetGame->InitGameLogic();
 	pNetGame->SetGameState(GAMESTATE_CONNECTED);
 }

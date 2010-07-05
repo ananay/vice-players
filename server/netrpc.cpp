@@ -30,11 +30,9 @@
 
 using namespace RakNet;
 
-
-RakNet::RakPeerInterface		*pRak=0;
-extern CNetGame			*pNetGame;
-extern char				*szAdminPass;
-extern CRcon			*pRcon;
+extern CNetGame *pNetGame;
+extern char     *szAdminPass;
+extern CRcon    *pRcon;
 extern CScripts	*pScripts;
 #ifndef WIN32
 #	define stricmp strcasecmp
@@ -316,6 +314,7 @@ void UpdateScoreAndPing(RakNet::BitStream *bitStream, Packet *packet)
 
 	int write_counter = 0;
 	SystemAddress systemAddress;
+	RakPeerInterface * pRak = pNetGame->GetRakPeer();
 
 	for(BYTE i = 0; i < MAX_PLAYERS; i++) {
 		if(pPlayerPool->GetSlotState(i)) {

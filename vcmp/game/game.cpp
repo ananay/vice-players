@@ -28,7 +28,10 @@
 #include "util.h"
 #include "keystuff.h"
 
+void GameInstallPatches();
 void GameInstallHooks();
+
+LONG WINAPI exc_handler(_EXCEPTION_POINTERS* exc_inf);
 
 //-----------------------------------------------------------
 
@@ -36,6 +39,30 @@ CGame::CGame()
 {
 	m_pInternalCamera = new CCamera();
 	m_pInternalPlayer = NULL;
+
+	DWORD dwVP, dwVP2;
+
+	// Skip the logo and title screens
+	VirtualProtect((PVOID)0x5FFFAB, 1, PAGE_EXECUTE_READWRITE, &dwVP);
+	*(BYTE *)0x5FFFAB = 0x5;
+	VirtualProtect((PVOID)0x5FFFAB, 1, dwVP, &dwVP2);
+
+	// Nop for the menu process game state hook
+	VirtualProtect((PVOID)0x6003B3, 0xA, PAGE_EXECUTE_READWRITE, &dwVP);
+	memset((PVOID)0x6003B3, 0x90, 0xA); // nop * 10
+	VirtualProtect((PVOID)0x6003B3, 0xA, dwVP, &dwVP2);
+
+	InitPlayerPedPtrRecords();
+	GameKeyStatesInit();
+	GameAimSyncInit();
+
+	SetUnhandledExceptionFilter(exc_handler);
+	
+	// Install all patches
+	GameInstallPatches();
+
+	// Install all hooks
+	GameInstallHooks();
 }
 
 //-----------------------------------------------------------
@@ -96,9 +123,6 @@ void CGame::ToggleKeyInputsDisabled(BOOL bDisable)
 }
 
 //-----------------------------------------------------------
-// extern for the exception box
-
-LONG WINAPI exc_handler(_EXCEPTION_POINTERS* exc_inf);
 
 void GameInstallPatches()
 {
@@ -248,31 +272,21 @@ void GameInstallPatches()
 	VirtualProtect((PVOID)0x42BD69, 15, dwVP, &dwVP2);
 }
 
+//-----------------------------------------------------------
+
 void CGame::StartGame()
-{	
-	InitPlayerPedPtrRecords();
-	GameKeyStatesInit();
-	GameAimSyncInit();
-
-	SetUnhandledExceptionFilter(exc_handler);
-
-	// Install all patches
-	GameInstallPatches();
-	
-	// Install all hooks
-	GameInstallHooks();
-
+{
 	GameDisableCheatCodes();
 
-	*(DWORD *)ADDR_MENU = 0;
-	*(DWORD *)ADDR_STARTGAME = 1;
+	*(DWORD *)VAR_Menu__IsActive = 0;
+	*(DWORD *)VAR_Menu__StartGame = 1;
 }
 
 //-----------------------------------------------------------
 
 BOOL CGame::IsMenuActive()
 {
-	if(*(DWORD *)ADDR_MENU != 0) 
+	if(*(DWORD *)VAR_Menu__IsActive != 0) 
 		return TRUE;
 	else
 		return FALSE;
@@ -346,11 +360,63 @@ void CGame::DisplayHud(BOOL bSwitch)
 void CGame::ToggleFrameLimiterState(BOOL bState)
 {
 	if(bState) {
-		*(BYTE *)ADDR_FRAME_LIMITER = 1;
+		*(BYTE *)VAR_Menu__FrameLimiter = 1;
+	} else {
+		*(BYTE *)VAR_Menu__FrameLimiter = 0;
 	}
-	else {
-		*(BYTE *)ADDR_FRAME_LIMITER = 0;
+}
+
+//-----------------------------------------------------------
+
+BOOL CGame::GetFrameLimiterState()
+{
+	return *(BYTE *)VAR_Menu__FrameLimiter;
+}
+
+//-----------------------------------------------------------
+
+void CGame::SetDrawDistance(DWORD dwDrawDistance)
+{
+	*(DWORD *)VAR_Menu__DrawDistance = dwDrawDistance;
+}
+
+//-----------------------------------------------------------
+
+DWORD CGame::GetDrawDistance()
+{
+	return *(DWORD *)VAR_Menu__DrawDistance;
+}
+
+//-----------------------------------------------------------
+
+void CGame::SetBrightness(DWORD dwBrightness)
+{
+	*(DWORD *)VAR_Menu__Brightness = dwBrightness;
+}
+
+//-----------------------------------------------------------
+
+DWORD CGame::GetBrightness()
+{
+	return *(DWORD *)VAR_Menu__Brightness;
+}
+
+//-----------------------------------------------------------
+
+void CGame::SetWidescreen(BOOL bWidescreen)
+{
+	if(bWidescreen) {
+		*(BYTE *)VAR_Menu__Widescreen = 1;
+	} else {
+		*(BYTE *)VAR_Menu__Widescreen = 0;
 	}
+}
+
+//-----------------------------------------------------------
+
+BOOL CGame::GetWidescreen()
+{
+	return *(BYTE *)VAR_Menu__Widescreen;
 }
 
 //-----------------------------------------------------------
@@ -359,6 +425,21 @@ void CGame::DisplayTextMessage(PCHAR szText)
 {
 
 }
+
+//-----------------------------------------------------------
+
+void CGame::PlaySound(int iSoundId, VECTOR vPosition)
+{
+	ScriptCommand(&play_sound, vPosition.X, vPosition.Y, vPosition.Z, iSoundId);
+}
+
+//-----------------------------------------------------------
+
+void CGame::FadeScreen(int iType, int iTime)
+{
+	ScriptCommand(&fade, iTime, iType);
+}
+
 
 //-----------------------------------------------------------
 

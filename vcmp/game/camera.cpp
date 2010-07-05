@@ -26,12 +26,18 @@
 
 #include "game.h"
 #include "util.h"
+#include "address.h"
 
 //-----------------------------------------------------------
 
 void CCamera::SetBehindPlayer()
 {
-	ScriptCommand(&set_camera_behind_player);
+	DWORD dwFunc = FUNC_CCamera__PutBehindPlayer;
+	_asm
+	{
+		mov ecx, VAR_Camera
+		call dwFunc
+	}
 }
 
 //-----------------------------------------------------------
@@ -43,16 +49,33 @@ void CCamera::SetPosition(float fX, float fY, float fZ, float fRotationX, float 
 
 //-----------------------------------------------------------
 
-void CCamera::LookAtPoint(float fX, float fY, float fZ, int iType)
+void CCamera::LookAtPoint(VECTOR vPoint, int iType)
 {
-	ScriptCommand(&point_camera,fX,fY,fZ,iType);
+	/*if(fZ < -100.0) { // min ground point
+		fZ = FindGroundForZCoord
+	}*/
+	VECTOR * pPoint = &vPoint;
+	DWORD dwFunc = FUNC_CCamera__SetTargetPoint;
+	_asm
+	{
+		push 1
+		push iType
+		push pPoint
+		mov ecx, VAR_Camera
+		call dwFunc
+	}
 }
 
 //-----------------------------------------------------------
 
 void CCamera::Restore()
 {
-	ScriptCommand(&restore_camera);
+	DWORD dwFunc = FUNC_CCamera__Restore;
+	_asm
+	{
+		mov ecx, VAR_Camera
+		call dwFunc
+	}
 }
 
 //-----------------------------------------------------------

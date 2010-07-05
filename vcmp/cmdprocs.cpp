@@ -99,10 +99,9 @@ void cmdSavePos(PCHAR szCmd)
 	// incar savepos
 
 	if(pPlayer->IsInVehicle()) {
-
 		VEHICLE_TYPE *pVehicle = pPlayer->GetGtaVehicle();
 		WORD wModelIndex = pVehicle->physical.entity.wModelIndex;
-		VECTOR * vPos = &pVehicle->physical.entity.mat.vPos;
+		VECTOR * vPos = &pVehicle->physical.entity.placeable.matMatrix.vPos;
 		dwVehicleID = CPools::GetIndexFromVehicle(pVehicle);
 		ScriptCommand(&get_car_z_angle,dwVehicleID,&fZAngle);
 

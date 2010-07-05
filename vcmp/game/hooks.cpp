@@ -583,9 +583,8 @@ void CRunningScript_Process()
 		ScriptCommand(&create_forbidden_for_cars_cube, -100000.0f, -100000.0f, -100000.0f, 100000.0f, 100000.0f, 100000.0f);
 		ScriptCommand(&set_max_wanted_level, 0);
 		ScriptCommand(&toggle_player_controllable, PLAYER_ACTOR, 1);
-		ScriptCommand(&set_camera_position, -1000.0, 191.5, 12.0, 0.0, 0.0, 0.0);
-		ScriptCommand(&point_camera, -1000.0, 185.5, 11.5, 2);
 		ScriptCommand(&force_weather, 0);
+		ScriptCommand(&fade, 0, 0);
 		bScriptInited = TRUE;
 	}
 }
@@ -600,6 +599,14 @@ NUDE CRunningScript_Process_Hook()
 
 	_asm popad
 	_asm retn
+}
+
+//-----------------------------------------------------------
+
+void StartGame()
+{
+	pGame->StartGame();
+	pGame->SetGameState(GS_MENUPROCESS);
 }
 
 //-----------------------------------------------------------
@@ -697,6 +704,9 @@ void GameInstallHooks()
 
 	// Install hook for CRunningScript::Process (thx Merlin)
 	InstallCallHook(0x450245, (DWORD)CRunningScript_Process_Hook);
+
+	// Install hook for menu process game state setting
+	InstallCallHook(0x6003B3, (DWORD)StartGame);
 }
 
 //-----------------------------------------------------------

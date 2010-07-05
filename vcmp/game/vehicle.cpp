@@ -200,14 +200,11 @@ BOOL CVehicle::IsOkToRespawn()
 	VEHICLE_TYPE * pVehicle = (VEHICLE_TYPE *)GetEntity();
 	if(pVehicle) {
 		if(pVehicle->pDriver) return FALSE;
-		if(pVehicle->pPassengers[0]) return FALSE;
-		if(pVehicle->pPassengers[1]) return FALSE;
-		if(pVehicle->pPassengers[2]) return FALSE;
-		if(pVehicle->pPassengers[3]) return FALSE;
-		if(pVehicle->pPassengers[4]) return FALSE;
-		if(pVehicle->pPassengers[5]) return FALSE;
-		if(pVehicle->pPassengers[6]) return FALSE;
-		if(pVehicle->pPassengers[7]) return FALSE;
+		for(BYTE i = 0; i < 8; i++) {
+			if(pVehicle->pPassengers[i]) {
+				return FALSE;
+			}
+		}
 	}
 	return TRUE;
 }
@@ -291,20 +288,22 @@ BYTE CVehicle::GetVehicleSubtype()
 	if(!pVehicle) return 0;
 	DWORD dwVehicle = (DWORD)pVehicle;
 
-	_asm mov ecx, dwVehicle
-	_asm mov edx, [ecx+288]
-	_asm mov eax, [edx+204]
-
-	_asm and eax, 0F0000h
-	_asm jz ret_car
-	_asm sub eax, 10000h
-	_asm jz ret_bike
-	_asm sub eax, 10000h
-	_asm jz ret_heli
-	_asm sub eax, 20000h
-	_asm jz ret_boat
-	_asm sub eax, 40000h
-	_asm jz ret_plane
+	_asm
+	{
+		mov ecx, dwVehicle
+		mov edx, [ecx+288]
+		mov eax, [edx+204]
+		and eax, 0F0000h
+		jz ret_car
+		sub eax, 10000h
+		jz ret_bike
+		sub eax, 10000h
+		jz ret_heli
+		sub eax, 20000h
+		jz ret_boat
+		sub eax, 40000h
+		jz ret_plane
+	}
 
 	return 0;
 

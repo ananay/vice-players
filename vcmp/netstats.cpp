@@ -25,15 +25,15 @@
 //----------------------------------------------------
 
 #include "main.h"
+#include "../raknet/GetTime.h"
 #include <stdio.h>
+
+using namespace RakNet;
 
 extern CNetGame* pNetGame;
 extern GAME_SETTINGS tSettings;
 extern IDirect3DDevice8 *pD3DDevice;
 extern CChatWindow *pChatWindow;
-
-using namespace RakNet;
-
 
 CNetStats::CNetStats()
 {
@@ -48,44 +48,32 @@ void CNetStats::Draw()
 {
 	char szDispBuf[1024];
 	D3DDISPLAYMODE dDisplayMode;
-	RakNet::RakNetStatistics *pRakStats = pNetGame->GetRakPeer()->GetStatistics(UNASSIGNED_SYSTEM_ADDRESS);
-	float fDown,fUp,fDownloaded,fSent;
+	RakNetStatistics *pRakStats = pNetGame->GetRakPeer()->GetStatistics(UNASSIGNED_SYSTEM_ADDRESS);
 
-	if((GetTickCount() - m_dwLastUpdateTick) > 1000) {
-		m_dwLastUpdateTick = GetTickCount();
-		
-		m_dwBPSDownload = (float)pRakStats->valueOverLastSecond[ACTUAL_BYTES_RECEIVED];
-		m_dwLastTotalBytesRecv = (float)pRakStats->runningTotal[ACTUAL_BYTES_RECEIVED];
+	unsigned int uBytesPerSecondReceived = (unsigned int)pRakStats->valueOverLastSecond[ACTUAL_BYTES_RECEIVED];
+	unsigned int uBytesPerSecondSent = (unsigned int)pRakStats->valueOverLastSecond[ACTUAL_BYTES_SENT];
+	unsigned int uTotalBytesReceived= (unsigned int)pRakStats->runningTotal[ACTUAL_BYTES_RECEIVED];
+	unsigned int uTotalBytesSent = (unsigned int)pRakStats->runningTotal[ACTUAL_BYTES_SENT];
+	unsigned int uConnectionTime = (unsigned int)((GetTimeUS() - pRakStats->connectionStartTime)/1000000);
+	float fCurrentPacketLoss = pRakStats->packetlossLastSecond;
+	float fAveragePacketLoss = pRakStats->packetlossTotal;
 
-		m_dwBPSUpload = (float)pRakStats->valueOverLastSecond[ACTUAL_BYTES_SENT];
-		m_dwLastTotalBytesSent = (float)pRakStats->runningTotal[ACTUAL_BYTES_SENT];
-	}
-
-	if(m_dwBPSDownload != 0) {
-		fDown = (float)m_dwBPSDownload / 1024;
-	} else {
-		fDown = 0.0f;
-	}
-
-	if(m_dwBPSUpload != 0) {
-		fUp = (float)m_dwBPSUpload / 1024;
-	} else {
-		fUp = 0.0f;
-	}
-
-	if(m_dwLastTotalBytesRecv != 0) {
-		fDownloaded = (float)m_dwLastTotalBytesRecv / 1024;
-	} else {
-		fDownloaded = 0.0f;
-	}
-
-	if(m_dwLastTotalBytesSent != 0) {
-		fSent = (float)m_dwLastTotalBytesSent / 1024;
-	} else {
-		fSent = 0.0f;
-	}
-
-	sprintf(szDispBuf,"--- Network Stats ---\n\nDownload Rate: %.2f kbps\nUpload Rate: %.2f kbps\nDownloaded: %.2f kb\nUploaded: %.2f kb\n\nAverage Packet loss: %.0f%",fDown,fUp,fDownloaded,fSent,pRakStats->packetlossTotal);
+	sprintf(szDispBuf,"--- Network Stats ---\n" \
+					  "\n" \
+					  "Bytes Per Second Received: %d\n" \
+					  "Bytes Per Second Sent: %d\n" \
+					  "Total Bytes Received: %d\n" \
+					  "Total Bytes Sent: %d\n" \
+					  "Current Packet Loss: %.02f\n" \
+					  "Average Packet Loss: %.02f\n" \
+					  "Connection Time: %ds\n" \
+					  "\n", 
+					  uBytesPerSecondReceived, uBytesPerSecondSent, 
+					  uTotalBytesReceived, uTotalBytesSent, 
+					  fCurrentPacketLoss, fAveragePacketLoss, 
+					  uConnectionTime);
+	
+//	StatisticsToString(pRakStats,szStatBuf,1);
 
 	pD3DDevice->GetDisplayMode(&dDisplayMode);
 	pChatWindow->m_pD3DFont->DrawTextBox((float)((dDisplayMode.Width / 2) - 100),50.0f,50.0f,0x50000000,0xFFFFFFFF,szDispBuf,0L);

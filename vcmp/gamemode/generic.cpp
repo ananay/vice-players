@@ -70,8 +70,7 @@ void CGameModeGeneric::ProcessLocalPlayer(CLocalPlayer *pLocalPlayer)
 			pGame->DisplayHud(TRUE);
 			pGameCamera->SetBehindPlayer();
 			pGamePlayer->GetPosition(&vPlayerPos);		
-			ScriptCommand(&play_sound, vPlayerPos.X, vPlayerPos.Y, vPlayerPos.Z, 10);
-
+			pGame->PlaySound(10, vPlayerPos);
 			pGame->ToggleKeyInputsDisabled(FALSE);
 			return;
 		}
@@ -104,8 +103,7 @@ void CGameModeGeneric::ProcessLocalPlayer(CLocalPlayer *pLocalPlayer)
 					m_byteSelectedClass--;
 				}
 		
-				ScriptCommand(&play_sound, vPlayerPos.X, vPlayerPos.Y, vPlayerPos.Z, 14);
-
+				pGame->PlaySound(14, vPlayerPos);
 				pLocalPlayer->RequestClass(m_byteSelectedClass);
 				return;
 			}
@@ -123,8 +121,7 @@ void CGameModeGeneric::ProcessLocalPlayer(CLocalPlayer *pLocalPlayer)
 					m_byteSelectedClass++;
 				}
 
-				ScriptCommand(&play_sound, vPlayerPos.X, vPlayerPos.Y, vPlayerPos.Z, 13);
-
+				pGame->PlaySound(13, vPlayerPos);
 				pLocalPlayer->RequestClass(m_byteSelectedClass);
 				return;
 			}			
@@ -145,8 +142,7 @@ void CGameModeGeneric::HandleClassSelection(CLocalPlayer *pLocalPlayer)
 	if(pGameCamera)	{
 		pGameCamera->SetPosition(pNetGame->m_vecInitCameraPos.X,
 			pNetGame->m_vecInitCameraPos.Y,pNetGame->m_vecInitCameraPos.Z,0.0f,0.0f,0.0f);
-		pGameCamera->LookAtPoint(pNetGame->m_vecInitCameraLook.X,
-			pNetGame->m_vecInitCameraLook.Y,pNetGame->m_vecInitCameraLook.Z,1);
+		pGameCamera->LookAtPoint(pNetGame->m_vecInitCameraLook, 1);
 	}
 
 	pLocalPlayer->RequestClass(m_byteSelectedClass);

@@ -26,6 +26,7 @@
 //----------------------------------------------------
 
 #include "main.h"
+#include <process.h>
 
 CGame					*pGame=0;
 DWORD					dwGameLoop=0;
@@ -40,19 +41,17 @@ BOOL					bWindowedMode=FALSE;
 BOOL					bShowNameTags=TRUE;
 BOOL					bAntiCheat=TRUE;
 
-IDirect3D8				*pD3D;
-IDirect3D8Hook			*pD3DHook;
 IDirect3DDevice8		*pD3DDevice;
-IDirect3DDevice8Hook	*pD3DDeviceHook;
 
 HANDLE					hInstance;
 CScoreBoard				*pScoreBoard;
 CNameTags				*pNameTags;
 CNetStats				*pNetStats;
 
+extern BOOL             bScriptInited;
+
 // forwards
 
-BOOL SubclassGameWindow();
 void SetupCommands();
 
 void TheGameLoop();
@@ -61,7 +60,6 @@ void TheRenderLoop();
 void GameDebugDrawDebugScreens();
 LONG WINAPI exc_handler(_EXCEPTION_POINTERS* exc_inf);
 int DetermineGTAVersion();
-void HookD3DReset(IDirect3DDevice8 *pD3DDeviceHook);
 
 #define UNKNOWN_VERSION	0
 #define VICE_10			1
@@ -79,7 +77,6 @@ BOOL WINAPI DllMain(HINSTANCE hinstDLL, DWORD fdwReason, LPVOID lpvReserved)
 		InitSettings();
 
 		if(tSettings.bDebug || tSettings.bPlayOnline) {
-		
 			// Check the GTA version
 			if(DetermineGTAVersion() != VICE_10) {
 				MessageBox(0,"Incorrect gta-vc.exe version detected.\nYou must use GTA:VC 1.0 to play VC:MP","VC:MP Error",MB_OK);
@@ -91,36 +88,8 @@ BOOL WINAPI DllMain(HINSTANCE hinstDLL, DWORD fdwReason, LPVOID lpvReserved)
 			dwRenderLoop = (DWORD)TheRenderLoop;
 
 			pGame = new CGame();
-			pGame->StartGame();
 
-			SubclassGameWindow();
-
-			// Time to hook directx...
-
-			// Grab the real IDirect3D8 * from the game.
-			pD3D = (IDirect3D8 *)pGame->GetD3D();
-
-			// Grab the real IDirect3DDevice8 * from the game.
-			pD3DDevice = (IDirect3DDevice8 *)pGame->GetD3DDevice();
-
-			// Create instances of our hook classes and force GTA to
-			// chew on them.
-			//pD3DHook = new IDirect3D8Hook;
-			pD3DDeviceHook = new IDirect3DDevice8Hook;
-
-			//pGame->setD3D((DWORD)pD3DHook); <- not working, crash in CheckDeviceFormat.
-			
-			pGame->SetD3DDevice((DWORD)pD3DDeviceHook);
-				
-			// Create instances of the chat and input classes.
-			pChatWindow = new CChatWindow(pD3DDevice);
-			pCmdWindow = new CCmdWindow(pD3DDevice);
-
-			pScoreBoard = new CScoreBoard();
-			pNameTags = new CNameTags(pD3DDevice);
-			pNetStats = new CNetStats();
-
-			SetupCommands();
+			InstallD3D8Hook();
 		}
 		// else they must want to play single
 		// player or they got the command line
@@ -128,6 +97,7 @@ BOOL WINAPI DllMain(HINSTANCE hinstDLL, DWORD fdwReason, LPVOID lpvReserved)
 	}
 	else if(fdwReason == DLL_PROCESS_DETACH)
 	{
+		UninstallD3D8Hook();
 		if(pNetGame) {
 			pNetGame->GetRakPeer()->Shutdown(500);
 		}
@@ -137,52 +107,28 @@ BOOL WINAPI DllMain(HINSTANCE hinstDLL, DWORD fdwReason, LPVOID lpvReserved)
 }
 
 //----------------------------------------------------
+
+void InitD3DStuff()
+{
+	// Create instances of the chat and input classes.
+	pChatWindow = new CChatWindow(pD3DDevice);
+	pCmdWindow = new CCmdWindow(pD3DDevice);
+
+	pScoreBoard = new CScoreBoard();
+	pNameTags = new CNameTags(pD3DDevice);
+	pNetStats = new CNetStats();
+
+	SetupCommands();
+}
+
+//----------------------------------------------------
 // Main loop which is called before game processing.
 // This is actually a result of a hook inside GTA's
 // main loop (TheGameLoop())
 
 void TheGameLoop()
 {
-	// If the game is not inited then do it now.
-	if(!bGameInited && FileCheckSum())
-	{
-		if(tSettings.bPlayOnline)
-		{			
-			pNetGame = new CNetGame(tSettings.szConnectHost,atoi(tSettings.szConnectPort),
-				tSettings.szNickName,tSettings.szConnectPass);
-		}
-
-		pGame->ToggleFrameLimiterState(TRUE);
-		bGameInited = TRUE;
-
-		return;
-	}
-
-	// The NetGame processing has been moved
-	// to the Direct3DDevice::Present hook.
-	// This is to solve alt-tab issues.
-
-    if(!pGame->IsMenuActive() && bShowNameTags) {
-		pNameTags->Draw();
-	}
-
-	if(!pGame->IsMenuActive())
-	{
-		if((pNetGame) && GetAsyncKeyState(VK_F5)) {
-			pGame->DisplayHud(FALSE);
-			pScoreBoard->Draw();
-		}
-		else if((pNetGame) && GetAsyncKeyState(VK_F6)) {
-			pGame->DisplayHud(FALSE);
-			pNetStats->Draw();
-		} 
-		else
-		{
-			pGame->DisplayHud(TRUE);
-			if(pChatWindow) pChatWindow->Draw();
-			if(pCmdWindow) pCmdWindow->Draw();
-		}
-	}
+	// moved to the d3d end scene callback
 }
 
 //----------------------------------------------------
@@ -190,6 +136,50 @@ void TheGameLoop()
 void TheRenderLoop()
 {
 	
+}
+
+//----------------------------------------------------
+
+void TheSceneEnd()
+{
+	if(bScriptInited) {
+		// If the game is not inited then do it now.
+		if(!bGameInited && FileCheckSum()) {
+			if(tSettings.bPlayOnline) {
+				pNetGame = new CNetGame(tSettings.szConnectHost,atoi(tSettings.szConnectPort),
+					tSettings.szNickName,tSettings.szConnectPass);
+			}
+
+			pGame->ToggleFrameLimiterState(TRUE);
+			bGameInited = TRUE;
+
+			return;
+		}
+
+		// Process the netgame if it's active.
+		if(pNetGame) pNetGame->Process();
+
+		if(!pGame->IsMenuActive() && bShowNameTags) {
+			pNameTags->Draw();
+		}
+
+		if(!pGame->IsMenuActive()) {
+			if((pNetGame) && GetAsyncKeyState(VK_F5)) {
+				pGame->DisplayHud(FALSE);
+				pScoreBoard->Draw();
+			}
+			else if((pNetGame) && GetAsyncKeyState(VK_F6)) {
+				pGame->DisplayHud(FALSE);
+				pNetStats->Draw();
+			} 
+			else
+			{
+				pGame->DisplayHud(TRUE);
+				if(pChatWindow) pChatWindow->Draw();
+				if(pCmdWindow) pCmdWindow->Draw();
+			}
+		}
+	}
 }
 
 //----------------------------------------------------

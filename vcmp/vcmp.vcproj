@@ -75,7 +75,7 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalDependencies="ws2_32.lib d3d8/d3dx8.lib winmm.lib"
-				OutputFile="..\bin\mss\vc-mp.flt"
+				OutputFile="..\bin\vcmp.dll"
 				LinkIncremental="1"
 				SuppressStartupBanner="true"
 				IgnoreDefaultLibraryNames="libci.lib"
@@ -171,7 +171,7 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalDependencies="ws2_32.lib d3d8/d3dx8.lib winmm.lib"
-				OutputFile="..\bin\mss\vc-mp.flt"
+				OutputFile="..\bin\vcmp.dll"
 				LinkIncremental="2"
 				SuppressStartupBanner="true"
 				IgnoreDefaultLibraryNames="libci.lib"
@@ -1165,6 +1165,14 @@
 			<Filter
 				Name="d3dhook"
 				>
+				<File
+					RelativePath=".\d3dhook\d3d8hook.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\d3dhook\d3d8hook.h"
+					>
+				</File>
 				<File
 					RelativePath="d3dhook\IDirect3D8Hook.cpp"
 					>

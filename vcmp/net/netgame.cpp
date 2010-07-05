@@ -74,6 +74,9 @@ CNetGame::CNetGame(PCHAR szHostOrIp, int iPort,
 	RegisterRPCs();
 	
 	m_pRakPeer->Startup(1,&SocketDescriptor(),1);
+	strcpy(m_szHostOrIp, szHostOrIp);
+	m_iPort = iPort;
+	strcpy(m_szPass, szPass);
 	m_pRakPeer->Connect(szHostOrIp,iPort,szPass,strlen(szPass));
 	m_pRakPeer->AttachPlugin(m_pRPC4);
 	
@@ -105,7 +108,7 @@ CNetGame::~CNetGame()
 //----------------------------------------------------
 
 void CNetGame::InitGameLogic()
-{	
+{
 	m_pGameLogic = new CGameModeGeneric();
 }
 
@@ -150,9 +153,12 @@ void CNetGame::UpdateNetwork()
 			break;
 		case ID_DISCONNECTION_NOTIFICATION:
 			pChatWindow->AddDebugMessage("Disconnected.");
+			pGame->FadeScreen(0, 0);
 			break;
 		case ID_CONNECTION_LOST:
-			pChatWindow->AddDebugMessage("Lost connection to the server.");
+			pChatWindow->AddDebugMessage("Lost connection to the server, Reconnecting...");
+			m_pRakPeer->Connect(m_szHostOrIp, m_iPort, m_szPass, strlen(m_szPass));
+			pGame->FadeScreen(0, 0);
 			break;
 		case ID_INVALID_PASSWORD:
 			pChatWindow->AddDebugMessage("Wrong server password.");
@@ -163,7 +169,8 @@ void CNetGame::UpdateNetwork()
 			break;
 			*/
 		case ID_CONNECTION_ATTEMPT_FAILED:
-			pChatWindow->AddDebugMessage("Failed to connect.");
+			pChatWindow->AddDebugMessage("Failed to connect, Retrying...");
+			m_pRakPeer->Connect(m_szHostOrIp, m_iPort, m_szPass, strlen(m_szPass));
 			break;
 		case ID_CONNECTION_REQUEST_ACCEPTED:
 			ConnectionSucceeded(pkt);
