@@ -132,134 +132,110 @@ void CPlayerPed::SetKeys(WORD wKeys)
 {
 	GTA_CONTROLSET * pPlayerKeys = GameGetPlayerKeys(m_bytePlayerNumber);
 	
+	pPlayerKeys->wKeys2[KEY_INCAR_HANDBRAKE] = pPlayerKeys->wKeys1[KEY_INCAR_HANDBRAKE];
 	if(wKeys & 1) {
-		pPlayerKeys->wKeys2[KEY_INCAR_HANDBRAKE] = 0xFF;
 		pPlayerKeys->wKeys1[KEY_INCAR_HANDBRAKE] = 0xFF;
 	} else { 
-		pPlayerKeys->wKeys2[KEY_INCAR_HANDBRAKE] = 0x00;
 		pPlayerKeys->wKeys1[KEY_INCAR_HANDBRAKE] = 0x00;
 	}
 	wKeys >>= 1; // 1
 	
+	pPlayerKeys->wKeys2[KEY_INCAR_LOOKR] = pPlayerKeys->wKeys1[KEY_INCAR_LOOKR];
 	if(wKeys & 1) {
-		pPlayerKeys->wKeys2[KEY_INCAR_LOOKR] = 0xFF;
 		pPlayerKeys->wKeys1[KEY_INCAR_LOOKR] = 0xFF;
 	} else { 
-		pPlayerKeys->wKeys2[KEY_INCAR_LOOKR] = 0x00;
 		pPlayerKeys->wKeys1[KEY_INCAR_LOOKR] = 0x00;
 	}
 	wKeys >>= 1; // 2
 
+	pPlayerKeys->wKeys2[KEY_INCAR_LOOKL] = pPlayerKeys->wKeys1[KEY_INCAR_LOOKL];
 	if(wKeys & 1) {
-		pPlayerKeys->wKeys2[KEY_INCAR_LOOKL] = 0xFF;
 		pPlayerKeys->wKeys1[KEY_INCAR_LOOKL] = 0xFF;
 	} else { 
-		pPlayerKeys->wKeys2[KEY_INCAR_LOOKL] = 0x00;
 		pPlayerKeys->wKeys1[KEY_INCAR_LOOKL] = 0x00;
 	}
 	wKeys >>= 1; // 3
 
+	pPlayerKeys->wKeys2[KEY_INCAR_TURRETUD] = pPlayerKeys->wKeys1[KEY_INCAR_TURRETUD];
 	if(wKeys & 1) {
 		pPlayerKeys->wKeys1[KEY_INCAR_TURRETUD] = 0xFF80;
-		pPlayerKeys->wKeys2[KEY_INCAR_TURRETUD] = 0xFF80;
 	} else {
 		pPlayerKeys->wKeys1[KEY_INCAR_TURRETUD] = 0x0;
-		pPlayerKeys->wKeys2[KEY_INCAR_TURRETUD] = 0x0;
 	}		
 	wKeys >>= 1; // 4
 
+	pPlayerKeys->wKeys2[KEY_INCAR_TURRETUD] = pPlayerKeys->wKeys1[KEY_INCAR_TURRETUD];
 	if(wKeys & 1) {
 		pPlayerKeys->wKeys1[KEY_INCAR_TURRETUD] = 0x80;
-		pPlayerKeys->wKeys2[KEY_INCAR_TURRETUD] = 0x80;
 	} else {
 		pPlayerKeys->wKeys1[KEY_INCAR_TURRETUD] = 0x0;
-		pPlayerKeys->wKeys2[KEY_INCAR_TURRETUD] = 0x0;
 	}		
 	wKeys >>= 1; // 5
 
-	if(wKeys & 1)
-		pPlayerKeys->wKeys2[KEY_ONFOOT_CROUCH] = 0xFF;
-	else
-		pPlayerKeys->wKeys2[KEY_ONFOOT_CROUCH] = 0x00;
+	pPlayerKeys->wKeys2[KEY_ONFOOT_CROUCH] = pPlayerKeys->wKeys1[KEY_ONFOOT_CROUCH];
+	if(wKeys & 1) {
+		pPlayerKeys->wKeys1[KEY_ONFOOT_CROUCH] = 0xFF;
+	} else {
+		pPlayerKeys->wKeys1[KEY_ONFOOT_CROUCH] = 0x00;
+	}
 	wKeys >>= 1; // 6
 
-	if(wKeys & 1)
-		pPlayerKeys->wKeys2[KEY_ONFOOT_FIRE] = 0xFF;
-	else
-		pPlayerKeys->wKeys2[KEY_ONFOOT_FIRE] = 0x00;
+	pPlayerKeys->wKeys2[KEY_ONFOOT_FIRE] = pPlayerKeys->wKeys1[KEY_ONFOOT_FIRE];
+	if(wKeys & 1) {
+		pPlayerKeys->wKeys1[KEY_ONFOOT_FIRE] = 0xFF;
+	} else {
+		pPlayerKeys->wKeys1[KEY_ONFOOT_FIRE] = 0x00;
+	}
 	wKeys >>= 1; // 7
 
-	if(wKeys & 1)
-		pPlayerKeys->wKeys2[KEY_ONFOOT_JUMP] = 0xFF;
-	else
-		pPlayerKeys->wKeys2[KEY_ONFOOT_JUMP] = 0x00;
-	wKeys >>= 1; // 8
-
-	if(wKeys & 1)
-		pPlayerKeys->wKeys1[KEY_ONFOOT_CROUCH] = 0xFF;
-	else
-		pPlayerKeys->wKeys1[KEY_ONFOOT_CROUCH] = 0x00;
-	wKeys >>= 1; // 9
-
-	if(wKeys & 1)
-		pPlayerKeys->wKeys1[KEY_ONFOOT_FIRE] = 0xFF;
-	else
-		pPlayerKeys->wKeys1[KEY_ONFOOT_FIRE] = 0x00;
-	wKeys >>= 1; // 10
-
+	pPlayerKeys->wKeys2[KEY_ONFOOT_SPRINT] = pPlayerKeys->wKeys1[KEY_ONFOOT_SPRINT];
 	if(wKeys & 1) {
 		pPlayerKeys->wKeys1[KEY_ONFOOT_SPRINT] = 0xFF;
-		pPlayerKeys->wKeys2[KEY_ONFOOT_SPRINT] = 0xFF;
-	}
-	else {
+	} else {
 		pPlayerKeys->wKeys1[KEY_ONFOOT_SPRINT] = 0x00;
-		pPlayerKeys->wKeys2[KEY_ONFOOT_SPRINT] = 0x00;
 	}
-	wKeys >>= 1; // 11
+	wKeys >>= 1; // 8
 
-	if(wKeys & 1)
+	pPlayerKeys->wKeys2[KEY_ONFOOT_JUMP] = pPlayerKeys->wKeys1[KEY_ONFOOT_JUMP];
+	if(wKeys & 1) {
 		pPlayerKeys->wKeys1[KEY_ONFOOT_JUMP] = 0xFF;
-	else
+	} else {
 		pPlayerKeys->wKeys1[KEY_ONFOOT_JUMP] = 0x00;
-	wKeys >>= 1; // 12
+	}
+	wKeys >>= 1; // 9
 
+	pPlayerKeys->wKeys2[KEY_ONFOOT_RIGHT] = pPlayerKeys->wKeys1[KEY_ONFOOT_RIGHT];
 	if(wKeys & 1) {
 		pPlayerKeys->wKeys1[KEY_ONFOOT_RIGHT] = 0xFF;
-		pPlayerKeys->wKeys2[KEY_ONFOOT_RIGHT] = 0xFF;
-	}
-	else {
+	} else {
 		pPlayerKeys->wKeys1[KEY_ONFOOT_RIGHT] = 0x00;
-		pPlayerKeys->wKeys2[KEY_ONFOOT_RIGHT] = 0x00;
 	}
-	wKeys >>= 1; // 13
+	wKeys >>= 1; // 10
 
+	pPlayerKeys->wKeys2[KEY_ONFOOT_LEFT] = pPlayerKeys->wKeys1[KEY_ONFOOT_LEFT];
 	if(wKeys & 1) {
 		pPlayerKeys->wKeys1[KEY_ONFOOT_LEFT] = 0xFF;
-		pPlayerKeys->wKeys2[KEY_ONFOOT_LEFT] = 0xFF;
 	}
 	else {
 		pPlayerKeys->wKeys1[KEY_ONFOOT_LEFT] = 0x00;
-		pPlayerKeys->wKeys2[KEY_ONFOOT_LEFT] = 0x00;
 	}
-	wKeys >>= 1; // 14
+	wKeys >>= 1; // 11
 
+	pPlayerKeys->wKeys2[KEY_ONFOOT_BACKWARD] = pPlayerKeys->wKeys1[KEY_ONFOOT_BACKWARD];
 	if(wKeys & 1) {
 		pPlayerKeys->wKeys1[KEY_ONFOOT_BACKWARD] = 0xFF;
-		pPlayerKeys->wKeys2[KEY_ONFOOT_BACKWARD] = 0xFF;
 	}
 	else {
 		pPlayerKeys->wKeys1[KEY_ONFOOT_BACKWARD] = 0x00;
-		pPlayerKeys->wKeys2[KEY_ONFOOT_BACKWARD] = 0x00;
 	}
-	wKeys >>= 1; // 15
-	
+	wKeys >>= 1; // 12
+
+	pPlayerKeys->wKeys2[KEY_ONFOOT_FORWARD] = pPlayerKeys->wKeys1[KEY_ONFOOT_FORWARD];
 	if(wKeys & 1) {
 		pPlayerKeys->wKeys1[KEY_ONFOOT_FORWARD] = 0xFF;
-		pPlayerKeys->wKeys2[KEY_ONFOOT_FORWARD] = 0xFF;
 	}
 	else {
 		pPlayerKeys->wKeys1[KEY_ONFOOT_FORWARD] = 0x00;
-		pPlayerKeys->wKeys2[KEY_ONFOOT_FORWARD] = 0x00;
 	}
 
 	GameStoreRemotePlayerKeys(m_bytePlayerNumber,pPlayerKeys);
@@ -290,24 +266,12 @@ WORD CPlayerPed::GetKeys()
 	wRet <<= 1;
 
 	if(pInternalKeys->wKeys1[KEY_ONFOOT_SPRINT]) wRet |= 1;
-	wRet <<=1;
+	wRet <<= 1;
 
 	if(pInternalKeys->wKeys1[KEY_ONFOOT_FIRE]) wRet |= 1;
 	wRet <<= 1;
 
 	if(pInternalKeys->wKeys1[KEY_ONFOOT_CROUCH]) wRet |= 1;
-	wRet <<= 1;
-
-	// Jump held
-	if(pInternalKeys->wKeys2[KEY_ONFOOT_JUMP]) wRet |= 1;
-	wRet <<= 1;
-
-	// Fire held
-	if(pInternalKeys->wKeys2[KEY_ONFOOT_FIRE]) wRet |= 1;
-	wRet <<= 1;
-
-	// Crouch held
-	if(pInternalKeys->wKeys2[KEY_ONFOOT_CROUCH]) wRet |= 1;
 	wRet <<= 1;
 	
 	if(pInternalKeys->wKeys1[KEY_INCAR_TURRETUD] == 0x80) wRet |= 1;
