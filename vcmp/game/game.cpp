@@ -130,9 +130,9 @@ void GameInstallPatches()
 
 	// Patch to prevent game stopping during a pause
 	// (Credits to Luke)
-	VirtualProtect((PVOID)0x4D0DA0,7,PAGE_EXECUTE_READWRITE,&dwVP);
-	memset((PVOID)0x4D0DA0,0x90,7); // nop * 7
-	VirtualProtect((PVOID)0x4D0DA0,7,dwVP,&dwVP2);
+	VirtualProtect((PVOID)0x4A3DF7, 5, PAGE_EXECUTE_READWRITE, &dwVP);
+	memset((PVOID)0x4A3DF7, 0x90, 5); // nop * 5
+	VirtualProtect((PVOID)0x4A3DF7, 5, dwVP, &dwVP2);
 
 	// Patch for GetPlayerTableFromPlayerActor()
 	VirtualProtect((PVOID)0x531D40,8,PAGE_EXECUTE_READWRITE,&dwVP);
@@ -270,6 +270,14 @@ void GameInstallPatches()
 	VirtualProtect((PVOID)0x42BD69, 15, PAGE_EXECUTE_READWRITE, &dwVP);
 	memset((PVOID)0x42BD69, 0x90, 15); // nop * 15
 	VirtualProtect((PVOID)0x42BD69, 15, dwVP, &dwVP2);
+
+	// Shorten island loading time
+	VirtualProtect((PVOID)0x40DFE4, 0xA, PAGE_EXECUTE_READWRITE, &dwVP);
+	memset((PVOID)0x40DFE4, 0x90, 0xA); // nop * 10
+	VirtualProtect((PVOID)0x40DFE4, 0xA, dwVP, &dwVP2);
+	VirtualProtect((PVOID)0x40DFF4, 0x38, PAGE_EXECUTE_READWRITE, &dwVP);
+	memset((PVOID)0x40DFF4, 0x90, 0x38); // nop * 56
+	VirtualProtect((PVOID)0x40DFF4, 0x38, dwVP, &dwVP2);
 }
 
 //-----------------------------------------------------------
