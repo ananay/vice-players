@@ -82,7 +82,7 @@ void CRemotePlayer::Process()
 				m_iJustSpawned--;
 				return;
 			}
-		
+
 			HandleVehicleEntryExit();
 
 			if(m_byteUpdateFromNetwork == UPDATE_TYPE_FULL_ONFOOT)
@@ -124,7 +124,7 @@ void CRemotePlayer::Process()
 					}
 				}
 
-				//m_pPlayerPed->SetShootingFlags(m_byteAction);
+				m_pPlayerPed->SetShootingFlags(m_byteAction);
 				m_byteUpdateFromNetwork = UPDATE_TYPE_NONE;
 			}
 			else if(m_byteUpdateFromNetwork == UPDATE_TYPE_FULL_INCAR)

@@ -109,15 +109,12 @@ BOOL CPlayerPool::Delete(BYTE byteSystemAddress, BYTE byteReason)
 
 BOOL CPlayerPool::Process()
 {
-	BYTE byteSystemAddress = 0;
-
 	m_pLocalPlayer->Process();
 
-	while(byteSystemAddress < MAX_PLAYERS) {
-		if(TRUE == m_bPlayerSlotState[byteSystemAddress]) {
-			m_pPlayers[byteSystemAddress]->Process();
+	for(BYTE i = 0; i < MAX_PLAYERS; i++) {
+		if(m_bPlayerSlotState[i]) {
+			m_pPlayers[i]->Process();
 		}
-		byteSystemAddress++;
 	}
 
 	return TRUE;
