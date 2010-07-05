@@ -348,43 +348,6 @@ BOOL CPlayerPed::EnforceWorldBoundries(float fPX, float fZX, float fPY, float fN
 
 //-----------------------------------------------------------
 
-BOOL CPlayerPed::HasAmmoForCurrentWeapon()
-{
-	int iAmmo;
-
-	if(GetEntity()) {
-
-		if(!GetEntity()) return FALSE;
-
-		int iWeapon = (int)GetCurrentWeapon();
-
-		// mellee weapons always have ammo
-		if(iWeapon < 12) return TRUE;
-
-		ScriptCommand(&get_player_weapon_ammo,m_bytePlayerNumber,iWeapon,&iAmmo);
-
-		if(iAmmo) {
-			return TRUE;
-		} else {
-			return FALSE;
-		}
-	}
-
-	return FALSE;
-}
-
-//-----------------------------------------------------------
-
-BYTE CPlayerPed::GetCurrentWeapon()
-{
-	DWORD dwRetVal;
-	if(!GetEntity()) return 0;
-	ScriptCommand(&get_player_armed_weapon,m_bytePlayerNumber,&dwRetVal);
-	return (BYTE)dwRetVal;
-}
-
-//-----------------------------------------------------------
-
 void CPlayerPed::SetInitialState()
 {
 	PED_TYPE * pPed = (PED_TYPE *)GetEntity();
@@ -642,22 +605,6 @@ VEHICLE_TYPE * CPlayerPed::GetGtaVehicle()
 
 //-----------------------------------------------------------
 
-void CPlayerPed::GiveWeapon(int iWeaponID, int iAmmo)
-{
-	int iModelID = GameGetWeaponModelFromWeapon(iWeaponID);
-
-	if(!pGame->IsModelLoaded(iModelID)) {
-		pGame->RequestModel(iModelID);
-		pGame->LoadRequestedModels();
-		while(!pGame->IsModelLoaded(iModelID)) Sleep(1);
-	}
-
-	ScriptCommand(&give_player_weapon,m_bytePlayerNumber,iWeaponID,iAmmo);
-	SetArmedWeapon(iWeaponID);
-}
-
-//-----------------------------------------------------------
-
 void CPlayerPed::CheckAndRepairInvisProblems()
 {
 	PED_TYPE * pPed = (PED_TYPE *)GetEntity();
@@ -695,16 +642,115 @@ void CPlayerPed::ClearTargetAndVehicle()
 
 //-----------------------------------------------------------
 
-void CPlayerPed::ClearAllWeapons()
+BOOL CPlayerPed::GiveWeapon(int iWeaponID, int iAmmo)
 {
-	ScriptCommand(&remove_player_weapons,m_bytePlayerNumber);
+	PED_TYPE * pPed = (PED_TYPE *)GetEntity();
+	if(pPed) {
+		int iModelID = GameGetWeaponModelFromWeapon(iWeaponID);
+
+		if(!pGame->IsModelLoaded(iModelID)) {
+			pGame->RequestModel(iModelID);
+			pGame->LoadRequestedModels();
+			while(!pGame->IsModelLoaded(iModelID)) Sleep(1);
+		}
+
+		DWORD dwFunc = FUNC_CPed__GiveWeapon;
+		_asm
+		{
+			push 1
+			push iAmmo
+			push iWeaponID
+			mov ecx, pPed
+			call dwFunc
+		}
+
+		SetArmedWeapon(iWeaponID);
+		return TRUE;
+	}
+	return FALSE;
 }
 
 //-----------------------------------------------------------
 
-void CPlayerPed::SetArmedWeapon(int iWeaponType)
+void CPlayerPed::ClearAllWeapons()
 {
-	ScriptCommand(&set_player_armed_weapon,m_bytePlayerNumber,iWeaponType);
+	PED_TYPE * pPed = (PED_TYPE *)GetEntity();
+	if(pPed) {
+		DWORD dwFunc = FUNC_CPed__RemoveAllWeapons;
+		_asm
+		{
+			mov ecx, pPed
+			call dwFunc
+		}
+	}
+}
+
+//-----------------------------------------------------------
+
+BOOL CPlayerPed::SetArmedWeapon(int iWeaponType)
+{
+	PED_TYPE * pPed = (PED_TYPE *)GetEntity();
+	if(pPed) {
+		for(BYTE i = 0; i < 10; i++) {
+			if(pPed->weaponSlots[i].dwType == iWeaponType) {
+				pPed->byteCurWepSlot = i;
+				return TRUE;
+			}
+		}
+	}
+	return FALSE;
+}
+
+//-----------------------------------------------------------
+
+BYTE CPlayerPed::GetCurrentWeapon()
+{
+	PED_TYPE * pPed = (PED_TYPE *)GetEntity();
+	if(pPed) {
+		return pPed->byteCurWepSlot;
+	}
+	return 0;
+}
+
+//-----------------------------------------------------------
+
+BOOL CPlayerPed::HasAmmoForCurrentWeapon()
+{
+	if(GetEntity()) {
+		WEAPON_SLOT * pWeapon = GetCurrentWeaponSlot();
+
+		// melee weapons always have ammo
+		if(pWeapon->dwType < 12) {
+			return TRUE;
+		}
+
+		if(pWeapon->dwAmmo) {
+			return TRUE;
+		}
+	}
+	return FALSE;
+}
+
+//-----------------------------------------------------------
+
+WEAPON_SLOT * CPlayerPed::GetCurrentWeaponSlot()
+{
+	PED_TYPE * pPed = (PED_TYPE *)GetEntity();
+	if(pPed) {
+		return &pPed->weaponSlots[pPed->byteCurWepSlot];
+	}
+	return NULL;
+}
+
+//-----------------------------------------------------------
+
+WEAPON_SLOT * CPlayerPed::GetWeaponInSlot(BYTE byteSlot)
+{
+	PED_TYPE * pPed = (PED_TYPE *)GetEntity();
+	if(pPed && (byteSlot >= 0 && byteSlot <= 10)) {
+		return &pPed->weaponSlots[byteSlot];
+	}
+	return NULL;
 }
 
 //-----------------------------------------------------------

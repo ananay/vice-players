@@ -140,8 +140,7 @@ void CGameModeGeneric::HandleClassSelection(CLocalPlayer *pLocalPlayer)
 	pGame->DisplayHud(FALSE);
 
 	if(pGameCamera)	{
-		pGameCamera->SetPosition(pNetGame->m_vecInitCameraPos.X,
-			pNetGame->m_vecInitCameraPos.Y,pNetGame->m_vecInitCameraPos.Z,0.0f,0.0f,0.0f);
+		pGameCamera->SetPosition(pNetGame->m_vecInitCameraPos);
 		pGameCamera->LookAtPoint(pNetGame->m_vecInitCameraLook, 1);
 	}
 

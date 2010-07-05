@@ -29,8 +29,10 @@
 #include "common.h"
 #include "aimstuff.h"
 #include "address.h"
+#include "game.h"
 
-CAMERA_AIM * pcaInternalAim = (CAMERA_AIM *)0x7E4978;
+extern CGame * pGame;
+
 CAMERA_AIM caLocalPlayerAim;
 CAMERA_AIM caRemotePlayerAim[MAX_PLAYERS];
 
@@ -38,30 +40,39 @@ CAMERA_AIM caRemotePlayerAim[MAX_PLAYERS];
 
 void GameAimSyncInit()
 {
-	memset(&caLocalPlayerAim,0,sizeof(CAMERA_AIM));
-	memset(caRemotePlayerAim,0,sizeof(CAMERA_AIM) * MAX_PLAYERS);
+	memset(&caLocalPlayerAim, 0, sizeof(CAMERA_AIM));
+	memset(caRemotePlayerAim, 0, (sizeof(CAMERA_AIM) * MAX_PLAYERS));
 }
 
 //----------------------------------------------------------
 
 void GameStoreLocalPlayerAim()
 {
-	memcpy(&caLocalPlayerAim,pcaInternalAim,sizeof(CAMERA_AIM));
+	CAMERA_TYPE * pCamera = pGame->GetCamera()->GetCamera();
+	if(pCamera) {
+		memcpy(&caLocalPlayerAim,&pCamera->aim,sizeof(CAMERA_AIM));
+	}
 }
 
 //----------------------------------------------------------
 
 void GameSetLocalPlayerAim()
 {
-	memcpy(pcaInternalAim,&caLocalPlayerAim,sizeof(CAMERA_AIM));
-	//memcpy(pInternalCamera,&SavedCam,sizeof(MATRIX4X4));
+	CAMERA_TYPE * pCamera = pGame->GetCamera()->GetCamera();
+	if(pCamera) {
+		memcpy(&pCamera->aim,&caLocalPlayerAim,sizeof(CAMERA_AIM));
+	}
 }
 
 //----------------------------------------------------------
 
 CAMERA_AIM * GameGetInternalAim()
 {
-	return pcaInternalAim;
+	CAMERA_TYPE * pCamera = pGame->GetCamera()->GetCamera();
+	if(pCamera) {
+		return &pCamera->aim;
+	}
+	return NULL;
 }
 
 //----------------------------------------------------------
@@ -75,8 +86,10 @@ void GameStoreRemotePlayerAim(int iPlayer, CAMERA_AIM * caAim)
 
 void GameSetRemotePlayerAim(int iPlayer)
 {
-	// backup local camera
-	memcpy(pcaInternalAim,&caRemotePlayerAim[iPlayer],sizeof(CAMERA_AIM));
+	CAMERA_TYPE * pCamera = pGame->GetCamera()->GetCamera();
+	if(pCamera) {
+		memcpy(&pCamera->aim,&caRemotePlayerAim[iPlayer],sizeof(CAMERA_AIM));
+	}
 }
 
 //----------------------------------------------------------

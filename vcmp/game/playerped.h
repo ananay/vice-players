@@ -75,7 +75,6 @@ public:
 	void           SetDead();
 
 	void           ShowMarker(int iMarkerColor);
-	BYTE           GetCurrentWeapon();
 	int            GetCurrentVehicleID();
 	void           Say(UINT uiNum);
 	void           SetInitialState();
@@ -97,10 +96,13 @@ public:
 	float          GetRotation();
 	void           SetRotation(float fRotation);
 
-	void           GiveWeapon(int iWeaponID, int iAmmo);
+	BOOL           GiveWeapon(int iWeaponID, int iAmmo);
 	void           ClearAllWeapons();
-	void           SetArmedWeapon(int iWeaponType);
+	BOOL           SetArmedWeapon(int iWeaponType);
+	BYTE           GetCurrentWeapon();
 	BOOL           HasAmmoForCurrentWeapon();
+	WEAPON_SLOT *  GetCurrentWeaponSlot();
+	WEAPON_SLOT *  GetWeaponInSlot(BYTE byteSlot);
 
 	void           SetModel(int iSkin);
 	void           CheckAndRepairInvisProblems();

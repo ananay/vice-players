@@ -33,14 +33,6 @@
 #define MAX_LINE_LENGTH				MAX_MESSAGE_LENGTH / 2
 #define MAX_DISP_MESSAGES			7
 
-enum eChatMessageType {
-	CHAT_TYPE_NONE=0,
-	CHAT_TYPE_CHAT,
-	CHAT_TYPE_INFO,
-	CHAT_TYPE_DEBUG,
-	CHAT_TYPE_MESSAGE
-};
-
 //----------------------------------------------------
 
 class CChatWindow
@@ -49,7 +41,7 @@ private:
 
 	BOOL				m_bEnabled;
 	CHAR				m_szChatWindowBuffer[MAX_DISP_MESSAGES][MAX_MESSAGE_LENGTH];
-	eChatMessageType	m_eChatType[MAX_DISP_MESSAGES];
+	DWORD				m_dwChatColor[MAX_DISP_MESSAGES];
 
 	DWORD				m_dwChatTextColor;
 	DWORD				m_dwChatInfoColor;
@@ -64,7 +56,7 @@ private:
 		
 	void PushBack();
 	void FilterInvalidChars(PCHAR szString);
-	void AddToChatWindowBuffer(PCHAR szString, eChatMessageType eType);
+	void AddToChatWindowBuffer(PCHAR szString, DWORD dwColor);
 	
 public:
 	void Draw();

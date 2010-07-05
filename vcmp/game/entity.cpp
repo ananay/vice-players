@@ -106,13 +106,15 @@ void CEntity::SetPosition(VECTOR Vector)
 
 void CEntity::SetHeading(float fHeading)
 {
-	PLACEABLE * pPlaceable = &m_pEntity->placeable;
-	DWORD dwFunc = FUNC_CPlaceable__SetHeading;
-	_asm
-	{
-		push fHeading
-		mov ecx, pPlaceable
-		call dwFunc
+	if(m_pEntity) {
+		PLACEABLE * pPlaceable = &m_pEntity->placeable;
+		DWORD dwFunc = FUNC_CPlaceable__SetHeading;
+		_asm
+		{
+			push fHeading
+			mov ecx, pPlaceable
+			call dwFunc
+		}
 	}
 }
 

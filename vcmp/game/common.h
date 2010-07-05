@@ -65,16 +65,18 @@ typedef struct _PLACEABLE {
 } PLACEABLE;
 
 typedef struct _ENTITY_TYPE {
-	DWORD	  func_table;     // 00-04
-	PLACEABLE placeable;      // 04-4C
-	DWORD *   pRWObject;      // 4C-50
-	BYTE	  nControlFlags;  // 50-51
-	BYTE	  nControlFlags2; // 51-52
-	BYTE      byteUnkFlags1;  // 52-53
-	BYTE      byteUnkFlags2;  // 53-54
-	_pad(__pad1, 0x8);        // 54-5C
-	WORD	  wModelIndex;    // 5C-5E
-	_pad(__pad2, 0x6);        // 5E-64
+	DWORD	  func_table;         // 00-04
+	PLACEABLE placeable;          // 04-4C
+	DWORD *   pRWObject;          // 4C-50
+	BYTE	  nControlFlags;      // 50-51
+	BYTE	  nControlFlags2;     // 51-52
+	BYTE      byteUnkFlags1;      // 52-53
+	BYTE      byteUnkFlags2;      // 53-54
+	_pad(__pad1, 0x8);            // 54-5C
+	WORD	  wModelIndex;        // 5C-5E
+	BYTE      byteBuildingIsland; // 5E-5F
+	BYTE      byteInterior;       // 5F-60
+	_pad(__pad3, 0x4);            // 60-64
 } ENTITY_TYPE;
 
 typedef struct _PHYSICAL_TYPE {
@@ -82,11 +84,31 @@ typedef struct _PHYSICAL_TYPE {
 	_pad(__pad0a, 0xC);          // 064-070
 	VECTOR      vecMoveSpeed;    // 070-07C
 	VECTOR      vecTurnSpeed;    // 07C-088
-	_pad(__pad1a, 0x92);         // 088-11A
+	_pad(__pad1a, 0x30);         // 088-0B8
+	float       fMass;	         // 0B8-0BC
+	float       fTurnMass;       // 0BC-0C0
+	_pad(__pad2a, 0x10);         // 0C0-0D0
+	VECTOR      vecCenterOfMass; // 0D0-0DC
+	_pad(__pad3a, 0x3E);         // 0DC-11A
 	BYTE        byteSunkFlags;   // 11A-11B
 	BYTE	    byteLockedFlags; // 11B-11C
-	_pad(__pad2a, 0x4);          // 11C-120
+	_pad(__pad4a, 0x4);          // 11C-120
 } PHYSICAL_TYPE;
+
+enum eWeaponState
+{
+	WS_NONE,
+	WS_FIRING, // seems to be firing
+	WS_RELOADING // seems to be reloading
+};
+
+typedef struct _WEAPON_SLOT {
+	DWORD dwType;        // 00-04
+	DWORD dwState;       // 04-08
+	DWORD dwAmmoInClip;  // 08-0C
+	DWORD dwAmmo;        // 0C-10
+	_pad(__pad0a, 0x8);  // 10-18
+} WEAPON_SLOT;
 
 typedef struct _PED_TYPE {
 	PHYSICAL_TYPE physical;        // 000-120
@@ -103,15 +125,23 @@ typedef struct _PED_TYPE {
 	_pad(__pad4b, 0x18);           // 35C-374
 	float	      fRotation1;      // 374-378
 	float	      fRotation2;      // 378-37C
-	_pad(__pad5b, 0x2C);           // 37C-3A8
+	_pad(__pad5b, 0x28);           // 37C-3A4
+	// (3A0 seems to be some vehicle objective)
+	DWORD *       pLastVehicle;    // 3A4-4A8
 	DWORD *       pVehicle;        // 3A8-3AC
 	BYTE	      byteIsInVehicle; // 3AC-3AD
 	_pad(__pad6b, 0x27);           // 3AD-3D4
 	BYTE	      bytePedType;     // 3D4-3D5
-	_pad(__pad7b, 0x1C3);          // 3D5-598
+	_pad(__pad7b, 0x33);           // 3D5-408
+	WEAPON_SLOT   weaponSlots[10]; // 408-4F8
+	_pad(__pad8b, 0x8);            // 4F8-500
+	DWORD         dwCurWeaponAmmo; // 500-504
+	DWORD         dwCurrentWeapon; // 504-508
+	_pad(__pad9b, 0x90);           // 508-598
 	DWORD         dwWeaponUsed;    // 598-59C
 	DWORD *       pDamageEntity;   // 59C-5A0
-	_pad(__pad8b, 0x54);           // 5A0-5F4
+	_pad(__pad10b, 0x6C);          // 5A0-60C
+	BYTE		  byteCurWepSlot;  // 60C-60D
 } PED_TYPE;
 
 typedef struct _VEHICLE_TYPE {
@@ -140,13 +170,35 @@ typedef struct _VEHICLE_TYPE {
 	DWORD         dwUnk1;             // 241-245
 	BYTE	      byteSiren;          // 245-246
 	_pad(__pad7b, 0x5A);              // 246-2A0
-	// End of CVehicle
-	// CAutomobile stuff
-	_pad(__pad8b, 0x310);             // 2A0-5B0
-	float	      fSpecialWeaponRotation1; // 5B0-5B4 (following 2 are rhino turret and firetruck spray)
-	float	      fSpecialWeaponRotation2; // 5B4-5B8
-	/// ............
 } VEHICLE_TYPE;
+
+typedef struct _AUTOMOBILE_TYPE
+{
+	VEHICLE_TYPE vehicle;                 // 000-2A0
+	_pad(__pad0c, 0x310);                 // 2A0-5B0
+	float	     fSpecialWeaponRotation1; // 5B0-5B4 (following 2 are rhino turret and firetruck spray)
+	float	     fSpecialWeaponRotation2; // 5B4-5B8
+} AUTOMOBILE_TYPE;
+
+typedef struct _CAMERA_AIM
+{ // This is a MATRIX4X4?
+	VECTOR vecA1; // float f1x,f1y,f1z
+	VECTOR vecAPos1; // float pos1x,pos1y,pos1z
+	VECTOR vecAPos2; // float pos2x,pos2y,pos2z
+	VECTOR vecA2; // float f2x,f2y,f2z
+} CAMERA_AIM;
+
+typedef struct _CAMERA_TYPE
+{
+	_pad(__pad0, 0x2F0); // 000-2F0
+	CAMERA_AIM aim;      // 2F0-320
+	_pad(__pad1, 0x41C); // 320-73C
+	VECTOR vecPosition;  // 73C-748
+	VECTOR vecRotation;  // 748-754
+	_pad(__pad2, 0x114); // 754-868
+	BYTE byteInFreeMode; // 868-869
+	_pad(__pad3, 0xEF);  // 869-958
+} CAMERA_TYPE;
 
 //-----------------------------------------------------------
 
