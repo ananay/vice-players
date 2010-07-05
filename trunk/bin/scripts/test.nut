@@ -91,9 +91,9 @@ function onPlayerRequestClass(playerid, classid)
 }
 
 
-function onPlayerDeath(playerid, reason)
+function onPlayerDeath(playerid, killerid, reason)
 {
-	print("onPlayerDeath(" + playerid + ", " + reason + ")");
+	print("onPlayerDeath(" + playerid + ", " + killerid + ", " + reason + ")");
 }
 
 

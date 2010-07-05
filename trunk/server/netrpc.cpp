@@ -261,7 +261,7 @@ void Death(RakNet::BitStream *bitStream, Packet *packet)
 
 	if(pPlayer) {
 		pPlayer->HandleDeath(byteDeathReason,byteWhoWasResponsible);
-		pScripts->onPlayerDeath(byteSystemAddress, byteDeathReason);
+		pScripts->onPlayerDeath(byteSystemAddress, byteWhoWasResponsible, byteDeathReason);
 	}
 }
 
