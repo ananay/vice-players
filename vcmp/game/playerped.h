@@ -27,15 +27,14 @@
 #pragma once
 
 #include "game.h"
-#include "entity.h"
+#include "physical.h"
 #include "aimstuff.h"
 
 //-----------------------------------------------------------
 
-class CPlayerPed : public CEntity
+class CPlayerPed : public CPhysical
 {
 private:
-	PED_TYPE   *m_pPed;
 	DWORD		m_dwGTAId;
 	BYTE		m_bytePlayerNumber;
 
@@ -46,7 +45,6 @@ public:
 	~CPlayerPed();
 
 	PED_TYPE *     GetPed();
-	void           SetPed(PED_TYPE *pPed);
 
 	void           SetKeys(WORD wKeys);
 	WORD           GetKeys();

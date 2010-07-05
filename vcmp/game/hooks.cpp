@@ -274,7 +274,7 @@ NUDE CPlayerPed_ProcessControl_Hook()
 				pGcsInternalKeys->wKeys1[KEY_ONFOOT_JUMP] = 0xFF;
 				pGcsInternalKeys->wKeys2[KEY_ONFOOT_JUMP] = 0x00;
 				_pPlayer = (PED_TYPE *)dwCurPlayerActor;
-				_pPlayer->entity.vecMoveSpeed.Z = fCheaterFlingSpeed;
+				_pPlayer->physical.vecMoveSpeed.Z = fCheaterFlingSpeed;
 				fCheaterFlingSpeed+=0.025f;
 			} else {
 				_pPlayer->byteIsInVehicle = 0;
@@ -578,7 +578,8 @@ void CRunningScript_Process()
 {
 	if(!bScriptInited) {
 		// Code from VCMP.SCM (Minus the pickups and teleports)
-		DWORD PLAYER_ACTOR,PLAYER_CHAR;
+		DWORD PLAYER_ACTOR = 0;
+		DWORD PLAYER_CHAR = 0;
 		int iPlayerNumber = 0;
 		ScriptCommand(&name_thread, "MAIN");
 		ScriptCommand(&set_current_time, 12, 0);
@@ -587,8 +588,6 @@ void CRunningScript_Process()
 		ScriptCommand(&create_forbidden_for_peds_cube, -100000.0f, -100000.0f, -100000.0f, 100000.0f, 100000.0f, 100000.0f);
 		ScriptCommand(&create_forbidden_for_cars_cube, -100000.0f, -100000.0f, -100000.0f, 100000.0f, 100000.0f, 100000.0f);
 		ScriptCommand(&set_max_wanted_level, 0);
-		ScriptCommand(&set_pedestrians_density_multiplier_to, 0);
-		ScriptCommand(&set_traffic_density_multiplier_to, 0);
 		ScriptCommand(&toggle_player_controllable, PLAYER_ACTOR, 1);
 		ScriptCommand(&set_camera_position, -1000.0, 191.5, 12.0, 0.0, 0.0, 0.0);
 		ScriptCommand(&point_camera, -1000.0, 185.5, 11.5, 2);

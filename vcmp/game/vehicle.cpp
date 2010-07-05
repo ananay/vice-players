@@ -41,7 +41,6 @@ CVehicle::CVehicle(int iType, float fPosX, float fPosY,
 {	
 	DWORD dwRetID=0;
 
-	m_pVehicle = 0;
 	m_dwGTAId = 0;
 
 	if(!pGame->IsModelLoaded(iType)) {
@@ -53,13 +52,16 @@ CVehicle::CVehicle(int iType, float fPosX, float fPosY,
 	ScriptCommand(&create_car,iType,fPosX,fPosY,fPosZ,&dwRetID);
 	ScriptCommand(&set_car_z_angle,dwRetID,fRotation);
 
-	m_pVehicle = GamePool_Vehicle_GetAt(dwRetID);
-	SetEntity((ENTITY_TYPE*)m_pVehicle);
+	SetEntity((ENTITY_TYPE*)GamePool_Vehicle_GetAt(dwRetID));
 	m_dwGTAId = dwRetID;
 	
-	m_pVehicle->entity.mat.vPos.Z = fPosZ;
-	m_pVehicle->dwDoorsLocked = 0;
-	//m_pVehicle->entity.byteLockedFlags = 1;
+	VECTOR vPos;
+	GetPosition(&vPos);
+	vPos.Z = fPosZ;
+	SetPosition(vPos);
+	VEHICLE_TYPE * pVehicle = (VEHICLE_TYPE *)GetEntity();
+	pVehicle->dwDoorsLocked = 0;
+	//m_pEntity->byteLockedFlags = 1;
 	
 	ScriptCommand(&set_car_immunities,m_dwGTAId,1,1,1,1,1);
 	m_bIsInvulnerable = TRUE;
@@ -79,22 +81,16 @@ CVehicle::~CVehicle()
 
 VEHICLE_TYPE *CVehicle::GetVehicle()
 {
-	return m_pVehicle;
-}
-
-//-----------------------------------------------------------
-
-void CVehicle::SetVehicle(VEHICLE_TYPE *pVehicle)
-{
-	m_pVehicle = pVehicle;
+	return (VEHICLE_TYPE *)GetEntity();
 }
 
 //-----------------------------------------------------------
 
 void CVehicle::UpdateLastDrivenTime()
 {
-	if(m_pVehicle) {
-		if(m_pVehicle->pDriver) {
+	VEHICLE_TYPE * pVehicle = (VEHICLE_TYPE *)GetEntity();
+	if(pVehicle) {
+		if(pVehicle->pDriver) {
 			m_bHasBeenDriven = TRUE;
 			m_dwTimeSinceLastDriven = GetTickCount();
 		}
@@ -108,7 +104,7 @@ void CVehicle::EnforceWorldBoundries(float fPX, float fZX, float fPY, float fNY)
 	VECTOR vPos;
 	VECTOR vecMoveSpeed;
 
-	if(!m_pVehicle) return;
+	if(!GetEntity()) return;
 
 	GetPosition(&vPos);
 	GetMoveSpeed(&vecMoveSpeed);
@@ -155,7 +151,7 @@ BOOL CVehicle::HasExceededWorldBoundries(float fPX, float fZX, float fPY, float 
 {
 	VECTOR vPos;
 
-	if(!m_pVehicle) return FALSE;
+	if(!GetEntity()) return FALSE;
 
 	GetPosition(&vPos);
 
@@ -184,7 +180,7 @@ float CVehicle::GetDistanceFromLocalPlayerPed()
 
 	CPlayerPed *pLocalPlayerPed = pGame->FindPlayerPed();
 
-	if(!m_pVehicle) return 10000.0f; // very far away
+	if(!GetEntity()) return 10000.0f; // very far away
 	if(!pLocalPlayerPed) return 10000.0f; // very far away
 	
 	GetPosition(&vThisVehicle);
@@ -200,15 +196,17 @@ float CVehicle::GetDistanceFromLocalPlayerPed()
 
 BOOL CVehicle::IsOkToRespawn()
 {
-	if(m_pVehicle) {
-		if(m_pVehicle->pDriver) return FALSE;
-		if(m_pVehicle->pPassengers[0]) return FALSE;
-		if(m_pVehicle->pPassengers[1]) return FALSE;
-		if(m_pVehicle->pPassengers[2]) return FALSE;
-		if(m_pVehicle->pPassengers[3]) return FALSE;
-		if(m_pVehicle->pPassengers[4]) return FALSE;
-		if(m_pVehicle->pPassengers[5]) return FALSE;
-		if(m_pVehicle->pPassengers[6]) return FALSE;
+	VEHICLE_TYPE * pVehicle = (VEHICLE_TYPE *)GetEntity();
+	if(pVehicle) {
+		if(pVehicle->pDriver) return FALSE;
+		if(pVehicle->pPassengers[0]) return FALSE;
+		if(pVehicle->pPassengers[1]) return FALSE;
+		if(pVehicle->pPassengers[2]) return FALSE;
+		if(pVehicle->pPassengers[3]) return FALSE;
+		if(pVehicle->pPassengers[4]) return FALSE;
+		if(pVehicle->pPassengers[5]) return FALSE;
+		if(pVehicle->pPassengers[6]) return FALSE;
+		if(pVehicle->pPassengers[7]) return FALSE;
 	}
 	return TRUE;
 }
@@ -217,7 +215,7 @@ BOOL CVehicle::IsOkToRespawn()
 
 void CVehicle::SetInvulnerable(BOOL bInv)
 {
-	if(!m_pVehicle) return;
+	if(!GetEntity()) return;
 	if(!GamePool_Vehicle_GetAt(m_dwGTAId)) return;
 
 	if(bInv && m_bIsInvulnerable == FALSE) {
@@ -233,8 +231,9 @@ void CVehicle::SetInvulnerable(BOOL bInv)
 
 void CVehicle::SetLockedState(int iLocked)
 {
-	if(m_pVehicle) {
-		m_pVehicle->entity.byteLockedFlags = iLocked;
+	PHYSICAL_TYPE * pPhysical = (PHYSICAL_TYPE *)GetEntity();
+	if(pPhysical) {
+		pPhysical->byteLockedFlags = iLocked;
 	}
 }
 
@@ -244,11 +243,12 @@ void CVehicle::SetLockedState(int iLocked)
 
 void CVehicle::VerifyControlState()
 {
-	if(m_pVehicle) {
-		if( (!m_pVehicle->pDriver) &&
-			(m_pVehicle->entity.nControlFlags == 0x2) )
+	VEHICLE_TYPE * pVehicle = (VEHICLE_TYPE *)GetEntity();
+	if(pVehicle) {
+		if( (!pVehicle->pDriver) &&
+			(pVehicle->physical.entity.nControlFlags == 0x2) )
 		{
-			m_pVehicle->entity.nControlFlags = 0x22;
+			pVehicle->physical.entity.nControlFlags = 0x22;
 		}
 	}
 }
@@ -257,7 +257,8 @@ void CVehicle::VerifyControlState()
 
 float CVehicle::GetHealth()
 {	
-	if(m_pVehicle) return m_pVehicle->fHealth;
+	VEHICLE_TYPE * pVehicle = (VEHICLE_TYPE *)GetEntity();
+	if(pVehicle) return pVehicle->fHealth;
 	else return 0.0f;
 }
 
@@ -265,8 +266,9 @@ float CVehicle::GetHealth()
 
 void CVehicle::SetHealth(float fHealth)
 {	
-	if(m_pVehicle) {
-		m_pVehicle->fHealth = fHealth;
+	VEHICLE_TYPE * pVehicle = (VEHICLE_TYPE *)GetEntity();
+	if(pVehicle) {
+		pVehicle->fHealth = fHealth;
 	}
 }	
 
@@ -274,9 +276,10 @@ void CVehicle::SetHealth(float fHealth)
 
 void CVehicle::SetColor(int iColor1, int iColor2)
 {
-	if(m_pVehicle)  {
-		m_pVehicle->byteColor1 = (BYTE)iColor1;
-		m_pVehicle->byteColor2 = (BYTE)iColor2;
+	VEHICLE_TYPE * pVehicle = (VEHICLE_TYPE *)GetEntity();
+	if(pVehicle)  {
+		pVehicle->byteColors[0] = (BYTE)iColor1;
+		pVehicle->byteColors[1] = (BYTE)iColor2;
 	}
 }
 
@@ -284,8 +287,9 @@ void CVehicle::SetColor(int iColor1, int iColor2)
  
 BYTE CVehicle::GetVehicleSubtype()
 {
-	if(!m_pVehicle) return 0;
-	DWORD dwVehicle = (DWORD)m_pVehicle;
+	VEHICLE_TYPE * pVehicle = (VEHICLE_TYPE *)GetEntity();
+	if(!pVehicle) return 0;
+	DWORD dwVehicle = (DWORD)pVehicle;
 
 	_asm mov ecx, dwVehicle
 	_asm mov edx, [ecx+288]
@@ -315,8 +319,9 @@ ret_plane:	return	VEHICLE_SUBTYPE_PLANE;
 
 BOOL CVehicle::HasSunk()
 {
-	if(m_pVehicle) {
-		if(m_pVehicle->entity.byteSunkFlags & 0x10) {
+	PHYSICAL_TYPE * pPhysical = (PHYSICAL_TYPE *)GetEntity();
+	if(pPhysical) {
+		if(pPhysical->byteSunkFlags & 0x10) {
 			return TRUE;
 		}
 	}
@@ -327,9 +332,9 @@ BOOL CVehicle::HasSunk()
 
 BOOL CVehicle::IsDriverLocalPlayer()
 {
-	if(m_pVehicle) {
-		if((PED_TYPE *)m_pVehicle->pDriver == GamePool_FindPlayerPed())
-		{
+	VEHICLE_TYPE * pVehicle = (VEHICLE_TYPE *)GetEntity();
+	if(pVehicle) {
+		if(pVehicle->pDriver == GamePool_FindPlayerPed()) {
 			return TRUE;
 		}
 	}
@@ -340,8 +345,9 @@ BOOL CVehicle::IsDriverLocalPlayer()
 
 BYTE CVehicle::GetMaxPassengers()
 {
-	if(m_pVehicle) {
-		return m_pVehicle->byteMaxPassengers;
+	VEHICLE_TYPE * pVehicle = (VEHICLE_TYPE *)GetEntity();
+	if(pVehicle) {
+		return pVehicle->byteMaxPassengers;
 	}	
 	return 0;
 }
@@ -350,8 +356,9 @@ BYTE CVehicle::GetMaxPassengers()
 
 PED_TYPE *CVehicle::GetDriver()
 {
-	if(m_pVehicle) {
-		return m_pVehicle->pDriver;
+	VEHICLE_TYPE * pVehicle = (VEHICLE_TYPE *)GetEntity();
+	if(pVehicle) {
+		return pVehicle->pDriver;
 	}
 	return NULL;
 }

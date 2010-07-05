@@ -25,20 +25,15 @@
 #pragma once
 
 #include "common.h"
+#include "entity.h"
 
-class CEntity
+class CPhysical : public CEntity
 {
-private:
-	ENTITY_TYPE	*m_pEntity;
-
 public:
-	ENTITY_TYPE *GetEntity();
-	void		 SetEntity(ENTITY_TYPE *pEntity);
+	PHYSICAL_TYPE *GetPhysical();
 
-	void		 GetMatrix(PMATRIX4X4 Matrix);
-	void		 SetMatrix(MATRIX4X4 Matrix);
-	void         GetPosition(PVECTOR Vector);
-	void         SetPosition(VECTOR Vector);
-
-	WORD		 GetModelIndex();
+	void GetMoveSpeed(PVECTOR Vector);
+	void SetMoveSpeed(VECTOR Vector);
+	void GetTurnSpeed(PVECTOR Vector);
+	void SetTurnSpeed(VECTOR Vector);
 };

@@ -101,13 +101,13 @@ void cmdSavePos(PCHAR szCmd)
 	if(pPlayer->IsInVehicle()) {
 
 		VEHICLE_TYPE *pVehicle = pPlayer->GetGtaVehicle();
-	
+		WORD wModelIndex = pVehicle->physical.entity.wModelIndex;
+		VECTOR * vPos = &pVehicle->physical.entity.mat.vPos;
 		dwVehicleID = GamePool_Vehicle_GetIndex(pVehicle);
 		ScriptCommand(&get_car_z_angle,dwVehicleID,&fZAngle);
 
-		fprintf(fileOut,"createVehicle(%u, %.4f, %.4f, %.4f, %.4f, %u, %u)\n",
-			pVehicle->entity.nModelIndex,pVehicle->entity.mat.vPos.X,pVehicle->entity.mat.vPos.Y,pVehicle->entity.mat.vPos.Z,
-			fZAngle,pVehicle->byteColor1,pVehicle->byteColor2);
+		fprintf(fileOut,"createVehicle(%u, %.4f, %.4f, %.4f, %.4f, %u, %u)\n", wModelIndex, vPos->X, vPos->Y, vPos->Z, 
+			fZAngle, pVehicle->byteColors[0], pVehicle->byteColors[1]);
 
 		fclose(fileOut);
 

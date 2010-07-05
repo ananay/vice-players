@@ -105,53 +105,9 @@ void CEntity::SetPosition(VECTOR Vector)
 WORD CEntity::GetModelIndex()
 {
 	if(m_pEntity) {
-		return m_pEntity->nModelIndex;
+		return m_pEntity->wModelIndex;
 	}
 	return 0;
-}
-
-//-----------------------------------------------------------
-
-void CEntity::GetMoveSpeed(PVECTOR Vector)
-{
-	if(m_pEntity) {
-		Vector->X = m_pEntity->vecMoveSpeed.X;
-		Vector->Y = m_pEntity->vecMoveSpeed.Y;
-		Vector->Z = m_pEntity->vecMoveSpeed.Z;
-	}
-}
-
-//-----------------------------------------------------------
-
-void CEntity::SetMoveSpeed(VECTOR Vector)
-{
-	if(m_pEntity) {
-		m_pEntity->vecMoveSpeed.X = Vector.X;
-		m_pEntity->vecMoveSpeed.Y = Vector.Y;
-		m_pEntity->vecMoveSpeed.Z = Vector.Z;
-	}
-}
-
-//-----------------------------------------------------------
-
-void CEntity::GetTurnSpeed(PVECTOR Vector)
-{
-	if(m_pEntity) {
-		Vector->X = m_pEntity->vecTurnSpeed.X;
-		Vector->Y = m_pEntity->vecTurnSpeed.Y;
-		Vector->Z = m_pEntity->vecTurnSpeed.Z;
-	}
-}
-
-//-----------------------------------------------------------
-
-void CEntity::SetTurnSpeed(VECTOR Vector)
-{
-	if(m_pEntity) {
-		m_pEntity->vecTurnSpeed.X = Vector.X;
-		m_pEntity->vecTurnSpeed.Y = Vector.Y;
-		m_pEntity->vecTurnSpeed.Z = Vector.Z;
-	}
 }
 
 //-----------------------------------------------------------

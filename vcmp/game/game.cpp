@@ -230,14 +230,21 @@ void GameInstallPatches()
 	VirtualProtect((PVOID)0x440B2C,5,dwVP,&dwVP2);
 
 	// Don't load the main scm
-	VirtualProtect((PVOID)0x608C7C,2,PAGE_EXECUTE_READWRITE,&dwVP);
+	VirtualProtect((PVOID)0x608C7C, 2, PAGE_EXECUTE_READWRITE, &dwVP);
 	*(BYTE *)0x608C7C = 0xEB;
 	*(BYTE *)0x608C7D = 0x6C;
-	VirtualProtect((PVOID)0x608C7C,2,dwVP,&dwVP2);
-	VirtualProtect((PVOID)0x4506DC,2,PAGE_EXECUTE_READWRITE,&dwVP);
+	VirtualProtect((PVOID)0x608C7C, 2, dwVP, &dwVP2);
+	VirtualProtect((PVOID)0x4506DC, 2, PAGE_EXECUTE_READWRITE, &dwVP);
 	*(BYTE *)0x4506DC = 0xEB;
 	*(BYTE *)0x4506DD = 0x62;
-	VirtualProtect((PVOID)0x4506DC,2,dwVP,&dwVP2);
+	VirtualProtect((PVOID)0x4506DC, 2, dwVP, &dwVP2);
+
+	// Disable CPopulation::AddPed
+	VirtualProtect((PVOID)0x53B600, 3, PAGE_EXECUTE_READWRITE, &dwVP);
+	*(BYTE *)0x53B600 = 0x31; // xor
+	*(BYTE *)0x53B601 = 0xC0; // eax, eax
+	*(BYTE *)0x53B602 = 0xC3; // retn
+	VirtualProtect((PVOID)0x53B600, 3, dwVP, &dwVP2);
 }
 
 void CGame::StartGame()
