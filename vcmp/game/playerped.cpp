@@ -138,107 +138,107 @@ void CPlayerPed::SetKeys(WORD wKeys)
 
 	memcpy(&pPlayerKeys->previousPadState, &pPlayerKeys->currentPadState, sizeof(GTA_CONTROL));
 	if(wKeys & 1) {
-		pPlayerKeys->previousPadState.wButton19 = 0xFF;
+		pPlayerKeys->currentPadState.wButton19 = 0xFF;
 	} else { 
-		pPlayerKeys->previousPadState.wButton19 = 0x00;
+		pPlayerKeys->currentPadState.wButton19 = 0x00;
 	}
 	wKeys >>= 1;
 
 	if(wKeys & 1) {
-		pPlayerKeys->previousPadState.wButton18 = 0xFF;
+		pPlayerKeys->currentPadState.wButton18 = 0xFF;
 	} else { 
-		pPlayerKeys->previousPadState.wButton18 = 0x00;
+		pPlayerKeys->currentPadState.wButton18 = 0x00;
 	}
 	wKeys >>= 1;
 
 	if(wKeys & 1) {
-		pPlayerKeys->previousPadState.wButton17 = 0xFF;
+		pPlayerKeys->currentPadState.wButton17 = 0xFF;
 	} else { 
-		pPlayerKeys->previousPadState.wButton17 = 0x00;
+		pPlayerKeys->currentPadState.wButton17 = 0x00;
 	}
 	wKeys >>= 1;
 
 	if(wKeys & 1) {
-		pPlayerKeys->previousPadState.wButton16 = 0xFF;
+		pPlayerKeys->currentPadState.wButton16 = 0xFF;
 	} else { 
-		pPlayerKeys->previousPadState.wButton16 = 0x00;
+		pPlayerKeys->currentPadState.wButton16 = 0x00;
 	}
 	wKeys >>= 1;
 
 	if(wKeys & 1) {
-		pPlayerKeys->previousPadState.wButton15 = 0xFF;
+		pPlayerKeys->currentPadState.wButton15 = 0xFF;
 	} else { 
-		pPlayerKeys->previousPadState.wButton15 = 0x00;
+		pPlayerKeys->currentPadState.wButton15 = 0x00;
 	}
 	wKeys >>= 1;
 
 	if(wKeys & 1) {
-		pPlayerKeys->previousPadState.wButton14 = 0xFF;
+		pPlayerKeys->currentPadState.wButton14 = 0xFF;
 	} else { 
-		pPlayerKeys->previousPadState.wButton14 = 0x00;
+		pPlayerKeys->currentPadState.wButton14 = 0x00;
 	}
 	wKeys >>= 1;
 
 	if(wKeys & 1) {
-		pPlayerKeys->previousPadState.wButton11 = 0xFF;
+		pPlayerKeys->currentPadState.wButton11 = 0xFF;
 	} else { 
-		pPlayerKeys->previousPadState.wButton11 = 0x00;
+		pPlayerKeys->currentPadState.wButton11 = 0x00;
 	}
 	wKeys >>= 1;
 
 	if(wKeys & 1) {
-		pPlayerKeys->previousPadState.wButton10 = 0xFF;
+		pPlayerKeys->currentPadState.wButton10 = 0xFF;
 	} else { 
-		pPlayerKeys->previousPadState.wButton10 = 0x00;
+		pPlayerKeys->currentPadState.wButton10 = 0x00;
 	}
 	wKeys >>= 1;
 
 	if(wKeys & 1) {
-		pPlayerKeys->previousPadState.wButton9 = 0xFF;
+		pPlayerKeys->currentPadState.wButton9 = 0xFF;
 	} else { 
-		pPlayerKeys->previousPadState.wButton9 = 0x00;
+		pPlayerKeys->currentPadState.wButton9 = 0x00;
 	}
 	wKeys >>= 1;
 
 	if(wKeys & 1) {
-		pPlayerKeys->previousPadState.wButton8 = 0xFF;
+		pPlayerKeys->currentPadState.wButton8 = 0xFF;
 	} else { 
-		pPlayerKeys->previousPadState.wButton8 = 0x00;
+		pPlayerKeys->currentPadState.wButton8 = 0x00;
 	}
 	wKeys >>= 1;
 
 	if(wKeys & 1) {
-		pPlayerKeys->previousPadState.wButton7 = 0xFF;
+		pPlayerKeys->currentPadState.wButton7 = 0xFF;
 	} else { 
-		pPlayerKeys->previousPadState.wButton7 = 0x00;
+		pPlayerKeys->currentPadState.wButton7 = 0x00;
 	}
 	wKeys >>= 1;
 
 	if(wKeys & 1) {
-		pPlayerKeys->previousPadState.wButton6 = 0xFF;
+		pPlayerKeys->currentPadState.wButton6 = 0xFF;
 	} else { 
-		pPlayerKeys->previousPadState.wButton6 = 0x00;
+		pPlayerKeys->currentPadState.wButton6 = 0x00;
 	}
 	wKeys >>= 1;
 
 	if(wKeys & 1) {
-		pPlayerKeys->previousPadState.wButton5 = 0xFF;
+		pPlayerKeys->currentPadState.wButton5 = 0xFF;
 	} else { 
-		pPlayerKeys->previousPadState.wButton5 = 0x00;
+		pPlayerKeys->currentPadState.wButton5 = 0x00;
 	}
 	wKeys >>= 1;
 
 	if(wKeys & 1) {
-		pPlayerKeys->previousPadState.wButton3 = 0xFF;
+		pPlayerKeys->currentPadState.wButton3 = 0xFF;
 	} else { 
-		pPlayerKeys->previousPadState.wButton3 = 0x00;
+		pPlayerKeys->currentPadState.wButton3 = 0x00;
 	}
 	wKeys >>= 1;
 
 	if(wKeys & 1) {
-		pPlayerKeys->previousPadState.wButton2 = 0xFF;
+		pPlayerKeys->currentPadState.wButton2 = 0xFF;
 	} else { 
-		pPlayerKeys->previousPadState.wButton2 = 0x00;
+		pPlayerKeys->currentPadState.wButton2 = 0x00;
 	}
 	wKeys >>= 1;
 
