@@ -84,7 +84,7 @@ int main (int argc, char* argv[])
 	if(pServerConfig->ReadFile(szConfigFile) != CCONF_ERR_SUCCESS) {
 		sprintf(szError,"Can't read the config file %s\n%s\n- Server Shutting Down. -",
 			DEFAULT_CONFIG_FILE,pServerConfig->m_szErrorString);
-		fatal_exit(szError);	
+		fatal_exit(szError);
 	}
 
 	//logprintf("Using config file: %s",szConfigFile);
@@ -129,7 +129,7 @@ int main (int argc, char* argv[])
 	if(iShowOnRadarOption == -1 || iShowOnRadarOption == 0)	{
 		byteShowOnRadarOption = 0;
 	}
-	
+
 	// create the NetGame.
 	pNetGame = new CNetGame(iMaxPlayers,iListenPort,0,szPass,0,byteFriendlyFire,byteShowOnRadarOption);
 
@@ -175,7 +175,7 @@ int main (int argc, char* argv[])
 	}
 
 	pScripts->onServerExit();
-	
+
 	delete pScripts;
 	delete pRcon;
 	delete pNetGame;
@@ -191,7 +191,9 @@ void fatal_exit(char * szError)
 		printf("%s\n\n",szError);
 		printf("Press any key to close.");
 		getc(stdin);
-	#endif
+	#else
+        printf("%s\n\n",szError);
+    #endif
 		exit(1);
 }
 
