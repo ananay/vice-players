@@ -52,8 +52,7 @@ char szSpecialActorModels[][32] =
 CPlayerPed::CPlayerPed()
 {
 	m_dwGTAId = 1; // 0x001
-	m_pPed = GamePool_FindPlayerPed();
-	SetEntity((ENTITY_TYPE*)m_pPed);
+	SetEntity((ENTITY_TYPE *)GamePool_FindPlayerPed());
 	m_bytePlayerNumber = 0;
 }
 
@@ -65,7 +64,7 @@ CPlayerPed::CPlayerPed( int iPlayerNumber, int iModel, float fX,
 {
 	DWORD dwSystemAddress=0;
 
-	m_pPed=0;
+	SetEntity(NULL);
 	m_dwGTAId=0;
 	m_bytePlayerNumber = (BYTE)iPlayerNumber;
 
@@ -83,14 +82,7 @@ CPlayerPed::~CPlayerPed()
 
 PED_TYPE *CPlayerPed::GetPed()
 {
-	return m_pPed;
-}
-
-//-----------------------------------------------------------
-
-void CPlayerPed::SetPed(PED_TYPE *pPed)
-{
-	m_pPed = pPed;
+	return (PED_TYPE *)GetEntity();
 }
 
 //-----------------------------------------------------------
@@ -112,9 +104,8 @@ void CPlayerPed::Create(int iModel, float fX, float fY,float fZ,float fRotation)
 	SetRotation(fRotation);
 
 	m_dwGTAId = dwPlayerHandle;
-	m_pPed = GamePool_Ped_GetAt(m_dwGTAId);
-	SetEntity((ENTITY_TYPE*)m_pPed);	
-	SetPlayerPedPtrRecord(m_bytePlayerNumber,(DWORD)m_pPed);
+	SetEntity((ENTITY_TYPE *)GamePool_Ped_GetAt(m_dwGTAId));
+	SetPlayerPedPtrRecord(m_bytePlayerNumber,(DWORD)GetEntity());
 	ScriptCommand(&set_actor_immunities,m_dwGTAId,1,1,1,1,1);
 
 	SetModel(iModel);
@@ -124,13 +115,14 @@ void CPlayerPed::Create(int iModel, float fX, float fY,float fZ,float fRotation)
 
 void CPlayerPed::Destroy()
 {
-	DWORD dwPedPtr = (DWORD)m_pPed;
-	_asm mov ecx, dwPedPtr
-	_asm mov ebx, [ecx] ; vtable
-	_asm push 1
-	_asm call [ebx+8] ; destroy
-	SetEntity(NULL);
-	m_pPed = NULL;
+	PED_TYPE * pPed = (PED_TYPE *)GetEntity();
+	if(pPed) {
+		_asm mov ecx, pPed
+		_asm mov ebx, [ecx] ; vtable
+		_asm push 1
+		_asm call [ebx+8] ; destroy
+		SetEntity(NULL);
+	}
 }
 
 //-----------------------------------------------------------
@@ -355,7 +347,7 @@ BOOL CPlayerPed::EnforceWorldBoundries(float fPX, float fZX, float fPY, float fN
 	VECTOR vPos;
 	VECTOR vecMoveSpeed;
 
-	if(!m_pPed) return FALSE;
+	if(!GetEntity()) return FALSE;
 
 	GetPosition(&vPos);
 	GetMoveSpeed(&vecMoveSpeed);
@@ -404,7 +396,7 @@ BOOL CPlayerPed::HasAmmoForCurrentWeapon()
 {
 	int iAmmo;
 
-	if(m_pPed) {
+	if(GetEntity()) {
 
 		if(GamePool_Ped_GetAt(m_dwGTAId) == 0) return FALSE;
 
@@ -439,62 +431,72 @@ BYTE CPlayerPed::GetCurrentWeapon()
 
 void CPlayerPed::SetInitialState()
 {
-	if(m_pPed) m_pPed->byteJumpFlags = 0xA;
+	PED_TYPE * pPed = (PED_TYPE *)GetEntity();
+	if(pPed) {
+		pPed->byteJumpFlags = 0xA;
+	}
 }
 
 //-----------------------------------------------------------
 
 int CPlayerPed::GetCurrentVehicleID()
 {
-	VEHICLE_TYPE *pVehicle = (VEHICLE_TYPE *)m_pPed->pVehicle;
-	return GamePool_Vehicle_GetIndex(pVehicle);
+	PED_TYPE *pPed = (PED_TYPE *)GetEntity();
+	if(pPed) {
+		return GamePool_Vehicle_GetIndex((VEHICLE_TYPE *)pPed->pVehicle);
+	}
+	// Not sure about this one
+	return -1;
 }
 
 //-----------------------------------------------------------
 
 void CPlayerPed::ShowMarker(int iMarkerColor)
 {	
-	DWORD hndMarker;
-	DWORD dwPedID;
-	float f=0.0f;
+	PED_TYPE * pPed = (PED_TYPE *)GetEntity();
+	if(pPed) {
+		DWORD hndMarker;
+		DWORD dwPedID;
+		float f=0.0f;
 
-	dwPedID = GamePool_Ped_GetIndex(m_pPed);
+		dwPedID = GamePool_Ped_GetIndex(pPed);
 
-	_asm push 2
-	_asm push 4
-	_asm mov eax, dwPedID
-	_asm push eax
-	_asm push 2
-	_asm mov edx, ADDR_TIE_MARKER_TO_ACTOR
-	_asm call edx
-	_asm mov hndMarker, eax
-	_asm pop ecx
-	_asm pop ecx
-	_asm pop ecx
-	_asm pop ecx
+		_asm push 2
+		_asm push 4
+		_asm mov eax, dwPedID
+		_asm push eax
+		_asm push 2
+		_asm mov edx, ADDR_TIE_MARKER_TO_ACTOR
+		_asm call edx
+		_asm mov hndMarker, eax
+		_asm pop ecx
+		_asm pop ecx
+		_asm pop ecx
+		_asm pop ecx
 
-	_asm push iMarkerColor
-	_asm push hndMarker
-	_asm mov edx, ADDR_SET_MARKER_COLOR
-	_asm call edx
-	_asm pop ecx
-	_asm pop ecx
+		_asm push iMarkerColor
+		_asm push hndMarker
+		_asm mov edx, ADDR_SET_MARKER_COLOR
+		_asm call edx
+		_asm pop ecx
+		_asm pop ecx
 
-	_asm push 2
-	_asm push hndMarker
-	_asm mov edx, ADDR_SHOW_ON_RADAR1
-	_asm call edx
-	_asm pop ecx
-	_asm pop ecx
-
+		_asm push 2
+		_asm push hndMarker
+		_asm mov edx, ADDR_SHOW_ON_RADAR1
+		_asm call edx
+		_asm pop ecx
+		_asm pop ecx
+	}
 }
 
 //-----------------------------------------------------------
 
 BOOL CPlayerPed::IsOnScreen()
 {
-	if(m_pPed) {
-		return GameIsEntityOnScreen((DWORD *)m_pPed);
+	PED_TYPE * pPed = (PED_TYPE *)GetEntity();
+	if(pPed) {
+		return GameIsEntityOnScreen((DWORD *)pPed);
 	}
 	return FALSE;
 }
@@ -503,9 +505,10 @@ BOOL CPlayerPed::IsOnScreen()
 
 void CPlayerPed::Say(UINT uiNum)
 {
-	if(m_pPed)
+	PED_TYPE * pPed = (PED_TYPE *)GetEntity();
+	if(pPed)
 	{
-		DWORD dwPedPtr = (DWORD)m_pPed;
+		DWORD dwPedPtr = (DWORD)pPed;
 		_asm mov ecx, dwPedPtr
 		_asm push uiNum
 		_asm mov edx, ADDR_CPED_SAY
@@ -517,35 +520,52 @@ void CPlayerPed::Say(UINT uiNum)
 
 float CPlayerPed::GetHealth()
 {	
-	return m_pPed->fHealth;
+	PED_TYPE * pPed = (PED_TYPE *)GetEntity();
+	if(pPed) {
+		return pPed->fHealth;
+	}
+	return 0.0f;
 }
 
 //-----------------------------------------------------------
 
 void CPlayerPed::SetHealth(float fHealth)
-{	
-	m_pPed->fHealth = fHealth;
+{
+	PED_TYPE * pPed = (PED_TYPE *)GetEntity();
+	if(pPed) {
+		pPed->fHealth = fHealth;
+	}
 }	
 
 //-----------------------------------------------------------
 
 float CPlayerPed::GetArmour()
-{	
-	return m_pPed->fArmour;
+{
+	PED_TYPE * pPed = (PED_TYPE *)GetEntity();
+	if(pPed) {
+		return pPed->fArmour;
+	}
+	return 0.0f;
 }
 
 //-----------------------------------------------------------
 
 void CPlayerPed::SetArmour(float fArmour)
-{	
-	m_pPed->fArmour = fArmour;
+{
+	PED_TYPE * pPed = (PED_TYPE *)GetEntity();
+	if(pPed) {
+		pPed->fArmour = fArmour;
+	}
 }	
 
 //-----------------------------------------------------------
 
 BOOL CPlayerPed::IsDead()
 {
-	if(m_pPed->fHealth > 0.0f) return FALSE;
+	PED_TYPE * pPed = (PED_TYPE *)GetEntity();
+	if(pPed && pPed->fHealth > 0.0f) {
+			return FALSE;
+	}
 	return TRUE;
 }
 
@@ -553,34 +573,49 @@ BOOL CPlayerPed::IsDead()
 
 BYTE CPlayerPed::GetAction()
 {
-	return m_pPed->byteAction;
+	PED_TYPE * pPed = (PED_TYPE *)GetEntity();
+	if(pPed) {
+		return pPed->byteAction;
+	}
+	return 0;
 }
 
 //-----------------------------------------------------------
 
 void CPlayerPed::SetAction(BYTE byteTrigger)
 {
-	m_pPed->byteAction = byteTrigger;
+	PED_TYPE * pPed = (PED_TYPE *)GetEntity();
+	if(pPed) {
+		pPed->byteAction = byteTrigger;
+	}
 }
 //-----------------------------------------------------------
 
 BYTE CPlayerPed::GetShootingFlags()
 {
-	return m_pPed->byteShootFlags;
+	PED_TYPE * pPed = (PED_TYPE *)GetEntity();
+	if(pPed) {
+		return pPed->byteShootFlags;
+	}
+	return 0;
 }
 
 //-----------------------------------------------------------
 
 void CPlayerPed::SetShootingFlags(BYTE byteShooting)
 {
-	m_pPed->byteShootFlags= byteShooting;
+	PED_TYPE * pPed = (PED_TYPE *)GetEntity();
+	if(pPed) {
+		pPed->byteShootFlags = byteShooting;
+	}
 }
 
 //-----------------------------------------------------------
 
 BOOL CPlayerPed::IsInVehicle()
 {
-	if(m_pPed->byteIsInVehicle) {
+	PED_TYPE * pPed = (PED_TYPE *)GetEntity();
+	if(pPed && pPed->byteIsInVehicle) {
 		return TRUE;
 	}
 	return FALSE;
@@ -609,16 +644,13 @@ void CPlayerPed::SetRotation(float fRotation)
 
 BOOL CPlayerPed::IsAPassenger()
 {
-	if( m_pPed->byteIsInVehicle &&
-		m_pPed->pVehicle )
+	PED_TYPE * pPed = (PED_TYPE *)GetEntity();
+	if(pPed && pPed->byteIsInVehicle && pPed->pVehicle)
 	{
-		VEHICLE_TYPE * pVehicle = (VEHICLE_TYPE *)m_pPed->pVehicle;
+		VEHICLE_TYPE * pVehicle = (VEHICLE_TYPE *)pPed->pVehicle;
 
-		if(pVehicle->pDriver != m_pPed) {
+		if(pVehicle->pDriver != pPed) {
 			return TRUE;
-		}
-		else {
-			return FALSE;
 		}
 	}
 
@@ -629,7 +661,11 @@ BOOL CPlayerPed::IsAPassenger()
 
 VEHICLE_TYPE * CPlayerPed::GetGtaVehicle()
 {
-	return (VEHICLE_TYPE *)m_pPed->pVehicle;
+	PED_TYPE * pPed = (PED_TYPE *)GetEntity();
+	if(pPed) {
+		return (VEHICLE_TYPE *)pPed->pVehicle;
+	}
+	return NULL;
 }
 
 //-----------------------------------------------------------
@@ -652,10 +688,11 @@ void CPlayerPed::GiveWeapon(int iWeaponID, int iAmmo)
 
 void CPlayerPed::CheckAndRepairInvisProblems()
 {
-	if( (m_pPed->byteAction != ACTION_EXITING_VEHICLE) &&
-		((m_pPed->byteIsInVehicle) || (m_pPed->byteAction == ACTION_DRIVING_VEHICLE)) ) {
-		m_pPed->byteIsInVehicle = 0;
-		m_pPed->byteAction = 1;
+	PED_TYPE * pPed = (PED_TYPE *)GetEntity();
+	if(pPed && (pPed->byteAction != ACTION_EXITING_VEHICLE) &&
+		((pPed->byteIsInVehicle) || (pPed->byteAction == ACTION_DRIVING_VEHICLE)) ) {
+		pPed->byteIsInVehicle = 0;
+		pPed->byteAction = 1;
 	}
 }
 
@@ -663,20 +700,23 @@ void CPlayerPed::CheckAndRepairInvisProblems()
 
 void CPlayerPed::Teleport(float x, float y, float z)
 {
-	DWORD dwPedPtr = (DWORD)m_pPed;
-	_asm mov ecx, dwPedPtr
-	_asm push z
-	_asm push y
-	_asm push x
-	_asm mov edx, 0x4F5690
-	_asm call edx
+	PED_TYPE * pPed = (PED_TYPE *)GetEntity();
+	if(pPed) {
+		DWORD dwPedPtr = (DWORD)pPed;
+		_asm mov ecx, dwPedPtr
+		_asm push z
+		_asm push y
+		_asm push x
+		_asm mov edx, 0x4F5690
+		_asm call edx
+	}
 }
 
 //-----------------------------------------------------------
 
 void CPlayerPed::ClearTargetAndVehicle()
 {
-
+	
 }
 
 //-----------------------------------------------------------
@@ -699,8 +739,6 @@ void CPlayerPed::PutDirectlyInVehicle(int iVehicleID)
 {
 	DWORD dwSystemAddress = m_bytePlayerNumber;
 	ScriptCommand(&put_player_in_car,dwSystemAddress,iVehicleID);
-			
-	VEHICLE_TYPE * pVehicle = GamePool_Vehicle_GetAt(iVehicleID);
 }
 
 //-----------------------------------------------------------
@@ -729,8 +767,9 @@ void CPlayerPed::EnterVehicleAsPassenger(int iVehicleID)
 
 void CPlayerPed::ExitCurrentVehicle()
 {
-	if(m_pPed->byteIsInVehicle) {
-		SetObjective((PDWORD)m_pPed->pVehicle,16);
+	PED_TYPE * pPed = (PED_TYPE *)GetEntity();
+	if(pPed && pPed->byteIsInVehicle) {
+		SetObjective((PDWORD)pPed->pVehicle,16);
 	}
 }
 
@@ -738,14 +777,13 @@ void CPlayerPed::ExitCurrentVehicle()
 
 void CPlayerPed::RemoveFromVehicleAndPutAt(float fX, float fY, float fZ)
 {
-	if(m_pPed) {
-
-		VEHICLE_TYPE *pVehicle = (VEHICLE_TYPE *)m_pPed->pVehicle;
+	PED_TYPE * pPed = (PED_TYPE *)GetEntity();
+	if(pPed) {
 		ScriptCommand(&put_player_at_and_remove_from_car,m_bytePlayerNumber,fX,fY,fZ);
 
 		/*
-		if(m_pPed->entity.nModelIndex <= 106) {
-			SetModel(m_pPed->entity.nModelIndex); // attempts to bypass model destruction probs
+		if(pPed->physical.entity.nModelIndex <= 106) {
+			SetModel(m_pPed->physical.entity.nModelIndex); // attempts to bypass model destruction probs
 		}*/
 	}
 }
@@ -754,88 +792,92 @@ void CPlayerPed::RemoveFromVehicleAndPutAt(float fX, float fY, float fZ)
 
 void CPlayerPed::ForceIntoPassengerSeat(UINT uiVehicleID, UINT uiSeat)
 {
-	PED_TYPE * pPed = m_pPed;
-	VEHICLE_TYPE * pVehicle = GamePool_Vehicle_GetAt(uiVehicleID);
-	UINT uiPassengerOffset;
+	PED_TYPE * pPed = (PED_TYPE *)GetEntity();
+	if(pPed) {
+		VEHICLE_TYPE * pVehicle = GamePool_Vehicle_GetAt(uiVehicleID);
+		UINT uiPassengerOffset;
 
-	if(!pPed || !pVehicle) return;
-	if(uiSeat > pVehicle->byteMaxPassengers) return;
+		if(!pPed || !pVehicle) return;
+		if(uiSeat > pVehicle->byteMaxPassengers) return;
 
-	pPed->byteAction = 50;
+		pPed->byteAction = 50;
 
-	pVehicle->pPassengers[uiSeat-1] = pPed;
-	uiPassengerOffset = 424 + (uiSeat * 4);
+		pVehicle->pPassengers[uiSeat-1] = pPed;
+		uiPassengerOffset = 424 + (uiSeat * 4);
 
-	_asm mov     eax, pVehicle
-	_asm add	 eax, uiPassengerOffset
-	_asm push    eax
-	_asm mov     eax, pVehicle
-	_asm mov     ecx, pPed
-	_asm mov	 edx, ADDR_ACTOR_PUT_IN_VEHICLE
-	_asm call    edx
+		_asm mov     eax, pVehicle
+		_asm add	 eax, uiPassengerOffset
+		_asm push    eax
+		_asm mov     eax, pVehicle
+		_asm mov     ecx, pPed
+		_asm mov	 edx, ADDR_ACTOR_PUT_IN_VEHICLE
+		_asm call    edx
 
-	_asm mov	 ebx, pPed
-	_asm mov     eax, pVehicle
-	_asm mov     [ebx+936], eax
-	_asm lea     eax, [ebx+936]
-	_asm mov     ecx, [ebx+936]
-	_asm push    eax
-	_asm mov	 edx, ADDR_ACTOR_PUT_IN_VEHICLE
-	_asm call    edx
+		_asm mov	 ebx, pPed
+		_asm mov     eax, pVehicle
+		_asm mov     [ebx+936], eax
+		_asm lea     eax, [ebx+936]
+		_asm mov     ecx, [ebx+936]
+		_asm push    eax
+		_asm mov	 edx, ADDR_ACTOR_PUT_IN_VEHICLE
+		_asm call    edx
 
-	pPed->byteIsInVehicle = 1;
-	pPed->entity.nControlFlags2 &= 0xFE;
+		pPed->byteIsInVehicle = 1;
+		pPed->physical.entity.nControlFlags2 &= 0xFE;
 
-	_asm push 0
-	_asm push pVehicle
-	_asm mov ecx, pPed
-	_asm mov edx, ADDR_VEHICLE_SET_DRIVER
-	_asm call edx
+		_asm push 0
+		_asm push pVehicle
+		_asm mov ecx, pPed
+		_asm mov edx, ADDR_VEHICLE_SET_DRIVER
+		_asm call edx
+	}
 }
 
 //-----------------------------------------------------------
 
 void CPlayerPed::SetModel(int iModel)
 {
-	PCHAR			szModelName=0;
-	DWORD dwPedPtr = (DWORD)m_pPed;
+	PED_TYPE * pPed = (PED_TYPE *)GetEntity();
+	if(pPed) {
+		PCHAR szModelName=0;
 
-	if(iModel == 8) return; // invalid skin
-	
-	if(iModel > 106)
-	{
-		iModel -= 106;
-		if(iModel < 54)
+		if(iModel == 8) return; // invalid skin
+		
+		if(iModel > 106)
 		{
-			szModelName = szSpecialActorModels[iModel];
+			iModel -= 106;
+			if(iModel < 54)
+			{
+				szModelName = szSpecialActorModels[iModel];
 
-			_asm mov ecx, dwPedPtr
-			_asm push szModelName
-			_asm mov edx, ADDR_SET_SKIN_MODELNAME
-			_asm call edx
+				_asm mov ecx, pPed
+				_asm push szModelName
+				_asm mov edx, ADDR_SET_SKIN_MODELNAME
+				_asm call edx
 
-			_asm push 0
-			_asm mov edx, ADDR_LOAD_REQUESTED_MODELS2
-			_asm call edx
-			_asm pop ecx
+				_asm push 0
+				_asm mov edx, ADDR_LOAD_REQUESTED_MODELS2
+				_asm call edx
+				_asm pop ecx
 
-			_asm mov ecx, dwPedPtr
-			_asm mov edx, ADDR_REFRESH_ACTOR_SKIN
+				_asm mov ecx, pPed
+				_asm mov edx, ADDR_REFRESH_ACTOR_SKIN
+				_asm call edx
+			}
+		}
+		else // default.ide number
+		{
+			if(!pGame->IsModelLoaded(iModel)) {
+				pGame->RequestModel(iModel);
+				pGame->LoadRequestedModels();
+				while(!pGame->IsModelLoaded(iModel)) Sleep(1);
+			}
+
+			_asm mov ecx, pPed
+			_asm push iModel
+			_asm mov edx, ADDR_SET_ACTOR_SKIN
 			_asm call edx
 		}
-	}
-	else // default.ide number
-	{
-		if(!pGame->IsModelLoaded(iModel)) {
-			pGame->RequestModel(iModel);
-			pGame->LoadRequestedModels();
-			while(!pGame->IsModelLoaded(iModel)) Sleep(1);
-		}
-
-		_asm mov ecx, dwPedPtr
-		_asm push iModel
-		_asm mov edx, ADDR_SET_ACTOR_SKIN
-		_asm call edx
 	}
 }
 
@@ -843,11 +885,9 @@ void CPlayerPed::SetModel(int iModel)
 
 void CPlayerPed::SetObjective(PDWORD pObjectiveEntity, int iFunction)
 {
-	DWORD dwPedPtr = (DWORD)m_pPed;
-
-	if(dwPedPtr && pObjectiveEntity)
-	{
-		_asm mov ecx, dwPedPtr
+	PED_TYPE * pPed = (PED_TYPE *)GetEntity();
+	if(pPed && pObjectiveEntity) {
+		_asm mov ecx, pPed
 		_asm push pObjectiveEntity
 		_asm push iFunction
 		_asm mov edx, ADDR_SET_OBJECTIVE
@@ -874,10 +914,10 @@ void CPlayerPed::TogglePlayerControllable(int iControllable)
 
 void CPlayerPed::SetDead()
 {
-	if(m_pPed) {
-		m_pPed->fHealth = 0.0f;
-		DWORD dwPed = (DWORD)m_pPed;
-		_asm mov ecx, dwPed
+	PED_TYPE * pPed = (PED_TYPE *)GetEntity();
+	if(pPed) {
+		pPed->fHealth = 0.0f;
+		_asm mov ecx, pPed
 		_asm mov edx, 0x4F6430
 		_asm call edx
 	}
@@ -887,82 +927,85 @@ void CPlayerPed::SetDead()
 
 BYTE CPlayerPed::FindDeathReasonAndResponsiblePlayer(BYTE * nPlayer)
 {
-	BYTE byteDeathReason;
-	BYTE byteSystemAddressWhoKilled;
-	CVehiclePool *pVehiclePool;
-	CPlayerPool *pPlayerPool;
+	PED_TYPE * pPed = (PED_TYPE *)GetEntity();
+	if(pPed) {
+		BYTE byteDeathReason;
+		BYTE byteSystemAddressWhoKilled;
+		CVehiclePool *pVehiclePool;
+		CPlayerPool *pPlayerPool;
 
-	// grab the vehicle/player pool now anyway, even though we may not need it.
-	if(pNetGame) {
-		pVehiclePool = pNetGame->GetVehiclePool();
-		pPlayerPool = pNetGame->GetPlayerPool();
-	}
-	else { // just leave if there's no netgame.
-		*nPlayer = INVALID_PLAYER_ID;
-		return INVALID_PLAYER_ID;
-	}
+		// grab the vehicle/player pool now anyway, even though we may not need it.
+		if(pNetGame) {
+			pVehiclePool = pNetGame->GetVehiclePool();
+			pPlayerPool = pNetGame->GetPlayerPool();
+		}
+		else { // just leave if there's no netgame.
+			*nPlayer = INVALID_PLAYER_ID;
+			return INVALID_PLAYER_ID;
+		}
 
-	if(m_pPed) 
-	{
-		byteDeathReason = (BYTE)m_pPed->dwWeaponUsed;
+		if(pPed) 
+		{
+			byteDeathReason = (BYTE)pPed->dwWeaponUsed;
 
-		if(byteDeathReason < WEAPON_CAMERA) { // It's a weapon of some sort.
+			if(byteDeathReason < WEAPON_CAMERA) { // It's a weapon of some sort.
 
-			if(m_pPed->pdwDamageEntity) { // check for a player pointer.
-				
-				byteSystemAddressWhoKilled = pPlayerPool->
-					FindRemoteSystemAddressFromGtaPtr((PED_TYPE *)m_pPed->pdwDamageEntity);
+				if(pPed->pDamageEntity) { // check for a player pointer.
+					
+					byteSystemAddressWhoKilled = pPlayerPool->
+						FindRemoteSystemAddressFromGtaPtr((PED_TYPE *)pPed->pDamageEntity);
 
-				if(byteSystemAddressWhoKilled != INVALID_PLAYER_ID) {
-					// killed by another player with a weapon, this is all easy.
-					*nPlayer = byteSystemAddressWhoKilled;
-					return byteDeathReason;
+					if(byteSystemAddressWhoKilled != INVALID_PLAYER_ID) {
+						// killed by another player with a weapon, this is all easy.
+						*nPlayer = byteSystemAddressWhoKilled;
+						return byteDeathReason;
+					}
+				}
+				else { // weapon was used but who_killed is 0 (?)
+					*nPlayer = INVALID_PLAYER_ID;
+					return INVALID_PLAYER_ID;
 				}
 			}
-			else { // weapon was used but who_killed is 0 (?)
+			else if(byteDeathReason == WEAPON_DROWN) {
 				*nPlayer = INVALID_PLAYER_ID;
-				return INVALID_PLAYER_ID;
+				return WEAPON_DROWN;
 			}
-		}
-		else if(byteDeathReason == WEAPON_DROWN) {
-			*nPlayer = INVALID_PLAYER_ID;
-			return WEAPON_DROWN;
-		}
-		else if(byteDeathReason == WEAPON_DRIVEBY) {
+			else if(byteDeathReason == WEAPON_DRIVEBY) {
 
-			if(m_pPed->pdwDamageEntity) {
-				// now, if we can find the vehicle
-				// we can probably derive the responsible player.
-				// Look in the vehicle pool for this vehicle.
-				if(pVehiclePool->FindIDFromGtaPtr((VEHICLE_TYPE *)m_pPed->pdwDamageEntity) != (-1))
-				{
-					VEHICLE_TYPE *pGtaVehicle = (VEHICLE_TYPE *)m_pPed->pdwDamageEntity;
+				if(pPed->pDamageEntity) {
+					// now, if we can find the vehicle
+					// we can probably derive the responsible player.
+					// Look in the vehicle pool for this vehicle.
+					if(pVehiclePool->FindIDFromGtaPtr((VEHICLE_TYPE *)pPed->pDamageEntity) != (-1))
+					{
+						VEHICLE_TYPE *pGtaVehicle = (VEHICLE_TYPE *)pPed->pDamageEntity;
 
-					byteSystemAddressWhoKilled = pPlayerPool->
-						FindRemoteSystemAddressFromGtaPtr((PED_TYPE *)pGtaVehicle->pDriver);
+						byteSystemAddressWhoKilled = pPlayerPool->
+							FindRemoteSystemAddressFromGtaPtr((PED_TYPE *)pGtaVehicle->pDriver);
+												
+						if(byteSystemAddressWhoKilled != INVALID_PLAYER_ID) {
+							*nPlayer = byteSystemAddressWhoKilled;
+							return WEAPON_DRIVEBY;
+						}
+					}									
+				}
+			}
+			else if(byteDeathReason == WEAPON_COLLISION) {
+
+				if(pPed->pDamageEntity) {
+					if(pVehiclePool->FindIDFromGtaPtr((VEHICLE_TYPE *)pPed->pDamageEntity) != (-1))
+					{
+						VEHICLE_TYPE *pGtaVehicle = (VEHICLE_TYPE *)pPed->pDamageEntity;
 											
-					if(byteSystemAddressWhoKilled != INVALID_PLAYER_ID) {
-						*nPlayer = byteSystemAddressWhoKilled;
-						return WEAPON_DRIVEBY;
-					}
-				}									
-			}
-		}
-		else if(byteDeathReason == WEAPON_COLLISION) {
-
-			if(m_pPed->pdwDamageEntity) {
-				if(pVehiclePool->FindIDFromGtaPtr((VEHICLE_TYPE *)m_pPed->pdwDamageEntity) != (-1))
-				{
-					VEHICLE_TYPE *pGtaVehicle = (VEHICLE_TYPE *)m_pPed->pdwDamageEntity;
-										
-					byteSystemAddressWhoKilled = pPlayerPool->
-						FindRemoteSystemAddressFromGtaPtr((PED_TYPE *)pGtaVehicle->pDriver);
-						
-					if(byteSystemAddressWhoKilled != INVALID_PLAYER_ID) {
-						*nPlayer = byteSystemAddressWhoKilled;
-						return WEAPON_COLLISION;
-					}
-				}									
+						byteSystemAddressWhoKilled = pPlayerPool->
+							FindRemoteSystemAddressFromGtaPtr((PED_TYPE *)pGtaVehicle->pDriver);
+							
+						if(byteSystemAddressWhoKilled != INVALID_PLAYER_ID) {
+							*nPlayer = byteSystemAddressWhoKilled;
+							return WEAPON_COLLISION;
+						}
+					}									
+				}
 			}
 		}
 	}
@@ -976,15 +1019,16 @@ BYTE CPlayerPed::FindDeathReasonAndResponsiblePlayer(BYTE * nPlayer)
 
 UINT CPlayerPed::GetPassengerSeat()
 {
-	UINT x=0;
-	VEHICLE_TYPE *pVehicle = (VEHICLE_TYPE *)m_pPed->pVehicle;
+	PED_TYPE * pPed = (PED_TYPE *)GetEntity();
+	if(pPed) {
+		VEHICLE_TYPE *pVehicle = (VEHICLE_TYPE *)pPed->pVehicle;
 
-	if(pVehicle) {
-		for(BYTE i = 0; i < pVehicle->byteMaxPassengers; i++) {
-			if(pVehicle->pPassengers[x] == m_pPed) {
-				return (i + 1);
+		if(pVehicle) {
+			for(BYTE i = 0; i < pVehicle->byteMaxPassengers; i++) {
+				if(pVehicle->pPassengers[i] == pPed) {
+					return (i + 1);
+				}
 			}
-			x++;
 		}
 	}
 	return 0;

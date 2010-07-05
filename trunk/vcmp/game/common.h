@@ -59,80 +59,85 @@ typedef struct _MATRIX4X4 {
 #define _pad(x,y) BYTE x[y]
 
 typedef struct _ENTITY_TYPE {
-
-	DWORD	func_table; // 0
-	MATRIX4X4 mat; // 4-68
-	_pad(__pad0,8); // 68-76
-	PDWORD	pModel; // 76-80
-	BYTE	nControlFlags; // 80-81
-	BYTE	nControlFlags2; // 81-82
-	_pad(__pad1,10); // 82-92
-	WORD	nModelIndex; // 92-94
-	_pad(__pad2,18); // 94-112
-	VECTOR  vecMoveSpeed; // 112-124
-	VECTOR  vecTurnSpeed; // 124-136
-	_pad(__pad3,146); // 136-282
-	BYTE	byteSunkFlags; // 282-284
-	BYTE	byteLockedFlags; // 283-284
-
+	DWORD	  func_table;     // 00-04
+	MATRIX4X4 mat;            // 04-44
+	_pad(__pad0, 0x8);        // 44-4C
+	DWORD *   pRWObject;      // 4C-50
+	BYTE	  nControlFlags;  // 50-51
+	BYTE	  nControlFlags2; // 51-52
+	_pad(__pad1, 0xA);        // 52-5C
+	WORD	  wModelIndex;    // 5C-5E
+	_pad(__pad2, 0x6);        // 5E-64
 } ENTITY_TYPE;
 
-typedef struct _PED_TYPE {
-	ENTITY_TYPE entity; // 0-284
+typedef struct _PHYSICAL_TYPE {
+	ENTITY_TYPE entity;          // 000-064
+	_pad(__pad0a, 0xC);          // 064-070
+	VECTOR      vecMoveSpeed;    // 070-07C
+	VECTOR      vecTurnSpeed;    // 07C-088
+	_pad(__pad1a, 0x92);         // 088-11A
+	BYTE        byteSunkFlags;   // 11A-11B
+	BYTE	    byteLockedFlags; // 11B-11C
+	_pad(__pad2a, 0x4);          // 11C-120
+} PHYSICAL_TYPE;
 
-	_pad(__pad0a,48); // 284-332
-	BYTE	byteShootFlags; // 332-333
-	BYTE	byteJumpFlags; // 333-334
-	_pad(__pad1a,246); // 334-580
-	BYTE	byteAction; // 580-581
-	_pad(__pad2a,271); // 581-852
-	float	fHealth; // 852-856
-	float	fArmour; // 856-860
-	_pad(__pad3a,24); // 860-884
-	float	fRotation1; // 884-888
-	float	fRotation2; // 888-892
-	_pad(__pad4a,44); // 892-936
-	PDWORD	pVehicle; // 936-940
-	BYTE	byteIsInVehicle; // 940-941
-	_pad(__pad5a,39); // 941-980
-	BYTE	bytePedType; // 980-981
-	_pad(__pad6a,451); // 981-1432
-	DWORD  dwWeaponUsed; // 1432-1436
-	PDWORD pdwDamageEntity; // 1436
-	/// ............
+typedef struct _PED_TYPE {
+	PHYSICAL_TYPE physical;        // 000-120
+	_pad(__pad0b, 0x2C);           // 120-14C
+	BYTE	      byteShootFlags;  // 14C-14D
+	BYTE	      byteJumpFlags;   // 14D-14E
+	_pad(__pad1b, 0x22);           // 14E-170
+	DWORD *       pTargetEntity;   // 170-174
+	_pad(__pad2b, 0xD0);           // 174-244
+	BYTE	      byteAction;      // 244-245
+	_pad(__pad3b, 0x10F);          // 245-354
+	float	      fHealth;         // 354-358
+	float	      fArmour;         // 358-35C
+	_pad(__pad4b, 0x18);           // 35C-374
+	float	      fRotation1;      // 374-378
+	float	      fRotation2;      // 378-37C
+	_pad(__pad5b, 0x2C);           // 37C-3A8
+	DWORD *       pVehicle;        // 3A8-3AC
+	BYTE	      byteIsInVehicle; // 3AC-3AD
+	_pad(__pad6b, 0x27);           // 3AD-3D4
+	BYTE	      bytePedType;     // 3D4-3D5
+	_pad(__pad7b, 0x1C3);          // 3D5-598
+	DWORD         dwWeaponUsed;    // 598-59C
+	DWORD *       pDamageEntity;   // 59C-5A0
+	_pad(__pad8b, 0x54);           // 5A0-5F4
 } PED_TYPE;
 
 typedef struct _VEHICLE_TYPE {
-	ENTITY_TYPE entity; // 0-284
-
-	_pad(__pad0a,132); // 284-416
-	BYTE	byteColor1; // 416-417
-	BYTE	byteColor2; // 417-418
-	_pad(__pad1a,6); // 418-424
-	PED_TYPE * pDriver; // 424-428
-	PED_TYPE * pPassengers[7]; // 428-456 (probably 8)
-	_pad(__pad2a,4); // 456-460
-	BYTE	bytePassengersCount; // 460-461
-	_pad(__pad2b,3); // 461-464
-	BYTE	byteMaxPassengers; // 464-465
-	_pad(__pad3a,23); // 465-488
-	float	fSteerAngle1; // 488-492
-	float	fSteerAngle2; // 492-496
-	float	fAcceleratorPedal; // 496-500
-	float	fBrakePedal; // 500-504
-	_pad(__pad4a,12); // 504-516
-	float	fHealth; // 516-520
-	_pad(__pad5a,40); // 520-560
-	DWORD	dwDoorsLocked; // 560-564
-	_pad(__pad6a,4); // 564-568
-	PDWORD  pdwDamageEntity; // 568-572
-	DWORD	nRadio; // 572-576
-	BYTE	byteHorn; // 576-577
-	DWORD   dwUnk1; // 577-581
-	BYTE	byteSiren; // 581-582
-	_pad(__pad7a,874); // 582-1456
-	float	fSpecialWeaponRotation1; // 1456 (following 2 are rhino turret and firetruck spray)
-	float	fSpecialWeaponRotation2; // 1460	
+	PHYSICAL_TYPE physical;           // 000-120
+	_pad(__pad0b, 0x80);              // 120-1A0
+	BYTE          byteColors[4];      // 1A0-1A4
+	_pad(__pad1b, 0x4);               // 1A4-1A8
+	PED_TYPE *    pDriver;            // 1A8-1AC
+	PED_TYPE *    pPassengers[8];     // 1AC-1CC
+	BYTE	      bytePassengerCount; // 1CC-1CD
+	_pad(__pad3b, 0x3);               // 1CD-1D0
+	BYTE	      byteMaxPassengers;  // 1D0-1D1
+	_pad(__pad4b, 0x17);              // 1D1-1E8
+	float	      fSteerAngle1;       // 1E8-1EC
+	float	      fSteerAngle2;       // 1EC-1F0
+	float	      fAcceleratorPedal;  // 1F0-1F4
+	float	      fBrakePedal;        // 1F4-1F8
+	_pad(__pad5b, 0xC);               // 1F8-204
+	float	      fHealth;            // 204-208
+	_pad(__pad6b, 0x28);              // 208-230
+	DWORD	      dwDoorsLocked;      // 230-234
+	DWORD         dwWeaponUsed;       // 234-238
+	DWORD *       pDamageEntity;      // 238-23C
+	DWORD	      nRadio;             // 23C-240
+	BYTE	      byteHorn;           // 240-241
+	DWORD         dwUnk1;             // 241-245
+	BYTE	      byteSiren;          // 245-246
+	_pad(__pad7b, 0x5A);              // 246-2A0
+	// End of CVehicle
+	// CAutomobile stuff
+	_pad(__pad8b, 0x310);             // 2A0-5B0
+	float	      fSpecialWeaponRotation1; // 5B0-5B4 (following 2 are rhino turret and firetruck spray)
+	float	      fSpecialWeaponRotation2; // 5B4-5B8
 	/// ............
 } VEHICLE_TYPE;
 

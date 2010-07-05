@@ -347,6 +347,14 @@
 				>
 			</File>
 			<File
+				RelativePath=".\game\physical.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\game\physical.h"
+				>
+			</File>
+			<File
 				RelativePath="game\playerped.cpp"
 				>
 				<FileConfiguration

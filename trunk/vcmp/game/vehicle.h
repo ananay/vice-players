@@ -27,18 +27,17 @@
 #pragma once
 
 #include "game.h"
-#include "entity.h"
+#include "physical.h"
 
 //-----------------------------------------------------------
 
-class CVehicle : public CEntity
+class CVehicle : public CPhysical
 {
 private:
-	VEHICLE_TYPE	*m_pVehicle;
-	DWORD			m_dwGTAId;
-	BOOL			m_bIsInvulnerable;
-	DWORD			m_dwTimeSinceLastDriven;
-	BOOL			m_bHasBeenDriven;
+	DWORD m_dwGTAId;
+	BOOL  m_bIsInvulnerable;
+	DWORD m_dwTimeSinceLastDriven;
+	BOOL  m_bHasBeenDriven;
 
 public:
 	CVehicle(int iType, float fPosX, float fPosY,
@@ -47,7 +46,6 @@ public:
 	~CVehicle();
 
 	VEHICLE_TYPE *GetVehicle();
-	void SetVehicle(VEHICLE_TYPE *pVehicle);
 
 	float GetDistanceFromLocalPlayerPed();
 	void  SetLockedState(int iLocked);
