@@ -222,40 +222,17 @@ void CNetGame::PlayerSync(Packet *p)
 	bsPlayerSync.Read(bytePlayerArmour);
 	bsPlayerSync.Read(byteCurrentWeapon);
 
-	if(IS_FIRING(wKeys)) {
-		C_VECTOR1		cvecAimRoll;
-		C_VECTOR1		cvecAimDir;
-		VECTOR	vecAimRoll;
-		VECTOR	vecAimDir;
-
+	//if(IS_FIRING(wKeys)) {
 		// aiming
-		bsPlayerSync.Read(cvecAimRoll.X);
-		bsPlayerSync.Read(cvecAimRoll.Y);
-		bsPlayerSync.Read(cvecAimRoll.Z);
-		bsPlayerSync.Read(cvecAimDir.X);
-		bsPlayerSync.Read(cvecAimDir.Y);
-		bsPlayerSync.Read(cvecAimDir.Z);
-		bsPlayerSync.Read(caAiming.pos1x);
-		bsPlayerSync.Read(caAiming.pos1y);
-		bsPlayerSync.Read(caAiming.pos1z);
-
-		DecompressVector1(&vecAimRoll,&cvecAimRoll);
-		DecompressVector1(&vecAimDir,&cvecAimDir);
-
-		// aim.f1* = vecAimRoll
-		// aim.f2* = vecAimDir
-		// aim.pos1* = caAiming
-		caAiming.f1x = vecAimRoll.X;
-		caAiming.f1y = vecAimRoll.Y;
-		caAiming.f1z = vecAimRoll.Z;
-		caAiming.f2x = vecAimDir.X;
-		caAiming.f2y = vecAimDir.Y;
-		caAiming.f2z = vecAimDir.Z;
-	}
+		bsPlayerSync.Read((char *)&caAiming.vecA1, sizeof(VECTOR));
+		bsPlayerSync.Read((char *)&caAiming.vecA2, sizeof(VECTOR));
+		bsPlayerSync.Read((char *)&caAiming.vecAPos1, sizeof(VECTOR));
+		memcpy(&caAiming.vecA2, &caAiming.vecA1, sizeof(VECTOR));
+	//}
 	
 	if(pPlayer) {
 		pPlayer->StoreOnFootFullSyncData(wKeys,&matWorld,fRotation,byteCurrentWeapon,byteAction);
-		if(IS_FIRING(wKeys)) pPlayer->StoreAimSyncData(&caAiming);
+		/*if(IS_FIRING(wKeys)) */pPlayer->StoreAimSyncData(&caAiming);
 		pPlayer->SetReportedHealth(bytePlayerHealth);
 		pPlayer->SetReportedArmour(bytePlayerArmour);
 	}

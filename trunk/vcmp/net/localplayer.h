@@ -36,8 +36,9 @@ typedef struct _PLAYER_SPAWN_INFO
 	int iSpawnWeaponsAmmo[3];
 } PLAYER_SPAWN_INFO;
 
-#define IS_FIRING(x) (x & 0x200) // for checking the keystate firing bit
-#define CEASE_FIRE_CEASE_FIRE(x) (x & 0xFDFF)
+// TODO: Fix these
+//#define IS_FIRING(x) (x & 0x200) // for checking the keystate firing bit
+//#define CEASE_FIRE_CEASE_FIRE(x) (x & 0xFDFF)
 
 #define NO_TEAM 255
 

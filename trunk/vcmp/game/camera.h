@@ -32,14 +32,22 @@
 
 class CCamera
 {
+private:
+	CAMERA_TYPE * m_pCamera;
+
 public:
-	void SetBehindPlayer();
-	void SetPosition(float fX, float fY, float fZ, float fRotationX, float fRotationY, float fRotationZ);	// tested
-	void LookAtPoint(VECTOR vPoint, int iType);
-	void Restore();
-	
-	CCamera(){};
-	~CCamera(){};
+	CCamera();
+	~CCamera();
+
+	void         SetCamera(CAMERA_TYPE * pCamera);
+	CAMERA_TYPE * GetCamera();
+	void         SetBehindPlayer();
+	void         SetPosition(VECTOR vecPosition);
+	void         SetRotation(VECTOR vecRotation);
+	void         LookAtPoint(VECTOR vecPoint, int iType);
+	void         Restore();
+	void         SetInFreeMode(BOOL bFreeMode);
+	BOOL         IsInFreeMode();
 };
 
 //-----------------------------------------------------------

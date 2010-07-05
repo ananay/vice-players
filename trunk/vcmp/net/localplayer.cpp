@@ -161,17 +161,14 @@ void CLocalPlayer::SendOnFootFullSyncData()
 	BYTE bytePlayerHealth;
 	BYTE bytePlayerArmour;
 	CAMERA_AIM * pCameraAim = pGamePlayer->GetCurrentAim();
-		
-	C_VECTOR1 cvecAimRoll;
-	C_VECTOR1 cvecAimDir;
 
 	if(m_pPlayerPed)
 	{
 		// Don't allow them to send firing actions if
 		// they got no ammo.
-		if(!m_pPlayerPed->HasAmmoForCurrentWeapon()) {
+		/*if(!m_pPlayerPed->HasAmmoForCurrentWeapon()) {
 			wKeys = CEASE_FIRE_CEASE_FIRE(wKeys);
-		}
+		}*/
 
 		// packet ID
 		bsPlayerSync.Write((BYTE)ID_PLAYER_SYNC);
@@ -196,32 +193,12 @@ void CLocalPlayer::SendOnFootFullSyncData()
 		bsPlayerSync.Write(m_pPlayerPed->GetCurrentWeapon());
 
 		// send aiming data if the firing button is held
-		if(IS_FIRING(wKeys)) {
-			// Get vectors into format for compression.
-			VECTOR vecAimRoll;
-			vecAimRoll.X = pCameraAim->f1x;
-			vecAimRoll.Y = pCameraAim->f1y;
-			vecAimRoll.Z = pCameraAim->f1z;
-			
-			VECTOR vecAimDir;
-			vecAimDir.X = pCameraAim->f2x;
-			vecAimDir.Y = pCameraAim->f2y;
-			vecAimDir.Z = pCameraAim->f2z;
-
-			CompressVector1(&vecAimRoll,&cvecAimRoll);
-			CompressVector1(&vecAimDir,&cvecAimDir);
-
+		//if(IS_FIRING(wKeys)) {
 			// aiming
-			bsPlayerSync.Write(cvecAimRoll.X);
-			bsPlayerSync.Write(cvecAimRoll.Y);
-			bsPlayerSync.Write(cvecAimRoll.Z);
-			bsPlayerSync.Write(cvecAimDir.X);
-			bsPlayerSync.Write(cvecAimDir.Y);
-			bsPlayerSync.Write(cvecAimDir.Z);
-			bsPlayerSync.Write(pCameraAim->pos1x);
-			bsPlayerSync.Write(pCameraAim->pos1y);
-			bsPlayerSync.Write(pCameraAim->pos1z);
-		}
+			bsPlayerSync.Write((char *)&pCameraAim->vecA1, sizeof(VECTOR));
+			bsPlayerSync.Write((char *)&pCameraAim->vecA2, sizeof(VECTOR));
+			bsPlayerSync.Write((char *)&pCameraAim->vecAPos1, sizeof(VECTOR));
+		//}
 
 		pNetGame->GetRakPeer()->Send(&bsPlayerSync,HIGH_PRIORITY,UNRELIABLE_SEQUENCED,0,UNASSIGNED_SYSTEM_ADDRESS,TRUE);
 	}
@@ -255,9 +232,9 @@ void CLocalPlayer::SendInCarFullSyncData()
 
 		// Don't allow them to send firing actions if
 		// they got no ammo.
-		if(!m_pPlayerPed->HasAmmoForCurrentWeapon()) {
+		/*if(!m_pPlayerPed->HasAmmoForCurrentWeapon()) {
 			wKeys = CEASE_FIRE_CEASE_FIRE(wKeys);
-		}
+		}*/
 
 		// get the vehicle matrix
 		pGameVehicle = pVehiclePool->GetAt(byteVehicleID);

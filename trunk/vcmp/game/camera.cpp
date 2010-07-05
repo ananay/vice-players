@@ -30,39 +30,88 @@
 
 //-----------------------------------------------------------
 
+CCamera::CCamera()
+{
+	m_pCamera = (CAMERA_TYPE *)VAR_Camera;
+}
+
+//-----------------------------------------------------------
+
 void CCamera::SetBehindPlayer()
 {
-	DWORD dwFunc = FUNC_CCamera__PutBehindPlayer;
-	_asm
-	{
-		mov ecx, VAR_Camera
-		call dwFunc
+	CAMERA_TYPE * pCamera = m_pCamera;
+	if(pCamera) {
+		DWORD dwFunc = FUNC_CCamera__PutBehindPlayer;
+		_asm
+		{
+			mov ecx, pCamera
+			call dwFunc
+		}
+	}
+}
+
+CCamera::~CCamera()
+{
+	
+}
+
+//-----------------------------------------------------------
+
+void CCamera::SetCamera(CAMERA_TYPE * pCamera)
+{
+	m_pCamera = pCamera;
+}
+
+//-----------------------------------------------------------
+
+CAMERA_TYPE * CCamera::GetCamera()
+{
+	return m_pCamera;
+}
+
+//-----------------------------------------------------------
+
+void CCamera::SetPosition(VECTOR vecPosition)
+{
+	if(m_pCamera) {
+		m_pCamera->vecPosition.X = vecPosition.X;
+		m_pCamera->vecPosition.Y = vecPosition.Y;
+		m_pCamera->vecPosition.Z = vecPosition.Z;
+		SetInFreeMode(FALSE);
 	}
 }
 
 //-----------------------------------------------------------
 
-void CCamera::SetPosition(float fX, float fY, float fZ, float fRotationX, float fRotationY, float fRotationZ)
+void CCamera::SetRotation(VECTOR vecRotation)
 {
-	ScriptCommand(&set_camera_position,fX,fY,fZ,fRotationX,fRotationY,fRotationZ);
+	if(m_pCamera) {
+		m_pCamera->vecRotation.X = vecRotation.X;
+		m_pCamera->vecRotation.Y = vecRotation.Y;
+		m_pCamera->vecRotation.Z = vecRotation.Z;
+		SetInFreeMode(FALSE);
+	}
 }
 
 //-----------------------------------------------------------
 
-void CCamera::LookAtPoint(VECTOR vPoint, int iType)
+void CCamera::LookAtPoint(VECTOR vecPoint, int iType)
 {
-	/*if(fZ < -100.0) { // min ground point
-		fZ = FindGroundForZCoord
-	}*/
-	VECTOR * pPoint = &vPoint;
-	DWORD dwFunc = FUNC_CCamera__SetTargetPoint;
-	_asm
-	{
-		push 1
-		push iType
-		push pPoint
-		mov ecx, VAR_Camera
-		call dwFunc
+	CAMERA_TYPE * pCamera = m_pCamera;
+	if(pCamera) {
+		/*if(fZ < -100.0) { // min ground point
+			fZ = FindGroundForZCoord
+		}*/
+		VECTOR * pPoint = &vecPoint;
+		DWORD dwFunc = FUNC_CCamera__SetTargetPoint;
+		_asm
+		{
+			push 1
+			push iType
+			push pPoint
+			mov ecx, pCamera
+			call dwFunc
+		}
 	}
 }
 
@@ -70,12 +119,42 @@ void CCamera::LookAtPoint(VECTOR vPoint, int iType)
 
 void CCamera::Restore()
 {
-	DWORD dwFunc = FUNC_CCamera__Restore;
-	_asm
-	{
-		mov ecx, VAR_Camera
-		call dwFunc
+	CAMERA_TYPE * pCamera = m_pCamera;
+	if(pCamera) {
+		DWORD dwFunc = FUNC_CCamera__Restore;
+		_asm
+		{
+			mov ecx, pCamera
+			call dwFunc
+		}
 	}
+}
+
+//-----------------------------------------------------------
+
+void CCamera::SetInFreeMode(BOOL bFreeMode)
+{
+	if(m_pCamera) {
+		if(bFreeMode) {
+			m_pCamera->byteInFreeMode = 1;
+		} else {
+			m_pCamera->byteInFreeMode = 0;
+		}
+	}
+}
+
+//-----------------------------------------------------------
+
+BOOL CCamera::IsInFreeMode()
+{
+	if(m_pCamera) {
+		if(m_pCamera->byteInFreeMode) {
+			return TRUE;
+		} else {
+			return FALSE;
+		}
+	}
+	return FALSE;
 }
 
 //-----------------------------------------------------------

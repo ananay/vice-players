@@ -84,18 +84,7 @@ void CChatWindow::Draw()
 	if(m_pD3DFont && m_bEnabled)
 	{
 		while(x!=(MAX_DISP_MESSAGES)) {
-
-			switch(m_eChatType[x]) {
-				case CHAT_TYPE_CHAT:
-					dwColorChat = m_dwChatTextColor;
-					break;
-				case CHAT_TYPE_INFO:
-					dwColorChat = m_dwChatInfoColor;
-					break;
-				case CHAT_TYPE_DEBUG:
-					dwColorChat = m_dwChatDebugColor;
-					break;
-			}		
+			dwColorChat = m_dwChatColor[x];
 
 			// Draws a drop shadow on the text. Too CPU intense?
 			m_pD3DFont->DrawText(fDrawX+1.0f,fDrawY+1.0f,m_dwChatBackgroundColor,
@@ -125,9 +114,8 @@ void CChatWindow::Draw()
 
 void CChatWindow::AddClientMessage(DWORD dwColor, CHAR * szMessage)
 {
-	m_dwChatMessageColor = (dwColor >> 8) | 0xFF000000;
 	FilterInvalidChars(szMessage);
-	AddToChatWindowBuffer(szMessage,CHAT_TYPE_MESSAGE);
+	AddToChatWindowBuffer(szMessage,dwColor); // (dwColor >> 8) | 0xFF000000
 }
 
 //----------------------------------------------------
@@ -153,7 +141,7 @@ void CChatWindow::AddChatMessage(CHAR *szNick, DWORD dwNickColor, CHAR *szMessag
 
 	strcpy(t,szMessage);
 
-	AddToChatWindowBuffer(tmp_buf,CHAT_TYPE_CHAT);
+	AddToChatWindowBuffer(tmp_buf, m_dwChatTextColor);
 }
 
 //----------------------------------------------------
@@ -169,7 +157,7 @@ void CChatWindow::AddInfoMessage(CHAR * szFormat, ...)
 	va_end(args);
 
 	FilterInvalidChars(tmp_buf);
-	AddToChatWindowBuffer(tmp_buf,CHAT_TYPE_INFO);	
+	AddToChatWindowBuffer(tmp_buf, m_dwChatInfoColor);	
 }
 
 //----------------------------------------------------
@@ -185,7 +173,7 @@ void CChatWindow::AddDebugMessage(CHAR * szFormat, ...)
 	va_end(args);
 
 	FilterInvalidChars(tmp_buf);
-	AddToChatWindowBuffer(tmp_buf,CHAT_TYPE_DEBUG);	
+	AddToChatWindowBuffer(tmp_buf, m_dwChatDebugColor);	
 }
 
 //----------------------------------------------------
@@ -202,7 +190,7 @@ void CChatWindow::FilterInvalidChars(PCHAR szString)
 
 //----------------------------------------------------
 
-void CChatWindow::AddToChatWindowBuffer(PCHAR szString, eChatMessageType eType)
+void CChatWindow::AddToChatWindowBuffer(PCHAR szString, DWORD dwColor)
 {
 	int iBestLineLength;
 	
@@ -219,24 +207,24 @@ void CChatWindow::AddToChatWindowBuffer(PCHAR szString, eChatMessageType eType)
 			// we should just take the whole line
 			strncpy(m_szChatWindowBuffer[MAX_DISP_MESSAGES-1],szString,MAX_LINE_LENGTH);
 			m_szChatWindowBuffer[MAX_DISP_MESSAGES-1][MAX_LINE_LENGTH] = '\0';
-			m_eChatType[MAX_DISP_MESSAGES-1] = eType;
+			m_dwChatColor[MAX_DISP_MESSAGES-1] = dwColor;
 			PushBack();
 			strcpy(m_szChatWindowBuffer[MAX_DISP_MESSAGES-1],szString+MAX_LINE_LENGTH);
-			m_eChatType[MAX_DISP_MESSAGES-1] = eType;
+			m_dwChatColor[MAX_DISP_MESSAGES-1] = dwColor;
 		}
 		else {
 			// grab upto the found space.
 			strncpy(m_szChatWindowBuffer[MAX_DISP_MESSAGES-1],szString,iBestLineLength);
 			m_szChatWindowBuffer[MAX_DISP_MESSAGES-1][iBestLineLength] = '\0';
-			m_eChatType[MAX_DISP_MESSAGES-1] = eType;
+			m_dwChatColor[MAX_DISP_MESSAGES-1] = dwColor;
 			PushBack();
 			strcpy(m_szChatWindowBuffer[MAX_DISP_MESSAGES-1],szString+(iBestLineLength+1));
-			m_eChatType[MAX_DISP_MESSAGES-1] = eType;
+			m_dwChatColor[MAX_DISP_MESSAGES-1] = dwColor;
 		}
 	}
 	else {
 		strcpy(m_szChatWindowBuffer[MAX_DISP_MESSAGES-1],szString);
-		m_eChatType[MAX_DISP_MESSAGES-1] = eType;
+		m_dwChatColor[MAX_DISP_MESSAGES-1] = dwColor;
 	}
 	
 }
@@ -245,11 +233,9 @@ void CChatWindow::AddToChatWindowBuffer(PCHAR szString, eChatMessageType eType)
 
 void CChatWindow::PushBack()
 {
-	int x=0;
-	while(x!=(MAX_DISP_MESSAGES - 1)) {
-		strcpy(m_szChatWindowBuffer[x],m_szChatWindowBuffer[x + 1]);
-		m_eChatType[x] = m_eChatType[x + 1];
-		x++;
+	for(int i = 0; i < (MAX_DISP_MESSAGES - 1); i++) {
+		strcpy(m_szChatWindowBuffer[i],m_szChatWindowBuffer[i + 1]);
+		m_dwChatColor[i] = m_dwChatColor[i + 1];
 	}
 }
 
