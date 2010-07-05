@@ -29,6 +29,7 @@
 #include "../main.h"
 #include "game.h"
 #include "util.h"
+#include "pools.h"
 #include "keystuff.h"
 #include "aimstuff.h"
 
@@ -104,7 +105,7 @@ void CPlayerPed::Create(int iModel, float fX, float fY,float fZ,float fRotation)
 	SetRotation(fRotation);
 
 	m_dwGTAId = dwPlayerHandle;
-	SetEntity((ENTITY_TYPE *)GamePool_Ped_GetAt(m_dwGTAId));
+	SetEntity((ENTITY_TYPE *)CPools::GetPedFromIndex(m_dwGTAId));
 	SetPlayerPedPtrRecord(m_bytePlayerNumber,(DWORD)GetEntity());
 	ScriptCommand(&set_actor_immunities,m_dwGTAId,1,1,1,1,1);
 
@@ -398,7 +399,7 @@ BOOL CPlayerPed::HasAmmoForCurrentWeapon()
 
 	if(GetEntity()) {
 
-		if(GamePool_Ped_GetAt(m_dwGTAId) == 0) return FALSE;
+		if(!GetEntity()) return FALSE;
 
 		int iWeapon = (int)GetCurrentWeapon();
 
@@ -422,7 +423,7 @@ BOOL CPlayerPed::HasAmmoForCurrentWeapon()
 BYTE CPlayerPed::GetCurrentWeapon()
 {
 	DWORD dwRetVal;
-	if(GamePool_Ped_GetAt(m_dwGTAId) == 0) return 0;
+	if(!GetEntity()) return 0;
 	ScriptCommand(&get_player_armed_weapon,m_bytePlayerNumber,&dwRetVal);
 	return (BYTE)dwRetVal;
 }
@@ -443,7 +444,7 @@ int CPlayerPed::GetCurrentVehicleID()
 {
 	PED_TYPE *pPed = (PED_TYPE *)GetEntity();
 	if(pPed) {
-		return GamePool_Vehicle_GetIndex((VEHICLE_TYPE *)pPed->pVehicle);
+		return CPools::GetIndexFromVehicle((VEHICLE_TYPE *)pPed->pVehicle);
 	}
 	// Not sure about this one
 	return -1;
@@ -459,7 +460,7 @@ void CPlayerPed::ShowMarker(int iMarkerColor)
 		DWORD dwPedID;
 		float f=0.0f;
 
-		dwPedID = GamePool_Ped_GetIndex(pPed);
+		dwPedID = CPools::GetIndexFromPed(pPed);
 
 		_asm push 2
 		_asm push 4
@@ -511,7 +512,7 @@ void CPlayerPed::Say(UINT uiNum)
 		DWORD dwPedPtr = (DWORD)pPed;
 		_asm mov ecx, dwPedPtr
 		_asm push uiNum
-		_asm mov edx, ADDR_CPED_SAY
+		_asm mov edx, FUNC_CPed__Say
 		_asm call edx
 	}
 }
@@ -745,7 +746,7 @@ void CPlayerPed::PutDirectlyInVehicle(int iVehicleID)
 
 void CPlayerPed::EnterVehicleAsDriver(int iVehicleID)
 {
-	VEHICLE_TYPE *pVehicle = GamePool_Vehicle_GetAt(iVehicleID);
+	VEHICLE_TYPE *pVehicle = CPools::GetVehicleFromIndex(iVehicleID);
 
 	if(pVehicle) {
 		SetObjective((PDWORD)pVehicle,18); // enter as driver
@@ -756,7 +757,7 @@ void CPlayerPed::EnterVehicleAsDriver(int iVehicleID)
 
 void CPlayerPed::EnterVehicleAsPassenger(int iVehicleID)
 {
-	VEHICLE_TYPE *pVehicle = GamePool_Vehicle_GetAt(iVehicleID);
+	VEHICLE_TYPE *pVehicle = CPools::GetVehicleFromIndex(iVehicleID);
 
 	if(pVehicle) {
 		SetObjective((PDWORD)pVehicle,17); // enter as passenger
@@ -794,7 +795,7 @@ void CPlayerPed::ForceIntoPassengerSeat(UINT uiVehicleID, UINT uiSeat)
 {
 	PED_TYPE * pPed = (PED_TYPE *)GetEntity();
 	if(pPed) {
-		VEHICLE_TYPE * pVehicle = GamePool_Vehicle_GetAt(uiVehicleID);
+		VEHICLE_TYPE * pVehicle = CPools::GetVehicleFromIndex(uiVehicleID);
 		UINT uiPassengerOffset;
 
 		if(!pPed || !pVehicle) return;
@@ -852,7 +853,7 @@ void CPlayerPed::SetModel(int iModel)
 
 				_asm mov ecx, pPed
 				_asm push szModelName
-				_asm mov edx, ADDR_SET_SKIN_MODELNAME
+				_asm mov edx, FUNC_CPed__ResetSkin
 				_asm call edx
 
 				_asm push 0
@@ -861,7 +862,7 @@ void CPlayerPed::SetModel(int iModel)
 				_asm pop ecx
 
 				_asm mov ecx, pPed
-				_asm mov edx, ADDR_REFRESH_ACTOR_SKIN
+				_asm mov edx, FUNC_CPed__Recreate
 				_asm call edx
 			}
 		}
@@ -875,7 +876,7 @@ void CPlayerPed::SetModel(int iModel)
 
 			_asm mov ecx, pPed
 			_asm push iModel
-			_asm mov edx, ADDR_SET_ACTOR_SKIN
+			_asm mov edx, FUNC_CPed__SetModelIndex
 			_asm call edx
 		}
 	}

@@ -81,6 +81,8 @@ public:
 	BOOL  HasBeenDriven();
 	void  SetHasBeenDriven(BOOL bDriven);
 
+	void  SetImmunities(int iIm1, int iIm2, int iIm3, int iIm4, int iIm5);
+
 	BOOL IsOkToRespawn();
 };
 

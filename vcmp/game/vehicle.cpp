@@ -30,6 +30,7 @@
 
 #include "../main.h"
 #include "util.h"
+#include "pools.h"
 
 extern CGame		*pGame;
 extern CChatWindow  *pChatWindow;
@@ -42,6 +43,7 @@ CVehicle::CVehicle(int iType, float fPosX, float fPosY,
 	DWORD dwRetID=0;
 
 	m_dwGTAId = 0;
+	m_bIsInvulnerable = FALSE;
 
 	if(!pGame->IsModelLoaded(iType)) {
 		pGame->RequestModel(iType);
@@ -52,7 +54,7 @@ CVehicle::CVehicle(int iType, float fPosX, float fPosY,
 	ScriptCommand(&create_car,iType,fPosX,fPosY,fPosZ,&dwRetID);
 	ScriptCommand(&set_car_z_angle,dwRetID,fRotation);
 
-	SetEntity((ENTITY_TYPE*)GamePool_Vehicle_GetAt(dwRetID));
+	SetEntity((ENTITY_TYPE*)CPools::GetVehicleFromIndex(dwRetID));
 	m_dwGTAId = dwRetID;
 	
 	VECTOR vPos;
@@ -63,8 +65,7 @@ CVehicle::CVehicle(int iType, float fPosX, float fPosY,
 	pVehicle->dwDoorsLocked = 0;
 	//m_pEntity->byteLockedFlags = 1;
 	
-	ScriptCommand(&set_car_immunities,m_dwGTAId,1,1,1,1,1);
-	m_bIsInvulnerable = TRUE;
+	SetInvulnerable(TRUE);
 
 	m_bHasBeenDriven = FALSE;
 	m_dwTimeSinceLastDriven = GetTickCount();
@@ -216,14 +217,13 @@ BOOL CVehicle::IsOkToRespawn()
 void CVehicle::SetInvulnerable(BOOL bInv)
 {
 	if(!GetEntity()) return;
-	if(!GamePool_Vehicle_GetAt(m_dwGTAId)) return;
 
 	if(bInv && m_bIsInvulnerable == FALSE) {
-		ScriptCommand(&set_car_immunities,m_dwGTAId,1,1,1,1,1);
+		SetImmunities(1, 1, 1, 1, 1);
 		m_bIsInvulnerable = TRUE;
 	}
 	else if(!bInv && m_bIsInvulnerable == TRUE)	{
-		ScriptCommand(&set_car_immunities,m_dwGTAId,0,0,0,0,0);
+		SetImmunities(0, 0, 0, 0, 0);
 		m_bIsInvulnerable = FALSE;
 	}
 }
@@ -389,6 +389,40 @@ BOOL CVehicle::HasBeenDriven()
 void CVehicle::SetHasBeenDriven(BOOL bDriven)
 {
 	m_bHasBeenDriven = bDriven;
+}
+
+//-----------------------------------------------------------
+
+void CVehicle::SetImmunities(int iIm1, int iIm2, int iIm3, int iIm4, int iIm5)
+{
+	ENTITY_TYPE * pEntity = (ENTITY_TYPE *)GetEntity();
+	if(pEntity) {
+		if(iIm1) {
+			pEntity->byteUnkFlags2 = (pEntity->byteUnkFlags2 & 0xFD | 2);
+		} else {
+			pEntity->byteUnkFlags2 &= 0xFD;
+		}
+		if(iIm2) {
+			pEntity->byteUnkFlags2 = (pEntity->byteUnkFlags2 & 0xFB | 4);
+		} else {
+			pEntity->byteUnkFlags2 &= 0xFB;
+		}
+		if(iIm3) {
+			pEntity->byteUnkFlags1 = (pEntity->byteUnkFlags1 & 0xFD | 2);
+		} else {
+			pEntity->byteUnkFlags1 &= 0xFD;
+		}
+		if(iIm4) {
+			pEntity->byteUnkFlags2 = (pEntity->byteUnkFlags2 & 0xF7 | 8);
+		} else {
+			pEntity->byteUnkFlags2 &= 0xF7u;
+		}
+		if(iIm5) {
+			pEntity->byteUnkFlags2 = (pEntity->byteUnkFlags2 & 0xEF | 0x10);
+		} else {
+			pEntity->byteUnkFlags2 &= 0xEFu;
+		}
+	}
 }
 
 //-----------------------------------------------------------

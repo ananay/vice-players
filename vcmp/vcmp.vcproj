@@ -379,6 +379,14 @@
 				>
 			</File>
 			<File
+				RelativePath=".\game\pools.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\game\pools.h"
+				>
+			</File>
+			<File
 				RelativePath="game\scripting.cpp"
 				>
 				<FileConfiguration

@@ -25,7 +25,7 @@
 //----------------------------------------------------
 
 #include "../main.h"
-#include "../game/util.h"
+#include "../game/pools.h"
 
 extern CGame *pGame;
 extern CNetGame *pNetGame;
@@ -139,7 +139,7 @@ int CVehiclePool::FindIDFromGtaPtr(VEHICLE_TYPE * pGtaVehicle)
 int CVehiclePool::FindGtaIDFromID(int iID)
 {
 	if(m_pVehicles[iID]) {
-		return GamePool_Vehicle_GetIndex(m_pVehicles[iID]->GetVehicle());
+		return CPools::GetIndexFromVehicle(m_pVehicles[iID]->GetVehicle());
 	}
 	// not too sure about this
 	return 0;

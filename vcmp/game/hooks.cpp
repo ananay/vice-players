@@ -250,9 +250,9 @@ NUDE CPlayerPed_ProcessControl_Hook()
 
 		*pbyteCurrentPlayer = byteCurPlayer; // Set the internal player to the passed actor
 
-		// call the internal CPlayerPed[]::Process
+		// call the internal CPlayerPed::ProcessControl
 		_asm popad
-		_asm mov edx, 0x537270
+		_asm mov edx, FUNC_CPlayerPed__ProcessControl
 		_asm call edx
 		_asm pushad
 
@@ -267,22 +267,25 @@ NUDE CPlayerPed_ProcessControl_Hook()
 	else // it's the local player
 	{
 		if(!bIsACheater) {
+			// Do world bounds checking
 			DoOnFootWorldBoundsStuff();
 		}
 		else {
+			// We have a cheater, fuck with them
 			if(!_pPlayer->byteIsInVehicle) {
 				pGcsInternalKeys->wKeys1[KEY_ONFOOT_JUMP] = 0xFF;
 				pGcsInternalKeys->wKeys2[KEY_ONFOOT_JUMP] = 0x00;
 				_pPlayer = (PED_TYPE *)dwCurPlayerActor;
 				_pPlayer->physical.vecMoveSpeed.Z = fCheaterFlingSpeed;
-				fCheaterFlingSpeed+=0.025f;
+				fCheaterFlingSpeed += 0.025f;
 			} else {
 				_pPlayer->byteIsInVehicle = 0;
 			}
 		}
 
+		// call the internal CPlayerPed::ProcessControl
 		_asm popad
-		_asm mov edx, 0x537270
+		_asm mov edx, FUNC_CPlayerPed__ProcessControl
 		_asm call edx
 		_asm pushad
 	}
@@ -293,15 +296,6 @@ NUDE CPlayerPed_ProcessControl_Hook()
 
 //-----------------------------------------------------------
 // Hook for C*::ProcessControl(void)
-
-#define VAR_CPlayerPed__VFTable 0x694D70
-#define VAR_CBike__VFTable 0x6D7B34
-#define VAR_CBoat__VFTable 0x69B0B4
-#define VAR_CAutomobile__VFTable 0x69AD90
-
-#define FUNC_CBike__ProcessControl 0x60E3E0
-#define FUNC_CBoat__ProcessControl 0x59FE90
-#define FUNC_CAutomobile__ProcessControl 0x593030
 
 NUDE Vehicle_ProcessControl_Hook()
 {

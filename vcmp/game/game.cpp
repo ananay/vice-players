@@ -229,28 +229,10 @@ void GameInstallPatches()
 	memset((PVOID)0x440B2C,0x90,5); // nop * 5
 	VirtualProtect((PVOID)0x440B2C,5,dwVP,&dwVP2);
 
-	// Patch to modify the scm path
-	VirtualProtect((PVOID)0x6886AC,9,PAGE_EXECUTE_READWRITE,&dwVP);
-	strcpy((PCHAR)0x6886AC,"zzzz.scm");	
-	VirtualProtect((PVOID)0x6886AC,9,dwVP,&dwVP2);
-
-	// Patch to modify the scm path
-	VirtualProtect((PVOID)0x6D7368,14,PAGE_EXECUTE_READWRITE,&dwVP);
-	strcpy((PCHAR)0x6D7368,"data\\zzzz.scm");	
-	VirtualProtect((PVOID)0x6D7368,14,dwVP,&dwVP2);
-
 	// Don't load the main scm
-	/*VirtualProtect((PVOID)0x608C7C, 2, PAGE_EXECUTE_READWRITE, &dwVP);
-	*(BYTE *)0x608C7C = 0xEB;
-	*(BYTE *)0x608C7D = 0x6C;
-	VirtualProtect((PVOID)0x608C7C, 2, dwVP, &dwVP2);*/
-	//VirtualProtect((PVOID)0x4506DC, 2, PAGE_EXECUTE_READWRITE, &dwVP);
 	VirtualProtect((PVOID)0x4506D1, 2, PAGE_EXECUTE_READWRITE, &dwVP);
-	//*(BYTE *)0x4506DC = 0xEB;
-	//*(BYTE *)0x4506DD = 0x62;
 	*(BYTE *)0x4506D1 = 0xEB; // jmp
 	*(BYTE *)0x4506D2 = 0x41; // +41h
-	//VirtualProtect((PVOID)0x4506DC, 2, dwVP, &dwVP2);
 	VirtualProtect((PVOID)0x4506D1, 2, dwVP, &dwVP2);
 
 	// Disable CPopulation::AddPed
@@ -259,6 +241,11 @@ void GameInstallPatches()
 	*(BYTE *)0x53B601 = 0xC0; // eax, eax
 	*(BYTE *)0x53B602 = 0xC3; // retn
 	VirtualProtect((PVOID)0x53B600, 3, dwVP, &dwVP2);
+
+	// Stop time advancing on death
+	VirtualProtect((PVOID)0x42BD69, 15, PAGE_EXECUTE_READWRITE, &dwVP);
+	memset((PVOID)0x42BD69, 0x90, 15); // nop * 15
+	VirtualProtect((PVOID)0x42BD69, 15, dwVP, &dwVP2);
 }
 
 void CGame::StartGame()

@@ -24,6 +24,31 @@
 //
 //----------------------------------------------------------
 
+typedef struct _GTA_CONTROL
+{
+	WORD wUpDownAnalog;
+	WORD wLeftRightAnalog;
+	WORD wButton2;
+	WORD wButton3;
+	WORD wButton4;
+	WORD wButton5;
+	WORD wButton6;
+	WORD wButton7;
+	WORD wButton8;
+	WORD wButton9;
+	WORD wButton10;
+	WORD wButton11;
+	WORD wButton12;
+	WORD wButton13;
+	WORD wButton14;
+	WORD wButton15;
+	WORD wButton16;
+	WORD wButton17;
+	WORD wButton18;
+	WORD wButton19;
+	WORD wButton20;
+} GTA_CONTROL;
+
 typedef struct _GTA_CONTROLSET
 {
 	DWORD dwFrontPad;
@@ -33,6 +58,7 @@ typedef struct _GTA_CONTROLSET
 	WORD wTurnLeftRightAnalog[10];
 	BYTE bytePadding1[138];
 	BYTE byteCrouchAnalog[5];
+	//0x114
 } GTA_CONTROLSET;
 
 //-----------------------------------------------------------

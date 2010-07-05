@@ -30,8 +30,8 @@
 #define ADDR_ID3D8DEVICE						0x7897A8
 #define ADDR_ID3D8								0x7897B4
 #define ADDR_KEYSTATES							0x7DBCB0
-#define ADDR_CPED_SAY							0x5226B0 // CPed_Say __thiscall (uint)
-#define ADDR_ENTITY_ONSCREEN					0x4885D0 // CEntity_GetIsOnScreen __thiscall (void)
+#define FUNC_CPed__Say							0x5226B0
+#define FUNC_CEntity__IsOnScreen				0x4885D0
 #define ADDR_PRE_GAME_PROCESS					0x4A6190 // Poor naming, is actually Render2DStuff
 #define ADDR_PRE_GAME_PROCESS_STORAGE			0x4A5D77
 #define ADDR_CFONT_SETDROPSHADOWPOSITION		0x54ff20
@@ -62,20 +62,20 @@
 #define ADDR_GIVE_ACTOR_WEAPON					0x4FFA30
 #define ADDR_SET_ACTOR_ARMED_WEAPON				0x4FF900
 #define ADDR_GAME_RUNNING						0x86969C
-#define ADDR_ID_FROM_ACTOR						0x451CF0
-#define ADDR_ACTOR_FROM_ID						0x451CB0
-#define ADDR_PED_TABLE							0x97F2AC
+#define FUNC_CPool_CPed__HandleOf				0x451CF0
+#define FUNC_CPool_CPed_AtHandle				0x451CB0
+#define VAR_PedPool								0x97F2AC
 #define ADDR_SET_CURRENT_WEAPON					0x4FF90D
 #define ADDR_SET_OBJECTIVE						0x521F10
-#define ADDR_VEHICLE_FROM_ID					0x451C70
-#define ADDR_ID_FROM_VEHICLE					0x42C4B0
-#define ADDR_VEHICLE_TABLE						0xA0FDE4
-#define ADDR_OBJECT_TABLE						0x94DBE0
-#define ADDR_OBJECT_FROM_ID						0x451C30
+#define FUNC_CPool_CVehicle_AtHandle			0x451C70
+#define FUNC_CPool_CVehicle__HandleOf			0x42C4B0
+#define VAR_VehiclePool							0xA0FDE4
+#define VAR_ObjectPool							0x94DBE0
+#define FUNC_CPool_CObject__AtHandle			0x451C30
 #define ADDR_ACTOR_PUT_IN_VEHICLE				0x4C6AC0
 #define ADDR_VEHICLE_SET_DRIVER					0x512520
 #define ADDR_FIND_GROUND_Z_FROM					0x4D51D0
-#define ADDR_SET_ACTOR_SKIN						0x50D900
+#define FUNC_CPed__SetModelIndex				0x50D900
 #define ADDR_REQUEST_MODEL_REQ_VAR				0x7D1DE0
 #define ADDR_REQUEST_MODEL						0x40E310
 #define ADDR_LOAD_REQUESTED_MODELS1				0x4D0DB0
@@ -96,7 +96,15 @@
 #define ADDR_SET_OBJECTIVE_STORAGE				0x401175
 #define ADDR_IS_KEY_PRESSED						0x460C00
 #define ADDR_GET_PLAYER_CONTROLS				0x4AB060
-#define ADDR_SET_SKIN_MODELNAME					0x4EF030
-#define ADDR_REFRESH_ACTOR_SKIN					0x4EEFD0
+#define FUNC_CPed__ResetSkin					0x4EF030
+#define FUNC_CPed__Recreate						0x4EEFD0
+#define VAR_CPlayerPed__VFTable					0x694D70
+#define VAR_CBike__VFTable						0x6D7B34
+#define VAR_CBoat__VFTable						0x69B0B4
+#define VAR_CAutomobile__VFTable				0x69AD90
+#define FUNC_CPlayerPed__ProcessControl			0x537270
+#define FUNC_CBike__ProcessControl				0x60E3E0
+#define FUNC_CBoat__ProcessControl				0x59FE90
+#define FUNC_CAutomobile__ProcessControl		0x593030
 
 //-----------------------------------------------------------
