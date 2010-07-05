@@ -108,10 +108,10 @@ void CRemotePlayer::Process()
 				UpdateOnFootPosition(m_matWorld.vPos);
 
 				// Update aiming.
-				/*m_Aim.pos2x = m_Aim.pos1x;
+				m_Aim.pos2x = m_Aim.pos1x;
 				m_Aim.pos2y = m_Aim.pos1y;
 				m_Aim.pos2z = m_Aim.pos1z;
-				m_pPlayerPed->SetCurrentAim(&m_Aim);*/
+				m_pPlayerPed->SetCurrentAim(&m_Aim);
 
 				// update current weapon
 				if(m_pPlayerPed->GetCurrentWeapon() != m_byteCurrentWeapon) {
@@ -156,15 +156,15 @@ void CRemotePlayer::HandleVehicleEntryExit()
 {
 	CVehiclePool *pVehiclePool = pNetGame->GetVehiclePool();
 
-	if( m_byteVehicleID == 0 && m_pPlayerPed->IsInVehicle() )
+	if(m_byteVehicleID == 0 && m_pPlayerPed->IsInVehicle())
 	{
 		m_pPlayerPed->RemoveFromVehicleAndPutAt(m_matWorld.vPos.X,
 			m_matWorld.vPos.Y,m_matWorld.vPos.Z);
 	}	
-	else if( (m_byteVehicleID != 0) && (m_pPlayerPed->IsInVehicle() == FALSE) ) 
+	else if((m_byteVehicleID != 0) && (m_pPlayerPed->IsInVehicle() == FALSE))
 	{
 		// must force in
-		CVehicle *pVehicle=pVehiclePool->GetAt(m_byteVehicleID);
+		CVehicle *pVehicle = pVehiclePool->GetAt(m_byteVehicleID);
 		
 		if(pVehicle->GetHealth() > 0.0f) {
 			if(!m_bIsAPassenger) {

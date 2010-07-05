@@ -97,17 +97,18 @@ void CPlayerPed::Create(int iModel, float fX, float fY,float fZ,float fRotation)
 	}
 
 	// TODO: I think this is wrong (the opcode calls), if it is fix it
+	// (will also need to fix it in the running script process hook)
 	DWORD dwPlayerHandle;
 	int iPlayerNumber = m_bytePlayerNumber;
 	ScriptCommand(&create_player, &iPlayerNumber, fX, fY, fZ, &dwPlayerHandle);
-	ScriptCommand(&create_actor_from_player,&iPlayerNumber,&dwPlayerHandle);
-	ScriptCommand(&toggle_player_infinite_run,iPlayerNumber,1);
+	ScriptCommand(&create_actor_from_player, &iPlayerNumber, &dwPlayerHandle);
+	ScriptCommand(&toggle_player_infinite_run, iPlayerNumber, 1);
 	SetRotation(fRotation);
 
 	m_dwGTAId = dwPlayerHandle;
 	SetEntity((ENTITY_TYPE *)CPools::GetPedFromIndex(m_dwGTAId));
-	SetPlayerPedPtrRecord(m_bytePlayerNumber,(DWORD)GetEntity());
-	ScriptCommand(&set_actor_immunities,m_dwGTAId,1,1,1,1,1);
+	SetPlayerPedPtrRecord(m_bytePlayerNumber, (DWORD)GetEntity());
+	ScriptCommand(&set_actor_immunities, m_dwGTAId, 1, 1, 1, 1, 1);
 
 	SetModel(iModel);
 }
@@ -245,50 +246,49 @@ void CPlayerPed::SetKeys(WORD wKeys)
 
 WORD CPlayerPed::GetKeys()
 {
-	WORD wRet=0;
+	WORD wKeys = 0;
 
-	GTA_CONTROLSET *pInternalKeys = GameGetInternalKeys();
+	GTA_CONTROLSET * pInternalKeys = GameGetInternalKeys();
 
-	// Just down keys
-	if(pInternalKeys->wKeys1[KEY_ONFOOT_FORWARD]) wRet |= 1;
-	wRet <<= 1;
+	if(pInternalKeys->wKeys1[KEY_ONFOOT_FORWARD]) wKeys |= 1;
+	wKeys <<= 1;
 
-	if(pInternalKeys->wKeys1[KEY_ONFOOT_BACKWARD]) wRet |= 1;
-	wRet <<= 1;
+	if(pInternalKeys->wKeys1[KEY_ONFOOT_BACKWARD]) wKeys |= 1;
+	wKeys <<= 1;
+
+	if(pInternalKeys->wKeys1[KEY_ONFOOT_LEFT]) wKeys |= 1;
+	wKeys <<= 1;
+
+	if(pInternalKeys->wKeys1[KEY_ONFOOT_RIGHT]) wKeys |= 1;
+	wKeys <<= 1;
+
+	if(pInternalKeys->wKeys1[KEY_ONFOOT_JUMP]) wKeys |= 1;
+	wKeys <<= 1;
+
+	if(pInternalKeys->wKeys1[KEY_ONFOOT_SPRINT]) wKeys |= 1;
+	wKeys <<= 1;
+
+	if(pInternalKeys->wKeys1[KEY_ONFOOT_FIRE]) wKeys |= 1;
+	wKeys <<= 1;
+
+	if(pInternalKeys->wKeys1[KEY_ONFOOT_CROUCH]) wKeys |= 1;
+	wKeys <<= 1;
 	
-	if(pInternalKeys->wKeys1[KEY_ONFOOT_LEFT]) wRet |= 1;
-	wRet <<= 1;
-
-	if(pInternalKeys->wKeys1[KEY_ONFOOT_RIGHT]) wRet |= 1;
-	wRet <<= 1;
-
-	if(pInternalKeys->wKeys1[KEY_ONFOOT_JUMP]) wRet |= 1;
-	wRet <<= 1;
-
-	if(pInternalKeys->wKeys1[KEY_ONFOOT_SPRINT]) wRet |= 1;
-	wRet <<= 1;
-
-	if(pInternalKeys->wKeys1[KEY_ONFOOT_FIRE]) wRet |= 1;
-	wRet <<= 1;
-
-	if(pInternalKeys->wKeys1[KEY_ONFOOT_CROUCH]) wRet |= 1;
-	wRet <<= 1;
+	if(pInternalKeys->wKeys1[KEY_INCAR_TURRETUD] == 0x80) wKeys |= 1;
+	wKeys <<= 1;
 	
-	if(pInternalKeys->wKeys1[KEY_INCAR_TURRETUD] == 0x80) wRet |= 1;
-	wRet <<= 1;
+	if(pInternalKeys->wKeys1[KEY_INCAR_TURRETUD] == 0xFF80) wKeys |= 1;
+	wKeys <<= 1;
+
+	if(pInternalKeys->wKeys1[KEY_INCAR_LOOKL]) wKeys |= 1;
+	wKeys <<= 1;
+
+	if(pInternalKeys->wKeys1[KEY_INCAR_LOOKR]) wKeys |= 1;
+	wKeys <<= 1;
+
+	if(pInternalKeys->wKeys1[KEY_INCAR_HANDBRAKE]) wKeys |= 1;
 	
-	if(pInternalKeys->wKeys1[KEY_INCAR_TURRETUD] == 0xFF80) wRet |= 1;
-	wRet <<= 1;
-
-	if(pInternalKeys->wKeys1[KEY_INCAR_LOOKL]) wRet |= 1;
-	wRet <<= 1;
-
-	if(pInternalKeys->wKeys1[KEY_INCAR_LOOKR]) wRet |= 1;
-	wRet <<= 1;
-
-	if(pInternalKeys->wKeys1[KEY_INCAR_HANDBRAKE]) wRet |= 1;
-	
-	return wRet;
+	return wKeys;
 }
 
 //-----------------------------------------------------------
@@ -713,7 +713,7 @@ void CPlayerPed::EnterVehicleAsDriver(int iVehicleID)
 	VEHICLE_TYPE *pVehicle = CPools::GetVehicleFromIndex(iVehicleID);
 
 	if(pVehicle) {
-		SetObjective((PDWORD)pVehicle,18); // enter as driver
+		SetObjective((PDWORD)pVehicle, OBJECTIVE_TYPE_ENTER_CAR_AS_DRIVER);
 	}
 }
 
@@ -724,7 +724,7 @@ void CPlayerPed::EnterVehicleAsPassenger(int iVehicleID)
 	VEHICLE_TYPE *pVehicle = CPools::GetVehicleFromIndex(iVehicleID);
 
 	if(pVehicle) {
-		SetObjective((PDWORD)pVehicle,17); // enter as passenger
+		SetObjective((PDWORD)pVehicle, OBJECTIVE_TYPE_ENTER_CAR_AS_PASSENGER);
 	}
 }
 
@@ -734,7 +734,7 @@ void CPlayerPed::ExitCurrentVehicle()
 {
 	PED_TYPE * pPed = (PED_TYPE *)GetEntity();
 	if(pPed && pPed->byteIsInVehicle) {
-		SetObjective((PDWORD)pPed->pVehicle,16);
+		SetObjective((PDWORD)pPed->pVehicle, OBJECTIVE_TYPE_EXIT_CAR);
 	}
 }
 
@@ -811,6 +811,7 @@ void CPlayerPed::SetModel(int iModel)
 		if(iModel > 106)
 		{
 			iModel -= 106;
+
 			if(iModel < 54)
 			{
 				szModelName = szSpecialActorModels[iModel];
@@ -848,14 +849,14 @@ void CPlayerPed::SetModel(int iModel)
 
 //-----------------------------------------------------------
 
-void CPlayerPed::SetObjective(PDWORD pObjectiveEntity, int iFunction)
+void CPlayerPed::SetObjective(PDWORD pObjectiveEntity, eObjectiveType objectiveType)
 {
 	PED_TYPE * pPed = (PED_TYPE *)GetEntity();
 	if(pPed && pObjectiveEntity) {
 		_asm mov ecx, pPed
 		_asm push pObjectiveEntity
-		_asm push iFunction
-		_asm mov edx, ADDR_SET_OBJECTIVE
+		_asm push objectiveType
+		_asm mov edx, FUNC_CPed__SetObjective
 		_asm call edx
 	}
 }
