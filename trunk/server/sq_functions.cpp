@@ -505,6 +505,26 @@ SQInteger sq_setPlayerWorldBounds(SQVM * pVM)
 	return 1;
 }
 
+// setPlayerTime
+SQInteger sq_setPlayerTime(SQVM * pVM)
+{
+	SQInteger h, m;
+	SQInteger playerSystemAddress;
+
+	sq_getinteger(pVM, -3, &playerSystemAddress);
+	sq_getinteger(pVM, -2, &h);
+	sq_getinteger(pVM, -1, &m);
+
+	if(pNetGame->GetPlayerPool()->GetSlotState(playerSystemAddress))
+	{
+		pNetGame->GetPlayerPool()->GetAt(playerSystemAddress)->SetGameTime(h, m);
+		sq_pushbool(pVM, true);
+	}
+
+	sq_pushbool(pVM, false);
+	return 1;
+}
+
 // getPlayerHealth
 SQInteger sq_getPlayerHealth(SQVM * pVM)
 {
@@ -725,11 +745,25 @@ SQInteger sq_setVehicleColor(SQVM * pVM)
 	return 1;
 }
 
+SQInteger sq_setGameTime(SQVM * pVM)
+{
+	SQInteger h, m;
+
+	sq_getinteger(pVM, -2, &h);
+	sq_getinteger(pVM, -1, &m);
+
+	pNetGame->GetPlayerPool()->SetGameTime(h, m);
+	sq_pushbool(pVM, true);
+	return 1;
+}
+
 
 #define _DECL_FUNC(name,nparams,pmask) {_SC(#name),sq_##name,nparams,pmask}
 static SQRegFunction vcmp_funcs[]={
 	// put functions here
 	//_DECL_FUNC(func_name,func_params,_SC(func_param_template)),
+	_DECL_FUNC(setGameTime, 3, _SC(".nn")),
+	_DECL_FUNC(setPlayerTime, 4, _SC(".nnn")),
 	_DECL_FUNC(getPlayerName, 2, _SC(".n")),
 	_DECL_FUNC(getPlayerIP, 2, _SC(".n")),
 	_DECL_FUNC(addPlayerClass, 13, _SC(".nnnnnnnnnnnn")),

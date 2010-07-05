@@ -160,6 +160,8 @@ public:
 	
 	BYTE GetSkin() { return m_SpawnInfo.byteSkin; };
 	void SetSpawnSkin(int iSkin) { m_SpawnInfo.byteSkin = iSkin; };
+
+	void SetGameTime(BYTE hours, BYTE minutes);
 };
 
 //----------------------------------------------------

@@ -448,3 +448,16 @@ BYTE CPlayer::GetVehicleID()
 }
 
 //----------------------------------------------------
+
+void CPlayer::SetGameTime(BYTE hours, BYTE minutes)
+{
+	RakNet::BitStream bsTime;
+	SystemAddress playerid = pNetGame->GetRakPeer()->GetSystemAddressFromIndex(m_byteSystemAddress);
+
+	bsTime.Write(hours);
+	bsTime.Write(minutes);
+
+	pNetGame->GetRPC4()->Call("SetGameTime", &bsTime,HIGH_PRIORITY,RELIABLE_ORDERED,0,playerid,false);
+}
+
+//----------------------------------------------------

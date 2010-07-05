@@ -77,6 +77,7 @@ public:
 
 	BOOL IsNickInUse(PCHAR szNick);
 	BOOL IsConnected(BYTE byteSystemAddress);
+	void SetGameTime(BYTE hours, BYTE minutes);
 
 	int GetPlayerCount() {
 		BYTE x=0,count=0;
