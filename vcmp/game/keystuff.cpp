@@ -88,13 +88,13 @@ void GameSetRemotePlayerKeys(int iPlayer)
 
 	memcpy(pGcsInternalKeys,&GcsRemotePlayerKeys[iPlayer],sizeof(GTA_CONTROLSET));
 
-	if(GcsRemotePlayerKeys[iPlayer].currentPadState.wButton5) {
+	if(GcsRemotePlayerKeys[iPlayer].wKeys1[KEY_INCAR_LOOKL]) {
 		*pbyteDriveByLeft = 1;
 	} else {
 		*pbyteDriveByLeft = 0;
 	}	
 
-	if(GcsRemotePlayerKeys[iPlayer].currentPadState.wButton7) {
+	if(GcsRemotePlayerKeys[iPlayer].wKeys1[KEY_INCAR_LOOKR]) {
 		*pbyteDriveByRight = 1;
 	} else {
 		*pbyteDriveByRight = 0;
