@@ -15,31 +15,14 @@
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 //
-//---------------------------------------------------
+//----------------------------------------------------------
 //
 // VC:MP Multiplayer Modification For GTA:VC
-// Copyright 2004-2005 SA:MP Team
+// Copyright 2004-2005 SA:MP team
 //
-// File Author: kyeman
-//
-//----------------------------------------------------
+//----------------------------------------------------------
 
 #pragma once
 
-#include "game.h"
-
-//-----------------------------------------------------------
-
-class CCamera
-{
-public:
-	void SetBehindPlayer();
-	void SetPosition(float fX, float fY, float fZ, float fRotationX, float fRotationY, float fRotationZ);	// tested
-	void LookAtPoint(VECTOR vPoint, int iType);
-	void Restore();
-	
-	CCamera(){};
-	~CCamera(){};
-};
-
-//-----------------------------------------------------------
+void InstallD3D8Hook();
+void UninstallD3D8Hook();

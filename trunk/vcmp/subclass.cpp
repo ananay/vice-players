@@ -29,6 +29,7 @@
 #include "main.h"
 #include "screenshot.h"
 #include <string>
+#include <windowsx.h>
 
 extern CGame			*pGame;
 extern CChatWindow		*pChatWindow;
@@ -117,13 +118,10 @@ BOOL HandleCharacterInput(DWORD dwChar)
 
 //----------------------------------------------------
 
-BOOL SubclassGameWindow()
-{
-	HWND hwndGameWnd = pGame->GetMainWindowHwnd();
-	
-	if(hwndGameWnd) {
-		hOldProc = (WNDPROC)GetWindowLong(hwndGameWnd,GWL_WNDPROC);
-		SetWindowLong(hwndGameWnd,GWL_WNDPROC,(LONG)NewWndProc);
+BOOL SubclassGameWindow(HWND hWnd)
+{	
+	if(hWnd) {
+		hOldProc = SubclassWindow(hWnd, NewWndProc);
 		return TRUE;
 	}
 	return FALSE;
@@ -146,7 +144,7 @@ LRESULT APIENTRY NewWndProc( HWND hwnd,UINT uMsg,
 			}
 			break;
 	}
-	return CallWindowProc(hOldProc,hwnd,uMsg,wParam,lParam);
+	return CallWindowProc(hOldProc, hwnd, uMsg, wParam, lParam);
 }
 
 //----------------------------------------------------

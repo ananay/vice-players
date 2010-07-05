@@ -58,6 +58,9 @@ private:
 	static RPC4			*m_pRPC4;
 	CGameModeGeneric	*m_pGameLogic;
 
+	char                m_szHostOrIp[128];
+	int                 m_iPort;
+	char                m_szPass[128];
 	int					m_iGameState;
 	DWORD				m_dwLastScoreUpdateTick;
 	UINT				m_uiLastRandSeed;

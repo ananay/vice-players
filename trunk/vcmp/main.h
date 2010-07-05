@@ -72,6 +72,7 @@ typedef struct _GAME_SETTINGS {
 #include "nametags.h"
 #include "netstats.h"
 #include "anticheat.h"
+#include "d3dhook/d3d8hook.h"
 
 #include "game/scripting.h"
 

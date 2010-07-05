@@ -20,7 +20,7 @@
 // VC:MP Multiplayer Modification For GTA:VC
 // Copyright 2004-2005 SA:MP team
 //
-// File Author: kyeman (in a rush)
+// File Author: kyeman
 //
 //----------------------------------------------------
 
@@ -37,68 +37,110 @@ extern CChatWindow * pChatWindow;
 void CScoreBoard::Draw()
 {
 	CPlayerPool* pPlayerPool = pNetGame->GetPlayerPool();
-	char szScoreBuf[8192] = {0};
-	char szScoreWrite[1024] = {0};
-	char szColorCodedNick[256] = {0};
-	DWORD dwNickColor;
+	//DWORD dwNickColor;
+	//char * szNick;
 	DWORD dwChatColor = 0xFFFFFFFF;
-	char * t;
-	char * szNick;
+	char * szNameText = (char *)malloc(128);
+	char szScoreText[32];
+	char szPingText[32];
+	int iCurrent = 0;
 
-	pNetGame->UpdatePlayerScoresAndPings();	
-
-	sprintf(szScoreWrite,"Vice City: Players - %s:%s\n\n",
-		    tSettings.szConnectHost,tSettings.szConnectPort);
-	strcat(szScoreBuf,szScoreWrite);
-
-	sprintf(szScoreWrite,"Player\t\t\tScore\t\tPing\n\n");
-	strcat(szScoreBuf,szScoreWrite);
-
-	// write local player nick with color
-	t = szColorCodedNick;
-	
-	dwNickColor = pPlayerPool->GetLocalPlayer()->GetTeamColorAsARGB();
-	szNick = pPlayerPool->GetLocalPlayerName();
-
-	*t = '\01'; t++; // color start
-	memcpy(t,&dwNickColor,sizeof(DWORD)); t+=4; // nick color
-	memcpy(t,szNick,strlen(szNick)); t+=strlen(szNick); // nick string
-	*t = '\01'; t++; // color start
-	memcpy(t,&dwChatColor,sizeof(DWORD)); t+=4; // chat color
-	*t = '\0';
-	
-	sprintf(szScoreWrite,"%s\t\t\t%d\t\t%d\n",
-		szColorCodedNick,pPlayerPool->GetLocalPlayerScore(),
-		pPlayerPool->GetLocalPlayerPing());
-	strcat(szScoreBuf,szScoreWrite);
-
-	int x=0;
-
-	while(x!=MAX_PLAYERS) {
-		if(pPlayerPool->GetSlotState(x) == TRUE) {
-
-				// write local player nick with color
-				t = szColorCodedNick;
-	
-				dwNickColor = pPlayerPool->GetAt(x)->GetTeamColorAsARGB();
-				szNick = pPlayerPool->GetPlayerName(x);
-
-				*t = '\01'; t++; // color start
-				memcpy(t,&dwNickColor,sizeof(DWORD)); t+=4; // nick color
-				memcpy(t,szNick,strlen(szNick)); t+=strlen(szNick); // nick string
-				*t = '\01'; t++; // color start
-				memcpy(t,&dwChatColor,sizeof(DWORD)); t+=4; // chat color
-				*t = '\0';
-
-				sprintf(szScoreWrite,"%u: %s\t\t\t%d\t\t%d\n",
-						x,szColorCodedNick,pPlayerPool->GetScore(x),
-						pPlayerPool->GetPing(x));
-
-				strcat(szScoreBuf,szScoreWrite);			
-		}
-		x++;
-	}
+	pNetGame->UpdatePlayerScoresAndPings();
 
 	pD3DDevice->GetDisplayMode(&DisplayMode);
-	pChatWindow->m_pD3DFont->DrawTextBox((float)((DisplayMode.Width / 2) - 100),50.0f,50.0f,0x50000000,0xFFFFFFFF,szScoreBuf,0L);
+	// Get the d3d font pointer
+	CD3DFont * pFont = pChatWindow->m_pD3DFont;
+
+	// Draw the background
+	pFont->DrawBox((float)(DisplayMode.Width / 4), (float)(DisplayMode.Height / 4), (float)(DisplayMode.Width / 2), (float)(DisplayMode.Height / 2), 0.0f, 0x50000000);
+
+	// Draw the title
+	SIZE size;
+	char szTitle[128];
+	sprintf(szTitle, "Vice City: Players - %s:%s",  tSettings.szConnectHost,tSettings.szConnectPort);
+	pFont->GetTextExtent(szTitle, &size);
+	pFont->DrawText((float)((DisplayMode.Width / 2) - (size.cx / 2)), (float)((DisplayMode.Height / 4) + (DisplayMode.Height / 40)), 0xFFFFFFFF, szTitle);
+
+	// Draw the player title
+	const char * szPlayerTitleText = "Player";
+	pFont->GetTextExtent(szPlayerTitleText, &size);
+	pFont->DrawText((float)(((DisplayMode.Width / 4) + (DisplayMode.Width / 8)) - (size.cx / 2)), (float)((DisplayMode.Height / 4) + (DisplayMode.Height / 20)), 0xFFFFFFFF, szPlayerTitleText);
+
+	// Draw the score title
+	const char * szScoreTitleText = "Score";
+	pFont->GetTextExtent(szScoreTitleText, &size);
+	pFont->DrawText((float)(((DisplayMode.Width / 4) + ((DisplayMode.Width / 8) * 2)) - (size.cx / 2)), (float)((DisplayMode.Height / 4) + (DisplayMode.Height / 20)), 0xFFFFFFFF, szScoreTitleText);
+
+	// Draw the ping title
+	const char * szPingTitleText = "Ping";
+	pFont->GetTextExtent(szPingTitleText, &size);
+	pFont->DrawText((float)(((DisplayMode.Width / 4) + ((DisplayMode.Width / 8) * 3)) - (size.cx / 2)), (float)((DisplayMode.Height / 4) + (DisplayMode.Height / 20)), 0xFFFFFFFF, szPingTitleText);
+
+	// Format the local player name
+	/*dwNickColor = pPlayerPool->GetLocalPlayer()->GetTeamColorAsARGB();
+	szNick = pPlayerPool->GetLocalPlayerName();
+	*szNameText = '\01'; szNameText++; // color start
+	memcpy(szNameText, &dwNickColor, sizeof(DWORD)); szNameText += 4; // nick color
+	memcpy(szNameText, szNick, strlen(szNick)); szNameText += strlen(szNick); // nick string
+	*szNameText = '\01'; szNameText++; // color start
+	memcpy(szNameText, &dwChatColor, sizeof(DWORD)); szNameText += 4; // chat color
+	*szNameText = '\0';*/
+	sprintf(szNameText, "%s", pPlayerPool->GetLocalPlayerName());
+
+	// Draw the local player name
+	pFont->GetTextExtent(szNameText, &size);
+	pFont->DrawText((float)(((DisplayMode.Width / 4) + (DisplayMode.Width / 8)) - (size.cx / 2)), (float)((DisplayMode.Height / 4) + (DisplayMode.Height / 14) + ((DisplayMode.Height / 60) * iCurrent)), 0xFFFFFFFF, szNameText);
+
+	// Format the local player score
+	sprintf(szScoreText, "%d", pPlayerPool->GetLocalPlayerScore());
+
+	// Draw the local player score
+	pFont->GetTextExtent(szScoreText, &size);
+	pFont->DrawText((float)(((DisplayMode.Width / 4) + ((DisplayMode.Width / 8) * 2)) - (size.cx / 2)), (float)((DisplayMode.Height / 4) + (DisplayMode.Height / 14) + ((DisplayMode.Height / 60) * iCurrent)), 0xFFFFFFFF, szScoreText);
+
+	// Format the local player ping
+	sprintf(szPingText, "%d", pPlayerPool->GetLocalPlayerPing());
+
+	// Draw the local player ping
+	pFont->GetTextExtent(szPingText, &size);
+	pFont->DrawText((float)(((DisplayMode.Width / 4) + ((DisplayMode.Width / 8) * 3)) - (size.cx / 2)), (float)((DisplayMode.Height / 4) + (DisplayMode.Height / 14) + ((DisplayMode.Height / 60) * iCurrent)), 0xFFFFFFFF, szPingText);
+
+	iCurrent ++;
+
+	for(BYTE i = 0; i < MAX_PLAYERS; i++) {
+		if(pPlayerPool->GetSlotState(i)) {
+			// Format the player name
+			/*dwNickColor = pPlayerPool->GetAt(i)->GetTeamColorAsARGB();
+			szNick = pPlayerPool->GetPlayerName(i);
+			*szNameText = '\01'; szNameText++; // color start
+			memcpy(szNameText, &dwNickColor, sizeof(DWORD)); szNameText += 4; // nick color
+			memcpy(szNameText, szNick, strlen(szNick)); szNameText += strlen(szNick); // nick string
+			*szNameText = '\01'; szNameText++; // color start
+			memcpy(szNameText, &dwChatColor, sizeof(DWORD)); szNameText += 4; // chat color
+			*szNameText = '\0';*/
+			sprintf(szNameText, "%s", pPlayerPool->GetPlayerName(i));
+
+			// Draw the player name
+			pFont->GetTextExtent(szNameText, &size);
+			pFont->DrawText((float)(((DisplayMode.Width / 4) + (DisplayMode.Width / 8)) - (size.cx / 2)), (float)((DisplayMode.Height / 4) + (DisplayMode.Height / 14) + ((DisplayMode.Height / 60) * iCurrent)), 0xFFFFFFFF, szNameText);
+
+			// Format the player score
+			sprintf(szScoreText, "%d", pPlayerPool->GetScore(i));
+
+			// Draw the player score
+			pFont->GetTextExtent(szScoreText, &size);
+			pFont->DrawText((float)(((DisplayMode.Width / 4) + ((DisplayMode.Width / 8) * 2)) - (size.cx / 2)), (float)((DisplayMode.Height / 4) + (DisplayMode.Height / 14) + ((DisplayMode.Height / 60) * iCurrent)), 0xFFFFFFFF, szScoreText);
+
+			// Format the player ping
+			sprintf(szPingText, "%d", pPlayerPool->GetPing(i));
+
+			// Draw the player ping
+			pFont->GetTextExtent(szPingText, &size);
+			pFont->DrawText((float)(((DisplayMode.Width / 4) + ((DisplayMode.Width / 8) * 3)) - (size.cx / 2)), (float)((DisplayMode.Height / 4) + (DisplayMode.Height / 14) + ((DisplayMode.Height / 60) * iCurrent)), 0xFFFFFFFF, szPingText);
+
+			iCurrent++;
+		}
+	}
+
+	free(szNameText);
 }

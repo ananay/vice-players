@@ -39,10 +39,10 @@ DWORD dwPlayerPedPtrs[MAX_PLAYERS];
 void VCMP_SAFECALL GameDisableCheatCodes()
 {
 	DWORD p1,p2;
-    VirtualProtect((void*)0x602BDC,16,PAGE_EXECUTE_READWRITE,&p1);
+    VirtualProtect((void*)0x602BDC, 16, PAGE_EXECUTE_READWRITE, &p1);
 	*(BYTE *)0x602BDC = 0x90;
-    memset((void*)0x602BE7,0x90,5);
-    VirtualProtect((void*)0x602BDC,16,p1,&p2);
+    memset((void*)0x602BE7, 0x90, 5);
+    VirtualProtect((void*)0x602BDC, 16, p1, &p2);
 }
 
 //-----------------------------------------------------------
@@ -205,10 +205,13 @@ BOOL VCMP_SAFECALL GameIsEntityOnScreen(DWORD * pdwEnt)
 {
 	BYTE byteRet=0;
 
-	_asm mov ecx, pdwEnt
-	_asm mov edx, FUNC_CEntity__IsOnScreen
-	_asm call edx
-	_asm mov byteRet, al
+	DWORD dwFunc = FUNC_CEntity__IsOnScreen;
+	_asm
+	{
+		mov ecx, pdwEnt
+		call dwFunc
+		mov byteRet, al
+	}
 
 	if(byteRet) return TRUE;
 
@@ -219,7 +222,7 @@ BOOL VCMP_SAFECALL GameIsEntityOnScreen(DWORD * pdwEnt)
 
 void VCMP_SAFECALL InitPlayerPedPtrRecords() 
 {
-	memset(&dwPlayerPedPtrs[0],0,sizeof(DWORD) * MAX_PLAYERS);
+	memset(&dwPlayerPedPtrs[0], 0, sizeof(DWORD) * MAX_PLAYERS);
 }
 
 //-----------------------------------------------------------
