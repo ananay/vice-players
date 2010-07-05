@@ -108,9 +108,9 @@ void CRemotePlayer::Process()
 				UpdateOnFootPosition(m_matWorld.vPos);
 
 				// Update aiming.
-				m_Aim.pos2x = m_Aim.pos1x;
+				/*m_Aim.pos2x = m_Aim.pos1x;
 				m_Aim.pos2y = m_Aim.pos1y;
-				m_Aim.pos2z = m_Aim.pos1z;
+				m_Aim.pos2z = m_Aim.pos1z;*/
 				m_pPlayerPed->SetCurrentAim(&m_Aim);
 
 				// update current weapon

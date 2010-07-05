@@ -242,6 +242,9 @@ void CNetGame::PlayerSync(Packet *p)
 		DecompressVector1(&vecAimRoll,&cvecAimRoll);
 		DecompressVector1(&vecAimDir,&cvecAimDir);
 
+		// aim.f1* = vecAimRoll
+		// aim.f2* = vecAimDir
+		// aim.pos1* = caAiming
 		caAiming.f1x = vecAimRoll.X;
 		caAiming.f1y = vecAimRoll.Y;
 		caAiming.f1z = vecAimRoll.Z;
