@@ -43,6 +43,7 @@ SQInteger sq_resetPlayerWeapons(HSQUIRRELVM v); // done
 SQInteger sq_setPlayerArmedWeapon(HSQUIRRELVM v); // done
 SQInteger sq_putPlayerInVehicle(HSQUIRRELVM v); // done
 SQInteger sq_removePlayerFromVehicle(HSQUIRRELVM v); // done
+SQInteger sq_getPlayerSkin(HSQUIRRELVM v);
 SQInteger sq_setPlayerSkin(HSQUIRRELVM v); // done
 SQInteger sq_togglePlayerControllable(HSQUIRRELVM v); // done
 SQInteger sq_getPlayerCurrentAmmo(HSQUIRRELVM v);

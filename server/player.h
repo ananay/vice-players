@@ -157,6 +157,9 @@ public:
 	BOOL IsAPassenger();
 	BOOL IsInVehicle() { return m_bIsInVehicle; };
 	BYTE GetVehicleID();
+	
+	BYTE GetSkin() { return m_SpawnInfo.byteSkin; };
+	void SetSpawnSkin(int iSkin) { m_SpawnInfo.byteSkin = iSkin; };
 };
 
 //----------------------------------------------------
