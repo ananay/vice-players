@@ -107,12 +107,13 @@ SQInteger sq_getVehicleColors(SQVM * pVM)
 
 	if(pNetGame->GetVehiclePool()->GetSlotState(vehicle))
 	{
-		int *Colors = pNetGame->GetVehiclePool()->GetAt(vehicle)->GetColor();
+		int iColors[2];
+		pNetGame->GetVehiclePool()->GetAt(vehicle)->GetColor(&iColors[0], &iColors[1]);
 
 		sq_newarray(pVM, 0);
-		sq_pushinteger(pVM, Colors[0]);
+		sq_pushinteger(pVM, iColors[0]);
 		sq_arrayappend(pVM, -2);
-		sq_pushinteger(pVM, Colors[1]);
+		sq_pushinteger(pVM, iColors[1]);
 		sq_arrayappend(pVM, -2);
 		sq_push(pVM, -1);
 		return 1;

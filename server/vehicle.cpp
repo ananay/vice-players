@@ -77,11 +77,13 @@ void CVehicle::Reset()
 	m_matWorld.vPos.Y = m_SpawnInfo.vecPos.Y;
 	m_matWorld.vPos.Z = m_SpawnInfo.vecPos.Z;
 
+	// Reset the initial turn speed and move speed
 	memset(&m_vecMoveSpeed,0,sizeof(VECTOR));
 	memset(&m_vecTurnSpeed,0,sizeof(VECTOR));
 
-	m_Colors[0] = m_SpawnInfo.iColor1;
-	m_Colors[1] = m_SpawnInfo.iColor2;
+	// Set the initial colors to the spawn colors
+	m_iColors[0] = m_SpawnInfo.iColor1;
+	m_iColors[1] = m_SpawnInfo.iColor2;
 
 	m_bIsActive = TRUE;
 	m_bIsWasted = FALSE;
@@ -120,8 +122,8 @@ void CVehicle::SpawnForPlayer(BYTE byteForSystemAddress)
 	bsVehicleSpawn.Write(m_matWorld.vPos.Z);
 	// TODO: This should use the current rotation, not the spawn rotation
 	bsVehicleSpawn.Write(m_SpawnInfo.fRotation);
-	bsVehicleSpawn.Write(m_SpawnInfo.iColor1);
-	bsVehicleSpawn.Write(m_SpawnInfo.iColor2);
+	bsVehicleSpawn.Write(m_iColors[0]);
+	bsVehicleSpawn.Write(m_iColors[1]);
 	bsVehicleSpawn.Write(m_fHealth);
 
 	// now add spawn co-ords and rotation
@@ -216,8 +218,8 @@ void CVehicle::SetColor(int color1, int color2)
 			pNetGame->GetRPC4()->Call("Script_SetVehicleColor",&bsSend,HIGH_PRIORITY,RELIABLE,0,pNetGame->GetRakPeer()->GetSystemAddressFromIndex(i),false);
 		}
 	}
-	m_Colors[0] = color1;
-	m_Colors[1] = color2;
+	m_iColors[0] = color1;
+	m_iColors[1] = color2;
 }
 
 //----------------------------------------------------------
