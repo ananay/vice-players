@@ -82,6 +82,8 @@ static SQRegFunction vcmp_funcs[]={
 	_DECL_FUNC(getPlayerPos, 2, _SC(".n")),
 	_DECL_FUNC(setPlayerPos, 5, _SC(".nnnn")),
 	_DECL_FUNC(isConnected, 2, _SC(".n")),
+	_DECL_FUNC(getPlayerTeam, 2, _SC(".n")),
+	_DECL_FUNC(setPlayerAction, 3, _SC(".nn")),
 	_DECL_FUNC(isPlayerInVehicle, 2, _SC(".n")),
 	_DECL_FUNC(getPlayerVehicleID, 2, _SC(".n")),
 	_DECL_FUNC(createVehicle, 8, _SC(".nnnnnnn")),

@@ -37,4 +37,5 @@ SQInteger sq_playSound(SQVM * v); // done
 SQInteger sq_fadeScreen(SQVM * v); // done
 SQInteger sq_kickPlayer(SQVM * v); // done
 SQInteger sq_banIP(SQVM * v); // done
+SQInteger sq_getPlayerTeam(SQVM * v); // done
 SQInteger sq_addPlayerClass(SQVM * v); // done

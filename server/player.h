@@ -129,6 +129,10 @@ public:
 		if(m_bHasSpawnInfo) { return m_SpawnInfo.byteTeam; }
 		else { return 255; }
 	};
+	BYTE GetSkin() {
+		if(m_bHasSpawnInfo) { return m_SpawnInfo.byteSkin; }
+		else { return 255; }
+	};
 
 	void UpdatePosition(float x, float y, float z) {
 		m_vecPos.X=x; 
@@ -156,8 +160,7 @@ public:
 	BOOL IsAPassenger();
 	BOOL IsInVehicle() { return m_bIsInVehicle; };
 	BYTE GetVehicleID();
-	
-	BYTE GetSkin() { return m_SpawnInfo.byteSkin; };
+
 	void SetSpawnSkin(int iSkin) { m_SpawnInfo.byteSkin = iSkin; };
 
 	void SetGameTime(BYTE hours, BYTE minutes);

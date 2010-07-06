@@ -787,6 +787,21 @@ SQInteger sq_banIP(SQVM * pVM)
 	return 1;
 }
 
+SQInteger sq_getPlayerTeam(SQVM * pVM)
+{
+	SQInteger playerSystemAddress;
+
+	sq_getinteger(pVM, -1, &playerSystemAddress);
+
+	if(pNetGame->GetPlayerPool()->GetSlotState(playerSystemAddress))
+	{
+		sq_pushbool(pVM, pNetGame->GetPlayerPool()->GetAt(playerSystemAddress)->GetTeam());
+		return 1;
+	}
+	sq_pushbool(pVM, false);
+	return 1;
+}
+
 // addPlayerClass
 SQInteger sq_addPlayerClass(SQVM * pVM)
 {
