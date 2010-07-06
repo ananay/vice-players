@@ -207,42 +207,6 @@ void cmdAdmin(PCHAR szCmd)
 
 //----------------------------------------------------
 
-void cmdKickEm(PCHAR szCmd)
-{
-	if(!strlen(szCmd)) {
-	    pChatWindow->AddDebugMessage("Usage: /kick [player_id]");
-		return;
-	}
-
-	BYTE byteSystemAddress;
-	sscanf(szCmd,"%u",&byteSystemAddress);
-
-	RakNet::BitStream bsSend;
-
-	if(pNetGame) {
-		bsSend.Write(byteSystemAddress);
-		pNetGame->GetRPC4()->Call("KickPlayer",&bsSend,HIGH_PRIORITY,RELIABLE,0,UNASSIGNED_SYSTEM_ADDRESS,TRUE);
-	}
-}
-
-//----------------------------------------------------
-
-void cmdBanTheirSorryAsses(PCHAR szCmd)
-{
-	int iIPLen=0;
-	RakNet::BitStream bsSend;
-
-	if(pNetGame) {
-		iIPLen = strlen(szCmd);
-		if(iIPLen > 64) return;
-		bsSend.Write(iIPLen);
-		bsSend.Write(szCmd,iIPLen);
-		pNetGame->GetRPC4()->Call("BanIPAddress",&bsSend,HIGH_PRIORITY,RELIABLE,0,UNASSIGNED_SYSTEM_ADDRESS,TRUE);
-	}
-}
-
-//----------------------------------------------------
-
 void IP2String(DWORD ip, char *ret)
 {
 	BYTE p[4];
@@ -315,9 +279,6 @@ void SetupCommands()
 	pCmdWindow->AddCmdProc("quit",cmdQuit);
 	pCmdWindow->AddCmdProc("q",cmdQuit);
 	pCmdWindow->AddCmdProc("admin",cmdAdmin);
-	pCmdWindow->AddCmdProc("kick",cmdKickEm);
-	pCmdWindow->AddCmdProc("getip",cmdGetIP);
-	pCmdWindow->AddCmdProc("ban",cmdBanTheirSorryAsses);
 	pCmdWindow->AddCmdProc("gencomp",cmdGenComp);
 	pCmdWindow->AddCmdProc("kill",cmdKill);
 	pCmdWindow->AddCmdProc("save",cmdSavePos);

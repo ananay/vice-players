@@ -171,9 +171,10 @@ bool CScripts::UnloadScript(const char * szScriptName)
 bool CScripts::LoadFromConfig(CConfig * pConfig)
 {
 	int iScriptCount = pConfig->GetConfigArrayCount("SCRIPT");
+		iScriptCount++;
 	int iScriptsLoaded = 0;
 	
-	for(int i = 0; i < iScriptCount; i++) {
+	for(int i = 1; i < iScriptCount; i++) {
 		char * szScriptName = pConfig->GetConfigEntryAsString("SCRIPT", i);
 
 		if(!LoadScript(szScriptName)) {

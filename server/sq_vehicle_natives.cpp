@@ -63,6 +63,23 @@ SQInteger sq_setVehicleHealth(SQVM * pVM)
 	return 1;
 }
 
+SQInteger sq_getVehicleHealth(SQVM * pVM)
+{
+	SQInteger vehicle;
+
+	sq_getinteger(pVM, -1, &vehicle);
+
+	if(pNetGame->GetVehiclePool()->GetSlotState(vehicle))
+	{
+		float fHealth = pNetGame->GetVehiclePool()->GetAt(vehicle)->GetHealth();
+
+		sq_pushfloat(pVM, fHealth);
+		return 1;
+	}
+	sq_pushbool(pVM, false);
+	return 1;
+}
+
 // setVehicleColor
 SQInteger sq_setVehicleColor(SQVM * pVM)
 {
@@ -76,6 +93,28 @@ SQInteger sq_setVehicleColor(SQVM * pVM)
 		pNetGame->GetVehiclePool()->GetAt(vehicle)->SetColor(color1, color2);
 
 		sq_pushbool(pVM, true);
+		return 1;
+	}
+	sq_pushbool(pVM, false);
+	return 1;
+}
+
+SQInteger sq_getVehicleColors(SQVM * pVM)
+{
+	SQInteger vehicle;
+
+	sq_getinteger(pVM, -1, &vehicle);
+
+	if(pNetGame->GetVehiclePool()->GetSlotState(vehicle))
+	{
+		int *Colors = pNetGame->GetVehiclePool()->GetAt(vehicle)->GetColor();
+
+		sq_newarray(pVM, 0);
+		sq_pushinteger(pVM, Colors[0]);
+		sq_arrayappend(pVM, -2);
+		sq_pushinteger(pVM, Colors[1]);
+		sq_arrayappend(pVM, -2);
+		sq_push(pVM, -1);
 		return 1;
 	}
 	sq_pushbool(pVM, false);

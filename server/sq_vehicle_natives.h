@@ -5,3 +5,5 @@ SQInteger sq_createVehicle(SQVM * v); // done
 SQInteger sq_destroyVehicle(SQVM * v); // done
 SQInteger sq_setVehicleHealth(SQVM * v); // done
 SQInteger sq_setVehicleColor(SQVM * v); // done
+SQInteger sq_getVehicleHealth(SQVM * v); //done
+SQInteger sq_getVehicleColors(SQVM * v); //done
