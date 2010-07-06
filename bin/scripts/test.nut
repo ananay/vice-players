@@ -24,6 +24,20 @@ function onServerInit()
 	createVehicle(175,-665.1270,750.6769,10.9391,44.7830,42,42);
 }
 
+function onServerPulse()
+{
+
+}
+
+function onPlayerSync(playerid)
+{
+
+}
+
+function onVehicleSync(vehicleid)
+{
+
+}
 
 function onPlayerConnect(playerid)
 {
@@ -121,16 +135,6 @@ function onVehicleCreate(vehicleid)
 function onVehicleDestroy(vehicleid)
 {
 	print("onVehicleDestroy(" + vehicleid + ")");
-}
-
-function onServerPulse()
-{
-
-}
-
-function onPlayerSync(playerid)
-{
-
 }
 
 function onBan(ipmask)
