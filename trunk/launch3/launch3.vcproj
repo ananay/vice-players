@@ -2,9 +2,9 @@
 <VisualStudioProject
 	ProjectType="Visual C++"
 	Version="9.00"
-	Name="launch3"
+	Name="launcher"
 	ProjectGUID="{701B5071-EBE6-463C-A4DD-E34E84AB77DC}"
-	RootNamespace="launch3"
+	RootNamespace="launcher"
 	Keyword="MFCProj"
 	TargetFrameworkVersion="0"
 	>
