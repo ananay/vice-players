@@ -15,25 +15,25 @@
 #include "resource.h"		// main symbols
 
 /////////////////////////////////////////////////////////////////////////////
-// CLaunch3App:
+// CLauncherApp:
 // See launch3.cpp for the implementation of this class
 //
 
-class CLaunch3App : public CWinApp
+class CLauncherApp : public CWinApp
 {
 public:
-	CLaunch3App();
+	CLauncherApp();
 
 // Overrides
 	// ClassWizard generated virtual function overrides
-	//{{AFX_VIRTUAL(CLaunch3App)
+	//{{AFX_VIRTUAL(CLauncherApp)
 	public:
 	virtual BOOL InitInstance();
 	//}}AFX_VIRTUAL
 
 // Implementation
 
-	//{{AFX_MSG(CLaunch3App)
+	//{{AFX_MSG(CLauncherApp)
 	//}}AFX_MSG
 	DECLARE_MESSAGE_MAP()
 };

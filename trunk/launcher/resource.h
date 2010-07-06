@@ -1,6 +1,6 @@
 //{{NO_DEPENDENCIES}}
 // Microsoft Visual C++ generated include file.
-// Used by launch3.rc
+// Used by launcher.rc
 //
 #define IDD_LAUNCH3_DIALOG              102
 #define IDR_MAINFRAME                   128

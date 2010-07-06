@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 10.00
 # Visual Studio 2008
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "launch3", "launch3\launch3.vcproj", "{701B5071-EBE6-463C-A4DD-E34E84AB77DC}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "launch3", "launcher\launcher.vcproj", "{701B5071-EBE6-463C-A4DD-E34E84AB77DC}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "rcon", "rcon\rcon.vcproj", "{FA5AD173-A683-4306-8A72-0601B63E9313}"
 EndProject

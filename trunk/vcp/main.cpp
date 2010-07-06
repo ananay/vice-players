@@ -79,7 +79,7 @@ BOOL WINAPI DllMain(HINSTANCE hinstDLL, DWORD fdwReason, LPVOID lpvReserved)
 		if(tSettings.bDebug || tSettings.bPlayOnline) {
 			// Check the GTA version
 			if(DetermineGTAVersion() != VICE_10) {
-				MessageBox(0,"Incorrect gta-vc.exe version detected.\nYou must use GTA:VC 1.0 to play VC:MP","VC:MP Error",MB_OK);
+				MessageBox(0,"Incorrect gta-vc.exe version detected.\nYou must use GTA:VC 1.0 to play Vice City: Players","Vice City: Players Error",MB_OK);
 				SetForegroundWindow(HWND_DESKTOP);
 				ExitProcess(1);
 			}

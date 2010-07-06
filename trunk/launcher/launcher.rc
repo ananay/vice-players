@@ -50,7 +50,7 @@ BEGIN
     "LANGUAGE 9, 1\r\n"
     "#pragma code_page(1252)\r\n"
     "#endif //_WIN32\r\n"
-    "#include ""res\\launch3.rc2""  // non-Microsoft Visual C++ edited resources\r\n"
+    "#include ""res\\launcher.rc2""  // non-Microsoft Visual C++ edited resources\r\n"
     "#include ""afxres.rc""         // Standard components\r\n"
     "#endif\r\n"
     "\0"
@@ -66,7 +66,7 @@ END
 
 // Icon with lowest ID value placed first to ensure application icon
 // remains consistent on all systems.
-IDR_MAINFRAME           ICON                    "res\\launch3.ico"
+IDR_MAINFRAME           ICON                    "res\\launcher.ico"
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -76,7 +76,7 @@ IDR_MAINFRAME           ICON                    "res\\launch3.ico"
 IDD_LAUNCH3_DIALOG DIALOGEX 0, 0, 267, 228
 STYLE DS_SETFONT | DS_MODALFRAME | WS_MINIMIZEBOX | WS_VISIBLE | WS_CAPTION | WS_SYSMENU
 EXSTYLE WS_EX_APPWINDOW
-CAPTION "VC:MP dev-release 0.1b launcher"
+CAPTION "Vice City: Players Launcher"
 FONT 8, "MS Sans Serif", 0, 0, 0x1
 BEGIN
     GROUPBOX        "Host Game",IDC_STATIC,7,104,253,45
@@ -91,7 +91,7 @@ BEGIN
     EDITTEXT        IDC_SERVER_PASS_ADMIN,64,198,120,12,ES_AUTOHSCROLL
     LTEXT           "Password",IDC_STATIC,64,189,70,9
     PUSHBUTTON      "Start Rcon",IDC_BUTTON3,193,173,59,14
-    GROUPBOX        "Play VC:MP",IDC_STATIC,7,7,253,92
+    GROUPBOX        "Play Vice City: Players",IDC_STATIC,7,7,253,92
     LTEXT           "Nickname",IDC_STATIC,15,19,165,8
     EDITTEXT        IDC_NICK,15,28,168,12,ES_AUTOHSCROLL
     LTEXT           "Server IP",IDC_STATIC,15,44,167,9
@@ -134,7 +134,7 @@ BEGIN
             VALUE "InternalName", "launch3"
             VALUE "LegalCopyright", "Copyright (C) 2005"
             VALUE "OriginalFilename", "vc-mp.EXE"
-            VALUE "ProductName", "launch3 Application"
+            VALUE "ProductName", "launcher Application"
             VALUE "ProductVersion", "1, 0, 0, 1"
         END
     END
@@ -183,7 +183,7 @@ END
 LANGUAGE 9, 1
 #pragma code_page(1252)
 #endif //_WIN32
-#include "res\launch3.rc2"  // non-Microsoft Visual C++ edited resources
+#include "res\launcher.rc2"  // non-Microsoft Visual C++ edited resources
 #include "afxres.rc"         // Standard components
 #endif
 

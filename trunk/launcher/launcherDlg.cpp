@@ -2,21 +2,20 @@
 //
 
 #include "stdafx.h"
-#include "launch3.h"
-#include "launch3Dlg.h"
+#include "launcher.h"
+#include "launcherDlg.h"
 #include <stdio.h>
 #include <windows.h>
 #include <tlhelp32.h>
-
-#include <htmlhelp.h>
-#pragma comment(lib,"htmlhelp.lib ")
-
 #include <stdlib.h>
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #undef THIS_FILE
 static char THIS_FILE[] = __FILE__;
+#define CLIENT_DLL "vcp_d.dll"
+#else
+#define CLIENT_DLL "vcp.dll"
 #endif
 
 /////////////////////////////////////////////////////////////////////////////
@@ -131,28 +130,28 @@ bool InjectLibraryIntoProcess(DWORD dwProcessId, char * szLibraryPath)
 }
 
 /////////////////////////////////////////////////////////////////////////////
-// CLaunch3Dlg dialog
+// CLauncherDlg dialog
 
-CLaunch3Dlg::CLaunch3Dlg(CWnd* pParent /*=NULL*/)
-	: CDialog(CLaunch3Dlg::IDD, pParent)
+CLauncherDlg::CLauncherDlg(CWnd* pParent /*=NULL*/)
+	: CDialog(CLauncherDlg::IDD, pParent)
 {
-	//{{AFX_DATA_INIT(CLaunch3Dlg)
+	//{{AFX_DATA_INIT(CLauncherDlg)
 		// NOTE: the ClassWizard will add member initialization here
 	//}}AFX_DATA_INIT
 	m_hIcon = AfxGetApp()->LoadIcon(IDR_MAINFRAME);
 }
 
-void CLaunch3Dlg::DoDataExchange(CDataExchange* pDX)
+void CLauncherDlg::DoDataExchange(CDataExchange* pDX)
 {
 	CDialog::DoDataExchange(pDX);
-	//{{AFX_DATA_MAP(CLaunch3Dlg)
+	//{{AFX_DATA_MAP(CLauncherDlg)
 	// NOTE: the ClassWizard will add DDX and DDV calls here
 	//}}AFX_DATA_MAP
 	DDX_Control(pDX, IDC_CHECK1, m_windowedCheckBox);
 }
 
-BEGIN_MESSAGE_MAP(CLaunch3Dlg, CDialog)
-	//{{AFX_MSG_MAP(CLaunch3Dlg)
+BEGIN_MESSAGE_MAP(CLauncherDlg, CDialog)
+	//{{AFX_MSG_MAP(CLauncherDlg)
 	ON_WM_PAINT()
 	ON_WM_QUERYDRAGICON()
 	ON_EN_CHANGE(IDC_NICK, OnChangeNick)
@@ -178,9 +177,9 @@ return app_str;
 }
 
 /////////////////////////////////////////////////////////////////////////////
-// CLaunch3Dlg message handlers
+// CLauncherDlg message handlers
 
-BOOL CLaunch3Dlg::OnInitDialog()
+BOOL CLauncherDlg::OnInitDialog()
 {
 	CDialog::OnInitDialog();
 
@@ -272,7 +271,7 @@ BOOL CLaunch3Dlg::OnInitDialog()
 //  to draw the icon.  For MFC applications using the document/view model,
 //  this is automatically done for you by the framework.
 
-void CLaunch3Dlg::OnPaint() 
+void CLauncherDlg::OnPaint() 
 {
 	if (IsIconic())
 	{
@@ -297,12 +296,12 @@ void CLaunch3Dlg::OnPaint()
 	}
 }
 
-HCURSOR CLaunch3Dlg::OnQueryDragIcon()
+HCURSOR CLauncherDlg::OnQueryDragIcon()
 {
 	return (HCURSOR) m_hIcon;
 }
 
-void CLaunch3Dlg::OnChangeNick() 
+void CLauncherDlg::OnChangeNick() 
 {
 	// TODO: If this is a RICHEDIT control, the control will not
 	// send this notification unless you override the CDialog::OnInitDialog()
@@ -312,7 +311,7 @@ void CLaunch3Dlg::OnChangeNick()
 	// TODO: Add your control notification handler code here
 }
 
-void CLaunch3Dlg::OnLaunch() 
+void CLauncherDlg::OnLaunch() 
 {
 	char szParams[1024];
 	char szNick[32];
@@ -383,12 +382,12 @@ void CLaunch3Dlg::OnLaunch()
 
 	// Get the library path
 	char szLibraryPath[1024];
-	sprintf(szLibraryPath, "%svcmp.dll", GetAppPath());
+	sprintf(szLibraryPath, "%s" CLIENT_DLL, GetAppPath());
 
 	// Check if vcmp.dll exists
 	WIN32_FIND_DATA fdFileInfo;
 	if(FindFirstFile(szLibraryPath, &fdFileInfo) == INVALID_HANDLE_VALUE) {
-		MessageBox("Couldn't find vcmp.dll.");
+		MessageBox("Couldn't find " CLIENT_DLL ".");
 		return;
 	}
 
@@ -404,14 +403,14 @@ void CLaunch3Dlg::OnLaunch()
 	siStartupInfo.cb = sizeof(siStartupInfo);
 	if(!CreateProcess(szGtaExe, szParams, NULL, NULL, TRUE, CREATE_SUSPENDED, NULL, GetAppPath(), &siStartupInfo, 
 		&piProcessInfo)) {
-		MessageBox("Couldn't launch gta-vc.exe.\nDid you install vc-mp to your Vice City directory?");
+		MessageBox("Couldn't launch gta-vc.exe.\nDid you install Vice City: Players to your Vice City directory?");
 		return;
 	}
 
 	// Inject our code into LaunchGTAIV.exe
 	if(!InjectLibraryIntoProcess(piProcessInfo.dwProcessId, szLibraryPath)) {
 		TerminateProcess(piProcessInfo.hProcess, 0);
-		MessageBox("Couldn't inject vcmp.dll.");
+		MessageBox("Couldn't inject " CLIENT_DLL ".");
 		return;
 	}
 
@@ -419,19 +418,18 @@ void CLaunch3Dlg::OnLaunch()
 	ResumeThread(piProcessInfo.hThread);
 }
 
-void CLaunch3Dlg::OnButton2() 
+void CLauncherDlg::OnButton2() 
 {
 	this->OnCancel();	
 }
 
 
-void CLaunch3Dlg::OnHelpButton() 
+void CLauncherDlg::OnHelpButton() 
 {
 	ShellExecute(m_hWnd, "open","vcmp\\vc-mp.chm", NULL, NULL, SW_SHOWNORMAL);	
-	//HtmlHelpA(m_hWnd,"vcmp\\vc-mp.chm",HH_DISPLAY_TOPIC,0);
 }
 
-void CLaunch3Dlg::OnStartServer()
+void CLauncherDlg::OnStartServer()
 {
 	char szServerConfig[256];
 
@@ -440,7 +438,7 @@ void CLaunch3Dlg::OnStartServer()
 	ShellExecute(m_hWnd, "open","vcmp-svr.exe", szServerConfig, NULL, SW_SHOWNORMAL);
 }
 
-void CLaunch3Dlg::OnButton3() 
+void CLauncherDlg::OnButton3() 
 {
 	char szRConHost[128];
 	char szRConPort[32];

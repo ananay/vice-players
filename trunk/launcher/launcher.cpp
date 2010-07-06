@@ -2,8 +2,8 @@
 //
 
 #include "stdafx.h"
-#include "launch3.h"
-#include "launch3Dlg.h"
+#include "launcher.h"
+#include "launcherDlg.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -12,34 +12,34 @@ static char THIS_FILE[] = __FILE__;
 #endif
 
 /////////////////////////////////////////////////////////////////////////////
-// CLaunch3App
+// CLauncherApp
 
-BEGIN_MESSAGE_MAP(CLaunch3App, CWinApp)
-	//{{AFX_MSG_MAP(CLaunch3App)
+BEGIN_MESSAGE_MAP(CLauncherApp, CWinApp)
+	//{{AFX_MSG_MAP(CLauncherApp)
 	//}}AFX_MSG
 	ON_COMMAND(ID_HELP, CWinApp::OnHelp)
 END_MESSAGE_MAP()
 
 /////////////////////////////////////////////////////////////////////////////
-// CLaunch3App construction
+// CLauncherApp construction
 
-CLaunch3App::CLaunch3App()
+CLauncherApp::CLauncherApp()
 {
 }
 
 /////////////////////////////////////////////////////////////////////////////
-// The one and only CLaunch3App object
+// The one and only CLauncherApp object
 
-CLaunch3App theApp;
+CLauncherApp theApp;
 
 /////////////////////////////////////////////////////////////////////////////
-// CLaunch3App initialization
+// CLauncherApp initialization
 
-BOOL CLaunch3App::InitInstance()
+BOOL CLauncherApp::InitInstance()
 {
 	// Standard initialization
 
-	CLaunch3Dlg dlg;
+	CLauncherDlg dlg;
 	m_pMainWnd = &dlg;
 	int nResponse = dlg.DoModal();
 	if (nResponse == IDOK)
