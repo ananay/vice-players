@@ -18,7 +18,7 @@ CRconClient::CRconClient(char* szHostOrIp, int iPort, char* szPass)
 {
 	m_pRakPeer = RakPeerInterface::GetInstance();
 	m_pRakPeer->Startup(1, &SocketDescriptor(), 1);
-	if (!m_pRakPeer->Connect(szHostOrIp, (WORD)iPort, szPass, strlen(szPass)))
+	if (m_pRakPeer->Connect(szHostOrIp, (WORD)iPort, szPass, strlen(szPass)) == -1)
 	{
 		logprintf("Connection failed.");
 	} else {
@@ -41,7 +41,7 @@ void CRconClient::Command(char* szCommand)
 	bsCommand.Write(bytePacketId);
 	DWORD dwCmdLen = (DWORD)strlen(szCommand);
 	bsCommand.Write(dwCmdLen);
-	bsCommand.Write(szCommand, dwCmdLen);
+	bsCommand.Write(szCommand,dwCmdLen);
 	m_pRakPeer->Send(&bsCommand, HIGH_PRIORITY, RELIABLE, 0, UNASSIGNED_SYSTEM_ADDRESS, TRUE);
 }
 
@@ -123,13 +123,16 @@ void CRconClient::Packet_InvalidPassword(Packet* pPacket)
 
 void CRconClient::Packet_RconResponce(Packet* pPacket)
 {
+	RakNet::BitStream bs(pPacket->data, pPacket->length, false);
+	BYTE packetid;
 	DWORD dwResponceLen;
-	memcpy(&dwResponceLen, &pPacket->data[1], 4);
-	char* szResponce = (char*)malloc(dwResponceLen+1);
-	memcpy(szResponce, &pPacket->data[5], dwResponceLen);
-	szResponce[dwResponceLen] = 0;
+	char szResponce[256];
+
+	bs.Read(packetid);
+	bs.Read(dwResponceLen);
+	bs.Read(szResponce,dwResponceLen);
+
+	szResponce[dwResponceLen] = '\0';
 
 	logprintf(szResponce);
-
-	free(szResponce);
 }

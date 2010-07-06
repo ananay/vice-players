@@ -135,11 +135,16 @@ void CRcon::Packet_ConnectionLost(RakNet::Packet* pPacket)
 
 void CRcon::Packet_RconCommand(RakNet::Packet* pPacket)
 {
+	RakNet::BitStream bs(pPacket->data, pPacket->length, false);
+	BYTE packetid;
 	DWORD dwCmdLen;
-	memcpy(&dwCmdLen, &pPacket->data[1], 4);
-	char* cmd = (char*)malloc(dwCmdLen+1);
-	memcpy(cmd, &pPacket->data[5], dwCmdLen);
-	cmd[dwCmdLen] = 0;
+	char cmd[256];
+
+	bs.Read(packetid);
+	bs.Read(dwCmdLen);
+	bs.Read(cmd,dwCmdLen);
+
+	cmd[dwCmdLen] = '\0';
 
 	char* rconcmd = strtok(cmd, " ");
 	char* arg = strtok(NULL, " ");
@@ -213,14 +218,10 @@ void CRcon::Packet_RconCommand(RakNet::Packet* pPacket)
 		}
 		else
 		{
-			if(!pScripts->onRconCommand(rconcmd, arg))
-			{
-				ConsoleOutput("Unknown command.");
-			}
+			pScripts->onRconCommand(rconcmd, arg);
 		}
 	}
 
-	free(cmd);
 }
 
 

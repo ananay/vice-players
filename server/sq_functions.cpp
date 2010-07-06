@@ -786,6 +786,32 @@ SQInteger sq_fadeScreen(SQVM * pVM)
 	return 1;
 }
 
+SQInteger sq_kickPlayer(SQVM * pVM)
+{
+	SQInteger playerSystemAddress;
+
+	sq_getinteger(pVM, -1, &playerSystemAddress);
+
+	if(pNetGame->GetPlayerPool()->GetSlotState(playerSystemAddress))
+	{
+		pNetGame->KickPlayer(playerSystemAddress);
+		sq_pushbool(pVM, true);
+		return 1;
+	}
+	sq_pushbool(pVM, false);
+	return 1;
+}
+
+SQInteger sq_banIP(SQVM * pVM)
+{
+	const char * banmask;
+	sq_getstring(pVM, -1, &banmask);
+
+	pNetGame->AddBan((char*)banmask);
+	sq_pushbool(pVM, true);
+	return 1;
+}
+
 // addPlayerClass
 SQInteger sq_addPlayerClass(SQVM * pVM)
 {
@@ -906,6 +932,8 @@ SQInteger sq_setGameTime(SQVM * pVM)
 static SQRegFunction vcmp_funcs[]={
 	// put functions here
 	//_DECL_FUNC(func_name,func_params,_SC(func_param_template)),
+	_DECL_FUNC(kickPlayer, 2, _SC(".n")),
+	_DECL_FUNC(banIP, 2, _SC(".s")),
 	_DECL_FUNC(setGameTime, 3, _SC(".nn")),
 	_DECL_FUNC(setPlayerTime, 4, _SC(".nnn")),
 	_DECL_FUNC(getPlayerName, 2, _SC(".n")),
