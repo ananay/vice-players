@@ -103,7 +103,7 @@ bool CScripts::LoadScript(const char * szScriptName)
 	// get the script vm pointer
 	SQVM * pVM = m_pScripts[iSlot];
 
-	// register the default error handles
+	// register the default error handlers
 	sqstd_seterrorhandlers(pVM);
 
 	// set the print and error functions

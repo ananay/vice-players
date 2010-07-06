@@ -107,18 +107,12 @@ void CPlayer::BroadcastSyncData()
 		bsSync.Write(m_byteArmour);
 		bsSync.Write(m_byteCurrentWeapon);
 
-		if(IS_FIRING(m_wKeys)) {
+		//if(IS_FIRING(m_wKeys)) {
 			// aiming
-			bsSync.Write(m_Aiming.f1x);
-			bsSync.Write(m_Aiming.f1y);
-			bsSync.Write(m_Aiming.f1z);
-			bsSync.Write(m_Aiming.f2x);
-			bsSync.Write(m_Aiming.f2y);
-			bsSync.Write(m_Aiming.f2z);
-			bsSync.Write(m_Aiming.pos1x);
-			bsSync.Write(m_Aiming.pos1y);
-			bsSync.Write(m_Aiming.pos1z);
-		}
+			bsSync.Write((char *)&m_Aiming.vecA1, sizeof(VECTOR));
+			bsSync.Write((char *)&m_Aiming.vecA2, sizeof(VECTOR));
+			bsSync.Write((char *)&m_Aiming.vecAPos1, sizeof(VECTOR));
+		//}
 		
 		pNetGame->BroadcastData(&bsSync,HIGH_PRIORITY,UNRELIABLE_SEQUENCED,0,m_byteSystemAddress);
 	}
