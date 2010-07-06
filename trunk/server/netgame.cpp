@@ -282,6 +282,7 @@ void CNetGame::VehicleSync(Packet *p)
 		pPlayer->SetReportedArmour(bytePlayerArmour);
 
 		pScripts->onPlayerSync((BYTE)p->systemAddress.systemIndex);
+		pScripts->onVehicleSync(byteVehicleID);
 	}
 }
 

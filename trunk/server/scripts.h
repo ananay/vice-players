@@ -63,4 +63,5 @@ public:
 
 	void onVehicleCreate(int vehicleid);
 	void onVehicleDestroy(int vehicleid);
+	void onVehicleSync(int vehicleid);
 };
