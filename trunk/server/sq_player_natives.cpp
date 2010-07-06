@@ -805,24 +805,28 @@ SQInteger sq_getPlayerTeam(SQVM * pVM)
 // addPlayerClass
 SQInteger sq_addPlayerClass(SQVM * pVM)
 {
-	SQInteger team, model, weapon1, weapon2, weapon3, ammo1, ammo2, ammo3;
-	float x, y, z, rot;
-	sq_getinteger(pVM, -12, &team);
-	sq_getinteger(pVM, -11, &model);
-	sq_getfloat(pVM, -10, &x);
-	sq_getfloat(pVM, -9, &y);
-	sq_getfloat(pVM, -8, &z);
-	sq_getfloat(pVM, -7, &rot);
-	sq_getinteger(pVM, -6, &weapon1);
-	sq_getinteger(pVM, -5, &ammo1);
-	sq_getinteger(pVM, -4, &weapon2);
-	sq_getinteger(pVM, -3, &ammo2);
-	sq_getinteger(pVM, -2, &weapon3);
-	sq_getinteger(pVM, -1, &ammo3);
-	int classid = pNetGame->GetGameLogic()->addPlayerClass(team, model, x, y, z, rot,
-								weapon1, ammo1,
-								weapon2, ammo2,
-								weapon3, ammo3);
+	int iTeam;
+	int iModel;
+	int iWeapons[3];
+	int iAmmo[3];
+	VECTOR vecPosition;
+	float fRotation;
+
+	sq_getinteger(pVM, -12, &iTeam);
+	sq_getinteger(pVM, -11, &iModel);
+	sq_getfloat(pVM, -10, &vecPosition.X);
+	sq_getfloat(pVM, -9, &vecPosition.Y);
+	sq_getfloat(pVM, -8, &vecPosition.Z);
+	sq_getfloat(pVM, -7, &fRotation);
+	sq_getinteger(pVM, -6, &iWeapons[0]);
+	sq_getinteger(pVM, -5, &iAmmo[0]);
+	sq_getinteger(pVM, -4, &iWeapons[1]);
+	sq_getinteger(pVM, -3, &iAmmo[1]);
+	sq_getinteger(pVM, -2, &iWeapons[2]);
+	sq_getinteger(pVM, -1, &iAmmo[2]);
+
+	int classid = pNetGame->GetGameLogic()->AddPlayerClass(iTeam, iModel, vecPosition.X, vecPosition.Y, vecPosition.Z, 
+		fRotation, iWeapons[0], iAmmo[0], iWeapons[1], iAmmo[1], iWeapons[2], iAmmo[2]);
 
 	sq_pushinteger(pVM, classid);
 	return 1;

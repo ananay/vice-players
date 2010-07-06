@@ -480,8 +480,7 @@ BOOL _stdcall IsFriendlyFire(PED_TYPE *pPlayer,DWORD *pdwEnt, int iWeapon, float
 	BYTE byteLocalPlayerTeam;
 
 	if(pPlayer == GamePool_FindPlayerPed()) {
-		if(pNetGame && pNetGame->m_byteFriendlyFire) {
-			
+		if(pNetGame && pNetGame->GetFriendlyFire()) {
 			pPlayerPool = pNetGame->GetPlayerPool();
 			pLocalPlayer = pPlayerPool->GetLocalPlayer();
 			byteLocalPlayerTeam = pLocalPlayer->GetTeam();

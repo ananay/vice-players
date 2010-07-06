@@ -65,7 +65,16 @@ private:
 	DWORD				m_dwLastScoreUpdateTick;
 	UINT				m_uiLastRandSeed;
 
+	// TODO: Make private
+public:
+	VECTOR				m_vecInitPlayerPos;
+	VECTOR				m_vecInitCameraPos;
+	VECTOR				m_vecInitCameraLook;
+	float				m_WorldBounds[4]; // pos_x neg_x pos_y neg_y
+	BYTE				m_byteFriendlyFire;
+	BYTE				m_byteShowOnRadar;
 
+private:
 	void UpdateNetwork();
 
 	void PlayerSync(Packet *p);
@@ -73,14 +82,6 @@ private:
 	void ConnectionSucceeded(Packet *p);
 
 public:
-	VECTOR m_vecInitPlayerPos;
-	VECTOR m_vecInitCameraPos;
-	VECTOR m_vecInitCameraLook;
-	float	 m_WorldBounds[4]; // pos_x neg_x pos_y neg_y
-	int		 m_iSpawnsAvailable;
-	BYTE	 m_byteFriendlyFire;
-	BYTE	 m_byteShowOnRadar;
-
 	CNetGame(PCHAR szHostOrIp,int iPort,PCHAR szPlayerName,PCHAR szPass);
 	~CNetGame();
 
@@ -92,6 +93,8 @@ public:
 	RakPeerInterface * GetRakPeer() { return m_pRakPeer; };
 	RPC4 * GetRPC4() { return m_pRPC4; };
 	CGameModeGeneric * GetGameLogic() { return m_pGameLogic; };
+	BYTE GetFriendlyFire() { return m_byteFriendlyFire; };
+
 	void InitGameLogic();
 	void Process();
 	void UpdatePlayerScoresAndPings();

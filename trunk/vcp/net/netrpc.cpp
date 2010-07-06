@@ -92,7 +92,6 @@ void InitGame(RakNet::BitStream *bitStream, Packet *packet)
 	bitStream->Read(pNetGame->m_WorldBounds[1]);
 	bitStream->Read(pNetGame->m_WorldBounds[2]);
 	bitStream->Read(pNetGame->m_WorldBounds[3]);
-	bitStream->Read(pNetGame->m_iSpawnsAvailable);
 	bitStream->Read(pNetGame->m_byteFriendlyFire);
 	bitStream->Read(byteMySystemAddress);
 
@@ -157,34 +156,33 @@ void Passenger(RakNet::BitStream *bitStream, Packet *packet)
 
 void RequestClass(RakNet::BitStream *bitStream, Packet *packet)
 {
-	BYTE byteRequestOutcome=0;
+	BYTE byteOutcome;
+	int iRequestedClass;
 	PLAYER_SPAWN_INFO SpawnInfo;
-	CLocalPlayer *pPlayer = pNetGame->GetPlayerPool()->GetLocalPlayer();
+	CLocalPlayer * pPlayer = pNetGame->GetPlayerPool()->GetLocalPlayer();
+	CGameModeGeneric * pGameLogic = pNetGame->GetGameLogic();
 
-	bitStream->Read(byteRequestOutcome);
-	bitStream->Read(SpawnInfo.byteTeam);
-	bitStream->Read(SpawnInfo.byteSkin);
-	bitStream->Read((char *)&SpawnInfo.vecPos, sizeof(VECTOR));
-	bitStream->Read(SpawnInfo.fRotation);
-	bitStream->Read(SpawnInfo.iSpawnWeapons[0]);
-	bitStream->Read(SpawnInfo.iSpawnWeaponsAmmo[0]);
-	bitStream->Read(SpawnInfo.iSpawnWeapons[1]);
-	bitStream->Read(SpawnInfo.iSpawnWeaponsAmmo[1]);
-	bitStream->Read(SpawnInfo.iSpawnWeapons[2]);
-	bitStream->Read(SpawnInfo.iSpawnWeaponsAmmo[2]);
+	bitStream->Read(byteOutcome);
+	if(byteOutcome) {
+		bitStream->Read(iRequestedClass);
+		bitStream->Read(SpawnInfo.byteTeam);
+		bitStream->Read(SpawnInfo.byteSkin);
+		bitStream->Read((char *)&SpawnInfo.vecPos, sizeof(VECTOR));
+		bitStream->Read(SpawnInfo.fRotation);
+		bitStream->Read(SpawnInfo.iSpawnWeapons[0]);
+		bitStream->Read(SpawnInfo.iSpawnWeaponsAmmo[0]);
+		bitStream->Read(SpawnInfo.iSpawnWeapons[1]);
+		bitStream->Read(SpawnInfo.iSpawnWeaponsAmmo[1]);
+		bitStream->Read(SpawnInfo.iSpawnWeapons[2]);
+		bitStream->Read(SpawnInfo.iSpawnWeaponsAmmo[2]);
 
-
-	if(byteRequestOutcome) {
+		pGameLogic->SetSelectedClass(iRequestedClass);
 		pPlayer->SetSpawnInfo(SpawnInfo.byteTeam,SpawnInfo.byteSkin,&SpawnInfo.vecPos,
 			SpawnInfo.fRotation,
 			SpawnInfo.iSpawnWeapons[0],SpawnInfo.iSpawnWeaponsAmmo[0],
 			SpawnInfo.iSpawnWeapons[1],SpawnInfo.iSpawnWeaponsAmmo[1],
 			SpawnInfo.iSpawnWeapons[2],SpawnInfo.iSpawnWeaponsAmmo[2]);
-
-		pNetGame->GetGameLogic()->HandleClassSelectionOutcome(&SpawnInfo, TRUE);
-	}
-	else {
-		pNetGame->GetGameLogic()->HandleClassSelectionOutcome(NULL,FALSE);
+		pGameLogic->HandleClassSelectionOutcome(&SpawnInfo, byteOutcome);
 	}
 }
 

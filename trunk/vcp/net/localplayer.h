@@ -83,7 +83,7 @@ public:
 	
 	void SendWastedNotification();
 	
-	void RequestClass(BYTE byteClass);
+	void RequestClass(int iClass);
 
 	void SetSpawnInfo(BYTE byteTeam, BYTE byteSkin, VECTOR * vecPos, float fRotation,
 		int iSpawnWeapon1, int iSpawnWeapon1Ammo, int iSpawnWeapon2, int iSpawnWeapon2Ammo,

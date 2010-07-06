@@ -376,10 +376,10 @@ void CLocalPlayer::SendWastedNotification()
 
 //----------------------------------------------------------
 
-void CLocalPlayer::RequestClass(BYTE byteClass)
+void CLocalPlayer::RequestClass(int iClass)
 {
 	RakNet::BitStream bsSpawnRequest;
-	bsSpawnRequest.Write(byteClass);
+	bsSpawnRequest.Write(iClass);
 	pNetGame->GetRPC4()->Call("RequestClass",&bsSpawnRequest,HIGH_PRIORITY,RELIABLE,0,UNASSIGNED_SYSTEM_ADDRESS,TRUE);
 }
 

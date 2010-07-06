@@ -98,7 +98,6 @@ void ClientJoin(RakNet::BitStream *bitStream, Packet *packet)
 	bsInitGame.Write(pNetGame->m_WorldBounds[1]);
 	bsInitGame.Write(pNetGame->m_WorldBounds[2]);
 	bsInitGame.Write(pNetGame->m_WorldBounds[3]);
-	bsInitGame.Write(pNetGame->m_iSpawnsAvailable);
 	bsInitGame.Write(pNetGame->m_byteFriendlyFire);
 	bsInitGame.Write(pNetGame->m_byteShowOnRadar);
 	bsInitGame.Write(byteSystemAddress);
@@ -132,8 +131,6 @@ void ClientJoin(RakNet::BitStream *bitStream, Packet *packet)
 			if(pVehicle->IsActive()) pVehicle->SpawnForPlayer(byteSystemAddress);
 		}
 	}
-
-	pNetGame->GetGameLogic()->HandleClientJoin(byteSystemAddress);
 }
 
 //----------------------------------------------------
@@ -197,40 +194,40 @@ void ChatCommand(RakNet::BitStream *bitStream, Packet *packet)
 
 void RequestClass(RakNet::BitStream *bitStream, Packet *packet)
 {
-	
-	BYTE byteRequestedClass;
-	BYTE byteRequestOutcome = 0;
+	// TODO: Make this cancelable sometime
+	BYTE byteOutcome = 1;
+	int iRequestedClass;
 	BYTE byteSystemAddress = (BYTE)packet->guid.systemIndex;
-	bitStream->Read(byteRequestedClass);
+	bitStream->Read(iRequestedClass);
 
 	if(!pNetGame->GetPlayerPool()->GetSlotState(byteSystemAddress)) return;
 	
-	if(pNetGame->GetGameLogic()->HandleSpawnClassRequest(byteSystemAddress,byteRequestedClass)) 
-	{
-		byteRequestOutcome = 1;
-	}
+	iRequestedClass = pNetGame->GetGameLogic()->HandleSpawnClassRequest(byteSystemAddress, iRequestedClass);
 
 	RakNet::BitStream bsSpawnRequestReply;
-	CPlayer *pPlayer=pNetGame->GetPlayerPool()->GetAt(byteSystemAddress);
-	PLAYER_SPAWN_INFO *SpawnInfo = pPlayer->GetSpawnInfo();
+	CPlayer * pPlayer = pNetGame->GetPlayerPool()->GetAt(byteSystemAddress);
+	PLAYER_SPAWN_INFO * SpawnInfo = pPlayer->GetSpawnInfo();
 
-	bsSpawnRequestReply.Write(byteRequestOutcome);
-	bsSpawnRequestReply.Write(SpawnInfo->byteTeam);
-	bsSpawnRequestReply.Write(SpawnInfo->byteSkin);
-	bsSpawnRequestReply.Write((char*)&SpawnInfo->vecPos, sizeof(VECTOR));
-	bsSpawnRequestReply.Write(SpawnInfo->fRotation);
-	bsSpawnRequestReply.Write(SpawnInfo->iSpawnWeapons[0]);
-	bsSpawnRequestReply.Write(SpawnInfo->iSpawnWeaponsAmmo[0]);
-	bsSpawnRequestReply.Write(SpawnInfo->iSpawnWeapons[1]);
-	bsSpawnRequestReply.Write(SpawnInfo->iSpawnWeaponsAmmo[1]);
-	bsSpawnRequestReply.Write(SpawnInfo->iSpawnWeapons[2]);
-	bsSpawnRequestReply.Write(SpawnInfo->iSpawnWeaponsAmmo[2]);
+	// TODO: This call should decide the outcome
+	pScripts->onPlayerRequestClass(byteSystemAddress, iRequestedClass);
 
-	pNetGame->GetRPC4()->Call("RequestClass", &bsSpawnRequestReply,HIGH_PRIORITY,RELIABLE,0,packet->guid,false);
+	bsSpawnRequestReply.Write(byteOutcome);
+	if(byteOutcome) {
+		bsSpawnRequestReply.Write(iRequestedClass);
+		bsSpawnRequestReply.Write(SpawnInfo->byteTeam);
+		bsSpawnRequestReply.Write(SpawnInfo->byteSkin);
+		bsSpawnRequestReply.Write((char *)&SpawnInfo->vecPos, sizeof(VECTOR));
+		bsSpawnRequestReply.Write(SpawnInfo->fRotation);
+		bsSpawnRequestReply.Write(SpawnInfo->iSpawnWeapons[0]);
+		bsSpawnRequestReply.Write(SpawnInfo->iSpawnWeaponsAmmo[0]);
+		bsSpawnRequestReply.Write(SpawnInfo->iSpawnWeapons[1]);
+		bsSpawnRequestReply.Write(SpawnInfo->iSpawnWeaponsAmmo[1]);
+		bsSpawnRequestReply.Write(SpawnInfo->iSpawnWeapons[2]);
+		bsSpawnRequestReply.Write(SpawnInfo->iSpawnWeaponsAmmo[2]);
 
-	pScripts->onPlayerRequestClass(byteSystemAddress, byteRequestedClass);
+		pNetGame->GetRPC4()->Call("RequestClass", &bsSpawnRequestReply ,HIGH_PRIORITY, RELIABLE, 0, packet->guid, false);
+	}
 }
-
 
 //----------------------------------------------------
 // Sent by client when they're spawning/respawning.
