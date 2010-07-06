@@ -28,7 +28,7 @@ function onServerInit()
 function onPlayerConnect(playerid)
 {
 	print("Connect: [ID: " + playerid + "] [Name: " + getPlayerName(playerid) + "] [IP: " + getPlayerIP(playerid) + "]");
-	sendPlayerMessage(playerid, 0xE60000FF, "Connected to the server " + getPlayerName(playerid));
+	sendPlayerMessageToAll(0xE60000FF, "Connected to the server " + getPlayerName(playerid));
 }
 
 
@@ -41,15 +41,14 @@ function onPlayerDisconnect(playerid, reason)
 function onPlayerSpawn(playerid)
 {
 	print("Spawn: [ID: " + playerid + "]");
-	sendPlayerMessage(playerid, 0xE60000FF, "Spawned on the server " + getPlayerName(playerid));
+	sendPlayerMessageToAll(0xE60000FF, "Spawned on the server " + getPlayerName(playerid));
 	setPlayerTime(playerid, 0, 0);
 }
 
 
 function onPlayerText(playerid, text)
 {
-	sendMessageAsPlayer(playerid, "[" + playerid + "] " + text);
-	return 0;
+	return true;
 }
 
 function onPlayerCommand(playerid, cmdtext)
