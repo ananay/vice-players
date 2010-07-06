@@ -53,12 +53,15 @@ public:
 	VECTOR					m_vecTurnSpeed;
 	float					m_fHealth;
 	BOOL					m_bHasHadUpdate;
+	int						m_Colors[2];
 
 	CVehicle(BYTE byteModel,VECTOR *vecPos,float fRotation,int iColor1,int iColor2);
 	~CVehicle();
 
 	void SetHealth(float newHealth);
+	float GetHealth() { return m_fHealth; };
 	void SetColor(int color1, int color2);
+	int *GetColor() { return (int*)&m_Colors; }
 
 	BOOL IsActive() { return m_bIsActive; };
 	BOOL IsWasted() { return m_bIsWasted; };

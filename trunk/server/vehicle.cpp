@@ -66,6 +66,9 @@ CVehicle::CVehicle( BYTE byteModel, VECTOR *vecPos,
 	m_bHasHadUpdate = FALSE;
 	m_byteDriverID = INVALID_ID;
 	m_fHealth = 1000.0f;
+
+	m_Colors[0] = iColor1;
+	m_Colors[1] = iColor2;
 }
 
 CVehicle::~CVehicle()
@@ -161,6 +164,8 @@ void CVehicle::SetColor(int color1, int color2)
 			pNetGame->GetRPC4()->Call("Script_SetVehicleColor",&bsSend,HIGH_PRIORITY,RELIABLE,0,pNetGame->GetRakPeer()->GetSystemAddressFromIndex(i),false);
 		}
 	}
+	m_Colors[0] = color1;
+	m_Colors[1] = color2;
 }
 
 //----------------------------------------------------------
