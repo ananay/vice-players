@@ -151,8 +151,7 @@ void Chat(RakNet::BitStream *bitStream, Packet *packet)
 
 	if(!pPool->GetSlotState((BYTE)packet->guid.systemIndex)) return;
 
-	if(pScripts->onPlayerText((BYTE)packet->guid.systemIndex, szText) == false)
-		return;
+	pScripts->onPlayerText((BYTE)packet->guid.systemIndex, szText);
 
 	logprintf("[%s]: %s",
 		pPool->GetPlayerName((BYTE)packet->guid.systemIndex),
@@ -168,7 +167,7 @@ void Chat(RakNet::BitStream *bitStream, Packet *packet)
 	bsSend.Write(byteTextLen);
 	bsSend.Write(szText,byteTextLen);
 
-	pNetGame->GetRPC4()->Call("Chat", &bsSend,HIGH_PRIORITY,RELIABLE,0,UNASSIGNED_SYSTEM_ADDRESS,true);
+	pNetGame->GetRPC4()->Call("Chat", &bsSend,HIGH_PRIORITY,RELIABLE,0,packet->guid,true);
 
 }
 
