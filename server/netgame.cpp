@@ -74,7 +74,6 @@ CNetGame::CNetGame(int iMaxPlayers, int iPort, int iGameType,
 
 	// Init the game logic.
 	m_pGameLogic = new CGameModeGeneric();
-	m_iSpawnsAvailable = m_pGameLogic->Init();
 		
 	// Flag we're in a running state.
 	m_iGameState = GAMESTATE_RUNNING;

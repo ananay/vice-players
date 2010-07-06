@@ -33,23 +33,15 @@
 class CGameModeGeneric
 {
 private:
-	BOOL				m_bGameStated;
-	int					m_iLastSpawnIssued;
 	PLAYER_SPAWN_INFO	m_AvailableSpawns[MAX_SPAWNS];
 	int					m_iAvailableSpawnCount;
 public:
 
-	int Init();
-	int addPlayerClass(int team, int model, float x, float y, float z, float rot, int weapon1, int ammo1, int weapon2, int ammo2, int weapon3, int ammo3);
-	void HandleClientJoin(BYTE byteSystemAddress);
-	BOOL HandleSpawnClassRequest(BYTE byteSystemAddress,int iSpawnType);
+	int AddPlayerClass(int team, int model, float x, float y, float z, float rot, int weapon1, int ammo1, int weapon2, int ammo2, int weapon3, int ammo3);
+	int HandleSpawnClassRequest(BYTE byteSystemAddress, int iSpawnType);
 	
-	CGameModeGeneric() { 
-		m_iLastSpawnIssued = 0;
-		m_iAvailableSpawnCount = 0;
-	};
-
-	~CGameModeGeneric() {};
+	CGameModeGeneric();
+	~CGameModeGeneric();
 };
 
 

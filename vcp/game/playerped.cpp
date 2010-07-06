@@ -647,25 +647,26 @@ BOOL CPlayerPed::GiveWeapon(int iWeaponID, int iAmmo)
 	PED_TYPE * pPed = (PED_TYPE *)GetEntity();
 	if(pPed) {
 		int iModelID = GameGetWeaponModelFromWeapon(iWeaponID);
+		if(iModelID != -1) {
+			if(!pGame->IsModelLoaded(iModelID)) {
+				pGame->RequestModel(iModelID);
+				pGame->LoadRequestedModels();
+				while(!pGame->IsModelLoaded(iModelID)) Sleep(1);
+			}
 
-		if(!pGame->IsModelLoaded(iModelID)) {
-			pGame->RequestModel(iModelID);
-			pGame->LoadRequestedModels();
-			while(!pGame->IsModelLoaded(iModelID)) Sleep(1);
+			DWORD dwFunc = FUNC_CPed__GiveWeapon;
+			_asm
+			{
+				push 1
+				push iAmmo
+				push iWeaponID
+				mov ecx, pPed
+				call dwFunc
+			}
+
+			SetArmedWeapon(iWeaponID);
+			return TRUE;
 		}
-
-		DWORD dwFunc = FUNC_CPed__GiveWeapon;
-		_asm
-		{
-			push 1
-			push iAmmo
-			push iWeaponID
-			mov ecx, pPed
-			call dwFunc
-		}
-
-		SetArmedWeapon(iWeaponID);
-		return TRUE;
 	}
 	return FALSE;
 }

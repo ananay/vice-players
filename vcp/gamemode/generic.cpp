@@ -38,7 +38,7 @@ extern CNetGame* pNetGame;
 
 CGameModeGeneric::CGameModeGeneric()
 {
-	m_byteSelectedClass = 0;
+	m_iSelectedClass = 0;
 	m_dwLastSpawnSelectionTick = GetTickCount();
 	HandleClassSelection(pNetGame->GetPlayerPool()->GetLocalPlayer());
 }
@@ -78,8 +78,8 @@ void CGameModeGeneric::ProcessLocalPlayer(CLocalPlayer *pLocalPlayer)
 		{
 			// SHOW INFO ABOUT THE SELECTED CLASS..
 			szMsg[0] = '\0';
-			strcat(szMsg,"> Use Left and Right arrow keys to select a class.\n");
-			strcat(szMsg,"> Press Shift button when ready to spawn.\n");
+			strcat(szMsg, "> Use Left and Right arrow keys to select a class.\n");
+			strcat(szMsg, "> Press Shift button when ready to spawn.\n");
 
 			CD3DFont *pD3DFont = pChatWindow->m_pD3DFont;
 			pD3DFont->DrawText(fDrawX,fDrawY,0xFFFFFFFF,szMsg);
@@ -90,39 +90,26 @@ void CGameModeGeneric::ProcessLocalPlayer(CLocalPlayer *pLocalPlayer)
 
 			dwTicksSinceLastSelection = GetTickCount() - m_dwLastSpawnSelectionTick; // used to delay reselection.
 
-			// ALLOW ANOTHER SELECTION WITH LEFT AND RIGHT KEYS
+			// ALLOW ANOTHER SELECTION WITH LEFT KEY
 			if( (GetKeyState(VK_LEFT)&0x8000) && (dwTicksSinceLastSelection > 250)) { // LEFT ARROW
-				
 				m_bClearedToSpawn = FALSE;
 				m_dwLastSpawnSelectionTick = GetTickCount();
-				
-				if(m_byteSelectedClass == 0) {
-					m_byteSelectedClass = (pNetGame->m_iSpawnsAvailable - 1);
-				}
-				else {
-					m_byteSelectedClass--;
-				}
+				m_iSelectedClass--;
 		
 				pGame->PlaySound(14, vPlayerPos);
-				pLocalPlayer->RequestClass(m_byteSelectedClass);
+				pLocalPlayer->RequestClass(m_iSelectedClass);
 				return;
 			}
 
-			// ALLOW ANOTHER SELECTION WITH LEFT AND RIGHT KEYS
+			// ALLOW ANOTHER SELECTION WITH RIGHT KEY
 			if( (GetKeyState(VK_RIGHT)&0x8000) && (dwTicksSinceLastSelection > 250)) { // RIGHT ARROW
 	
 				m_bClearedToSpawn = FALSE;
 				m_dwLastSpawnSelectionTick = GetTickCount();
-				
-				if(m_byteSelectedClass == (pNetGame->m_iSpawnsAvailable - 1)) {
-					m_byteSelectedClass = 0;
-				}
-				else {
-					m_byteSelectedClass++;
-				}
+				m_iSelectedClass++;
 
 				pGame->PlaySound(13, vPlayerPos);
-				pLocalPlayer->RequestClass(m_byteSelectedClass);
+				pLocalPlayer->RequestClass(m_iSelectedClass);
 				return;
 			}			
 		}
@@ -144,7 +131,7 @@ void CGameModeGeneric::HandleClassSelection(CLocalPlayer *pLocalPlayer)
 		pGameCamera->LookAtPoint(pNetGame->m_vecInitCameraLook, 1);
 	}
 
-	pLocalPlayer->RequestClass(m_byteSelectedClass);
+	pLocalPlayer->RequestClass(m_iSelectedClass);
 	m_dwInitialSelectionTick = GetTickCount();
 	m_dwLastSpawnSelectionTick = GetTickCount();
 }
@@ -156,11 +143,9 @@ void CGameModeGeneric::HandleClassSelectionOutcome(PLAYER_SPAWN_INFO *pSpawnInfo
 	CPlayerPed *pGamePlayer = pGame->FindPlayerPed();
 
 	if(bOutcome) {
-		
 		if(pGamePlayer)	{
 			pGamePlayer->ClearAllWeapons();
-			pGamePlayer->Teleport(pNetGame->m_vecInitPlayerPos.X,
-				pNetGame->m_vecInitPlayerPos.Y,
+			pGamePlayer->Teleport(pNetGame->m_vecInitPlayerPos.X, pNetGame->m_vecInitPlayerPos.Y, 
 				pNetGame->m_vecInitPlayerPos.Z);
 			pGamePlayer->SetRotation(0.0f);
 			pGamePlayer->SetModel(pSpawnInfo->byteSkin);
@@ -171,6 +156,13 @@ void CGameModeGeneric::HandleClassSelectionOutcome(PLAYER_SPAWN_INFO *pSpawnInfo
 
 		m_bClearedToSpawn = TRUE;
 	}
+}
+
+//----------------------------------------------------------
+
+void CGameModeGeneric::SetSelectedClass(int iSelectedClass)
+{
+	m_iSelectedClass = iSelectedClass;
 }
 
 //----------------------------------------------------------

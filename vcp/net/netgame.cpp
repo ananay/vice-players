@@ -84,10 +84,7 @@ CNetGame::CNetGame(PCHAR szHostOrIp, int iPort,
 	if(pChatWindow) pChatWindow->AddDebugMessage("Connecting to %s:%d..",szHostOrIp,iPort);
 
 	m_pGameLogic = NULL;
-	m_iSpawnsAvailable = 0;
-	
 	m_dwLastScoreUpdateTick = GetTickCount();
-
 	m_uiLastRandSeed = 0;
 }
 

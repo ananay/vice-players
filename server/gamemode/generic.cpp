@@ -25,25 +25,29 @@
 //----------------------------------------------------
 
 #include "../netgame.h"
-#include "../player.h"
 
-extern CNetGame *pNetGame;
-extern CConfig *pServerConfig;
+extern CNetGame * pNetGame;
 
 //----------------------------------------------------
 
-int CGameModeGeneric::Init()
-{
+CGameModeGeneric::CGameModeGeneric()
+{ 
 	for(int i = 0; i < MAX_SPAWNS; i++) {
 		m_AvailableSpawns[i].loaded = false;
 	}
+	m_iAvailableSpawnCount = 0;
+};
 
-	return true;
+//----------------------------------------------------
+
+CGameModeGeneric::~CGameModeGeneric()
+{
+
 }
 
 //----------------------------------------------------
 
-int CGameModeGeneric::addPlayerClass(int team, int model, float x, float y, float z, float rot, int weapon1, int ammo1, int weapon2, int ammo2, int weapon3, int ammo3)
+int CGameModeGeneric::AddPlayerClass(int team, int model, float x, float y, float z, float rot, int weapon1, int ammo1, int weapon2, int ammo2, int weapon3, int ammo3)
 {
 	for(int i = 0; i < MAX_SPAWNS; i++) {
 		if(!m_AvailableSpawns[i].loaded) {
@@ -60,47 +64,41 @@ int CGameModeGeneric::addPlayerClass(int team, int model, float x, float y, floa
 			m_AvailableSpawns[i].iSpawnWeapons[2] = weapon3;
 			m_AvailableSpawns[i].iSpawnWeaponsAmmo[2] = ammo3;
 			m_AvailableSpawns[i].loaded = true;
-			pNetGame->m_iSpawnsAvailable++;
+			m_iAvailableSpawnCount++;
 			return i;
 		}
 	}
-	return false;
+	return 0;
 }
 
 //----------------------------------------------------
 
-void CGameModeGeneric::HandleClientJoin(BYTE byteSystemAddress) 
-{
-	
-}
-
-//----------------------------------------------------
-
-BOOL CGameModeGeneric::HandleSpawnClassRequest(BYTE byteSystemAddress,
-											   int iSpawnType)
+int CGameModeGeneric::HandleSpawnClassRequest(BYTE byteSystemAddress, int iSpawnType)
 {
 	CPlayer *pPlayer;
 	pPlayer = pNetGame->GetPlayerPool()->GetAt(byteSystemAddress);
 
-	if(pPlayer && (iSpawnType <= (pNetGame->m_iSpawnsAvailable - 1))) {
-
-		pPlayer->SetSpawnInfo(
-			m_AvailableSpawns[iSpawnType].byteTeam,
-			m_AvailableSpawns[iSpawnType].byteSkin,
-			&m_AvailableSpawns[iSpawnType].vecPos,
-			m_AvailableSpawns[iSpawnType].fRotation,
-			m_AvailableSpawns[iSpawnType].iSpawnWeapons[0],
-			m_AvailableSpawns[iSpawnType].iSpawnWeaponsAmmo[0],
-			m_AvailableSpawns[iSpawnType].iSpawnWeapons[1],
-			m_AvailableSpawns[iSpawnType].iSpawnWeaponsAmmo[1],
-			m_AvailableSpawns[iSpawnType].iSpawnWeapons[2],
-			m_AvailableSpawns[iSpawnType].iSpawnWeaponsAmmo[2]
-			);
-
-		return TRUE;
+	if(iSpawnType < 0) {
+		iSpawnType = (m_iAvailableSpawnCount - 1);
 	}
- 
-	return FALSE;
+	else if(iSpawnType > (m_iAvailableSpawnCount - 1)) {
+		iSpawnType = 0;
+	}
+
+	pPlayer->SetSpawnInfo(
+		m_AvailableSpawns[iSpawnType].byteTeam,
+		m_AvailableSpawns[iSpawnType].byteSkin,
+		&m_AvailableSpawns[iSpawnType].vecPos,
+		m_AvailableSpawns[iSpawnType].fRotation,
+		m_AvailableSpawns[iSpawnType].iSpawnWeapons[0],
+		m_AvailableSpawns[iSpawnType].iSpawnWeaponsAmmo[0],
+		m_AvailableSpawns[iSpawnType].iSpawnWeapons[1],
+		m_AvailableSpawns[iSpawnType].iSpawnWeaponsAmmo[1],
+		m_AvailableSpawns[iSpawnType].iSpawnWeapons[2],
+		m_AvailableSpawns[iSpawnType].iSpawnWeaponsAmmo[2]
+		);
+
+	return iSpawnType;
 }
 
 //----------------------------------------------------

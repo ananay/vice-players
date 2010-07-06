@@ -64,6 +64,16 @@ private:
 	static RPC4					*m_pRPC4;
 	CGameModeGeneric			*m_pGameLogic;
 	int							m_iGameState;
+
+	// TODO: Make private
+public:
+	VECTOR						m_vecInitPlayerPos;
+	VECTOR						m_vecInitCameraPos;
+	VECTOR						m_vecInitCameraLook;
+	float						m_WorldBounds[4]; // pos_x neg_x pos_y neg_y
+	BYTE						m_byteFriendlyFire;
+	BYTE						m_byteShowOnRadar;
+private:
 		
 	void UpdateNetwork();
 	void SetupInitPositions();
@@ -95,14 +105,6 @@ public:
 	void KickPlayer(BYTE byteKickPlayer);
 	void AddBan(char * ip_mask);
 	void LoadBanList();
-
-	VECTOR		m_vecInitPlayerPos;
-	VECTOR		m_vecInitCameraPos;
-	VECTOR		m_vecInitCameraLook;
-	float		m_WorldBounds[4]; // pos_x neg_x pos_y neg_y
-	int			m_iSpawnsAvailable;
-	BYTE		m_byteFriendlyFire;
-	BYTE		m_byteShowOnRadar;
 };
 
 //----------------------------------------------------
