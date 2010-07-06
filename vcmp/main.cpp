@@ -99,7 +99,7 @@ BOOL WINAPI DllMain(HINSTANCE hinstDLL, DWORD fdwReason, LPVOID lpvReserved)
 	{
 		UninstallD3D8Hook();
 		if(pNetGame) {
-			pNetGame->GetRakPeer()->Shutdown(500);
+			pNetGame->Shutdown();
 		}
 	}
 

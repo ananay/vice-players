@@ -703,11 +703,10 @@ BOOL CPlayerPed::SetArmedWeapon(int iWeaponType)
 
 //-----------------------------------------------------------
 
-BYTE CPlayerPed::GetCurrentWeapon()
+int CPlayerPed::GetCurrentWeapon()
 {
-	PED_TYPE * pPed = (PED_TYPE *)GetEntity();
-	if(pPed) {
-		return pPed->byteCurWepSlot;
+	if(GetEntity()) {
+		return GetCurrentWeaponSlot()->dwType;
 	}
 	return 0;
 }

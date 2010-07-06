@@ -99,7 +99,7 @@ public:
 	BOOL           GiveWeapon(int iWeaponID, int iAmmo);
 	void           ClearAllWeapons();
 	BOOL           SetArmedWeapon(int iWeaponType);
-	BYTE           GetCurrentWeapon();
+	int            GetCurrentWeapon();
 	BOOL           HasAmmoForCurrentWeapon();
 	WEAPON_SLOT *  GetCurrentWeaponSlot();
 	WEAPON_SLOT *  GetWeaponInSlot(BYTE byteSlot);

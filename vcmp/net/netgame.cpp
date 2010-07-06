@@ -77,11 +77,10 @@ CNetGame::CNetGame(PCHAR szHostOrIp, int iPort,
 	strcpy(m_szHostOrIp, szHostOrIp);
 	m_iPort = iPort;
 	strcpy(m_szPass, szPass);
-	m_pRakPeer->Connect(szHostOrIp,iPort,szPass,strlen(szPass));
 	m_pRakPeer->AttachPlugin(m_pRPC4);
 	
-	m_iGameState = GAMESTATE_CONNECTING;
 	pChatWindow->AddDebugMessage("Vice City: Players started.");
+	Connect();
 	if(pChatWindow) pChatWindow->AddDebugMessage("Connecting to %s:%d..",szHostOrIp,iPort);
 
 	m_pGameLogic = NULL;
@@ -96,7 +95,7 @@ CNetGame::CNetGame(PCHAR szHostOrIp, int iPort,
 
 CNetGame::~CNetGame()
 {
-	m_pRakPeer->Shutdown(0);
+	Shutdown();
 	m_pRakPeer->DetachPlugin(m_pRPC4);
 	UnRegisterRPCs();
 	RPC4::DestroyInstance(m_pRPC4);
@@ -147,17 +146,20 @@ void CNetGame::UpdateNetwork()
 			*/
 		case ID_CONNECTION_BANNED:
 			pChatWindow->AddDebugMessage("You're banned from the server.");
+			Shutdown();
 			break;
 		case ID_NO_FREE_INCOMING_CONNECTIONS:
-			pChatWindow->AddDebugMessage("The server is full.");
+			pChatWindow->AddDebugMessage("The server is full, Retrying...");
+			Connect();
 			break;
 		case ID_DISCONNECTION_NOTIFICATION:
 			pChatWindow->AddDebugMessage("Disconnected.");
+			Shutdown();
 			pGame->FadeScreen(0, 0);
 			break;
 		case ID_CONNECTION_LOST:
 			pChatWindow->AddDebugMessage("Lost connection to the server, Reconnecting...");
-			m_pRakPeer->Connect(m_szHostOrIp, m_iPort, m_szPass, strlen(m_szPass));
+			Connect();
 			pGame->FadeScreen(0, 0);
 			break;
 		case ID_INVALID_PASSWORD:
@@ -170,7 +172,7 @@ void CNetGame::UpdateNetwork()
 			*/
 		case ID_CONNECTION_ATTEMPT_FAILED:
 			pChatWindow->AddDebugMessage("Failed to connect, Retrying...");
-			m_pRakPeer->Connect(m_szHostOrIp, m_iPort, m_szPass, strlen(m_szPass));
+			Connect();
 			break;
 		case ID_CONNECTION_REQUEST_ACCEPTED:
 			ConnectionSucceeded(pkt);
@@ -327,6 +329,36 @@ void CNetGame::UpdatePlayerScoresAndPings()
 
 		m_pRPC4->Call("UpdateScoreAndPing",NULL,HIGH_PRIORITY,RELIABLE,0,UNASSIGNED_SYSTEM_ADDRESS,TRUE);
 	}
+}
+
+//----------------------------------------------------
+
+void CNetGame::Connect()
+{
+	if(m_pRakPeer) {
+		m_pRakPeer->Connect(m_szHostOrIp, m_iPort, m_szPass, strlen(m_szPass));
+		m_iGameState = GAMESTATE_CONNECTING;
+	}
+}
+
+//----------------------------------------------------
+
+bool CNetGame::IsConnected()
+{
+	if(GetGameState() == GAMESTATE_CONNECTED) {
+		return true;
+	}
+	return false;
+}
+
+//----------------------------------------------------
+
+void CNetGame::Shutdown()
+{
+	if(m_pRakPeer && m_iGameState == GAMESTATE_CONNECTED) {
+		m_pRakPeer->Shutdown(500);
+	}
+	m_iGameState = GAMESTATE_DISCONNECTED;
 }
 
 //----------------------------------------------------

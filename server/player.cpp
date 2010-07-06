@@ -157,6 +157,10 @@ void CPlayer::StoreOnFootFullSyncData(WORD wKeys,VECTOR * vecPos,
 									  float fRotation,BYTE byteCurrentWeapon,
 									  BYTE byteAction)
 {
+	if(m_byteVehicleID != 0) {
+		pNetGame->GetVehiclePool()->GetAt(m_byteVehicleID)->SetDriverId(INVALID_PLAYER_ID);
+		m_byteVehicleID = 0;
+	}
 	m_wKeys = wKeys;
 	memcpy(&m_vecPos,vecPos,sizeof(VECTOR));
 	m_fRotation = fRotation;
@@ -223,9 +227,6 @@ void CPlayer::HandleDeath(BYTE byteReason, BYTE byteWhoWasResponsible)
 	
 	// Broadcast it
 	pNetGame->GetRPC4()->Call("Death", &bsPlayerDeath,HIGH_PRIORITY,RELIABLE,0,playerid,true);
-
-	// Now let the player who died know aswell.
-	pNetGame->GetRPC4()->Call("OwnDeath", &bsPlayerDeath,HIGH_PRIORITY,RELIABLE,0,playerid,false);
 	
 	logprintf("<%s> died",
 		pNetGame->GetPlayerPool()->GetPlayerName(m_byteSystemAddress),

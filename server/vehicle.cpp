@@ -52,23 +52,7 @@ CVehicle::CVehicle( BYTE byteModel, VECTOR *vecPos,
 	m_SpawnInfo.iColor1 = iColor1;
 	m_SpawnInfo.iColor2 = iColor2;
 
-	// Set the initial pos to spawn pos.
-	memset(&m_matWorld,0,sizeof(MATRIX4X4));
-	m_matWorld.vPos.X = m_SpawnInfo.vecPos.X;
-	m_matWorld.vPos.Y = m_SpawnInfo.vecPos.Y;
-	m_matWorld.vPos.Z = m_SpawnInfo.vecPos.Z;
-
-	memset(&m_vecMoveSpeed,0,sizeof(VECTOR));
-	memset(&m_vecTurnSpeed,0,sizeof(VECTOR));
-	
-	m_bIsActive = TRUE;
-	m_bIsWasted = FALSE;
-	m_bHasHadUpdate = FALSE;
-	m_byteDriverID = INVALID_ID;
-	m_fHealth = 1000.0f;
-
-	m_Colors[0] = iColor1;
-	m_Colors[1] = iColor2;
+	Reset();
 }
 
 CVehicle::~CVehicle()
@@ -81,6 +65,31 @@ CVehicle::~CVehicle()
 			pNetGame->GetRPC4()->Call("Script_DestroyVehicle",&bsSend,HIGH_PRIORITY,RELIABLE,0,pNetGame->GetRakPeer()->GetSystemAddressFromIndex(i),false);
 		}
 	}
+}
+
+//----------------------------------------------------
+
+void CVehicle::Reset()
+{
+	// Set the initial pos to spawn pos.
+	memset(&m_matWorld,0,sizeof(MATRIX4X4));
+	m_matWorld.vPos.X = m_SpawnInfo.vecPos.X;
+	m_matWorld.vPos.Y = m_SpawnInfo.vecPos.Y;
+	m_matWorld.vPos.Z = m_SpawnInfo.vecPos.Z;
+
+	memset(&m_vecMoveSpeed,0,sizeof(VECTOR));
+	memset(&m_vecTurnSpeed,0,sizeof(VECTOR));
+
+	m_bIsActive = TRUE;
+	m_bIsWasted = FALSE;
+	m_bHasHadUpdate = FALSE;
+	m_byteDriverID = INVALID_ID;
+	m_fHealth = 1000.0f;
+	m_bHasDriver = FALSE;
+	m_bHasBeenDriven = FALSE;
+	m_dwTimeSinceLastDriven = GetTickCount();
+	m_Colors[0] = iColor1;
+	m_Colors[1] = iColor2;
 }
 
 //----------------------------------------------------
@@ -125,6 +134,17 @@ void CVehicle::SpawnForPlayer(BYTE byteForSystemAddress)
 
 //----------------------------------------------------------
 
+void CVehicle::DestroyForPlayer(BYTE byteForSystemAddress)
+{
+	RakNet::BitStream bsVehicleDestroy;
+
+	bsVehicleDestroy.Write(m_byteVehicleID);
+
+	pNetGame->GetRPC4()->Call("VehicleDestroy", &bsVehicleDestroy,HIGH_PRIORITY,RELIABLE_ORDERED,0,pNetGame->GetRakPeer()->GetSystemAddressFromIndex(byteForSystemAddress),false);
+}
+
+//----------------------------------------------------------
+
 void CVehicle::SpawnForWorld()
 {
 	CPlayerPool * pPlayerPool = pNetGame->GetPlayerPool();
@@ -132,6 +152,37 @@ void CVehicle::SpawnForWorld()
 		if(pPlayerPool->GetSlotState(i)) {
 			SpawnForPlayer(i);
 		}
+	}
+}
+
+//----------------------------------------------------------
+
+void CVehicle::DestroyForWorld()
+{
+	CPlayerPool * pPlayerPool = pNetGame->GetPlayerPool();
+	for(BYTE i = 0; i < MAX_PLAYERS; i++) {
+		if(pPlayerPool->GetSlotState(i)) {
+			DestroyForPlayer(i);
+		}
+	}
+}
+
+//----------------------------------------------------------
+
+void CVehicle::Respawn()
+{
+	DestroyForWorld();
+	Reset();
+	SpawnForWorld();
+}
+
+//----------------------------------------------------------
+
+void CVehicle::UpdateLastDrivenTime()
+{
+	if(m_byteDriverID) {
+		m_bHasBeenDriven = TRUE;
+		m_dwTimeSinceLastDriven = GetTickCount();
 	}
 }
 

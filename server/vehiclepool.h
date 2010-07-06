@@ -35,6 +35,7 @@ private:
 	BOOL m_bVehicleSlotState[MAX_VEHICLES];
 	BYTE GetFreeSlot();
 	CVehicle *m_pVehicles[MAX_VEHICLES];
+	int m_iRespawnDelay[MAX_VEHICLES];
 
 public:
 	
@@ -57,6 +58,7 @@ public:
 		return m_bVehicleSlotState[byteVehicleID];
 	};
 
+	void FlagForRespawn(BYTE byteVehicleId);
 	void Process();
 };
 

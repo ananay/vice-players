@@ -28,7 +28,7 @@ CRconClient::CRconClient(char* szHostOrIp, int iPort, char* szPass)
 
 CRconClient::~CRconClient()
 {
-	m_pRakPeer->Shutdown(100);
+	m_pRakPeer->Shutdown(500);
 	RakPeerInterface::DestroyInstance(m_pRakPeer);
 }
 

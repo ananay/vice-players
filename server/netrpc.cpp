@@ -167,9 +167,11 @@ void Chat(RakNet::BitStream *bitStream, Packet *packet)
 	bsSend.Write(byteTextLen);
 	bsSend.Write(szText,byteTextLen);
 
-	pNetGame->GetRPC4()->Call("Chat", &bsSend,HIGH_PRIORITY,RELIABLE,0,packet->guid,true);
-
+	pNetGame->GetRPC4()->Call("Chat", &bsSend,HIGH_PRIORITY,RELIABLE,0,UNASSIGNED_SYSTEM_ADDRESS,true);
 }
+
+//----------------------------------------------------
+// Sent by client with command text
 
 void ChatCommand(RakNet::BitStream *bitStream, Packet *packet)
 {
@@ -261,6 +263,25 @@ void Death(RakNet::BitStream *bitStream, Packet *packet)
 	if(pPlayer) {
 		pPlayer->HandleDeath(byteDeathReason,byteWhoWasResponsible);
 		pScripts->onPlayerDeath(byteSystemAddress, byteWhoWasResponsible, byteDeathReason);
+	}
+}
+
+//----------------------------------------------------
+// Sent by client when a vehicle is dead.
+
+void VehicleDeath(RakNet::BitStream *bitStream, Packet *packet)
+{
+	BYTE byteSystemAddress = (BYTE)packet->guid.systemIndex;
+	if(!pNetGame->GetPlayerPool()->GetSlotState(byteSystemAddress)) return;
+
+	BYTE byteVehicleId;
+
+	bitStream->Read(byteVehicleId);
+
+	CVehiclePool * pVehiclePool = pNetGame->GetVehiclePool();
+	CVehicle * pVehicle = pVehiclePool->GetAt(byteVehicleId);
+	if(pVehicle) {
+		pVehiclePool->FlagForRespawn(byteVehicleId);
 	}
 }
 
@@ -407,6 +428,7 @@ void RegisterRPCs()
 	pNetGame->GetRPC4()->RegisterFunction("RequestClass", RequestClass);
 	pNetGame->GetRPC4()->RegisterFunction("Spawn", Spawn);
 	pNetGame->GetRPC4()->RegisterFunction("Death", Death);
+	pNetGame->GetRPC4()->RegisterFunction("VehicleDeath", VehicleDeath);
 	pNetGame->GetRPC4()->RegisterFunction("EnterVehicle", EnterVehicle);
 	pNetGame->GetRPC4()->RegisterFunction("ExitVehicle", ExitVehicle);
 	pNetGame->GetRPC4()->RegisterFunction("UpdateScoreAndPing", UpdateScoreAndPing);
@@ -425,6 +447,7 @@ void UnRegisterRPCs()
 	pNetGame->GetRPC4()->UnregisterFunction("RequestClass");
 	pNetGame->GetRPC4()->UnregisterFunction("Spawn");
 	pNetGame->GetRPC4()->UnregisterFunction("Death");
+	pNetGame->GetRPC4()->UnregisterFunction("VehicleDeath");
 	pNetGame->GetRPC4()->UnregisterFunction("EnterVehicle");
 	pNetGame->GetRPC4()->UnregisterFunction("ExitVehicle");
 	pNetGame->GetRPC4()->UnregisterFunction("UpdateScoreAndPing");

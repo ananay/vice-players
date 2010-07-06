@@ -158,12 +158,12 @@ void CRemotePlayer::HandleVehicleEntryExit()
 		m_pPlayerPed->RemoveFromVehicleAndPutAt(m_matWorld.vPos.X,
 			m_matWorld.vPos.Y,m_matWorld.vPos.Z);
 	}	
-	else if((m_byteVehicleID != 0) && (m_pPlayerPed->IsInVehicle() == FALSE))
+	else if((m_byteVehicleID != 0) && !m_pPlayerPed->IsInVehicle())
 	{
 		// must force in
-		CVehicle *pVehicle = pVehiclePool->GetAt(m_byteVehicleID);
+		CVehicle * pVehicle = pVehiclePool->GetAt(m_byteVehicleID);
 		
-		if(pVehicle->GetHealth() > 0.0f) {
+		if(pVehicle && pVehicle->GetHealth() > 0.0f) {
 			if(!m_bIsAPassenger) {
 				m_pPlayerPed->PutDirectlyInVehicle(pVehiclePool->FindGtaIDFromID(m_byteVehicleID));
 			} else {
@@ -201,12 +201,10 @@ void CRemotePlayer::UpdateInCarMatrixAndSpeed(MATRIX4X4 * matWorld,
 											  VECTOR * vecMoveSpeed)
 {
 	MATRIX4X4 matVehicle;
-	CVehicle *pVehicle = pNetGame->GetVehiclePool()->GetAt(m_byteVehicleID);
-	VECTOR vecInternalMoveSpeed;
+	CVehicle * pVehicle = pNetGame->GetVehiclePool()->GetAt(m_byteVehicleID);
 	float fDif;
 
 	if(pVehicle) {
-
 		pVehicle->GetMatrix(&matVehicle);
 
 		matVehicle.vLookRight.X = matWorld->vLookRight.X;
@@ -248,11 +246,8 @@ void CRemotePlayer::UpdateInCarMatrixAndSpeed(MATRIX4X4 * matWorld,
 		}
 
 		pVehicle->SetMatrix(matVehicle);
-		
-		pVehicle->GetMoveSpeed(&vecInternalMoveSpeed);
-		vecInternalMoveSpeed.X = vecMoveSpeed->X;
-		vecInternalMoveSpeed.Y = vecMoveSpeed->Y;
-		pVehicle->SetMoveSpeed(vecInternalMoveSpeed);
+
+		pVehicle->SetMoveSpeed(*vecMoveSpeed);
 	}
 }
 

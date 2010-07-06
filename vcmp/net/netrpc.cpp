@@ -118,9 +118,16 @@ void Chat(RakNet::BitStream *bitStream, Packet *packet)
 
 	szText[byteTextLen] = '\0';
 
-	CRemotePlayer *pRemotePlayer = pNetGame->GetPlayerPool()->GetAt(byteSystemAddress);
-	if(pRemotePlayer) {
-		pRemotePlayer->Say(szText);	
+	CPlayerPool * pPlayerPool = pNetGame->GetPlayerPool();
+	if(byteSystemAddress == pPlayerPool->GetLocalSystemAddress()) {
+		pChatWindow->AddChatMessage(pNetGame->GetPlayerPool()->GetLocalPlayerName(),
+			pPlayerPool->GetLocalPlayer()->GetTeamColorAsARGB(),szText);
+	}
+	else {
+		CRemotePlayer *pRemotePlayer = pNetGame->GetPlayerPool()->GetAt(byteSystemAddress);
+		if(pRemotePlayer) {
+			pRemotePlayer->Say(szText);	
+		}
 	}
 }
 
@@ -130,7 +137,6 @@ void Chat(RakNet::BitStream *bitStream, Packet *packet)
 
 void Passenger(RakNet::BitStream *bitStream, Packet *packet)
 {
-	
 	BYTE byteSystemAddress;
 	BYTE byteVehicleID;
 	UINT uiSeat;
@@ -158,7 +164,7 @@ void RequestClass(RakNet::BitStream *bitStream, Packet *packet)
 	bitStream->Read(byteRequestOutcome);
 	bitStream->Read(SpawnInfo.byteTeam);
 	bitStream->Read(SpawnInfo.byteSkin);
-	bitStream->Read((char*)&SpawnInfo.vecPos, sizeof(VECTOR));
+	bitStream->Read((char *)&SpawnInfo.vecPos, sizeof(VECTOR));
 	bitStream->Read(SpawnInfo.fRotation);
 	bitStream->Read(SpawnInfo.iSpawnWeapons[0]);
 	bitStream->Read(SpawnInfo.iSpawnWeaponsAmmo[0]);
@@ -244,25 +250,6 @@ void Death(RakNet::BitStream *bitStream, Packet *packet)
 }
 
 //----------------------------------------------------
-// Server responding to our Death message.
-
-void OwnDeath(RakNet::BitStream *bitStream, Packet *packet)
-{
-	BYTE byteSystemAddress=0;
-	BYTE byteReason;
-	BYTE byteWhoKilled;
-	BYTE byteScoringModifier;
-
-	bitStream->Read(byteSystemAddress);
-	bitStream->Read(byteReason);
-	bitStream->Read(byteWhoKilled);
-	bitStream->Read(byteScoringModifier);
-
-	CLocalPlayer *pLocalPlayer = pNetGame->GetPlayerPool()->GetLocalPlayer();
-	pLocalPlayer->HandleDeath(byteReason,byteWhoKilled,byteScoringModifier);
-}
-
-//----------------------------------------------------
 // Remote client is trying to enter vehicle gracefully.
 
 void EnterVehicle(RakNet::BitStream *bitStream, Packet *packet)
@@ -341,6 +328,18 @@ void VehicleSpawn(RakNet::BitStream *bitStream, Packet *packet)
 
 //----------------------------------------------------
 
+void VehicleDestroy(RakNet::BitStream *bitStream, Packet *packet)
+{
+	CVehiclePool *pVehiclePool = pNetGame->GetVehiclePool();
+	BYTE byteVehicleID=0;
+
+	bitStream->Read(byteVehicleID);
+
+	pVehiclePool->Delete(byteVehicleID);
+}
+
+//----------------------------------------------------
+
 void UpdateScoreAndPing(RakNet::BitStream *bitStream, Packet *packet)
 {	
 	CPlayerPool *pPlayerPool = pNetGame->GetPlayerPool();
@@ -384,7 +383,9 @@ void ConnectionRejected(RakNet::BitStream *bitStream, Packet *packet)
 		pChatWindow->AddInfoMessage("YOUR NICKNAME IS INVALID");
 	}
 
-	pNetGame->GetRakPeer()->Shutdown(0);
+	if(pNetGame) {
+		pNetGame->Shutdown();
+	}
 }
 
 //----------------------------------------------------
@@ -692,10 +693,10 @@ void RegisterRPCs()
 	pNetGame->GetRPC4()->RegisterFunction("RequestClass",RequestClass);
 	pNetGame->GetRPC4()->RegisterFunction("Spawn",Spawn);
 	pNetGame->GetRPC4()->RegisterFunction("Death",Death);
-	pNetGame->GetRPC4()->RegisterFunction("OwnDeath",OwnDeath);
 	pNetGame->GetRPC4()->RegisterFunction("EnterVehicle",EnterVehicle);
 	pNetGame->GetRPC4()->RegisterFunction("ExitVehicle",ExitVehicle);
 	pNetGame->GetRPC4()->RegisterFunction("VehicleSpawn",VehicleSpawn);
+	pNetGame->GetRPC4()->RegisterFunction("VehicleDestroy",VehicleDestroy);
 	pNetGame->GetRPC4()->RegisterFunction("UpdateScoreAndPing",UpdateScoreAndPing);
 	pNetGame->GetRPC4()->RegisterFunction("ConnectionRejected",ConnectionRejected);
 	pNetGame->GetRPC4()->RegisterFunction("Passenger",Passenger);
@@ -738,10 +739,10 @@ void UnRegisterRPCs()
 	pNetGame->GetRPC4()->UnregisterFunction("RequestClass");
 	pNetGame->GetRPC4()->UnregisterFunction("Spawn");
 	pNetGame->GetRPC4()->UnregisterFunction("Death");
-	pNetGame->GetRPC4()->UnregisterFunction("OwnDeath");
 	pNetGame->GetRPC4()->UnregisterFunction("EnterVehicle");
 	pNetGame->GetRPC4()->UnregisterFunction("ExitVehicle");
 	pNetGame->GetRPC4()->UnregisterFunction("VehicleSpawn");
+	pNetGame->GetRPC4()->UnregisterFunction("VehicleDestroy");
 	pNetGame->GetRPC4()->UnregisterFunction("UpdateScoreAndPing");
 	pNetGame->GetRPC4()->UnregisterFunction("ConnectionRejected");
 	pNetGame->GetRPC4()->UnregisterFunction("Passenger");

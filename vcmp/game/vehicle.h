@@ -36,8 +36,7 @@ class CVehicle : public CPhysical
 private:
 	DWORD m_dwGTAId;
 	BOOL  m_bIsInvulnerable;
-	DWORD m_dwTimeSinceLastDriven;
-	BOOL  m_bHasBeenDriven;
+	BOOL  m_bDead;
 
 public:
 	CVehicle(int iType, float fPosX, float fPosY,
@@ -49,7 +48,6 @@ public:
 
 	float GetDistanceFromLocalPlayerPed();
 	void  SetLockedState(int iLocked);
-	void  UpdateLastDrivenTime();
 
 	BYTE  GetVehicleSubtype();
 
@@ -75,15 +73,10 @@ public:
 
 	PED_TYPE *GetDriver();
 
-	DWORD GetTimeSinceLastDriven();
-	void  SetTimeSinceLastDriven(DWORD dwTime);
-
-	BOOL  HasBeenDriven();
-	void  SetHasBeenDriven(BOOL bDriven);
-
 	void  SetImmunities(int iIm1, int iIm2, int iIm3, int iIm4, int iIm5);
 
-	BOOL IsOkToRespawn();
+	void  SetDead(BOOL bDead);
+	BOOL  IsDead();
 };
 
 //-----------------------------------------------------------

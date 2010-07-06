@@ -376,18 +376,6 @@ void CLocalPlayer::SendWastedNotification()
 
 //----------------------------------------------------------
 
-void CLocalPlayer::HandleDeath(BYTE byteReason, BYTE byteWhoKilled, BYTE byteScoringModifier)
-{
-	char * szPlayerName = pNetGame->GetPlayerPool()->GetLocalPlayerName();
-	char * szWhoKilledName;
-
-	if(byteWhoKilled != INVALID_PLAYER_ID) {
-		szWhoKilledName = pNetGame->GetPlayerPool()->GetPlayerName(byteWhoKilled);
-	}
-}
-
-//----------------------------------------------------------
-
 void CLocalPlayer::RequestClass(BYTE byteClass)
 {
 	RakNet::BitStream bsSpawnRequest;
@@ -491,7 +479,7 @@ BOOL CLocalPlayer::SpawnPlayer( BYTE byteTeam,
 
 void CLocalPlayer::Say(PCHAR szText)
 {
-	if(pNetGame->GetGameState() != GAMESTATE_CONNECTED) {
+	if(!pNetGame->IsConnected()) {
 		pChatWindow->AddInfoMessage("Not connected");
 		return;
 	}
@@ -503,10 +491,6 @@ void CLocalPlayer::Say(PCHAR szText)
 	bsSend.Write(szText,byteTextLen);
 
 	pNetGame->GetRPC4()->Call("Chat",&bsSend,HIGH_PRIORITY,RELIABLE,0,UNASSIGNED_SYSTEM_ADDRESS,TRUE);
-	
-	// Process chat message to chat window.
-	pChatWindow->AddChatMessage(pNetGame->GetPlayerPool()->GetLocalPlayerName(),
-		GetTeamColorAsARGB(),szText);
 }
 
 //----------------------------------------------------------

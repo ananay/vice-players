@@ -97,7 +97,7 @@ BOOL HandleCharacterInput(DWORD dwChar)
 			pCmdWindow->BackSpace();
 			return TRUE;
 		}
-		else if(dwChar == '`') {
+		else if(dwChar == VK_ESCAPE) {
 			pCmdWindow->Disable();
 			return TRUE;
 		}
