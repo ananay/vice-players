@@ -80,6 +80,9 @@ void CVehicle::Reset()
 	memset(&m_vecMoveSpeed,0,sizeof(VECTOR));
 	memset(&m_vecTurnSpeed,0,sizeof(VECTOR));
 
+	m_Colors[0] = m_SpawnInfo.iColor1;
+	m_Colors[1] = m_SpawnInfo.iColor2;
+
 	m_bIsActive = TRUE;
 	m_bIsWasted = FALSE;
 	m_bHasHadUpdate = FALSE;
@@ -88,8 +91,6 @@ void CVehicle::Reset()
 	m_bHasDriver = FALSE;
 	m_bHasBeenDriven = FALSE;
 	m_dwTimeSinceLastDriven = GetTickCount();
-	m_Colors[0] = iColor1;
-	m_Colors[1] = iColor2;
 }
 
 //----------------------------------------------------

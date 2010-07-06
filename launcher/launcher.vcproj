@@ -75,7 +75,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				OutputFile="..\bin\launch3.exe"
+				OutputFile="..\bin\$(ProjectName)_d.exe"
 				LinkIncremental="2"
 				SuppressStartupBanner="true"
 				GenerateDebugInformation="true"
@@ -167,7 +167,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				OutputFile="..\bin\launch3.exe"
+				OutputFile="..\bin\$(ProjectName).exe"
 				LinkIncremental="1"
 				SuppressStartupBanner="true"
 				ProgramDatabaseFile=".\Release/vc-mp.pdb"
@@ -209,7 +209,7 @@
 			Filter="cpp;c;cxx;rc;def;r;odl;idl;hpj;bat"
 			>
 			<File
-				RelativePath="launch3.cpp"
+				RelativePath=".\launcher.cpp"
 				>
 				<FileConfiguration
 					Name="Debug|Win32"
@@ -229,7 +229,7 @@
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath="launch3.rc"
+				RelativePath=".\launcher.rc"
 				>
 				<FileConfiguration
 					Name="Debug|Win32"
@@ -249,7 +249,7 @@
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath="launch3Dlg.cpp"
+				RelativePath=".\launcherDlg.cpp"
 				>
 				<FileConfiguration
 					Name="Debug|Win32"
@@ -294,11 +294,11 @@
 			Filter="h;hpp;hxx;hm;inl"
 			>
 			<File
-				RelativePath="launch3.h"
+				RelativePath=".\launcher.h"
 				>
 			</File>
 			<File
-				RelativePath="launch3Dlg.h"
+				RelativePath=".\launcherDlg.h"
 				>
 			</File>
 			<File
@@ -315,11 +315,11 @@
 			Filter="ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe"
 			>
 			<File
-				RelativePath="res\launch3.ico"
+				RelativePath=".\res\launcher.ico"
 				>
 			</File>
 			<File
-				RelativePath="res\launch3.rc2"
+				RelativePath=".\res\launcher.rc2"
 				>
 			</File>
 		</Filter>

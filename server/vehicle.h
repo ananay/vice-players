@@ -47,16 +47,16 @@ public:
 	BYTE					m_bytePassengers[7];
 	BOOL					m_bIsActive;
 	BOOL					m_bIsWasted;
-	VEHICLE_SPAWN_INFO			m_SpawnInfo;
+	VEHICLE_SPAWN_INFO		m_SpawnInfo;
 	MATRIX4X4				m_matWorld;
 	VECTOR					m_vecMoveSpeed;
 	VECTOR					m_vecTurnSpeed;
+	int						m_Colors[2];
 	float					m_fHealth;
 	BOOL					m_bHasHadUpdate;
 	BOOL					m_bHasDriver;
 	DWORD					m_dwTimeSinceLastDriven;
 	BOOL					m_bHasBeenDriven;
-	int					m_Colors[2];
 
 	CVehicle(BYTE byteModel,VECTOR *vecPos,float fRotation,int iColor1,int iColor2);
 	~CVehicle();

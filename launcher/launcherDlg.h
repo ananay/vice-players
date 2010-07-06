@@ -10,22 +10,22 @@
 #endif // _MSC_VER > 1000
 
 /////////////////////////////////////////////////////////////////////////////
-// CLaunch3Dlg dialog
+// CLauncherDlg dialog
 
-class CLaunch3Dlg : public CDialog
+class CLauncherDlg : public CDialog
 {
 // Construction
 public:
-	CLaunch3Dlg(CWnd* pParent = NULL);	// standard constructor
+	CLauncherDlg(CWnd* pParent = NULL);	// standard constructor
 
 // Dialog Data
-	//{{AFX_DATA(CLaunch3Dlg)
+	//{{AFX_DATA(CLauncherDlg)
 	enum { IDD = IDD_LAUNCH3_DIALOG };
 		// NOTE: the ClassWizard will add data members here
 	//}}AFX_DATA
 
 	// ClassWizard generated virtual function overrides
-	//{{AFX_VIRTUAL(CLaunch3Dlg)
+	//{{AFX_VIRTUAL(CLauncherDlg)
 	protected:
 	virtual void DoDataExchange(CDataExchange* pDX);	// DDX/DDV support
 	//}}AFX_VIRTUAL
@@ -35,7 +35,7 @@ protected:
 	HICON m_hIcon;
 
 	// Generated message map functions
-	//{{AFX_MSG(CLaunch3Dlg)
+	//{{AFX_MSG(CLauncherDlg)
 	virtual BOOL OnInitDialog();
 	afx_msg void OnPaint();
 	afx_msg HCURSOR OnQueryDragIcon();
