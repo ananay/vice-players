@@ -151,3 +151,8 @@ function onPlayerDamage(playerid, oldhp, newhp)
 {
 	print("onPlayerDamage(" + playerid + ", " + oldhp + ", " + newhp + ");");
 }
+
+function onVehicleDamage(vehicleid, oldhp, newhp)
+{
+	print("onVehicleDamage(" + vehicleid + ", " + oldhp + ", " + newhp + ");");
+}

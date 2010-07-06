@@ -88,6 +88,8 @@ static SQRegFunction vcmp_funcs[]={
 	_DECL_FUNC(destroyVehicle, 2, _SC(".n")),
 	_DECL_FUNC(setVehicleHealth, 3, _SC(".nn")),
 	_DECL_FUNC(setVehicleColor, 4, _SC(".nnn")),
+	_DECL_FUNC(getVehicleHealth, 2, _SC(".n")),
+	_DECL_FUNC(getVehicleColors, 2, _SC(".n")),
 	{0,0}
 };
 
