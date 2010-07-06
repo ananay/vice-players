@@ -165,7 +165,8 @@ int main (int argc, char* argv[])
 	{
 		pNetGame->Process();
 		pRcon->Process();
-
+		if(pScripts)
+			pScripts->onServerPulse();
 #ifdef WIN32
 		Sleep(5);
 #else
