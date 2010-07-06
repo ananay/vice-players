@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="Windows-1252"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="9,00"
+	Version="9.00"
 	Name="vcmp"
 	ProjectGUID="{24F45D58-098D-42B1-973A-8A3F9C8EA41E}"
 	RootNamespace="vcmp"

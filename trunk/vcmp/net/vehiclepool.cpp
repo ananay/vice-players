@@ -147,35 +147,35 @@ int CVehiclePool::FindGtaIDFromID(int iID)
 
 //----------------------------------------------------
 
+void CVehiclePool::SendVehicleDeath(BYTE byteVehicleId)
+{
+	BitStream bsVehicleDeath;
+	bsVehicleDeath.Write(byteVehicleId);
+	pNetGame->GetRPC4()->Call("VehicleDeath", &bsVehicleDeath, HIGH_PRIORITY, RELIABLE_ORDERED, 0, 
+		UNASSIGNED_SYSTEM_ADDRESS, true);
+}
+
+//----------------------------------------------------
+
 void CVehiclePool::Process()
 {
-	BYTE x=0;
 	CVehicle *pVehicle;
 	DWORD dwThisTime = GetTickCount();
 
-	while(x != MAX_VEHICLES)
+	for(BYTE x = 0; x < MAX_VEHICLES; x++)
 	{
-		if(GetSlotState(x) == TRUE) { // It's inuse.
+		if(GetSlotState(x)) { // It's inuse.
 			pVehicle = m_pVehicles[x];
 
 			if(m_bIsActive[x]) {
-	
-				if(pVehicle->GetHealth() == 0.0f) { // It's dead
-					SetForRespawn(x);
-				}
-				else if(pVehicle->HasExceededWorldBoundries(
-					pNetGame->m_WorldBounds[0],pNetGame->m_WorldBounds[1],
-					pNetGame->m_WorldBounds[2],pNetGame->m_WorldBounds[3]))
-				{
-					if(pVehicle->IsOkToRespawn()) {
-						SetForRespawn(x);
+				if((pVehicle->GetHealth() == 0.0f) || 
+					(pVehicle->GetVehicleSubtype() != VEHICLE_SUBTYPE_BOAT &&
+					pVehicle->GetVehicleSubtype() != VEHICLE_SUBTYPE_PLANE &&
+					pVehicle->HasSunk())) { // It's dead or its not a boat and it has sunk
+					if(!pVehicle->IsDead()) {
+						SendVehicleDeath(x);
+						pVehicle->SetDead(TRUE);
 					}
-				}
-				else if(pVehicle->GetVehicleSubtype() != VEHICLE_SUBTYPE_BOAT &&
-						pVehicle->GetVehicleSubtype() != VEHICLE_SUBTYPE_PLANE &&
-						pVehicle->HasSunk()) // Not boat and has sunk.
-				{
-					SetForRespawn(x);
 				}
 				else 
 				{
@@ -186,6 +186,7 @@ void CVehiclePool::Process()
 					}
 
 					// Lock vehicles beyond given radius.
+					// whats the point in this?
 					if(pVehicle->GetDistanceFromLocalPlayerPed() > 300.0f) {
 						pVehicle->SetLockedState(1);
 					} else {
@@ -194,47 +195,10 @@ void CVehiclePool::Process()
 
 					if(pVehicle->GetVehicleSubtype() == VEHICLE_SUBTYPE_BIKE) {
 						pVehicle->VerifyControlState();
-					}
-
-					// code to respawn vehicle after it has been idle for 4 minutes
-					pVehicle->UpdateLastDrivenTime();
-
-					if(pVehicle->HasBeenDriven()) {
-						if((dwThisTime - pVehicle->GetTimeSinceLastDriven()) > 250000) {
-							SetForRespawn(x);
-						}
-					}						
+					}		
 				}
 			}
-			else // !m_bIsActive
-			{
-				if(m_iRespawnDelay[x] != 0) {
-					m_iRespawnDelay[x]--;
-				}
-				else {
-					if(pVehicle->IsOkToRespawn()) {
-						Spawn(x,m_SpawnInfo[x].byteVehicleType,&m_SpawnInfo[x].vecPos,
-							m_SpawnInfo[x].fRotation,m_SpawnInfo[x].iColor1,m_SpawnInfo[x].iColor2);
-					}
-				}	
-			}		
 		}
-
-		x++;
-
-	}
-}
-
-//----------------------------------------------------
-
-void CVehiclePool::SetForRespawn(BYTE byteVehicleID)
-{
-	CVehicle *pVehicle = m_pVehicles[byteVehicleID];
-
-	if(pVehicle->IsOkToRespawn()) {
-		m_bIsActive[byteVehicleID] = FALSE;
-		m_bIsWasted[byteVehicleID] = TRUE;
-		m_iRespawnDelay[byteVehicleID] = 150;
 	}
 }
 

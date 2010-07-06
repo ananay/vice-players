@@ -67,8 +67,8 @@ void cmdDefaultCmdProc(PCHAR szCmd)
 
 void cmdQuit(PCHAR szCmd)
 {
-	if(pNetGame && pNetGame->GetGameState() == GAMESTATE_CONNECTED) {
-		pNetGame->GetRakPeer()->Shutdown(500);
+	if(pNetGame) {
+		pNetGame->Shutdown();
 	}
 
 	ExitProcess(0);

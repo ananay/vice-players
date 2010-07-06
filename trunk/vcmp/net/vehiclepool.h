@@ -45,7 +45,6 @@ private:
 	VEHICLE_SPAWN_INFO	m_SpawnInfo[MAX_VEHICLES];
 	BOOL				m_bIsActive[MAX_VEHICLES];
 	BOOL				m_bIsWasted[MAX_VEHICLES];
-	int					m_iRespawnDelay[MAX_VEHICLES];
 
 public:
 	
@@ -75,7 +74,8 @@ public:
 
 	int FindIDFromGtaPtr(VEHICLE_TYPE * pGtaVehicle);
 	int FindGtaIDFromID(int iID);
-	void SetForRespawn(BYTE byteVehicleID);
+
+	void SendVehicleDeath(BYTE byteVehicleId);
 
 	void Process();
 };

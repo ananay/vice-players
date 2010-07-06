@@ -82,7 +82,6 @@ public:
 	};
 	
 	void SendWastedNotification();
-	void HandleDeath(BYTE byteReason, BYTE byteWhoKilled, BYTE byteScoringModifier);
 	
 	void RequestClass(BYTE byteClass);
 

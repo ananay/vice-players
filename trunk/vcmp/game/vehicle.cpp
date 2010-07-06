@@ -67,8 +67,7 @@ CVehicle::CVehicle(int iType, float fPosX, float fPosY,
 	
 	SetInvulnerable(TRUE);
 
-	m_bHasBeenDriven = FALSE;
-	m_dwTimeSinceLastDriven = GetTickCount();
+	m_bDead = FALSE;
 }
 
 //-----------------------------------------------------------
@@ -83,19 +82,6 @@ CVehicle::~CVehicle()
 VEHICLE_TYPE *CVehicle::GetVehicle()
 {
 	return (VEHICLE_TYPE *)GetEntity();
-}
-
-//-----------------------------------------------------------
-
-void CVehicle::UpdateLastDrivenTime()
-{
-	VEHICLE_TYPE * pVehicle = (VEHICLE_TYPE *)GetEntity();
-	if(pVehicle) {
-		if(pVehicle->pDriver) {
-			m_bHasBeenDriven = TRUE;
-			m_dwTimeSinceLastDriven = GetTickCount();
-		}
-	}
 }
 
 //-----------------------------------------------------------
@@ -191,22 +177,6 @@ float CVehicle::GetDistanceFromLocalPlayerPed()
 	fSY = (vThisVehicle.Y - vFromPlayer.Y) * (vThisVehicle.Y - vFromPlayer.Y);
 	
 	return (float)sqrt(fSX + fSY);
-}
-
-//-----------------------------------------------------------
-
-BOOL CVehicle::IsOkToRespawn()
-{
-	VEHICLE_TYPE * pVehicle = (VEHICLE_TYPE *)GetEntity();
-	if(pVehicle) {
-		if(pVehicle->pDriver) return FALSE;
-		for(BYTE i = 0; i < 8; i++) {
-			if(pVehicle->pPassengers[i]) {
-				return FALSE;
-			}
-		}
-	}
-	return TRUE;
 }
 
 //-----------------------------------------------------------
@@ -364,34 +334,6 @@ PED_TYPE *CVehicle::GetDriver()
 
 //-----------------------------------------------------------
 
-DWORD CVehicle::GetTimeSinceLastDriven()
-{
-	return m_dwTimeSinceLastDriven;
-}
-
-//-----------------------------------------------------------
-
-void CVehicle::SetTimeSinceLastDriven(DWORD dwTime)
-{
-	m_dwTimeSinceLastDriven = dwTime;
-}
-
-//-----------------------------------------------------------
-
-BOOL CVehicle::HasBeenDriven()
-{
-	return m_bHasBeenDriven;
-}
-
-//-----------------------------------------------------------
-
-void CVehicle::SetHasBeenDriven(BOOL bDriven)
-{
-	m_bHasBeenDriven = bDriven;
-}
-
-//-----------------------------------------------------------
-
 void CVehicle::SetImmunities(int iIm1, int iIm2, int iIm3, int iIm4, int iIm5)
 {
 	ENTITY_TYPE * pEntity = (ENTITY_TYPE *)GetEntity();
@@ -422,6 +364,20 @@ void CVehicle::SetImmunities(int iIm1, int iIm2, int iIm3, int iIm4, int iIm5)
 			pEntity->byteUnkFlags2 &= 0xEFu;
 		}
 	}
+}
+
+//-----------------------------------------------------------
+
+void CVehicle::SetDead(BOOL bDead)
+{
+	m_bDead = bDead;
+}
+
+//-----------------------------------------------------------
+
+BOOL CVehicle::IsDead()
+{
+	return m_bDead;
 }
 
 //-----------------------------------------------------------

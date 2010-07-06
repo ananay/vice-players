@@ -93,8 +93,11 @@ public:
 	RPC4 * GetRPC4() { return m_pRPC4; };
 	CGameModeGeneric * GetGameLogic() { return m_pGameLogic; };
 	void InitGameLogic();
-	void Process();	
+	void Process();
 	void UpdatePlayerScoresAndPings();
+	void Connect();
+	bool IsConnected();
+	void Shutdown();
 };
 
 //----------------------------------------------------

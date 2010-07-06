@@ -175,9 +175,17 @@ typedef struct _VEHICLE_TYPE {
 typedef struct _AUTOMOBILE_TYPE
 {
 	VEHICLE_TYPE vehicle;                 // 000-2A0
-	_pad(__pad0c, 0x310);                 // 2A0-5B0
+	_pad(__pad0c, 0x4);                   // 2A0-2A4
+	BYTE byteEngineStatus;                // 2A4-2A5
+	BYTE byteTireStatus[4];               // 2A5-2A9
+	BYTE byteComponentStatus[6];          // 2A9-2AF
+	_pad(__pad1c, 0x1);                   // 2AF-2B0
+	DWORD dwLightStatus;                  // 2B0-2B4
+	DWORD dwPanelStatus;                  // 2B4-2B8
+	_pad(__pad2c, 0x2F8);                 // 2B8-5B0
 	float	     fSpecialWeaponRotation1; // 5B0-5B4 (following 2 are rhino turret and firetruck spray)
 	float	     fSpecialWeaponRotation2; // 5B4-5B8
+	_pad(__pad3c, 0x24);                  // 5B8-5DC
 } AUTOMOBILE_TYPE;
 
 typedef struct _CAMERA_AIM

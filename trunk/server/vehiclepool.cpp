@@ -106,9 +106,43 @@ BOOL CVehiclePool::Delete(BYTE byteVehicleID)
 
 //----------------------------------------------------
 
+void CVehiclePool::FlagForRespawn(BYTE byteVehicleId)
+{
+	if(GetSlotState(byteVehicleId)) {
+		m_pVehicles[byteVehicleId]->SetWasted(TRUE);
+		m_iRespawnDelay[byteVehicleId] = 150;
+	}
+}
+
+//----------------------------------------------------
+
 void CVehiclePool::Process()
 {
-	
+	for(BYTE x = 0; x < MAX_VEHICLES; x++) {
+		if(m_pVehicles[x]) {
+			// does the vehicle need to be respawned?
+			if(m_pVehicles[x]->IsWasted()) {
+				if(m_iRespawnDelay[x] != 0) {
+					m_iRespawnDelay[x]--;
+				} else {
+					// respawn this vehicle
+					m_pVehicles[x]->Respawn();
+				}
+			}
+
+			// update the last driven time
+			m_pVehicles[x]->UpdateLastDrivenTime();
+
+			// has the vehicle been driven?
+			if(m_pVehicles[x]->HasBeenDriven()) {
+				// has this vehicle been inactive for 250 seconds?
+				if((GetTickCount() - m_pVehicles[x]->GetTimeSinceLastDriven()) > 250000) {
+					// respawn this vehicle
+					m_pVehicles[x]->Respawn();
+				}
+			}
+		}
+	}
 }
 
 //----------------------------------------------------
