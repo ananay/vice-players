@@ -113,3 +113,18 @@ function onRconCommand(command, args)
 {
 	print("onRconCommand(" + command + ", " + args + ")");
 }
+
+function onVehicleCreate(vehicleid)
+{
+	print("onVehicleCreate(" + vehicleid + ")");
+}
+
+function onVehicleDestroy(vehicleid)
+{
+	print("onVehicleDestroy(" + vehicleid + ")");
+}
+
+function onServerPulse()
+{
+
+}

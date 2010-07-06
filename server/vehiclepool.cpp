@@ -25,6 +25,8 @@
 //----------------------------------------------------------
 
 #include "netgame.h"
+#include "scripts.h"
+extern CScripts	*pScripts;
 
 //----------------------------------------------------
 
@@ -63,6 +65,7 @@ BOOL CVehiclePool::New(BYTE byteVehicleID, BYTE byteVehicleType,
 	{
 		m_pVehicles[byteVehicleID]->SetID(byteVehicleID);
 		m_bVehicleSlotState[byteVehicleID] = TRUE;
+		pScripts->onVehicleCreate(byteVehicleID);
 		return TRUE;
 	}
 	else
@@ -96,6 +99,7 @@ BOOL CVehiclePool::Delete(BYTE byteVehicleID)
 	m_bVehicleSlotState[byteVehicleID] = FALSE;
 	delete m_pVehicles[byteVehicleID];
 	m_pVehicles[byteVehicleID] = NULL;
+	pScripts->onVehicleDestroy(byteVehicleID);
 
 	return TRUE;
 }

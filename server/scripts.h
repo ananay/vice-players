@@ -41,8 +41,11 @@ public:
 	bool LoadScript(const char * szScriptName);
 	bool UnloadScript(const char * szScriptName);
 	bool LoadFromConfig(CConfig * pConfig);
+
 	void onServerInit();
 	void onServerExit();
+	void onServerPulse();
+
 	void onPlayerConnect(int playerId);
 	void onPlayerDisconnect(int playerId, int reason);
 	void onPlayerText(int playerId, const char *text);
@@ -53,4 +56,7 @@ public:
 	void onPlayerEnterVehicle(int playerId, int vehicleid);
 	void onPlayerExitVehicle(int playerId, int vehicleid);
 	bool onRconCommand(const char *command, const char *arg);
+
+	void onVehicleCreate(int vehicleid);
+	void onVehicleDestroy(int vehicleid);
 };
