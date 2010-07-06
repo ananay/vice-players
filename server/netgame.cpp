@@ -276,6 +276,8 @@ void CNetGame::VehicleSync(Packet *p)
 	fHealth = UNPACK_VEHICLE_HEALTH(byteReadVehicleHealth);
 
 	if(pPlayer)	{
+		if(GetVehiclePool()->GetAt(byteVehicleID)->GetHealth() != fHealth)
+			pScripts->onVehicleDamage(byteVehicleID, GetVehiclePool()->GetAt(byteVehicleID)->GetHealth(), fHealth);
 		pPlayer->StoreInCarFullSyncData(byteVehicleID,wKeys,&cvecRoll,
 			&cvecDirection,&vecWorldPos,&vecMoveSpeed,fHealth);
 		pPlayer->SetReportedHealth(bytePlayerHealth);
