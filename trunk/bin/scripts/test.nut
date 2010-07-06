@@ -128,3 +128,18 @@ function onServerPulse()
 {
 
 }
+
+function onPlayerSync(playerid)
+{
+
+}
+
+function onBan(ipmask)
+{
+	print("onBan(" + ipmask + ")");
+}
+
+function onKick(playerid)
+{
+	print("onKick(" + playerid + ")");
+}

@@ -30,11 +30,13 @@
 
 #include "netgame.h"
 #include "../raknet/RPC4Plugin.h"
+#include "scripts.h"
 
 using namespace RakNet;
 
 extern CConfig *pServerConfig;
 RPC4		   *CNetGame::m_pRPC4;
+extern CScripts *pScripts;
 
 //----------------------------------------------------
 
@@ -222,6 +224,8 @@ void CNetGame::PlayerSync(Packet *p)
 		/*if(IS_FIRING(wKeys)) */pPlayer->StoreAimSyncData(&caAiming);		
 		pPlayer->SetReportedHealth(bytePlayerHealth);
 		pPlayer->SetReportedArmour(bytePlayerArmour);
+
+		pScripts->onPlayerSync((BYTE)p->systemAddress.systemIndex);
 	}
 }
 
@@ -273,6 +277,8 @@ void CNetGame::VehicleSync(Packet *p)
 			&cvecDirection,&vecWorldPos,&vecMoveSpeed,fHealth);
 		pPlayer->SetReportedHealth(bytePlayerHealth);
 		pPlayer->SetReportedArmour(bytePlayerArmour);
+
+		pScripts->onPlayerSync((BYTE)p->systemAddress.systemIndex);
 	}
 }
 
@@ -302,6 +308,8 @@ void CNetGame::PassengerSync(Packet *p)
 	bsPassengerSend.Write(byteVehicleID);
 	bsPassengerSend.Write(uiPassengerSeat);
 	m_pRPC4->Call("Passenger", &bsPassengerSend,HIGH_PRIORITY,RELIABLE,0,p->systemAddress,TRUE);
+
+	pScripts->onPlayerSync((BYTE)p->systemAddress.systemIndex);
 
 }
 
@@ -353,6 +361,7 @@ void CNetGame::KickPlayer(BYTE byteKickPlayer)
 		if (m_pPlayerPool->GetSlotState(byteKickPlayer))
 		{
 			m_pPlayerPool->Delete(byteKickPlayer,2);
+			pScripts->onKick(byteKickPlayer);
 		}
 	}
 }
@@ -369,6 +378,8 @@ void CNetGame::AddBan(char * ip_mask)
 	fprintf(fileBanList,"%s\n",ip_mask);
 
 	fclose(fileBanList);
+
+	pScripts->onBan(ip_mask);
 }
 
 //----------------------------------------------------

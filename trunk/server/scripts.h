@@ -45,6 +45,9 @@ public:
 	void onServerInit();
 	void onServerExit();
 	void onServerPulse();
+	bool onRconCommand(const char *command, const char *arg);
+	void onBan(const char *szText);
+	void onKick(int playerId);
 
 	void onPlayerConnect(int playerId);
 	void onPlayerDisconnect(int playerId, int reason);
@@ -55,7 +58,7 @@ public:
 	void onPlayerDeath(int playerId, int killerId, int reason);
 	void onPlayerEnterVehicle(int playerId, int vehicleid);
 	void onPlayerExitVehicle(int playerId, int vehicleid);
-	bool onRconCommand(const char *command, const char *arg);
+	void onPlayerSync(int playerId);
 
 	void onVehicleCreate(int vehicleid);
 	void onVehicleDestroy(int vehicleid);
