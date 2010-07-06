@@ -51,7 +51,7 @@ public:
 	MATRIX4X4				m_matWorld;
 	VECTOR					m_vecMoveSpeed;
 	VECTOR					m_vecTurnSpeed;
-	int						m_Colors[2];
+	int						m_iColors[2];
 	float					m_fHealth;
 	BOOL					m_bHasHadUpdate;
 	BOOL					m_bHasDriver;
@@ -66,7 +66,7 @@ public:
 	void SetHealth(float newHealth);
 	float GetHealth() { return m_fHealth; };
 	void SetColor(int color1, int color2);
-	int *GetColor() { return (int*)&m_Colors; }
+	void GetColor(int * iColor1, int * iColor2) { *iColor1 = m_iColors[0]; *iColor2 = m_iColors[1]; }
 
 	void SetDriverId(BYTE byteDriverId) { m_byteDriverID = byteDriverId; };
 	BYTE GetDriverId() { return m_byteDriverID; };
