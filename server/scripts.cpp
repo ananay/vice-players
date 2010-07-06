@@ -350,8 +350,9 @@ void CScripts::onPlayerDisconnect(int playerId, int reason)
 	}
 }
 
-void CScripts::onPlayerText(int playerId, const char *text)
+bool CScripts::onPlayerText(int playerId, const char *text)
 {
+	bool ret = true;
 	for(int i = 0; i < MAX_SCRIPTS; i++) {
 		if(m_pScripts[i]) {
 			// get the script vm pointer
@@ -378,13 +379,20 @@ void CScripts::onPlayerText(int playerId, const char *text)
 				sq_pushstring(pVM, text, -1);
 
 				// Call the function
-				sq_call(pVM, 3, true, true);
+				// Call the function
+				if (!SQ_FAILED(sq_call(pVM, 3, true, true)))
+				{
+					SQBool result;
+					sq_getbool(pVM, sq_gettop(pVM), &result);
+					if(result == false) ret = false;
+				}
 			}
 
 			// Restore the stack top
 			sq_settop(pVM, iTop);
 		}
 	}
+	return ret;
 }
 
 void CScripts::onPlayerCommand(int playerId, const char *command)

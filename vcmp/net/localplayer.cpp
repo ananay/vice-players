@@ -505,8 +505,8 @@ void CLocalPlayer::Say(PCHAR szText)
 	pNetGame->GetRPC4()->Call("Chat",&bsSend,HIGH_PRIORITY,RELIABLE,0,UNASSIGNED_SYSTEM_ADDRESS,TRUE);
 	
 	// Process chat message to chat window.
-	pChatWindow->AddChatMessage(pNetGame->GetPlayerPool()->GetLocalPlayerName(),
-		GetTeamColorAsARGB(),szText);
+	/*pChatWindow->AddChatMessage(pNetGame->GetPlayerPool()->GetLocalPlayerName(),
+		GetTeamColorAsARGB(),szText);*/
 }
 
 //----------------------------------------------------------

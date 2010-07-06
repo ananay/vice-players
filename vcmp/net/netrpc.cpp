@@ -122,6 +122,10 @@ void Chat(RakNet::BitStream *bitStream, Packet *packet)
 	if(pRemotePlayer) {
 		pRemotePlayer->Say(szText);	
 	}
+	if(pNetGame->GetPlayerPool()->GetLocalSystemAddress() == byteSystemAddress)
+		return;
+	pChatWindow->AddChatMessage(pNetGame->GetPlayerPool()->GetLocalPlayerName(),
+		pNetGame->GetPlayerPool()->GetLocalPlayer()->GetTeamColorAsARGB(),szText);
 }
 
 //----------------------------------------------------
