@@ -142,3 +142,8 @@ function onKick(playerid)
 {
 	print("onKick(" + playerid + ")");
 }
+
+function onPlayerDamage(playerid, oldhp, newhp)
+{
+	print("onPlayerDamage(" + playerid + ", " + oldhp + ", " + newhp + ");");
+}

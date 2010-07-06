@@ -59,6 +59,7 @@ public:
 	void onPlayerEnterVehicle(int playerId, int vehicleid);
 	void onPlayerExitVehicle(int playerId, int vehicleid);
 	void onPlayerSync(int playerId);
+	void onPlayerDamage(int playerId, int oldhp, int newhp);
 
 	void onVehicleCreate(int vehicleid);
 	void onVehicleDestroy(int vehicleid);

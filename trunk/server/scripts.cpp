@@ -696,6 +696,46 @@ void CScripts::onPlayerSync(int playerId)
 	}
 }
 
+void CScripts::onPlayerDamage(int playerId, int oldhp, int newhp)
+{
+	for(int i = 0; i < MAX_SCRIPTS; i++) {
+		if(m_pScripts[i]) {
+			// get the script vm pointer
+			SQVM * pVM = m_pScripts[i];
+
+			// Get the stack top
+			int iTop = sq_gettop(pVM);
+
+			// Push the root table onto the stack
+			sq_pushroottable(pVM);
+
+			// Push the function name onto the stack
+			sq_pushstring(pVM, "onPlayerDamage", -1);
+
+			// Get the closure for the function
+			if(SQ_SUCCEEDED(sq_get(pVM, -2))) {
+				// Push the root table onto the stack
+				sq_pushroottable(pVM);
+
+				// Push the player id onto the stack
+				sq_pushinteger(pVM, playerId);
+
+				// Push the player old health onto the stack
+				sq_pushinteger(pVM, oldhp);
+
+				// Push the player new health onto the stack
+				sq_pushinteger(pVM, newhp);
+
+				// Call the function
+				sq_call(pVM, 4, true, true);
+			}
+
+			// Restore the stack top
+			sq_settop(pVM, iTop);
+		}
+	}
+}
+
 void CScripts::onVehicleCreate(int vehicleid)
 {
 	for(int i = 0; i < MAX_SCRIPTS; i++) {
