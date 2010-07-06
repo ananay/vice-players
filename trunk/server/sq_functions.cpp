@@ -733,6 +733,59 @@ SQInteger sq_setCameraBehindPlayer(SQVM * pVM)
 	return 1;
 }
 
+SQInteger sq_playSound(SQVM * pVM)
+{
+	SQInteger playerSystemAddress;
+	SQInteger sound;
+	SQFloat	  X, Y, Z;
+
+	sq_getinteger(pVM, -5, &playerSystemAddress);
+	sq_getinteger(pVM, -4, &sound);
+	sq_getfloat(pVM, -3, &X);
+	sq_getfloat(pVM, -2, &Y);
+	sq_getfloat(pVM, -1, &Z);
+
+	if(pNetGame->GetPlayerPool()->GetSlotState(playerSystemAddress))
+	{
+		RakNet::BitStream bsSend;
+		bsSend.Write(sound);
+		bsSend.Write(X);
+		bsSend.Write(Y);
+		bsSend.Write(Z);
+		pNetGame->GetRPC4()->Call("Script_PlaySound",&bsSend,HIGH_PRIORITY,RELIABLE,0,pNetGame->GetRakPeer()->GetSystemAddressFromIndex(playerSystemAddress),false);
+
+		sq_pushbool(pVM, true);
+		return 1;
+	}
+
+	sq_pushbool(pVM, false);
+	return 1;
+}
+
+SQInteger sq_fadeScreen(SQVM * pVM)
+{
+	SQInteger playerSystemAddress;
+	SQInteger type, time;
+
+	sq_getinteger(pVM, -3, &playerSystemAddress);
+	sq_getinteger(pVM, -2, &type);
+	sq_getinteger(pVM, -1, &time);
+
+	if(pNetGame->GetPlayerPool()->GetSlotState(playerSystemAddress))
+	{
+		RakNet::BitStream bsSend;
+		bsSend.Write(type);
+		bsSend.Write(time);
+		pNetGame->GetRPC4()->Call("Script_FadeScreen",&bsSend,HIGH_PRIORITY,RELIABLE,0,pNetGame->GetRakPeer()->GetSystemAddressFromIndex(playerSystemAddress),false);
+
+		sq_pushbool(pVM, true);
+		return 1;
+	}
+
+	sq_pushbool(pVM, false);
+	return 1;
+}
+
 // addPlayerClass
 SQInteger sq_addPlayerClass(SQVM * pVM)
 {
@@ -861,6 +914,8 @@ static SQRegFunction vcmp_funcs[]={
 	_DECL_FUNC(setPlayerCameraRot, 5, _SC(".nnnn")),
 	_DECL_FUNC(setPlayerCameraLookAt, 5, _SC(".nnnn")),
 	_DECL_FUNC(setCameraBehindPlayer, 2, _SC(".n")),
+	_DECL_FUNC(playSound, 6, _SC(".nnnnn")),
+	_DECL_FUNC(fadeScreen, 3, _SC(".nnn")),
 	_DECL_FUNC(addPlayerClass, 13, _SC(".nnnnnnnnnnnn")),
 	_DECL_FUNC(getPlayerHealth, 2, _SC(".n")),
 	_DECL_FUNC(setPlayerHealth, 3, _SC(".nn")),

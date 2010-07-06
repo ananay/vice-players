@@ -443,6 +443,8 @@ void SetCameraBehindPlayer(RakNet::BitStream *bitStream, Packet *packet)
 
 //----------------------------------------------------
 
+//----------------------------------------------------
+
 // ============= Scripting RPC's ====================//
 
 // SetHealth
@@ -656,6 +658,30 @@ void Script_DestroyVehicle(RakNet::BitStream *bitStream, Packet *packet)
 	pNetGame->GetVehiclePool()->Delete(vehicle);
 }
 
+// Play sound
+void Script_PlaySound(RakNet::BitStream *bitStream, Packet *packet)
+{
+	int sound;
+	VECTOR vPos;
+
+	bitStream->Read(sound);
+	bitStream->Read(vPos.X);
+	bitStream->Read(vPos.Y);
+	bitStream->Read(vPos.Z);
+
+	pGame->PlaySound(sound, vPos);
+}
+
+// Fade
+void Script_FadeScreen(RakNet::BitStream *bitStream, Packet *packet)
+{
+	int type, time;
+
+	bitStream->Read(type);
+	bitStream->Read(time);
+
+	pGame->FadeScreen(type, time);
+}
 
 void RegisterRPCs()
 {
@@ -696,6 +722,8 @@ void RegisterRPCs()
 	pNetGame->GetRPC4()->RegisterFunction("Script_SetVehicleHealth",Script_SetVehicleHealth);
 	pNetGame->GetRPC4()->RegisterFunction("Script_SetVehicleColor",Script_SetVehicleColor);
 	pNetGame->GetRPC4()->RegisterFunction("Script_DestroyVehicle",Script_DestroyVehicle);
+	pNetGame->GetRPC4()->RegisterFunction("Script_PlaySound",Script_PlaySound);
+	pNetGame->GetRPC4()->RegisterFunction("Script_FadeScreen",Script_FadeScreen);
 
 }
 
@@ -740,6 +768,8 @@ void UnRegisterRPCs()
 	pNetGame->GetRPC4()->UnregisterFunction("Script_SetVehicleHealth");
 	pNetGame->GetRPC4()->UnregisterFunction("Script_SetVehicleColor");
 	pNetGame->GetRPC4()->UnregisterFunction("Script_DestroyVehicle");
+	pNetGame->GetRPC4()->UnregisterFunction("Script_PlaySound");
+	pNetGame->GetRPC4()->UnregisterFunction("Script_FadeScreen");
 }
 
 //----------------------------------------------------
