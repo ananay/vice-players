@@ -211,21 +211,15 @@ void CNetGame::PlayerSync(Packet *p)
 	bsPlayerSync.Read(bytePlayerArmour);
 	bsPlayerSync.Read(byteCurrentWeapon);
 
-	if(IS_FIRING(wKeys)) {
-		bsPlayerSync.Read(caAiming.f1x);
-		bsPlayerSync.Read(caAiming.f1y);
-		bsPlayerSync.Read(caAiming.f1z);
-		bsPlayerSync.Read(caAiming.f2x);
-		bsPlayerSync.Read(caAiming.f2y);
-		bsPlayerSync.Read(caAiming.f2z);
-		bsPlayerSync.Read(caAiming.pos1x);
-		bsPlayerSync.Read(caAiming.pos1y);
-		bsPlayerSync.Read(caAiming.pos1z);
-	}
-		
+	//if(IS_FIRING(wKeys)) {
+		bsPlayerSync.Read((char *)&caAiming.vecA1, sizeof(VECTOR));
+		bsPlayerSync.Read((char *)&caAiming.vecA2, sizeof(VECTOR));
+		bsPlayerSync.Read((char *)&caAiming.vecAPos1, sizeof(VECTOR));
+	//}
+
 	if(pPlayer)	{
 		pPlayer->StoreOnFootFullSyncData(wKeys,&vecWorldPos,fRotation,byteCurrentWeapon,byteAction);
-		if(IS_FIRING(wKeys)) pPlayer->StoreAimSyncData(&caAiming);		
+		/*if(IS_FIRING(wKeys)) */pPlayer->StoreAimSyncData(&caAiming);		
 		pPlayer->SetReportedHealth(bytePlayerHealth);
 		pPlayer->SetReportedArmour(bytePlayerArmour);
 	}

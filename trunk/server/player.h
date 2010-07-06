@@ -53,12 +53,11 @@ typedef struct _PLAYER_SPAWN_INFO
 } PLAYER_SPAWN_INFO;
 
 typedef struct _S_CAMERA_AIM
-{
-	short f1x,f1y,f1z;
-	float pos1x,pos1y,pos1z;
-	float pos2x,pos2y,pos2z;
-	short f2x,f2y,f2z;
-
+{ // This is a MATRIX4X4?
+	VECTOR vecA1; // float f1x,f1y,f1z
+	VECTOR vecAPos1; // float pos1x,pos1y,pos1z
+	VECTOR vecAPos2; // float pos2x,pos2y,pos2z
+	VECTOR vecA2; // float f2x,f2y,f2z
 } S_CAMERA_AIM;
 
 //----------------------------------------------------
