@@ -455,3 +455,54 @@ void CPlayer::SetGameTime(BYTE hours, BYTE minutes)
 }
 
 //----------------------------------------------------
+
+void CPlayer::SetCameraPos(VECTOR vPos)
+{
+	RakNet::BitStream bsSend;
+	SystemAddress playerid = pNetGame->GetRakPeer()->GetSystemAddressFromIndex(m_byteSystemAddress);
+
+	bsSend.Write(vPos.X);
+	bsSend.Write(vPos.Y);
+	bsSend.Write(vPos.Z);
+
+	pNetGame->GetRPC4()->Call("SetCameraPosition", &bsSend,HIGH_PRIORITY,RELIABLE_ORDERED,0,playerid,false);
+}
+
+//----------------------------------------------------
+
+void CPlayer::SetCameraRot(VECTOR vRot)
+{
+	RakNet::BitStream bsSend;
+	SystemAddress playerid = pNetGame->GetRakPeer()->GetSystemAddressFromIndex(m_byteSystemAddress);
+
+	bsSend.Write(vRot.X);
+	bsSend.Write(vRot.Y);
+	bsSend.Write(vRot.Z);
+
+	pNetGame->GetRPC4()->Call("SetCameraRotation", &bsSend,HIGH_PRIORITY,RELIABLE_ORDERED,0,playerid,false);
+}
+
+//----------------------------------------------------
+
+void CPlayer::SetCameraLookAt(VECTOR vPoint)
+{
+	RakNet::BitStream bsSend;
+	SystemAddress playerid = pNetGame->GetRakPeer()->GetSystemAddressFromIndex(m_byteSystemAddress);
+
+	bsSend.Write(vPoint.X);
+	bsSend.Write(vPoint.Y);
+	bsSend.Write(vPoint.Z);
+
+	pNetGame->GetRPC4()->Call("SetCameraLookAt", &bsSend,HIGH_PRIORITY,RELIABLE_ORDERED,0,playerid,false);
+}
+
+//----------------------------------------------------
+
+void CPlayer::SetCameraBehindPlayer()
+{
+	SystemAddress playerid = pNetGame->GetRakPeer()->GetSystemAddressFromIndex(m_byteSystemAddress);
+
+	pNetGame->GetRPC4()->Call("SetCameraBehindPlayer", NULL,HIGH_PRIORITY,RELIABLE_ORDERED,0,playerid,false);
+}
+
+//----------------------------------------------------

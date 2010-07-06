@@ -161,6 +161,11 @@ public:
 	void SetSpawnSkin(int iSkin) { m_SpawnInfo.byteSkin = iSkin; };
 
 	void SetGameTime(BYTE hours, BYTE minutes);
+
+	void SetCameraPos(VECTOR vPos);
+	void SetCameraRot(VECTOR vPos);
+	void SetCameraLookAt(VECTOR vPoint);
+	void SetCameraBehindPlayer();
 };
 
 //----------------------------------------------------
