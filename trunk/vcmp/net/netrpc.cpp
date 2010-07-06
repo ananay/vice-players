@@ -398,6 +398,51 @@ void SetGameTime(RakNet::BitStream *bitStream, Packet *packet)
 	pGame->SetGameTime(h, m);
 }
 
+//----------------------------------------------------
+
+void SetCameraPosition(RakNet::BitStream *bitStream, Packet *packet)
+{
+	VECTOR vPos;
+	bitStream->Read(vPos.X);
+	bitStream->Read(vPos.Y);
+	bitStream->Read(vPos.Z);
+
+	pGame->GetCamera()->SetPosition(vPos);
+}
+
+//----------------------------------------------------
+
+void SetCameraRotation(RakNet::BitStream *bitStream, Packet *packet)
+{
+	VECTOR vRot;
+	bitStream->Read(vRot.X);
+	bitStream->Read(vRot.Y);
+	bitStream->Read(vRot.Z);
+
+	pGame->GetCamera()->SetRotation(vRot);
+}
+
+//----------------------------------------------------
+
+void SetCameraLookAt(RakNet::BitStream *bitStream, Packet *packet)
+{
+	VECTOR vPoint;
+	bitStream->Read(vPoint.X);
+	bitStream->Read(vPoint.Y);
+	bitStream->Read(vPoint.Z);
+
+	pGame->GetCamera()->LookAtPoint(vPoint, 1);
+}
+
+//----------------------------------------------------
+
+void SetCameraBehindPlayer(RakNet::BitStream *bitStream, Packet *packet)
+{
+	pGame->GetCamera()->SetBehindPlayer();
+}
+
+//----------------------------------------------------
+
 // ============= Scripting RPC's ====================//
 
 // SetHealth
@@ -611,6 +656,7 @@ void Script_DestroyVehicle(RakNet::BitStream *bitStream, Packet *packet)
 	pNetGame->GetVehiclePool()->Delete(vehicle);
 }
 
+
 void RegisterRPCs()
 {
 	pNetGame->GetRPC4()->RegisterFunction("ServerJoin",ServerJoin);
@@ -628,6 +674,10 @@ void RegisterRPCs()
 	pNetGame->GetRPC4()->RegisterFunction("ConnectionRejected",ConnectionRejected);
 	pNetGame->GetRPC4()->RegisterFunction("Passenger",Passenger);
 	pNetGame->GetRPC4()->RegisterFunction("SetGameTime",SetGameTime);
+	pNetGame->GetRPC4()->RegisterFunction("SetCameraPosition",SetCameraPosition);
+	pNetGame->GetRPC4()->RegisterFunction("SetCameraRotation",SetCameraRotation);
+	pNetGame->GetRPC4()->RegisterFunction("SetCameraLookAt",SetCameraLookAt);
+	pNetGame->GetRPC4()->RegisterFunction("SetCameraBehindPlayer",SetCameraBehindPlayer);
 
 	pNetGame->GetRPC4()->RegisterFunction("Script_SetHealth",Script_SetHealth);
 	pNetGame->GetRPC4()->RegisterFunction("Script_SetArmour",Script_SetArmour);
@@ -668,6 +718,10 @@ void UnRegisterRPCs()
 	pNetGame->GetRPC4()->UnregisterFunction("ConnectionRejected");
 	pNetGame->GetRPC4()->UnregisterFunction("Passenger");
 	pNetGame->GetRPC4()->UnregisterFunction("SetGameTime");
+	pNetGame->GetRPC4()->UnregisterFunction("SetCameraPosition");
+	pNetGame->GetRPC4()->UnregisterFunction("SetCameraRotation");
+	pNetGame->GetRPC4()->UnregisterFunction("SetCameraLookAt");
+	pNetGame->GetRPC4()->UnregisterFunction("SetCameraBehindPlayer");
 
 	pNetGame->GetRPC4()->UnregisterFunction("Script_SetHealth");
 	pNetGame->GetRPC4()->UnregisterFunction("Script_SetArmour");

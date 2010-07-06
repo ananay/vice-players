@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="Windows-1252"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="9.00"
+	Version="9,00"
 	Name="vcmp"
 	ProjectGUID="{24F45D58-098D-42B1-973A-8A3F9C8EA41E}"
 	RootNamespace="vcmp"
@@ -78,6 +78,7 @@
 				OutputFile="..\bin\vcmp.dll"
 				LinkIncremental="1"
 				SuppressStartupBanner="true"
+				AdditionalLibraryDirectories="&quot;$(ProjectDir)\detours\&quot;"
 				IgnoreDefaultLibraryNames="libci.lib"
 				ProgramDatabaseFile=".\Release/vc-mp.pdb"
 				SubSystem="2"
@@ -174,6 +175,7 @@
 				OutputFile="..\bin\vcmp.dll"
 				LinkIncremental="2"
 				SuppressStartupBanner="true"
+				AdditionalLibraryDirectories="&quot;$(ProjectDir)\detours\&quot;"
 				IgnoreDefaultLibraryNames="libci.lib"
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile=".\Debug/vc-mp.pdb"

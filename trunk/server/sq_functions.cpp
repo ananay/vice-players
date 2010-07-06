@@ -20,7 +20,7 @@
 // VC:Players Multiplayer Modification For GTA:VC
 // Copyright 2010 GTA:Online team
 //
-// File Author: Christopher
+// File Authors: Christopher, adamix
 //
 //-----------------------------------------------------
 
@@ -641,6 +641,97 @@ SQInteger sq_getPlayerVehicleID(SQVM * pVM)
 	return 1;
 }
 
+// setPlayerCameraPos
+SQInteger sq_setPlayerCameraPos(SQVM * pVM)
+{
+	SQFloat	X, Y, Z;
+	SQInteger playerSystemAddress;
+
+	sq_getinteger(pVM, -4, &playerSystemAddress);
+	sq_getfloat(pVM, -3, &X);
+	sq_getfloat(pVM, -2, &Y);
+	sq_getfloat(pVM, -1, &Z);
+
+	if(pNetGame->GetPlayerPool()->GetSlotState(playerSystemAddress))
+	{
+		VECTOR vPos;
+		vPos.X = X;
+		vPos.Y = Y;
+		vPos.Z = Z;
+		pNetGame->GetPlayerPool()->GetAt(playerSystemAddress)->SetCameraPos(vPos);
+		sq_pushbool(pVM, true);
+	}
+
+	sq_pushbool(pVM, false);
+	return 1;
+}
+
+// setPlayerCameraRot
+SQInteger sq_setPlayerCameraRot(SQVM * pVM)
+{
+	SQFloat	X, Y, Z;
+	SQInteger playerSystemAddress;
+
+	sq_getinteger(pVM, -4, &playerSystemAddress);
+	sq_getfloat(pVM, -3, &X);
+	sq_getfloat(pVM, -2, &Y);
+	sq_getfloat(pVM, -1, &Z);
+
+	if(pNetGame->GetPlayerPool()->GetSlotState(playerSystemAddress))
+	{
+		VECTOR vRot;
+		vRot.X = X;
+		vRot.Y = Y;
+		vRot.Z = Z;
+		pNetGame->GetPlayerPool()->GetAt(playerSystemAddress)->SetCameraRot(vRot);
+		sq_pushbool(pVM, true);
+	}
+
+	sq_pushbool(pVM, false);
+	return 1;
+}
+
+// setPlayerCameraLookAt
+SQInteger sq_setPlayerCameraLookAt(SQVM * pVM)
+{
+	SQFloat	X, Y, Z;
+	SQInteger playerSystemAddress;
+
+	sq_getinteger(pVM, -4, &playerSystemAddress);
+	sq_getfloat(pVM, -3, &X);
+	sq_getfloat(pVM, -2, &Y);
+	sq_getfloat(pVM, -1, &Z);
+
+	if(pNetGame->GetPlayerPool()->GetSlotState(playerSystemAddress))
+	{
+		VECTOR vPoint;
+		vPoint.X = X;
+		vPoint.Y = Y;
+		vPoint.Z = Z;
+		pNetGame->GetPlayerPool()->GetAt(playerSystemAddress)->SetCameraLookAt(vPoint);
+		sq_pushbool(pVM, true);
+	}
+
+	sq_pushbool(pVM, false);
+	return 1;
+}
+
+// setCameraBehindPlayer
+SQInteger sq_setCameraBehindPlayer(SQVM * pVM)
+{
+	SQInteger playerSystemAddress;
+
+	sq_getinteger(pVM, -1, &playerSystemAddress);
+
+	if(pNetGame->GetPlayerPool()->GetSlotState(playerSystemAddress))
+	{
+		pNetGame->GetPlayerPool()->GetAt(playerSystemAddress)->SetCameraBehindPlayer();
+		sq_pushbool(pVM, true);
+	}
+
+	sq_pushbool(pVM, false);
+	return 1;
+}
 
 // addPlayerClass
 SQInteger sq_addPlayerClass(SQVM * pVM)
@@ -766,6 +857,10 @@ static SQRegFunction vcmp_funcs[]={
 	_DECL_FUNC(setPlayerTime, 4, _SC(".nnn")),
 	_DECL_FUNC(getPlayerName, 2, _SC(".n")),
 	_DECL_FUNC(getPlayerIP, 2, _SC(".n")),
+	_DECL_FUNC(setPlayerCameraPos, 5, _SC(".nnnn")),
+	_DECL_FUNC(setPlayerCameraRot, 5, _SC(".nnnn")),
+	_DECL_FUNC(setPlayerCameraLookAt, 5, _SC(".nnnn")),
+	_DECL_FUNC(setCameraBehindPlayer, 2, _SC(".n")),
 	_DECL_FUNC(addPlayerClass, 13, _SC(".nnnnnnnnnnnn")),
 	_DECL_FUNC(getPlayerHealth, 2, _SC(".n")),
 	_DECL_FUNC(setPlayerHealth, 3, _SC(".nn")),
