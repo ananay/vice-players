@@ -147,6 +147,7 @@ void CCmdWindow::ProcessInput()
 			// find the end of the name
 			szCmdEndPos = &m_szInputBuffer[1];
 			strcpy((char*)&command, (char*)&m_szInputBuffer);
+			bool serverProcess = true;
 			while(*szCmdEndPos && *szCmdEndPos != ' ') szCmdEndPos++;
 			if(*szCmdEndPos == '\0') {
 				// Possible command with no params.
@@ -154,6 +155,7 @@ void CCmdWindow::ProcessInput()
 				// If valid then call it.
 				if(cmdHandler) {
 					cmdHandler("");
+					serverProcess = false;
 				}
 			}
 			else {
@@ -163,13 +165,17 @@ void CCmdWindow::ProcessInput()
 				// If valid then call it with the param string.
 				if(cmdHandler) {
 					cmdHandler(szCmdEndPos);
+					serverProcess = false;
 				}
 			}
-			RakNet::BitStream bsSend;
-			BYTE byteTextLen = strlen(command);
-			bsSend.Write(byteTextLen);
-			bsSend.Write(command,byteTextLen);
-			pNetGame->GetRPC4()->Call("ChatCommand",&bsSend,HIGH_PRIORITY,RELIABLE,0,UNASSIGNED_SYSTEM_ADDRESS,TRUE);
+			if(serverProcess == true)
+			{
+				RakNet::BitStream bsSend;
+				BYTE byteTextLen = strlen(command);
+				bsSend.Write(byteTextLen);
+				bsSend.Write(command,byteTextLen);
+				pNetGame->GetRPC4()->Call("ChatCommand",&bsSend,HIGH_PRIORITY,RELIABLE,0,UNASSIGNED_SYSTEM_ADDRESS,TRUE);
+			}
 		}
 	}
 
