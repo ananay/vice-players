@@ -83,7 +83,7 @@ void ServerQuit(RakNet::BitStream *bitStream, Packet *packet)
 void InitGame(RakNet::BitStream *bitStream, Packet *packet)
 {
 	CPlayerPool *pPlayerPool = pNetGame->GetPlayerPool();
-	BYTE byteMySystemAddress;
+	BYTE byteMySystemAddress, showOnRadar;
 
 	bitStream->Read((char*)&pNetGame->m_vecInitPlayerPos, sizeof(VECTOR));
 	bitStream->Read((char*)&pNetGame->m_vecInitCameraPos, sizeof(VECTOR));
@@ -93,6 +93,7 @@ void InitGame(RakNet::BitStream *bitStream, Packet *packet)
 	bitStream->Read(pNetGame->m_WorldBounds[2]);
 	bitStream->Read(pNetGame->m_WorldBounds[3]);
 	bitStream->Read(pNetGame->m_byteFriendlyFire);
+	bitStream->Read(showOnRadar);
 	bitStream->Read(byteMySystemAddress);
 
 	pPlayerPool->SetLocalSystemAddress(byteMySystemAddress);
@@ -122,7 +123,8 @@ void Chat(RakNet::BitStream *bitStream, Packet *packet)
 		pChatWindow->AddChatMessage(pNetGame->GetPlayerPool()->GetLocalPlayerName(),
 			pPlayerPool->GetLocalPlayer()->GetTeamColorAsARGB(),szText);
 	}
-	else {
+	else
+	{
 		CRemotePlayer *pRemotePlayer = pNetGame->GetPlayerPool()->GetAt(byteSystemAddress);
 		if(pRemotePlayer) {
 			pRemotePlayer->Say(szText);	
