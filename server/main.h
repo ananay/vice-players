@@ -52,5 +52,10 @@
 
 void logprintf(char * format, ...);
 
+#ifndef _WIN32
+#include <sys/time.h>
+long GetTickCount();
+#endif
+
 //----------------------------------------------------
 
