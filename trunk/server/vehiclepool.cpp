@@ -127,6 +127,7 @@ void CVehiclePool::Process()
 				} else {
 					// respawn this vehicle
 					m_pVehicles[x]->Respawn();
+					pScripts->onVehicleSpawn(x);
 				}
 			}
 
@@ -139,6 +140,7 @@ void CVehiclePool::Process()
 				if((GetTickCount() - m_pVehicles[x]->GetTimeSinceLastDriven()) > 250000) {
 					// respawn this vehicle
 					m_pVehicles[x]->Respawn();
+					pScripts->onVehicleSpawn(x);
 				}
 			}
 		}

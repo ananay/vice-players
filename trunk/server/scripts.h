@@ -65,4 +65,6 @@ public:
 	void onVehicleDestroy(int vehicleid);
 	void onVehicleSync(int vehicleid);
 	void onVehicleDamage(int vehicleId, float oldhp, float newhp);
+	void onVehicleSpawn(int vehicleid);
+	void onVehicleDeath(int vehicleid);
 };

@@ -279,6 +279,8 @@ void VehicleDeath(RakNet::BitStream *bitStream, Packet *packet)
 	CVehicle * pVehicle = pVehiclePool->GetAt(byteVehicleId);
 	if(pVehicle) {
 		pVehiclePool->FlagForRespawn(byteVehicleId);
+
+		pScripts->onVehicleDeath(byteVehicleId);
 	}
 }
 
