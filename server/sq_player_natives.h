@@ -30,6 +30,8 @@
 SQInteger sq_setPlayerHealth(SQVM * v); // done
 SQInteger sq_setPlayerArmour(SQVM * v); // done
 SQInteger sq_setPlayerPos(SQVM * v); // done
+SQInteger sq_setPlayerTurnSpeed(SQVM * pVM); // done
+SQInteger sq_setPlayerMoveSpeed(SQVM * pVM); // done
 SQInteger sq_getPlayerPos(SQVM * v); // done
 SQInteger sq_setPlayerZAngle(SQVM * v); // done
 SQInteger sq_getPlayerSkin(SQVM * v); // done

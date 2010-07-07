@@ -496,6 +496,30 @@ void Script_SetPos(RakNet::BitStream *bitStream, Packet *packet)
 	pPlayer->Teleport(playerPos.X, playerPos.Y, playerPos.Z);
 }
 
+// SetPlayerTurnSpeed
+void Script_SetTurnSpeed(RakNet::BitStream *bitStream, Packet *packet)
+{
+	CPlayerPed *pPlayer = pGame->FindPlayerPed();
+
+	VECTOR speed;
+
+	bitStream->Read((char *)&speed, sizeof(VECTOR));
+
+	pPlayer->SetTurnSpeed(speed);
+}
+
+// SetPlayerTurnSpeed
+void Script_SetMoveSpeed(RakNet::BitStream *bitStream, Packet *packet)
+{
+	CPlayerPed *pPlayer = pGame->FindPlayerPed();
+
+	VECTOR speed;
+
+	bitStream->Read((char *)&speed, sizeof(VECTOR));
+
+	pPlayer->SetMoveSpeed(speed);
+}
+
 // PutPlayerInVehicle
 void Script_PutInVehicle(RakNet::BitStream *bitStream, Packet *packet)
 {
@@ -650,6 +674,51 @@ void Script_SetVehicleColor(RakNet::BitStream *bitStream, Packet *packet)
 	pVehicle->SetColor(color1, color2);
 }
 
+// SetVehiclePos
+void Script_SetVehiclePos(RakNet::BitStream *bitStream, Packet *packet)
+{
+	BYTE vehicle;
+	VECTOR pos;
+	bitStream->Read(vehicle);
+	bitStream->Read((char *)&pos, sizeof(VECTOR));
+
+	CVehiclePool *pPool = pNetGame->GetVehiclePool();
+	if(pPool->GetSlotState(vehicle))
+	{
+		pPool->GetAt(vehicle)->SetPosition(pos);
+	}
+}
+
+// SetVehicleTurnSpeed
+void Script_SetVehicleTurnSpeed(RakNet::BitStream *bitStream, Packet *packet)
+{
+	BYTE vehicle;
+	VECTOR speed;
+	bitStream->Read(vehicle);
+	bitStream->Read((char *)&speed, sizeof(VECTOR));
+
+	CVehiclePool *pPool = pNetGame->GetVehiclePool();
+	if(pPool->GetSlotState(vehicle))
+	{
+		pPool->GetAt(vehicle)->SetTurnSpeed(speed);
+	}
+}
+
+// SetVehicleMoveSpeed
+void Script_SetVehicleMoveSpeed(RakNet::BitStream *bitStream, Packet *packet)
+{
+	BYTE vehicle;
+	VECTOR speed;
+	bitStream->Read(vehicle);
+	bitStream->Read((char *)&speed, sizeof(VECTOR));
+
+	CVehiclePool *pPool = pNetGame->GetVehiclePool();
+	if(pPool->GetSlotState(vehicle))
+	{
+		pPool->GetAt(vehicle)->SetMoveSpeed(speed);
+	}
+}
+
 // SetVehicleColor
 void Script_DestroyVehicle(RakNet::BitStream *bitStream, Packet *packet)
 {
@@ -709,6 +778,8 @@ void RegisterRPCs()
 	pNetGame->GetRPC4()->RegisterFunction("Script_SetHealth",Script_SetHealth);
 	pNetGame->GetRPC4()->RegisterFunction("Script_SetArmour",Script_SetArmour);
 	pNetGame->GetRPC4()->RegisterFunction("Script_SetPos",Script_SetPos);
+	pNetGame->GetRPC4()->RegisterFunction("Script_SetTurnSpeed",Script_SetTurnSpeed);
+	pNetGame->GetRPC4()->RegisterFunction("Script_SetMoveSpeed",Script_SetMoveSpeed);
 	pNetGame->GetRPC4()->RegisterFunction("Script_PutInVehicle",Script_PutInVehicle);
 	pNetGame->GetRPC4()->RegisterFunction("Script_GivePlayerWeapon",Script_GivePlayerWeapon);
 	pNetGame->GetRPC4()->RegisterFunction("Script_SetPlayerSkin",Script_SetPlayerSkin);
@@ -722,6 +793,9 @@ void RegisterRPCs()
 	pNetGame->GetRPC4()->RegisterFunction("Script_WorldBounds",Script_WorldBounds);
 	pNetGame->GetRPC4()->RegisterFunction("Script_SetVehicleHealth",Script_SetVehicleHealth);
 	pNetGame->GetRPC4()->RegisterFunction("Script_SetVehicleColor",Script_SetVehicleColor);
+	pNetGame->GetRPC4()->RegisterFunction("Script_SetVehiclePos",Script_SetVehiclePos);
+	pNetGame->GetRPC4()->RegisterFunction("Script_SetVehicleTurnSpeed",Script_SetVehicleTurnSpeed);
+	pNetGame->GetRPC4()->RegisterFunction("Script_SetVehicleMoveSpeed",Script_SetVehicleMoveSpeed);
 	pNetGame->GetRPC4()->RegisterFunction("Script_DestroyVehicle",Script_DestroyVehicle);
 	pNetGame->GetRPC4()->RegisterFunction("Script_PlaySound",Script_PlaySound);
 	pNetGame->GetRPC4()->RegisterFunction("Script_FadeScreen",Script_FadeScreen);

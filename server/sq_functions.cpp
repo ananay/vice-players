@@ -81,6 +81,8 @@ static SQRegFunction vcmp_funcs[]={
 	_DECL_FUNC(setPlayerSkin, 3, _SC(".nn")),
 	_DECL_FUNC(getPlayerPos, 2, _SC(".n")),
 	_DECL_FUNC(setPlayerPos, 5, _SC(".nnnn")),
+	_DECL_FUNC(setPlayerTurnSpeed, 5, _SC(".nnnn")),
+	_DECL_FUNC(setPlayerMoveSpeed, 5, _SC(".nnnn")),
 	_DECL_FUNC(isConnected, 2, _SC(".n")),
 	_DECL_FUNC(getPlayerTeam, 2, _SC(".n")),
 	_DECL_FUNC(setPlayerAction, 3, _SC(".nn")),
@@ -94,6 +96,12 @@ static SQRegFunction vcmp_funcs[]={
 	_DECL_FUNC(setVehicleColor, 4, _SC(".nnn")),
 	_DECL_FUNC(getVehicleHealth, 2, _SC(".n")),
 	_DECL_FUNC(getVehicleColors, 2, _SC(".n")),
+	_DECL_FUNC(getVehiclePos, 2, _SC(".n")),
+	_DECL_FUNC(setVehiclePos, 5, _SC(".nnnn")),
+	_DECL_FUNC(getVehicleTurnSpeed, 2, _SC(".n")),
+	_DECL_FUNC(getVehicleMoveSpeed, 2, _SC(".n")),
+	_DECL_FUNC(setVehicleTurnSpeed, 5, _SC(".nnnn")),
+	_DECL_FUNC(setVehicleMoveSpeed, 5, _SC(".nnnn")),
 	{0,0}
 };
 

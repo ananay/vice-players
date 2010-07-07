@@ -147,3 +147,165 @@ SQInteger sq_getVehicleColors(SQVM * pVM)
 	sq_pushbool(pVM, false);
 	return 1;
 }
+
+// getVehicleTurnSpeed
+SQInteger sq_getVehicleTurnSpeed(SQVM * pVM)
+{
+	VECTOR speed;
+	SQInteger vehicle;
+	sq_getinteger(pVM, -1, &vehicle);
+
+	if(pNetGame->GetVehiclePool()->GetSlotState(vehicle))
+	{
+		CVehicle *pVehicle = pNetGame->GetVehiclePool()->GetAt(vehicle);
+		pVehicle->GetTurnSpeed(&speed);
+
+		sq_newarray(pVM, 0);
+		sq_pushfloat(pVM, speed.X);
+		sq_arrayappend(pVM, -2);
+		sq_pushfloat(pVM, speed.Y);
+		sq_arrayappend(pVM, -2);
+		sq_pushfloat(pVM, speed.Z);
+		sq_arrayappend(pVM, -2);
+		sq_push(pVM, -1);
+		return 1;
+	}
+
+	sq_pushbool(pVM, false);
+	return 1;
+}
+
+// getVehicleMoveSpeed
+SQInteger sq_getVehicleMoveSpeed(SQVM * pVM)
+{
+	VECTOR speed;
+	SQInteger vehicle;
+	sq_getinteger(pVM, -1, &vehicle);
+
+	if(pNetGame->GetVehiclePool()->GetSlotState(vehicle))
+	{
+		CVehicle *pVehicle = pNetGame->GetVehiclePool()->GetAt(vehicle);
+		pVehicle->GetMoveSpeed(&speed);
+
+		sq_newarray(pVM, 0);
+		sq_pushfloat(pVM, speed.X);
+		sq_arrayappend(pVM, -2);
+		sq_pushfloat(pVM, speed.Y);
+		sq_arrayappend(pVM, -2);
+		sq_pushfloat(pVM, speed.Z);
+		sq_arrayappend(pVM, -2);
+		sq_push(pVM, -1);
+		return 1;
+	}
+
+	sq_pushbool(pVM, false);
+	return 1;
+}
+
+// getVehiclePos
+SQInteger sq_getVehiclePos(SQVM * pVM)
+{
+	VECTOR pos;
+	SQInteger vehicle;
+	sq_getinteger(pVM, -1, &vehicle);
+
+	if(pNetGame->GetVehiclePool()->GetSlotState(vehicle))
+	{
+		CVehicle *pVehicle = pNetGame->GetVehiclePool()->GetAt(vehicle);
+		pVehicle->GetPosition(&pos);
+
+		sq_newarray(pVM, 0);
+		sq_pushfloat(pVM, pos.X);
+		sq_arrayappend(pVM, -2);
+		sq_pushfloat(pVM, pos.Y);
+		sq_arrayappend(pVM, -2);
+		sq_pushfloat(pVM, pos.Z);
+		sq_arrayappend(pVM, -2);
+		sq_push(pVM, -1);
+		return 1;
+	}
+
+	sq_pushbool(pVM, false);
+	return 1;
+}
+
+// setVehiclePos
+SQInteger sq_setVehiclePos(SQVM * pVM)
+{
+	SQInteger vehicle;
+
+	VECTOR pVec;
+
+	sq_getinteger(pVM, -4, &vehicle);
+	sq_getfloat(pVM, -3, &pVec.X);
+	sq_getfloat(pVM, -2, &pVec.Y);
+	sq_getfloat(pVM, -1, &pVec.Z);
+
+	if(pNetGame->GetVehiclePool()->GetSlotState(vehicle))
+	{
+		RakNet::BitStream bsSend;
+		bsSend.Write(vehicle);
+		bsSend.Write((char *)&pVec, sizeof(VECTOR));
+		pNetGame->GetRPC4()->Call("Script_SetVehiclePos",&bsSend,HIGH_PRIORITY,RELIABLE,0,UNASSIGNED_SYSTEM_ADDRESS,true);
+
+		sq_pushbool(pVM, true);
+		return 1;
+	}
+
+	sq_pushbool(pVM, false);
+	return 1;
+}
+
+// setVehicleTurnSpeed
+SQInteger sq_setVehicleTurnSpeed(SQVM * pVM)
+{
+	SQInteger vehicle;
+
+	VECTOR pVec;
+
+	sq_getinteger(pVM, -4, &vehicle);
+	sq_getfloat(pVM, -3, &pVec.X);
+	sq_getfloat(pVM, -2, &pVec.Y);
+	sq_getfloat(pVM, -1, &pVec.Z);
+
+	if(pNetGame->GetVehiclePool()->GetSlotState(vehicle))
+	{
+		RakNet::BitStream bsSend;
+		bsSend.Write(vehicle);
+		bsSend.Write((char *)&pVec, sizeof(VECTOR));
+		pNetGame->GetRPC4()->Call("Script_SetVehicleTurnSpeed",&bsSend,HIGH_PRIORITY,RELIABLE,0,UNASSIGNED_SYSTEM_ADDRESS,true);
+
+		sq_pushbool(pVM, true);
+		return 1;
+	}
+
+	sq_pushbool(pVM, false);
+	return 1;
+}
+
+// setVehicleMoveSpeed
+SQInteger sq_setVehicleMoveSpeed(SQVM * pVM)
+{
+	SQInteger vehicle;
+
+	VECTOR pVec;
+
+	sq_getinteger(pVM, -4, &vehicle);
+	sq_getfloat(pVM, -3, &pVec.X);
+	sq_getfloat(pVM, -2, &pVec.Y);
+	sq_getfloat(pVM, -1, &pVec.Z);
+
+	if(pNetGame->GetVehiclePool()->GetSlotState(vehicle))
+	{
+		RakNet::BitStream bsSend;
+		bsSend.Write(vehicle);
+		bsSend.Write((char *)&pVec, sizeof(VECTOR));
+		pNetGame->GetRPC4()->Call("Script_SetVehicleMoveSpeed",&bsSend,HIGH_PRIORITY,RELIABLE,0,UNASSIGNED_SYSTEM_ADDRESS,true);
+
+		sq_pushbool(pVM, true);
+		return 1;
+	}
+
+	sq_pushbool(pVM, false);
+	return 1;
+}
