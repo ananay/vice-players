@@ -20,8 +20,6 @@
 // VC:Players Multiplayer Modification For GTA:VC
 // Copyright 2010 GTA:Online team
 //
-// File Authors: Christopher, adamix
-//
 //-----------------------------------------------------
 
 #include "sq_timer_natives.h"
