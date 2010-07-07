@@ -166,3 +166,13 @@ function onVehicleDeath(vehicleid)
 {
 	print("onVehicleDeath(" + vehicleid + ")");
 }
+
+function onTimerCreate(timerid)
+{
+
+}
+
+function onTimerDestroy(timerid)
+{
+
+}
