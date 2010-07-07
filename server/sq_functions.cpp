@@ -109,3 +109,23 @@ int sq_register_vcmp(SQVM * pVM)
 	}
 	return 1;
 }
+
+static SQRegFunction timer_funcs[]={
+	_DECL_FUNC(setTimer, 0, NULL),
+	_DECL_FUNC(killTimer, 0, NULL),
+	_DECL_FUNC(isTimerActive, 0, NULL),
+};
+
+int sq_register_timer(SQVM * pVM)
+{
+	SQInteger i=0;
+	while(timer_funcs[i].name!=0)
+	{
+		sq_pushstring(pVM,timer_funcs[i].name,-1);
+		sq_newclosure(pVM,timer_funcs[i].f,0);
+		sq_setnativeclosurename(pVM,-1,timer_funcs[i].name);
+		sq_createslot(pVM,-3);
+		i++;
+	}
+	return 1;
+}

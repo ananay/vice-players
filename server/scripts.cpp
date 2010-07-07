@@ -130,6 +130,9 @@ bool CScripts::LoadScript(const char * szScriptName)
 	// register the vcmp functions
 	sq_register_vcmp(pVM);
 
+	// register the timer functions
+	sq_register_timer(pVM);
+
 	// load and compile the script
 	if(SQ_FAILED(sqstd_dofile(pVM, szScriptPath, SQFalse, SQTrue))) {
 		// script compilation failed

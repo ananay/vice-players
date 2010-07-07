@@ -1380,11 +1380,27 @@
 				>
 			</File>
 			<File
+				RelativePath=".\sq_timer_natives.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\sq_timer_natives.h"
+				>
+			</File>
+			<File
 				RelativePath=".\sq_vehicle_natives.cpp"
 				>
 			</File>
 			<File
 				RelativePath=".\sq_vehicle_natives.h"
+				>
+			</File>
+			<File
+				RelativePath=".\timerpool.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\timerpool.h"
 				>
 			</File>
 			<Filter

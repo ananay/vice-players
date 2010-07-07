@@ -71,6 +71,9 @@ CNetGame::CNetGame(int iMaxPlayers, int iPort, int iGameType,
 	m_pVehiclePool = new CVehiclePool();
 	//m_pVehiclePool->InitialiseFromConfig(pServerConfig);
 
+	// Setup timer pool
+	m_pTimerPool = new CTimerPool();
+
 	// Setup the init positions.
 	SetupInitPositions();
 
@@ -112,6 +115,9 @@ void CNetGame::Process()
 
 	// Process the Vehicles.
 	m_pVehiclePool->Process();
+
+	// Process the timers
+	m_pTimerPool->Process();
 }
 
 //----------------------------------------------------
