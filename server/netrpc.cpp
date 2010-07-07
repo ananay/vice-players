@@ -148,8 +148,9 @@ void Chat(RakNet::BitStream *bitStream, Packet *packet)
 
 	if(!pPool->GetSlotState((BYTE)packet->guid.systemIndex)) return;
 
-	pScripts->onPlayerText((BYTE)packet->guid.systemIndex, szText);
-
+	if(!pScripts->onPlayerText((BYTE)packet->guid.systemIndex, szText))
+		return;
+	
 	logprintf("[%s]: %s",
 		pPool->GetPlayerName((BYTE)packet->guid.systemIndex),
 		szText);
