@@ -190,7 +190,7 @@ void CLocalPlayer::SendOnFootFullSyncData()
 		bytePlayerArmour = (BYTE)m_pPlayerPed->GetArmour();
 		bsPlayerSync.Write(bytePlayerHealth);
 		bsPlayerSync.Write(bytePlayerArmour);
-		bsPlayerSync.Write(m_pPlayerPed->GetCurrentWeapon());
+		bsPlayerSync.Write((BYTE)m_pPlayerPed->GetCurrentWeapon());
 
 		// send aiming data if the firing button is held
 		//if(IS_FIRING(wKeys)) {
