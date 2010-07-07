@@ -20,19 +20,39 @@
 // VC:Players Multiplayer Modification For GTA:VC
 // Copyright 2010 GTA:Online team
 //
-// File Authors: Christopher, adamix
+// File Authors: adamix
 //
 //-----------------------------------------------------
-
+#pragma once
 #include "main.h"
 #include "scripts.h"
-#include "sq_player_natives.h"
-#include "sq_vehicle_natives.h"
-#include "sq_timer_natives.h"
-#include "sq_misc_natives.h"
+#include "squirrel/squirrel.h"
+#include "squirrel/sqvm.h"
 
-//			Functions
-//---------------------------------
+#define MAX_TIMERS 100
 
-int sq_register_vcmp(SQVM * pVM);
-int sq_register_timer(SQVM * pVM);
+struct ScriptTimer
+{
+	SQObjectPtr pFunction;
+	unsigned int uInterval;
+	int iRemainingRepeations;
+	SQVM * pScriptVM;
+	unsigned int uTick;
+	int iArgCount;
+	SQObjectPtr * pArguments;
+};
+
+class CTimerPool
+{
+private:
+	ScriptTimer * m_Timers[MAX_TIMERS];
+public:
+	CTimerPool();
+	~CTimerPool();
+	void Process();
+
+	int Set(SQVM * pScriptVM, SQObjectPtr pFunction, int iInterval, int iRepeations, int iArgCount, SQObjectPtr * pArguments);
+	bool Kill(int iTimerId);
+	void HandleScriptUnload(SQVM * pScriptVM);
+	bool IsActive(int iTimerId);
+};

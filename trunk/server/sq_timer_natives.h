@@ -23,16 +23,10 @@
 // File Authors: Christopher, adamix
 //
 //-----------------------------------------------------
+#pragma once
 
 #include "main.h"
 #include "scripts.h"
-#include "sq_player_natives.h"
-#include "sq_vehicle_natives.h"
-#include "sq_timer_natives.h"
-#include "sq_misc_natives.h"
-
-//			Functions
-//---------------------------------
-
-int sq_register_vcmp(SQVM * pVM);
-int sq_register_timer(SQVM * pVM);
+SQInteger sq_setTimer(SQVM * pVM); // done
+SQInteger sq_isTimerActive(SQVM * pVM); // done
+SQInteger sq_killTimer(SQVM * pVM); // done
