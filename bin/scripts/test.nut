@@ -156,3 +156,13 @@ function onVehicleDamage(vehicleid, oldhp, newhp)
 {
 	print("onVehicleDamage(" + vehicleid + ", " + oldhp + ", " + newhp + ");");
 }
+
+function onVehicleSpawn(vehicleid)
+{
+	print("onVehicleSpawn(" + vehicleid + ")");
+}
+
+function onVehicleDeath(vehicleid)
+{
+	print("onVehicleDeath(" + vehicleid + ")");
+}

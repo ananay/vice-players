@@ -879,6 +879,74 @@ void CScripts::onVehicleDamage(int vehicleId, float oldhp, float newhp)
 	}
 }
 
+void CScripts::onVehicleSpawn(int vehicleid)
+{
+	for(int i = 0; i < MAX_SCRIPTS; i++) {
+		if(m_pScripts[i]) {
+			// get the script vm pointer
+			SQVM * pVM = m_pScripts[i];
+
+			// Get the stack top
+			int iTop = sq_gettop(pVM);
+
+			// Push the root table onto the stack
+			sq_pushroottable(pVM);
+
+			// Push the function name onto the stack
+			sq_pushstring(pVM, "onVehicleSpawn", -1);
+
+			// Get the closure for the function
+			if(SQ_SUCCEEDED(sq_get(pVM, -2))) {
+				// Push the root table onto the stack
+				sq_pushroottable(pVM);
+
+				// Push the vehicle id onto the stack
+				sq_pushinteger(pVM, vehicleid);
+
+				// Call the function
+				sq_call(pVM, 2, true, true);
+			}
+
+			// Restore the stack top
+			sq_settop(pVM, iTop);
+		}
+	}
+}
+
+void CScripts::onVehicleDeath(int vehicleid)
+{
+	for(int i = 0; i < MAX_SCRIPTS; i++) {
+		if(m_pScripts[i]) {
+			// get the script vm pointer
+			SQVM * pVM = m_pScripts[i];
+
+			// Get the stack top
+			int iTop = sq_gettop(pVM);
+
+			// Push the root table onto the stack
+			sq_pushroottable(pVM);
+
+			// Push the function name onto the stack
+			sq_pushstring(pVM, "onVehicleDeath", -1);
+
+			// Get the closure for the function
+			if(SQ_SUCCEEDED(sq_get(pVM, -2))) {
+				// Push the root table onto the stack
+				sq_pushroottable(pVM);
+
+				// Push the vehicle id onto the stack
+				sq_pushinteger(pVM, vehicleid);
+
+				// Call the function
+				sq_call(pVM, 2, true, true);
+			}
+
+			// Restore the stack top
+			sq_settop(pVM, iTop);
+		}
+	}
+}
+
 void CScripts::onBan(const char *szText)
 {
 	for(int i = 0; i < MAX_SCRIPTS; i++) {
