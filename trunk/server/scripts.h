@@ -23,7 +23,6 @@
 //-----------------------------------------------------
 
 #pragma once
-
 #include "squirrel/squirrel.h"
 #include "config.h"
 

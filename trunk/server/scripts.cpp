@@ -23,6 +23,9 @@
 //-----------------------------------------------------
 
 #include "../raknet/WindowsIncludes.h"
+#include "netgame.h"
+extern CNetGame *pNetGame;
+
 #include <stdio.h>
 #include "scripts.h"
 #include "squirrel/sqstdaux.h"
@@ -155,6 +158,9 @@ bool CScripts::UnloadScript(const char * szScriptName)
 
 			// get the script vm pointer
 			SQVM * pVM = m_pScripts[i];
+
+			// kill all timers
+			pNetGame->GetTimerPool()->HandleScriptUnload(pVM);
 
 			// close the script vm
 			sq_close(pVM);
