@@ -26,11 +26,7 @@
 
 #include "main.h"
 #include "scripts.h"
-#include "sq_player_natives.h"
-#include "sq_vehicle_natives.h"
-#include "sq_misc_natives.h"
 
-//			Functions
-//---------------------------------
-
-int sq_register_vcmp(SQVM * pVM);
+SQInteger sq_setGameTime(SQVM * pVM); // done
+SQInteger sq_getMaxPlayers(SQVM * pVM); // done
+SQInteger sq_getTickCount(SQVM * pVM); // done

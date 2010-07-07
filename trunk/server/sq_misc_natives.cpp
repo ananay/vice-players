@@ -24,13 +24,34 @@
 //
 //-----------------------------------------------------
 
-#include "main.h"
-#include "scripts.h"
-#include "sq_player_natives.h"
-#include "sq_vehicle_natives.h"
 #include "sq_misc_natives.h"
+#include "netgame.h"
 
-//			Functions
-//---------------------------------
+extern CNetGame *pNetGame;
 
-int sq_register_vcmp(SQVM * pVM);
+using namespace RakNet;
+
+
+SQInteger sq_setGameTime(SQVM * pVM)
+{
+	SQInteger h, m;
+
+	sq_getinteger(pVM, -2, &h);
+	sq_getinteger(pVM, -1, &m);
+
+	pNetGame->GetPlayerPool()->SetGameTime(h, m);
+	sq_pushbool(pVM, true);
+	return 1;
+}
+
+SQInteger sq_getMaxPlayers(SQVM * pVM)
+{
+	sq_pushinteger(pVM, pNetGame->GetMaxPlayers());
+	return 1;
+}
+
+SQInteger sq_getTickCount(SQVM * pVM)
+{
+	sq_pushinteger(pVM, GetTickCount());
+	return 1;
+}

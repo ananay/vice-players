@@ -1364,6 +1364,14 @@
 				>
 			</File>
 			<File
+				RelativePath=".\sq_misc_natives.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\sq_misc_natives.h"
+				>
+			</File>
+			<File
 				RelativePath=".\sq_player_natives.cpp"
 				>
 			</File>
