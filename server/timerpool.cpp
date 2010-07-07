@@ -57,6 +57,7 @@ int CTimerPool::Set(SQVM * pScriptVM, SQObjectPtr pFunction, int iInterval, int 
 			m_Timers[i]->uTick = GetTickCount();
 			m_Timers[i]->iArgCount = iArgCount;
 			m_Timers[i]->pArguments = pArguments;
+			pScripts->onTimerCreate(i);
 			return i;
 		}
 	}
@@ -75,9 +76,9 @@ bool CTimerPool::Kill(int iTimerId)
 				delete[] m_Timers[iTimerId]->pArguments;
 				m_Timers[iTimerId]->pArguments = NULL;
 			}
-
 			delete m_Timers[iTimerId];
 			m_Timers[iTimerId] = NULL;
+			pScripts->onTimerDestroy(iTimerId);
 			return true;
 		}
 	}

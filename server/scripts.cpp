@@ -1023,3 +1023,71 @@ void CScripts::onKick(int playerId)
 		}
 	}
 }
+
+void CScripts::onTimerCreate(int timerId)
+{
+	for(int i = 0; i < MAX_SCRIPTS; i++) {
+		if(m_pScripts[i]) {
+			// get the script vm pointer
+			SQVM * pVM = m_pScripts[i];
+
+			// Get the stack top
+			int iTop = sq_gettop(pVM);
+
+			// Push the root table onto the stack
+			sq_pushroottable(pVM);
+
+			// Push the function name onto the stack
+			sq_pushstring(pVM, "onTimerCreate", -1);
+
+			// Get the closure for the function
+			if(SQ_SUCCEEDED(sq_get(pVM, -2))) {
+				// Push the root table onto the stack
+				sq_pushroottable(pVM);
+
+				// Push the timer id onto the stack
+				sq_pushinteger(pVM, timerId);
+
+				// Call the function
+				sq_call(pVM, 2, true, true);
+			}
+
+			// Restore the stack top
+			sq_settop(pVM, iTop);
+		}
+	}
+}
+
+void CScripts::onTimerDestroy(int timerId)
+{
+	for(int i = 0; i < MAX_SCRIPTS; i++) {
+		if(m_pScripts[i]) {
+			// get the script vm pointer
+			SQVM * pVM = m_pScripts[i];
+
+			// Get the stack top
+			int iTop = sq_gettop(pVM);
+
+			// Push the root table onto the stack
+			sq_pushroottable(pVM);
+
+			// Push the function name onto the stack
+			sq_pushstring(pVM, "onTimerDestroy", -1);
+
+			// Get the closure for the function
+			if(SQ_SUCCEEDED(sq_get(pVM, -2))) {
+				// Push the root table onto the stack
+				sq_pushroottable(pVM);
+
+				// Push the timer id onto the stack
+				sq_pushinteger(pVM, timerId);
+
+				// Call the function
+				sq_call(pVM, 2, true, true);
+			}
+
+			// Restore the stack top
+			sq_settop(pVM, iTop);
+		}
+	}
+}
