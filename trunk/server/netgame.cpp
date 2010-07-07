@@ -53,6 +53,8 @@ CNetGame::CNetGame(int iMaxPlayers, int iPort, int iGameType,
 	m_pRakPeer->SetMaximumIncomingConnections(iMaxPlayers);
 	m_pRakPeer->AttachPlugin(m_pRPC4);
 
+	m_iMaxPlayers = iMaxPlayers;
+
 	LoadBanList();
 	
 	if(szPassword != NULL) {

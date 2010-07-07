@@ -64,6 +64,7 @@ private:
 	static RPC4					*m_pRPC4;
 	CGameModeGeneric			*m_pGameLogic;
 	int							m_iGameState;
+	int							m_iMaxPlayers;
 
 	// TODO: Make private
 public:
@@ -92,6 +93,7 @@ public:
 	RakPeerInterface * GetRakPeer() { return m_pRakPeer; };
 	RPC4 * GetRPC4() { return m_pRPC4; }
 	CGameModeGeneric * GetGameLogic() { return m_pGameLogic; };
+	int	GetMaxPlayers() { return m_iMaxPlayers; };
 	
 	void Process();
 	void BroadcastData( BitStream *bitStream, PacketPriority priority,

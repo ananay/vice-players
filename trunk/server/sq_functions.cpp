@@ -43,6 +43,12 @@ SQInteger sq_setGameTime(SQVM * pVM)
 	return 1;
 }
 
+SQInteger sq_getMaxPlayers(SQVM * pVM)
+{
+	sq_pushinteger(pVM, pNetGame->GetMaxPlayers());
+	return 1;
+}
+
 
 #define _DECL_FUNC(name,nparams,pmask) {_SC(#name),sq_##name,nparams,pmask}
 static SQRegFunction vcmp_funcs[]={
@@ -51,6 +57,7 @@ static SQRegFunction vcmp_funcs[]={
 	_DECL_FUNC(kickPlayer, 2, _SC(".n")),
 	_DECL_FUNC(banIP, 2, _SC(".s")),
 	_DECL_FUNC(setGameTime, 3, _SC(".nn")),
+	_DECL_FUNC(getMaxPlayers, 1, NULL),
 	_DECL_FUNC(setPlayerTime, 4, _SC(".nnn")),
 	_DECL_FUNC(getPlayerName, 2, _SC(".n")),
 	_DECL_FUNC(getPlayerIP, 2, _SC(".n")),
