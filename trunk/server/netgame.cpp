@@ -377,7 +377,7 @@ void CNetGame::AddBan(char * ip_mask)
 {
 	m_pRakPeer->AddToBanList(ip_mask);
 	
-	FILE * fileBanList = fopen("vcmp-svr.banlist","a");
+	FILE * fileBanList = fopen("vcp-svr.banlist","a");
 	if(!fileBanList) return;
 
 	fprintf(fileBanList,"%s\n",ip_mask);
@@ -391,7 +391,7 @@ void CNetGame::AddBan(char * ip_mask)
 
 void CNetGame::LoadBanList()
 {
-	FILE * fileBanList = fopen("vcmp-svr.banlist","r");
+	FILE * fileBanList = fopen("vcp-svr.banlist","r");
 	if(!fileBanList) return;
 
 	char ban_ip[256];

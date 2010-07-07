@@ -1,3 +1,29 @@
+//----------------------------------------------------
+//
+// GPL code license:
+// This program is free software; you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation; either version 2 of the License, or
+// (at your option) any later version.
+//
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with this program; if not, write to the Free Software
+// Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+//
+//-----------------------------------------------------
+//
+// VC:Players Multiplayer Modification For GTA:VC
+// Copyright 2010 GTA:Online team
+//
+// File Authors: Christopher, adamix
+//
+//-----------------------------------------------------
+
 #include "sq_player_natives.h"
 #include "netgame.h"
 
@@ -708,6 +734,7 @@ SQInteger sq_setCameraBehindPlayer(SQVM * pVM)
 	return 1;
 }
 
+// playSound
 SQInteger sq_playSound(SQVM * pVM)
 {
 	SQInteger playerSystemAddress;
@@ -737,6 +764,7 @@ SQInteger sq_playSound(SQVM * pVM)
 	return 1;
 }
 
+// fadeScreen
 SQInteger sq_fadeScreen(SQVM * pVM)
 {
 	SQInteger playerSystemAddress;
@@ -761,6 +789,7 @@ SQInteger sq_fadeScreen(SQVM * pVM)
 	return 1;
 }
 
+// kickPlayer
 SQInteger sq_kickPlayer(SQVM * pVM)
 {
 	SQInteger playerSystemAddress;
@@ -777,6 +806,7 @@ SQInteger sq_kickPlayer(SQVM * pVM)
 	return 1;
 }
 
+// banIP
 SQInteger sq_banIP(SQVM * pVM)
 {
 	const char * banmask;
@@ -787,6 +817,8 @@ SQInteger sq_banIP(SQVM * pVM)
 	return 1;
 }
 
+
+// getPlayerTeam
 SQInteger sq_getPlayerTeam(SQVM * pVM)
 {
 	SQInteger playerSystemAddress;
@@ -798,6 +830,60 @@ SQInteger sq_getPlayerTeam(SQVM * pVM)
 		sq_pushbool(pVM, pNetGame->GetPlayerPool()->GetAt(playerSystemAddress)->GetTeam());
 		return 1;
 	}
+	sq_pushbool(pVM, false);
+	return 1;
+}
+
+// getPlayerTurnSpeed
+SQInteger sq_getPlayerTurnSpeed(SQVM * pVM)
+{
+	VECTOR speed;
+	SQInteger playerSystemAddress;
+	sq_getinteger(pVM, -1, &playerSystemAddress);
+
+	if(pNetGame->GetPlayerPool()->GetSlotState(playerSystemAddress))
+	{
+		CPlayer *pPlayer = pNetGame->GetPlayerPool()->GetAt(playerSystemAddress);
+		pPlayer->GetTurnSpeed(&speed);
+
+		sq_newarray(pVM, 0);
+		sq_pushfloat(pVM, speed.X);
+		sq_arrayappend(pVM, -2);
+		sq_pushfloat(pVM, speed.Y);
+		sq_arrayappend(pVM, -2);
+		sq_pushfloat(pVM, speed.Z);
+		sq_arrayappend(pVM, -2);
+		sq_push(pVM, -1);
+		return 1;
+	}
+
+	sq_pushbool(pVM, false);
+	return 1;
+}
+
+// getPlayerMoveSpeed
+SQInteger sq_getPlayerMoveSpeed(SQVM * pVM)
+{
+	VECTOR speed;
+	SQInteger playerSystemAddress;
+	sq_getinteger(pVM, -1, &playerSystemAddress);
+
+	if(pNetGame->GetPlayerPool()->GetSlotState(playerSystemAddress))
+	{
+		CPlayer *pPlayer = pNetGame->GetPlayerPool()->GetAt(playerSystemAddress);
+		pPlayer->GetMoveSpeed(&speed);
+
+		sq_newarray(pVM, 0);
+		sq_pushfloat(pVM, speed.X);
+		sq_arrayappend(pVM, -2);
+		sq_pushfloat(pVM, speed.Y);
+		sq_arrayappend(pVM, -2);
+		sq_pushfloat(pVM, speed.Z);
+		sq_arrayappend(pVM, -2);
+		sq_push(pVM, -1);
+		return 1;
+	}
+
 	sq_pushbool(pVM, false);
 	return 1;
 }
