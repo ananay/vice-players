@@ -68,6 +68,10 @@ public:
 	void SetColor(int color1, int color2);
 	void GetColor(int * iColor1, int * iColor2) { *iColor1 = m_iColors[0]; *iColor2 = m_iColors[1]; }
 
+	void GetPosition(VECTOR * vecPosition);
+	void GetMoveSpeed(VECTOR * vecMoveSpeed);
+	void GetTurnSpeed(VECTOR * vecTurnSpeed);
+
 	void SetDriverId(BYTE byteDriverId) { m_byteDriverID = byteDriverId; };
 	BYTE GetDriverId() { return m_byteDriverID; };
 

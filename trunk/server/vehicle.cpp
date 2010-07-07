@@ -223,3 +223,26 @@ void CVehicle::SetColor(int color1, int color2)
 }
 
 //----------------------------------------------------------
+
+void CVehicle::GetPosition(VECTOR * vecPosition)
+{
+	vecPosition->X = m_matWorld.vPos.X;
+	vecPosition->Y = m_matWorld.vPos.Y;
+	vecPosition->Z = m_matWorld.vPos.Z;
+}
+
+//----------------------------------------------------
+
+void CVehicle::GetMoveSpeed(VECTOR * vecMoveSpeed)
+{
+	memcpy(vecMoveSpeed, &m_vecMoveSpeed, sizeof(VECTOR));
+}
+
+//----------------------------------------------------
+
+void CVehicle::GetTurnSpeed(VECTOR * vecTurnSpeed)
+{
+	memcpy(vecTurnSpeed, &m_vecTurnSpeed, sizeof(VECTOR));
+}
+
+//----------------------------------------------------------

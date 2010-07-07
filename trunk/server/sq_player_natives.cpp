@@ -105,6 +105,58 @@ SQInteger sq_setPlayerPos(SQVM * pVM)
 	return 1;
 }
 
+// setPlayerTurnSpeed
+SQInteger sq_setPlayerTurnSpeed(SQVM * pVM)
+{
+	SQInteger playerSystemAddress;
+
+	VECTOR pVec;
+
+	sq_getinteger(pVM, -4, &playerSystemAddress);
+	sq_getfloat(pVM, -3, &pVec.X);
+	sq_getfloat(pVM, -2, &pVec.Y);
+	sq_getfloat(pVM, -1, &pVec.Z);
+
+	if(pNetGame->GetPlayerPool()->GetSlotState(playerSystemAddress))
+	{
+		RakNet::BitStream bsSend;
+		bsSend.Write((char *)&pVec, sizeof(VECTOR));
+		pNetGame->GetRPC4()->Call("Script_SetTurnSpeed",&bsSend,HIGH_PRIORITY,RELIABLE,0,pNetGame->GetRakPeer()->GetSystemAddressFromIndex(playerSystemAddress),false);
+
+		sq_pushbool(pVM, true);
+		return 1;
+	}
+
+	sq_pushbool(pVM, false);
+	return 1;
+}
+
+// setPlayerMoveSpeed
+SQInteger sq_setPlayerMoveSpeed(SQVM * pVM)
+{
+	SQInteger playerSystemAddress;
+
+	VECTOR pVec;
+
+	sq_getinteger(pVM, -4, &playerSystemAddress);
+	sq_getfloat(pVM, -3, &pVec.X);
+	sq_getfloat(pVM, -2, &pVec.Y);
+	sq_getfloat(pVM, -1, &pVec.Z);
+
+	if(pNetGame->GetPlayerPool()->GetSlotState(playerSystemAddress))
+	{
+		RakNet::BitStream bsSend;
+		bsSend.Write((char *)&pVec, sizeof(VECTOR));
+		pNetGame->GetRPC4()->Call("Script_SetMoveSpeed",&bsSend,HIGH_PRIORITY,RELIABLE,0,pNetGame->GetRakPeer()->GetSystemAddressFromIndex(playerSystemAddress),false);
+
+		sq_pushbool(pVM, true);
+		return 1;
+	}
+
+	sq_pushbool(pVM, false);
+	return 1;
+}
+
 // getPlayerPos
 SQInteger sq_getPlayerPos(SQVM * pVM)
 {
