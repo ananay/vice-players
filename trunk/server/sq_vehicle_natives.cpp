@@ -203,7 +203,7 @@ SQInteger sq_getVehicleMoveSpeed(SQVM * pVM)
 }
 
 // getVehiclePos
-SQInteger sq_getVehiclePos(SQVM * pVM)
+SQInteger sq_getVehiclePosition(SQVM * pVM)
 {
 	VECTOR pos;
 	SQInteger vehicle;
@@ -230,7 +230,7 @@ SQInteger sq_getVehiclePos(SQVM * pVM)
 }
 
 // setVehiclePos
-SQInteger sq_setVehiclePos(SQVM * pVM)
+SQInteger sq_setVehiclePosition(SQVM * pVM)
 {
 	SQInteger vehicle;
 
