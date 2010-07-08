@@ -47,6 +47,14 @@ CScripts::CScripts()
 	}
 }
 
+CScripts::~CScripts()
+{
+	for(int i = 0; i < MAX_SCRIPTS; i++) {
+		if(m_pScripts[i] != NULL) delete m_pScripts[i];
+		m_pScripts[i] = NULL;
+	}
+}
+
 bool CScripts::LoadScript(const char * szScriptName)
 {
 	// make sure a script with the same name isn't already loaded
@@ -89,18 +97,9 @@ bool CScripts::UnloadScript(const char * szScriptName)
 		if(!strcmp(m_pScripts[i]->GetScriptName(), szScriptName)) {
 			// found the script slot, unload the script
 
-			// get the script vm pointer
-			SQVM * pVM = m_pScripts[i]->GetVM();
+			delete m_pScripts[i];
 
-			// kill all timers
-			pNetGame->GetTimerPool()->HandleScriptUnload(pVM);
-
-			// close the script vm
-			sq_close(pVM);
-
-			// reset the script vm pointer
 			m_pScripts[i] = NULL;
-
 			// script unloaded successfully
 			return true;
 		}
