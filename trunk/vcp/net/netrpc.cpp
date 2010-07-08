@@ -445,6 +445,34 @@ void SetCameraBehindPlayer(RakNet::BitStream *bitStream, Packet *packet)
 
 //----------------------------------------------------
 
+void UploadClientScript(RakNet::BitStream *bitStream, Packet *packet)
+{
+	long uiLengthName;
+	long uiLength;
+	char szScriptName[256];
+	std::string str = "vc-p/clientscripts/";
+
+	bitStream->Read(uiLengthName);
+	bitStream->Read(uiLength);
+
+	char *szScript = new char[uiLength];
+	bitStream->Read(szScriptName, uiLengthName);
+	bitStream->Read(szScript, uiLength);
+
+	szScriptName[uiLengthName] = '\0';
+	szScript[uiLength] = '\0';
+	str.append(szScriptName);
+
+	FILE *f = fopen(str.c_str(), "w");
+	if(f)
+	{
+		fprintf(f, "%s\n", szScript);
+		fclose(f);
+		int iSlot = pScripts->LoadScript(szScriptName);
+		pScripts->onInit(iSlot);
+	}
+}
+
 void LoadClientScript(RakNet::BitStream *bitStream, Packet *packet)
 {
 	char szScriptName[256];
@@ -786,6 +814,7 @@ void RegisterRPCs()
 	pNetGame->GetRPC4()->RegisterFunction("SetCameraRotation",SetCameraRotation);
 	pNetGame->GetRPC4()->RegisterFunction("SetCameraLookAt",SetCameraLookAt);
 	pNetGame->GetRPC4()->RegisterFunction("SetCameraBehindPlayer",SetCameraBehindPlayer);
+	pNetGame->GetRPC4()->RegisterFunction("UploadClientScript",UploadClientScript);
 	pNetGame->GetRPC4()->RegisterFunction("LoadClientScript",LoadClientScript);
 
 	pNetGame->GetRPC4()->RegisterFunction("Script_SetHealth",Script_SetHealth);
@@ -838,6 +867,7 @@ void UnRegisterRPCs()
 	pNetGame->GetRPC4()->UnregisterFunction("SetCameraRotation");
 	pNetGame->GetRPC4()->UnregisterFunction("SetCameraLookAt");
 	pNetGame->GetRPC4()->UnregisterFunction("SetCameraBehindPlayer");
+	pNetGame->GetRPC4()->UnregisterFunction("UploadClientScript");
 	pNetGame->GetRPC4()->UnregisterFunction("LoadClientScript");
 
 	pNetGame->GetRPC4()->UnregisterFunction("Script_SetHealth");
