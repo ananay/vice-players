@@ -54,6 +54,7 @@ private:
 
 	CPlayerPool			*m_pPlayerPool;
 	CVehiclePool		*m_pVehiclePool;
+	CTimerPool			*m_pTimerPool;
 	RakPeerInterface	*m_pRakPeer;
 	static RPC4			*m_pRPC4;
 	CGameModeGeneric	*m_pGameLogic;
@@ -90,6 +91,7 @@ public:
 
 	CPlayerPool * GetPlayerPool() { return m_pPlayerPool; };
 	CVehiclePool * GetVehiclePool() { return m_pVehiclePool; };
+	CTimerPool * GetTimerPool() { return m_pTimerPool; };
 	RakPeerInterface * GetRakPeer() { return m_pRakPeer; };
 	RPC4 * GetRPC4() { return m_pRPC4; };
 	CGameModeGeneric * GetGameLogic() { return m_pGameLogic; };
