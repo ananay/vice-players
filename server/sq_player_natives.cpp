@@ -80,7 +80,7 @@ SQInteger sq_setPlayerArmour(SQVM * pVM)
 }
 
 // setPlayerPos
-SQInteger sq_setPlayerPos(SQVM * pVM)
+SQInteger sq_setPlayerPosition(SQVM * pVM)
 {
 	SQInteger playerSystemAddress;
 
@@ -158,7 +158,7 @@ SQInteger sq_setPlayerMoveSpeed(SQVM * pVM)
 }
 
 // getPlayerPos
-SQInteger sq_getPlayerPos(SQVM * pVM)
+SQInteger sq_getPlayerPosition(SQVM * pVM)
 {
 	VECTOR pos;
 	SQInteger playerSystemAddress;
