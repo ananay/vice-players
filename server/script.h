@@ -20,20 +20,30 @@
 // VC:Players Multiplayer Modification For GTA:VC
 // Copyright 2010 GTA:Online team
 //
-// File Authors: Christopher, adamix
+// File Authors: adamix
 //
 //-----------------------------------------------------
 
-#include "main.h"
-#include "scripts.h"
-#include "sq_player_natives.h"
-#include "sq_vehicle_natives.h"
-#include "sq_timer_natives.h"
-#include "sq_script_natives.h"
-#include "sq_misc_natives.h"
+#pragma once
+#include "squirrel/squirrel.h"
+#include "config.h"
+#include "sq_functions.h"
 
-//			Functions
-//---------------------------------
+class CScript
+{
+private:
+	SQVM * m_pVM;
+	char m_szScriptName[256];
+	char m_szScriptAuthor[256];
+	char m_szScriptVersion[256];
+public:
+	CScript(const char * szScriptName);
+	~CScript();
+	SQVM * GetVM() { return m_pVM; };
 
-int sq_register_vcmp(SQVM * pVM);
-int sq_register_timer(SQVM * pVM);
+	char * GetScriptName() { return (char*)&m_szScriptName; };
+	char * GetScriptAuthor() { return (char*)&m_szScriptAuthor; };
+	char * GetScriptVersion() { return (char*)&m_szScriptVersion; };
+	void SetScriptAuthor(const char * szAuthor) { strncpy(m_szScriptAuthor, szAuthor, sizeof(m_szScriptAuthor)); }; 
+	void SetScriptVersion(const char * szVersion) { strncpy(m_szScriptVersion, szVersion, sizeof(m_szScriptVersion)); }; 
+};

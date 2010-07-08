@@ -20,20 +20,55 @@
 // VC:Players Multiplayer Modification For GTA:VC
 // Copyright 2010 GTA:Online team
 //
-// File Authors: Christopher, adamix
-//
 //-----------------------------------------------------
 
-#include "main.h"
-#include "scripts.h"
-#include "sq_player_natives.h"
-#include "sq_vehicle_natives.h"
 #include "sq_timer_natives.h"
-#include "sq_script_natives.h"
-#include "sq_misc_natives.h"
+#include "scripts.h"
+#include "netgame.h"
 
-//			Functions
-//---------------------------------
+extern CNetGame *pNetGame;
+extern CScripts *pScripts;
 
-int sq_register_vcmp(SQVM * pVM);
-int sq_register_timer(SQVM * pVM);
+using namespace RakNet;
+
+SQInteger sq_setScriptAuthor(SQVM * pVM)
+{
+	for(int i = 0; i < MAX_SCRIPTS; i++)
+	{
+		if(pScripts->GetScript(i))
+		{
+			if(pScripts->GetScript(i)->GetVM() == pVM)
+			{
+				CScript * pScript = pScripts->GetScript(i);
+				const SQChar * szAuthor;
+				sq_getstring(pVM, -1, &szAuthor);
+				pScript->SetScriptAuthor(szAuthor);
+				sq_pushbool(pVM, true);
+				return 1;
+			}
+		}
+	}
+	sq_pushbool(pVM, false);
+	return 1;
+}
+
+SQInteger sq_setScriptVersion(SQVM * pVM)
+{
+	for(int i = 0; i < MAX_SCRIPTS; i++)
+	{
+		if(pScripts->GetScript(i))
+		{
+			if(pScripts->GetScript(i)->GetVM() == pVM)
+			{
+				CScript * pScript = pScripts->GetScript(i);
+				const SQChar * szVersion;
+				sq_getstring(pVM, -1, &szVersion);
+				pScript->SetScriptVersion(szVersion);
+				sq_pushbool(pVM, true);
+				return 1;
+			}
+		}
+	}
+	sq_pushbool(pVM, false);
+	return 1;
+}

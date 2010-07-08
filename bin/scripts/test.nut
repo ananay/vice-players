@@ -22,6 +22,8 @@ function onServerInit()
 	createVehicle(175, -666.7488, 772.2281, 11.0302, 266.1138, 42, 42);
 	createVehicle(175, -668.3047, 785.4417, 11.1171, 359.9105, 42, 42);
 	createVehicle(175, -665.1270, 750.6769, 10.9391, 44.7830, 42, 42);
+	setScriptAuthor("adamix & jenksta & chris");
+	setScriptVersion("0.1");
 }
 
 function onServerPulse()
