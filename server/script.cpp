@@ -115,3 +115,15 @@ CScript::CScript(const char *szScriptName)
 	return;
 }
 
+CScript::~CScript()
+{
+	// kill all timers
+	pNetGame->GetTimerPool()->HandleScriptUnload(m_pVM);
+
+	// close the script vm
+	sq_close(m_pVM);
+
+	// reset the script vm pointer
+	m_pVM = NULL;
+}
+

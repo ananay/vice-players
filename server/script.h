@@ -39,6 +39,7 @@ private:
 public:
 	CScript(const char * szScriptName);
 	~CScript();
+
 	SQVM * GetVM() { return m_pVM; };
 
 	char * GetScriptName() { return (char*)&m_szScriptName; };

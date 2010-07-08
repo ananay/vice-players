@@ -37,6 +37,7 @@ private:
 
 public:
 	CScripts();
+	~CScripts();
 
 	bool LoadScript(const char * szScriptName);
 	bool UnloadScript(const char * szScriptName);
