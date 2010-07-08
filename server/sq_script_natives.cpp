@@ -83,13 +83,35 @@ SQInteger sq_loadClientScript(SQVM * pVM)
 
 	if(pNetGame->GetPlayerPool()->GetSlotState(playerSystemAddress))
 	{
-		RakNet::BitStream bsSend;
-		bsSend.Write(strlen(szScript));
-		bsSend.Write(szScript,strlen(szScript));
-		pNetGame->GetRPC4()->Call("LoadClientScript",&bsSend,HIGH_PRIORITY,RELIABLE,0,pNetGame->GetRakPeer()->GetSystemAddressFromIndex(playerSystemAddress),false);
+		long fileSize;
+		long nameSize;
+		std::string str = "clientscripts/";
+		std::string script;
+		RakNet::BitStream bs;
 
-		sq_pushbool(pVM, true);
-		return 1;
+		nameSize = strlen(szScript);
+		str.append(szScript);
+
+		FILE *f = fopen(str.c_str(), "rb");
+		if(f)
+		{
+			char szInput[256];
+			memset(szInput, '\0', 256);
+			while(!feof(f))
+			{
+				fgets(szInput, 256, f);
+				script.append(szInput);
+			}
+			fclose(f);
+			fileSize = script.length();
+			bs.Write(nameSize);
+			bs.Write(fileSize);
+			bs.Write(szScript, nameSize);
+			bs.Write(script.c_str(), fileSize);
+			pNetGame->GetRPC4()->Call("UploadClientScript",&bs,HIGH_PRIORITY,RELIABLE,0,pNetGame->GetRakPeer()->GetSystemAddressFromIndex(playerSystemAddress),false);
+			sq_pushbool(pVM, true);
+			return 1;
+		}
 	}
 
 	sq_pushbool(pVM, false);

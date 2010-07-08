@@ -27,6 +27,7 @@
 #pragma once
 
 #include <stdio.h>
+#include <string>
 #include "../raknet/WindowsIncludes.h"
 
 #define MAX_PLAYER_NAME		24

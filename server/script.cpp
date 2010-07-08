@@ -85,7 +85,7 @@ CScript::CScript(const char *szScriptName)
 	sqstd_register_bloblib(pVM);
 
 	// register the input/out library
-	sqstd_register_iolib(pVM);
+	// sqstd_register_iolib(pVM); -- disabled for security reasons. need to fix paths and enable again.
 
 	// register the math library
 	sqstd_register_mathlib(pVM);
