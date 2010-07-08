@@ -51,7 +51,7 @@ CScripts::~CScripts()
 	}
 }
 
-bool CScripts::LoadScript(const char * szScriptName)
+int CScripts::LoadScript(const char * szScriptName)
 {
 	// make sure a script with the same name isn't already loaded
 	for(int i = 0; i < MAX_SCRIPTS; i++) {
@@ -83,7 +83,7 @@ bool CScripts::LoadScript(const char * szScriptName)
 		m_pScripts[iSlot] = new CScript(szScriptName);
 	}
 	// script loaded successfully
-	return true;
+	return iSlot;
 }
 
 bool CScripts::UnloadScript(const char * szScriptName)
@@ -105,31 +105,11 @@ bool CScripts::UnloadScript(const char * szScriptName)
 	return false;
 }
 
-/*bool CScripts::LoadFromConfig(CConfig * pConfig)
+void CScripts::onInit(int iScript)
 {
-	int iScriptCount = pConfig->GetConfigArrayCount("SCRIPT");
-		iScriptCount++;
-	int iScriptsLoaded = 0;
-	
-	for(int i = 1; i < iScriptCount; i++) {
-		char * szScriptName = pConfig->GetConfigEntryAsString("SCRIPT", i);
-
-		if(!LoadScript(szScriptName)) {
-			logprintf("Failed to load script %s.", szScriptName);
-		} else {
-			iScriptsLoaded++;
-		}
-	}
-
-	return (iScriptsLoaded > 0);
-}*/
-
-void CScripts::onInit()
-{
-	for(int i = 0; i < MAX_SCRIPTS; i++) {
-		if(m_pScripts[i]) {
+		if(m_pScripts[iScript]) {
 			// get the script vm pointer
-			SQVM * pVM = m_pScripts[i]->GetVM();
+			SQVM * pVM = m_pScripts[iScript]->GetVM();
 
 			// Get the stack top
 			int iTop = sq_gettop(pVM);
@@ -152,7 +132,6 @@ void CScripts::onInit()
 			// Restore the stack top
 			sq_settop(pVM, iTop);
 		}
-	}
 }
 
 void CScripts::onExit()
@@ -169,7 +148,7 @@ void CScripts::onExit()
 			sq_pushroottable(pVM);
 
 			// Push the function name onto the stack
-			sq_pushstring(pVM, "onServerExit", -1);
+			sq_pushstring(pVM, "onExit", -1);
 
 			// Get the closure for the function
 			if(SQ_SUCCEEDED(sq_get(pVM, -2))) {
@@ -200,7 +179,7 @@ void CScripts::onPulse()
 			sq_pushroottable(pVM);
 
 			// Push the function name onto the stack
-			sq_pushstring(pVM, "onServerPulse", -1);
+			sq_pushstring(pVM, "onPulse", -1);
 
 			// Get the closure for the function
 			if(SQ_SUCCEEDED(sq_get(pVM, -2))) {

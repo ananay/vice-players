@@ -36,6 +36,7 @@ extern CChatWindow   *pChatWindow;
 extern CCmdWindow	 *pCmdWindow;
 extern CScripts		 *pScripts;
 RPC4				 *CNetGame::m_pRPC4;
+extern bool D3DInited;
 
 //----------------------------------------------------
 
@@ -83,7 +84,7 @@ CNetGame::CNetGame(PCHAR szHostOrIp, int iPort,
 	m_pRakPeer->AttachPlugin(m_pRPC4);
 	
 	pChatWindow->AddDebugMessage("Vice City: Players started.");
-	pScripts->onInit();
+
 	Connect();
 	if(pChatWindow) pChatWindow->AddDebugMessage("Connecting to %s:%d..",szHostOrIp,iPort);
 
@@ -122,7 +123,7 @@ void CNetGame::Process()
 		if(m_pPlayerPool) m_pPlayerPool->Process();
 		if(m_pVehiclePool) m_pVehiclePool->Process();
 		if(m_pTimerPool) m_pTimerPool->Process();
-		if(pScripts) pScripts->onPulse();
+		if(pScripts && D3DInited) pScripts->onPulse();
 	}
 
 	// For syncing rand()

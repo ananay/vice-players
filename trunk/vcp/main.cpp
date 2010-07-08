@@ -40,6 +40,7 @@ BOOL					bGameInited=FALSE;
 BOOL					bWindowedMode=FALSE;
 BOOL					bShowNameTags=TRUE;
 BOOL					bAntiCheat=TRUE;
+bool					D3DInited=FALSE;
 
 IDirect3DDevice8		*pD3DDevice;
 
@@ -122,6 +123,8 @@ void InitD3DStuff()
 	pNetStats = new CNetStats();
 
 	SetupCommands();
+
+	D3DInited = true;
 }
 
 //----------------------------------------------------
@@ -270,6 +273,21 @@ int DetermineGTAVersion()
 	}
 	
 	return UNKNOWN_VERSION;
+}
+
+//----------------------------------------------------
+
+void logprintf(char * format, ...)
+{
+	char tmp_buf[512];
+	va_list args;
+	va_start(args, format);
+	vsprintf(tmp_buf, format, args);
+	va_end(args);
+	puts(tmp_buf);
+	FILE* log = fopen("vc-p/client.log", "a");
+	fprintf(log, "%s\n", tmp_buf);
+	fclose(log);
 }
 
 //----------------------------------------------------
