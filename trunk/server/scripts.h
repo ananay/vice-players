@@ -25,13 +25,14 @@
 #pragma once
 #include "squirrel/squirrel.h"
 #include "config.h"
+#include "script.h"
 
 #define MAX_SCRIPTS 10
 
 class CScripts
 {
 private:
-	SQVM * m_pScripts[MAX_SCRIPTS];
+	CScript * m_pScripts[MAX_SCRIPTS];
 	char m_szScriptNames[MAX_SCRIPTS][256];
 
 public:
@@ -40,6 +41,11 @@ public:
 	bool LoadScript(const char * szScriptName);
 	bool UnloadScript(const char * szScriptName);
 	bool LoadFromConfig(CConfig * pConfig);
+
+	CScript * GetScript(int scriptID) { 
+		if(!m_pScripts[scriptID]) return NULL;
+		return m_pScripts[scriptID]; 
+	};
 
 	void onServerInit();
 	void onServerExit();

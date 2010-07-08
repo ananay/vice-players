@@ -39,16 +39,6 @@ extern CNetGame *pNetGame;
 void logprintf(char * format, ...);
 void fatal_exit(char * szError);
 
-void printfunc(SQVM * pVM, const char * szFormat, ...)
-{
-	va_list vl;
-	char szBuffer[512];
-	va_start(vl, szFormat);
-	vsprintf(szBuffer, szFormat, vl);
-	va_end(vl);
-	logprintf(szBuffer);
-}
-
 CScripts::CScripts()
 {
 	// reset all script slots
@@ -61,25 +51,12 @@ bool CScripts::LoadScript(const char * szScriptName)
 {
 	// make sure a script with the same name isn't already loaded
 	for(int i = 0; i < MAX_SCRIPTS; i++) {
-		if(!strcmp(m_szScriptNames[i], szScriptName)) {
+		if(!m_pScripts[i]) continue;
+		if(!strcmp(m_pScripts[i]->GetScriptName(), szScriptName)) {
 			// a script with the same name already exists
 			return false;
 		}
 	}
-
-	// get the script path
-	char szScriptPath[512];
-	sprintf(szScriptPath, "scripts/%s", szScriptName);
-
-	// make sure the script exists
-	FILE * fp = fopen(szScriptPath, "rb");
-
-	if(!fp) {
-		// script does not exist
-		return false;
-	}
-
-	fclose(fp);
 
 	// find a free script slot
 	int iSlot = -1;
@@ -97,54 +74,10 @@ bool CScripts::LoadScript(const char * szScriptName)
 		return false;
 	}
 
-	// set the script name
-	strcpy(m_szScriptNames[iSlot], szScriptName);
-
-	// create the squirrel VM with an initial stack size of 1024 bytes
-	m_pScripts[iSlot] = sq_open(1024);
-
-	// get the script vm pointer
-	SQVM * pVM = m_pScripts[iSlot];
-
-	// register the default error handlers
-	sqstd_seterrorhandlers(pVM);
-
-	// set the print and error functions
-	sq_setprintfunc(pVM, printfunc, printfunc);
-
-	// push the root table onto the stack
-	sq_pushroottable(pVM);
-
-	// register the blob library
-	sqstd_register_bloblib(pVM);
-
-	// register the input/out library
-	sqstd_register_iolib(pVM);
-
-	// register the math library
-	sqstd_register_mathlib(pVM);
-
-	// register the string library
-	sqstd_register_stringlib(pVM);
-
-	// register the system library
-	sqstd_register_systemlib(pVM);
-
-	// register the vcmp functions
-	sq_register_vcmp(pVM);
-
-	// register the timer functions
-	sq_register_timer(pVM);
-
-	// load and compile the script
-	if(SQ_FAILED(sqstd_dofile(pVM, szScriptPath, SQFalse, SQTrue))) {
-		// script compilation failed
-		return false;
+	if(m_pScripts[iSlot] == NULL)
+	{
+		m_pScripts[iSlot] = new CScript(szScriptName);
 	}
-
-	// pop the root table from the stack
-	sq_pop(pVM, 1);
-
 	// script loaded successfully
 	return true;
 }
@@ -153,11 +86,11 @@ bool CScripts::UnloadScript(const char * szScriptName)
 {
 	// find the script slot
 	for(int i = 0; i < MAX_SCRIPTS; i++) {
-		if(!strcmp(m_szScriptNames[i], szScriptName)) {
+		if(!strcmp(m_pScripts[i]->GetScriptName(), szScriptName)) {
 			// found the script slot, unload the script
 
 			// get the script vm pointer
-			SQVM * pVM = m_pScripts[i];
+			SQVM * pVM = m_pScripts[i]->GetVM();
 
 			// kill all timers
 			pNetGame->GetTimerPool()->HandleScriptUnload(pVM);
@@ -201,7 +134,7 @@ void CScripts::onServerInit()
 	for(int i = 0; i < MAX_SCRIPTS; i++) {
 		if(m_pScripts[i]) {
 			// get the script vm pointer
-			SQVM * pVM = m_pScripts[i];
+			SQVM * pVM = m_pScripts[i]->GetVM();
 
 			// Get the stack top
 			int iTop = sq_gettop(pVM);
@@ -232,7 +165,7 @@ void CScripts::onServerExit()
 	for(int i = 0; i < MAX_SCRIPTS; i++) {
 		if(m_pScripts[i]) {
 			// get the script vm pointer
-			SQVM * pVM = m_pScripts[i];
+			SQVM * pVM = m_pScripts[i]->GetVM();
 
 			// Get the stack top
 			int iTop = sq_gettop(pVM);
@@ -263,7 +196,7 @@ void CScripts::onServerPulse()
 	for(int i = 0; i < MAX_SCRIPTS; i++) {
 		if(m_pScripts[i]) {
 			// get the script vm pointer
-			SQVM * pVM = m_pScripts[i];
+			SQVM * pVM = m_pScripts[i]->GetVM();
 
 			// Get the stack top
 			int iTop = sq_gettop(pVM);
@@ -294,7 +227,7 @@ void CScripts::onPlayerConnect(int playerId)
 	for(int i = 0; i < MAX_SCRIPTS; i++) {
 		if(m_pScripts[i]) {
 			// get the script vm pointer
-			SQVM * pVM = m_pScripts[i];
+			SQVM * pVM = m_pScripts[i]->GetVM();
 
 			// Get the stack top
 			int iTop = sq_gettop(pVM);
@@ -328,7 +261,7 @@ void CScripts::onPlayerDisconnect(int playerId, int reason)
 	for(int i = 0; i < MAX_SCRIPTS; i++) {
 		if(m_pScripts[i]) {
 			// get the script vm pointer
-			SQVM * pVM = m_pScripts[i];
+			SQVM * pVM = m_pScripts[i]->GetVM();
 
 			// Get the stack top
 			int iTop = sq_gettop(pVM);
@@ -366,7 +299,7 @@ bool CScripts::onPlayerText(int playerId, const char *text)
 	for(int i = 0; i < MAX_SCRIPTS; i++) {
 		if(m_pScripts[i]) {
 			// get the script vm pointer
-			SQVM * pVM = m_pScripts[i];
+			SQVM * pVM = m_pScripts[i]->GetVM();
 
 			// Get the stack top
 			int iTop = sq_gettop(pVM);
@@ -410,7 +343,7 @@ void CScripts::onPlayerCommand(int playerId, const char *command)
 	for(int i = 0; i < MAX_SCRIPTS; i++) {
 		if(m_pScripts[i]) {
 			// get the script vm pointer
-			SQVM * pVM = m_pScripts[i];
+			SQVM * pVM = m_pScripts[i]->GetVM();
 
 			// Get the stack top
 			int iTop = sq_gettop(pVM);
@@ -447,7 +380,7 @@ void CScripts::onPlayerSpawn(int playerId)
 	for(int i = 0; i < MAX_SCRIPTS; i++) {
 		if(m_pScripts[i]) {
 			// get the script vm pointer
-			SQVM * pVM = m_pScripts[i];
+			SQVM * pVM = m_pScripts[i]->GetVM();
 
 			// Get the stack top
 			int iTop = sq_gettop(pVM);
@@ -481,7 +414,7 @@ void CScripts::onPlayerRequestClass(int playerId, int classid)
 	for(int i = 0; i < MAX_SCRIPTS; i++) {
 		if(m_pScripts[i]) {
 			// get the script vm pointer
-			SQVM * pVM = m_pScripts[i];
+			SQVM * pVM = m_pScripts[i]->GetVM();
 
 			// Get the stack top
 			int iTop = sq_gettop(pVM);
@@ -518,7 +451,7 @@ void CScripts::onPlayerDeath(int playerId, int killerId, int reason)
 	for(int i = 0; i < MAX_SCRIPTS; i++) {
 		if(m_pScripts[i]) {
 			// get the script vm pointer
-			SQVM * pVM = m_pScripts[i];
+			SQVM * pVM = m_pScripts[i]->GetVM();
 
 			// Get the stack top
 			int iTop = sq_gettop(pVM);
@@ -558,7 +491,7 @@ void CScripts::onPlayerEnterVehicle(int playerId, int vehicleid)
 	for(int i = 0; i < MAX_SCRIPTS; i++) {
 		if(m_pScripts[i]) {
 			// get the script vm pointer
-			SQVM * pVM = m_pScripts[i];
+			SQVM * pVM = m_pScripts[i]->GetVM();
 
 			// Get the stack top
 			int iTop = sq_gettop(pVM);
@@ -595,7 +528,7 @@ void CScripts::onPlayerExitVehicle(int playerId, int vehicleid)
 	for(int i = 0; i < MAX_SCRIPTS; i++) {
 		if(m_pScripts[i]) {
 			// get the script vm pointer
-			SQVM * pVM = m_pScripts[i];
+			SQVM * pVM = m_pScripts[i]->GetVM();
 
 			// Get the stack top
 			int iTop = sq_gettop(pVM);
@@ -633,7 +566,7 @@ bool CScripts::onRconCommand(const char *command, const char *arg)
 	for(int i = 0; i < MAX_SCRIPTS; i++) {
 		if(m_pScripts[i]) {
 			// get the script vm pointer
-			SQVM * pVM = m_pScripts[i];
+			SQVM * pVM = m_pScripts[i]->GetVM();
 
 			// Get the stack top
 			int iTop = sq_gettop(pVM);
@@ -677,7 +610,7 @@ void CScripts::onPlayerSync(int playerId)
 	for(int i = 0; i < MAX_SCRIPTS; i++) {
 		if(m_pScripts[i]) {
 			// get the script vm pointer
-			SQVM * pVM = m_pScripts[i];
+			SQVM * pVM = m_pScripts[i]->GetVM();
 
 			// Get the stack top
 			int iTop = sq_gettop(pVM);
@@ -711,7 +644,7 @@ void CScripts::onPlayerDamage(int playerId, int oldhp, int newhp)
 	for(int i = 0; i < MAX_SCRIPTS; i++) {
 		if(m_pScripts[i]) {
 			// get the script vm pointer
-			SQVM * pVM = m_pScripts[i];
+			SQVM * pVM = m_pScripts[i]->GetVM();
 
 			// Get the stack top
 			int iTop = sq_gettop(pVM);
@@ -751,7 +684,7 @@ void CScripts::onVehicleCreate(int vehicleid)
 	for(int i = 0; i < MAX_SCRIPTS; i++) {
 		if(m_pScripts[i]) {
 			// get the script vm pointer
-			SQVM * pVM = m_pScripts[i];
+			SQVM * pVM = m_pScripts[i]->GetVM();
 
 			// Get the stack top
 			int iTop = sq_gettop(pVM);
@@ -785,7 +718,7 @@ void CScripts::onVehicleDestroy(int vehicleid)
 	for(int i = 0; i < MAX_SCRIPTS; i++) {
 		if(m_pScripts[i]) {
 			// get the script vm pointer
-			SQVM * pVM = m_pScripts[i];
+			SQVM * pVM = m_pScripts[i]->GetVM();
 
 			// Get the stack top
 			int iTop = sq_gettop(pVM);
@@ -819,7 +752,7 @@ void CScripts::onVehicleSync(int vehicleid)
 	for(int i = 0; i < MAX_SCRIPTS; i++) {
 		if(m_pScripts[i]) {
 			// get the script vm pointer
-			SQVM * pVM = m_pScripts[i];
+			SQVM * pVM = m_pScripts[i]->GetVM();
 
 			// Get the stack top
 			int iTop = sq_gettop(pVM);
@@ -853,7 +786,7 @@ void CScripts::onVehicleDamage(int vehicleId, float oldhp, float newhp)
 	for(int i = 0; i < MAX_SCRIPTS; i++) {
 		if(m_pScripts[i]) {
 			// get the script vm pointer
-			SQVM * pVM = m_pScripts[i];
+			SQVM * pVM = m_pScripts[i]->GetVM();
 
 			// Get the stack top
 			int iTop = sq_gettop(pVM);
@@ -893,7 +826,7 @@ void CScripts::onVehicleSpawn(int vehicleid)
 	for(int i = 0; i < MAX_SCRIPTS; i++) {
 		if(m_pScripts[i]) {
 			// get the script vm pointer
-			SQVM * pVM = m_pScripts[i];
+			SQVM * pVM = m_pScripts[i]->GetVM();
 
 			// Get the stack top
 			int iTop = sq_gettop(pVM);
@@ -927,7 +860,7 @@ void CScripts::onVehicleDeath(int vehicleid)
 	for(int i = 0; i < MAX_SCRIPTS; i++) {
 		if(m_pScripts[i]) {
 			// get the script vm pointer
-			SQVM * pVM = m_pScripts[i];
+			SQVM * pVM = m_pScripts[i]->GetVM();
 
 			// Get the stack top
 			int iTop = sq_gettop(pVM);
@@ -961,7 +894,7 @@ void CScripts::onBan(const char *szText)
 	for(int i = 0; i < MAX_SCRIPTS; i++) {
 		if(m_pScripts[i]) {
 			// get the script vm pointer
-			SQVM * pVM = m_pScripts[i];
+			SQVM * pVM = m_pScripts[i]->GetVM();
 
 			// Get the stack top
 			int iTop = sq_gettop(pVM);
@@ -995,7 +928,7 @@ void CScripts::onKick(int playerId)
 	for(int i = 0; i < MAX_SCRIPTS; i++) {
 		if(m_pScripts[i]) {
 			// get the script vm pointer
-			SQVM * pVM = m_pScripts[i];
+			SQVM * pVM = m_pScripts[i]->GetVM();
 
 			// Get the stack top
 			int iTop = sq_gettop(pVM);
@@ -1029,7 +962,7 @@ void CScripts::onTimerCreate(int timerId)
 	for(int i = 0; i < MAX_SCRIPTS; i++) {
 		if(m_pScripts[i]) {
 			// get the script vm pointer
-			SQVM * pVM = m_pScripts[i];
+			SQVM * pVM = m_pScripts[i]->GetVM();
 
 			// Get the stack top
 			int iTop = sq_gettop(pVM);
@@ -1063,7 +996,7 @@ void CScripts::onTimerDestroy(int timerId)
 	for(int i = 0; i < MAX_SCRIPTS; i++) {
 		if(m_pScripts[i]) {
 			// get the script vm pointer
-			SQVM * pVM = m_pScripts[i];
+			SQVM * pVM = m_pScripts[i]->GetVM();
 
 			// Get the stack top
 			int iTop = sq_gettop(pVM);

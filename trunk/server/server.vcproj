@@ -1348,6 +1348,14 @@
 			Name="scripting"
 			>
 			<File
+				RelativePath=".\script.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\script.h"
+				>
+			</File>
+			<File
 				RelativePath=".\scripts.cpp"
 				>
 			</File>
@@ -1377,6 +1385,14 @@
 			</File>
 			<File
 				RelativePath=".\sq_player_natives.h"
+				>
+			</File>
+			<File
+				RelativePath=".\sq_script_natives.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\sq_script_natives.h"
 				>
 			</File>
 			<File
