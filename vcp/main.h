@@ -56,6 +56,7 @@ typedef struct _GAME_SETTINGS {
 #include "../raknet/RPC4Plugin.h"
 #include "../raknet/BitStream.h"
 #include "../raknet/MessageIdentifiers.h"
+#include "scripting/scripts.h"
 
 #include "net/localplayer.h"
 #include "net/remoteplayer.h"
@@ -63,6 +64,7 @@ typedef struct _GAME_SETTINGS {
 #include "net/netrpc.h"
 #include "net/playerpool.h"
 #include "net/vehiclepool.h"
+#include "timerpool.h"
 #include "net/netgame.h"
 
 #include "chatwindow.h"

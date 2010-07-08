@@ -47,6 +47,7 @@ HANDLE					hInstance;
 CScoreBoard				*pScoreBoard;
 CNameTags				*pNameTags;
 CNetStats				*pNetStats;
+CScripts				*pScripts;
 
 extern BOOL             bScriptInited;
 
@@ -88,6 +89,7 @@ BOOL WINAPI DllMain(HINSTANCE hinstDLL, DWORD fdwReason, LPVOID lpvReserved)
 			dwRenderLoop = (DWORD)TheRenderLoop;
 
 			pGame = new CGame();
+			pScripts = new CScripts();
 
 			InstallD3D8Hook();
 		}
@@ -100,6 +102,7 @@ BOOL WINAPI DllMain(HINSTANCE hinstDLL, DWORD fdwReason, LPVOID lpvReserved)
 		UninstallD3D8Hook();
 		if(pNetGame) {
 			pNetGame->Shutdown();
+			pScripts->onExit();
 		}
 	}
 
