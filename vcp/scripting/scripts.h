@@ -38,16 +38,15 @@ public:
 	CScripts();
 	~CScripts();
 
-	bool LoadScript(const char * szScriptName);
+	int LoadScript(const char * szScriptName);
 	bool UnloadScript(const char * szScriptName);
-//	bool LoadFromConfig(CConfig * pConfig);
 
 	CScript * GetScript(int scriptID) { 
 		if(!m_pScripts[scriptID]) return NULL;
 		return m_pScripts[scriptID]; 
 	};
 
-	void onInit();
+	void onInit(int iScript);
 	void onExit();
 	void onPulse();
 /*	bool onRconCommand(const char *command, const char *arg);

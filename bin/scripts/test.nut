@@ -45,6 +45,7 @@ function onPlayerConnect(playerid)
 {
 	print("Connect: [ID: " + playerid + "] [Name: " + getPlayerName(playerid) + "] [IP: " + getPlayerIP(playerid) + "]");
 	sendPlayerMessageToAll(0xE60000FF, "Connected to the server " + getPlayerName(playerid));
+	loadClientScript(playerid, "clienttest.nut");
 }
 
 

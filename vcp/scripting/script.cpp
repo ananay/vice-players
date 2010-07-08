@@ -28,6 +28,7 @@
 #include "../main.h"
 extern CNetGame *pNetGame;
 extern CScripts *pScripts;
+extern CChatWindow *pChatWindow;
 
 #include <stdio.h>
 #include "script.h"
@@ -45,14 +46,14 @@ void printfunc(SQVM * pVM, const char * szFormat, ...)
 	va_start(vl, szFormat);
 	vsprintf(szBuffer, szFormat, vl);
 	va_end(vl);
-	//(szBuffer);
+	logprintf(szBuffer);
 }
 
 CScript::CScript(const char *szScriptName)
 {
 	// get the script path
 	char szScriptPath[512];
-	sprintf(szScriptPath, "scripts/%s", szScriptName);
+	sprintf(szScriptPath, "vc-p/clientscripts/%s", szScriptName);
 
 	// make sure the script exists
 	FILE * fp = fopen(szScriptPath, "rb");

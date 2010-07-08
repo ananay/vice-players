@@ -38,6 +38,7 @@ static SQRegFunction vcmp_funcs[]={
 	//_DECL_FUNC(func_name,func_params,_SC(func_param_template)),
 	_DECL_FUNC(setScriptAuthor, 2, _SC(".s")),
 	_DECL_FUNC(setScriptVersion, 2, _SC(".s")),
+	_DECL_FUNC(loadClientScript, 3, _SC(".ns")),
 	_DECL_FUNC(kickPlayer, 2, _SC(".n")),
 	_DECL_FUNC(banIP, 2, _SC(".s")),
 	_DECL_FUNC(setGameTime, 3, _SC(".nn")),

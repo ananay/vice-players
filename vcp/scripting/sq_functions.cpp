@@ -31,13 +31,13 @@ extern CNetGame *pNetGame;
 
 using namespace RakNet;
 
-
 #define _DECL_FUNC(name,nparams,pmask) {_SC(#name),sq_##name,nparams,pmask}
 static SQRegFunction vcmp_funcs[]={
 	// put functions here
 	//_DECL_FUNC(func_name,func_params,_SC(func_param_template)),
 	_DECL_FUNC(setScriptAuthor, 2, _SC(".s")),
 	_DECL_FUNC(setScriptVersion, 2, _SC(".s")),
+	_DECL_FUNC(addChatMessage, 2, _SC(".s")),
 	{0,0}
 };
 

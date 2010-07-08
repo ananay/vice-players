@@ -2283,6 +2283,14 @@
 				>
 			</File>
 			<File
+				RelativePath=".\scripting\sq_client_natives.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\scripting\sq_client_natives.h"
+				>
+			</File>
+			<File
 				RelativePath=".\scripting\sq_functions.cpp"
 				>
 				<FileConfiguration

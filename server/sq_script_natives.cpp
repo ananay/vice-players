@@ -72,3 +72,26 @@ SQInteger sq_setScriptVersion(SQVM * pVM)
 	sq_pushbool(pVM, false);
 	return 1;
 }
+
+SQInteger sq_loadClientScript(SQVM * pVM)
+{
+	SQInteger playerSystemAddress;
+	const char * szScript;
+
+	sq_getinteger(pVM, -2, &playerSystemAddress);
+	sq_getstring(pVM, -1, &szScript);
+
+	if(pNetGame->GetPlayerPool()->GetSlotState(playerSystemAddress))
+	{
+		RakNet::BitStream bsSend;
+		bsSend.Write(strlen(szScript));
+		bsSend.Write(szScript,strlen(szScript));
+		pNetGame->GetRPC4()->Call("LoadClientScript",&bsSend,HIGH_PRIORITY,RELIABLE,0,pNetGame->GetRakPeer()->GetSystemAddressFromIndex(playerSystemAddress),false);
+
+		sq_pushbool(pVM, true);
+		return 1;
+	}
+
+	sq_pushbool(pVM, false);
+	return 1;
+}

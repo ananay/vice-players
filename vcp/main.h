@@ -83,6 +83,8 @@ typedef struct _GAME_SETTINGS {
 void SetStringFromCommandLine(char *szCmdLine, char *szString);
 void InitSettings();
 
+
+void logprintf(char * format, ...);
 //----------------------------------------------------
 // EOF
 
