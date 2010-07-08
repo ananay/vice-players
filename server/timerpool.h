@@ -24,8 +24,8 @@
 #pragma once
 #include "main.h"
 #include "scripts.h"
-#include "squirrel/squirrel.h"
-#include "squirrel/sqvm.h"
+#include "../squirrel/squirrel.h"
+#include "../squirrel/sqvm.h"
 
 #define MAX_TIMERS 100
 

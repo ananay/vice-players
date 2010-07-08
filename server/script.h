@@ -25,7 +25,7 @@
 //-----------------------------------------------------
 
 #pragma once
-#include "squirrel/squirrel.h"
+#include "../squirrel/squirrel.h"
 #include "config.h"
 #include "sq_functions.h"
 

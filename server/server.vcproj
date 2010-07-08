@@ -46,6 +46,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="2"
 				InlineFunctionExpansion="1"
+				AdditionalIncludeDirectories="../squirrel/"
 				PreprocessorDefinitions="WIN32;NDEBUG;_CONSOLE;_WIN32_VERSION=0x401;_CRT_SECURE_NO_WARNINGS;_CRT_SECURE_NO_DEPRECATE;_CRT_NONSTDC_NO_DEPRECATE"
 				StringPooling="true"
 				RuntimeLibrary="0"
@@ -135,6 +136,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
+				AdditionalIncludeDirectories="../squirrel/"
 				PreprocessorDefinitions="WIN32;_DEBUG;_CONSOLE;_CRT_SECURE_NO_WARNINGS;_CRT_SECURE_NO_DEPRECATE;_CRT_NONSTDC_NO_DEPRECATE"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
@@ -1423,191 +1425,191 @@
 				Name="squirrel"
 				>
 				<File
-					RelativePath=".\squirrel\sqapi.cpp"
+					RelativePath="..\squirrel\sqapi.cpp"
 					>
 				</File>
 				<File
-					RelativePath=".\squirrel\sqarray.h"
+					RelativePath="..\squirrel\sqarray.h"
 					>
 				</File>
 				<File
-					RelativePath=".\squirrel\sqbaselib.cpp"
+					RelativePath="..\squirrel\sqbaselib.cpp"
 					>
 				</File>
 				<File
-					RelativePath=".\squirrel\sqclass.cpp"
+					RelativePath="..\squirrel\sqclass.cpp"
 					>
 				</File>
 				<File
-					RelativePath=".\squirrel\sqclass.h"
+					RelativePath="..\squirrel\sqclass.h"
 					>
 				</File>
 				<File
-					RelativePath=".\squirrel\sqclosure.h"
+					RelativePath="..\squirrel\sqclosure.h"
 					>
 				</File>
 				<File
-					RelativePath=".\squirrel\sqcompiler.cpp"
+					RelativePath="..\squirrel\sqcompiler.cpp"
 					>
 				</File>
 				<File
-					RelativePath=".\squirrel\sqcompiler.h"
+					RelativePath="..\squirrel\sqcompiler.h"
 					>
 				</File>
 				<File
-					RelativePath=".\squirrel\sqdebug.cpp"
+					RelativePath="..\squirrel\sqdebug.cpp"
 					>
 				</File>
 				<File
-					RelativePath=".\squirrel\sqfuncproto.h"
+					RelativePath="..\squirrel\sqfuncproto.h"
 					>
 				</File>
 				<File
-					RelativePath=".\squirrel\sqfuncstate.cpp"
+					RelativePath="..\squirrel\sqfuncstate.cpp"
 					>
 				</File>
 				<File
-					RelativePath=".\squirrel\sqfuncstate.h"
+					RelativePath="..\squirrel\sqfuncstate.h"
 					>
 				</File>
 				<File
-					RelativePath=".\squirrel\sqlexer.cpp"
+					RelativePath="..\squirrel\sqlexer.cpp"
 					>
 				</File>
 				<File
-					RelativePath=".\squirrel\sqlexer.h"
+					RelativePath="..\squirrel\sqlexer.h"
 					>
 				</File>
 				<File
-					RelativePath=".\squirrel\sqmem.cpp"
+					RelativePath="..\squirrel\sqmem.cpp"
 					>
 				</File>
 				<File
-					RelativePath=".\squirrel\sqobject.cpp"
+					RelativePath="..\squirrel\sqobject.cpp"
 					>
 				</File>
 				<File
-					RelativePath=".\squirrel\sqobject.h"
+					RelativePath="..\squirrel\sqobject.h"
 					>
 				</File>
 				<File
-					RelativePath=".\squirrel\sqopcodes.h"
+					RelativePath="..\squirrel\sqopcodes.h"
 					>
 				</File>
 				<File
-					RelativePath=".\squirrel\sqpcheader.h"
+					RelativePath="..\squirrel\sqpcheader.h"
 					>
 				</File>
 				<File
-					RelativePath=".\squirrel\sqstackhandler.cpp"
+					RelativePath="..\squirrel\sqstackhandler.cpp"
 					>
 				</File>
 				<File
-					RelativePath=".\squirrel\sqstackhandler.h"
+					RelativePath="..\squirrel\sqstackhandler.h"
 					>
 				</File>
 				<File
-					RelativePath=".\squirrel\sqstate.cpp"
+					RelativePath="..\squirrel\sqstate.cpp"
 					>
 				</File>
 				<File
-					RelativePath=".\squirrel\sqstate.h"
+					RelativePath="..\squirrel\sqstate.h"
 					>
 				</File>
 				<File
-					RelativePath=".\squirrel\sqstdaux.cpp"
+					RelativePath="..\squirrel\sqstdaux.cpp"
 					>
 				</File>
 				<File
-					RelativePath=".\squirrel\sqstdaux.h"
+					RelativePath="..\squirrel\sqstdaux.h"
 					>
 				</File>
 				<File
-					RelativePath=".\squirrel\sqstdblob.cpp"
+					RelativePath="..\squirrel\sqstdblob.cpp"
 					>
 				</File>
 				<File
-					RelativePath=".\squirrel\sqstdblob.h"
+					RelativePath="..\squirrel\sqstdblob.h"
 					>
 				</File>
 				<File
-					RelativePath=".\squirrel\sqstdblobimpl.h"
+					RelativePath="..\squirrel\sqstdblobimpl.h"
 					>
 				</File>
 				<File
-					RelativePath=".\squirrel\sqstdio.cpp"
+					RelativePath="..\squirrel\sqstdio.cpp"
 					>
 				</File>
 				<File
-					RelativePath=".\squirrel\sqstdio.h"
+					RelativePath="..\squirrel\sqstdio.h"
 					>
 				</File>
 				<File
-					RelativePath=".\squirrel\sqstdmath.cpp"
+					RelativePath="..\squirrel\sqstdmath.cpp"
 					>
 				</File>
 				<File
-					RelativePath=".\squirrel\sqstdmath.h"
+					RelativePath="..\squirrel\sqstdmath.h"
 					>
 				</File>
 				<File
-					RelativePath=".\squirrel\sqstdrex.cpp"
+					RelativePath="..\squirrel\sqstdrex.cpp"
 					>
 				</File>
 				<File
-					RelativePath=".\squirrel\sqstdstream.cpp"
+					RelativePath="..\squirrel\sqstdstream.cpp"
 					>
 				</File>
 				<File
-					RelativePath=".\squirrel\sqstdstream.h"
+					RelativePath="..\squirrel\sqstdstream.h"
 					>
 				</File>
 				<File
-					RelativePath=".\squirrel\sqstdstring.cpp"
+					RelativePath="..\squirrel\sqstdstring.cpp"
 					>
 				</File>
 				<File
-					RelativePath=".\squirrel\sqstdstring.h"
+					RelativePath="..\squirrel\sqstdstring.h"
 					>
 				</File>
 				<File
-					RelativePath=".\squirrel\sqstdsystem.cpp"
+					RelativePath="..\squirrel\sqstdsystem.cpp"
 					>
 				</File>
 				<File
-					RelativePath=".\squirrel\sqstdsystem.h"
+					RelativePath="..\squirrel\sqstdsystem.h"
 					>
 				</File>
 				<File
-					RelativePath=".\squirrel\sqstring.h"
+					RelativePath="..\squirrel\sqstring.h"
 					>
 				</File>
 				<File
-					RelativePath=".\squirrel\sqtable.cpp"
+					RelativePath="..\squirrel\sqtable.cpp"
 					>
 				</File>
 				<File
-					RelativePath=".\squirrel\sqtable.h"
+					RelativePath="..\squirrel\sqtable.h"
 					>
 				</File>
 				<File
-					RelativePath=".\squirrel\squirrel.h"
+					RelativePath="..\squirrel\squirrel.h"
 					>
 				</File>
 				<File
-					RelativePath=".\squirrel\squserdata.h"
+					RelativePath="..\squirrel\squserdata.h"
 					>
 				</File>
 				<File
-					RelativePath=".\squirrel\squtils.h"
+					RelativePath="..\squirrel\squtils.h"
 					>
 				</File>
 				<File
-					RelativePath=".\squirrel\sqvm.cpp"
+					RelativePath="..\squirrel\sqvm.cpp"
 					>
 				</File>
 				<File
-					RelativePath=".\squirrel\sqvm.h"
+					RelativePath="..\squirrel\sqvm.h"
 					>
 				</File>
 			</Filter>
