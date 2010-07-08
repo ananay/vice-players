@@ -30,12 +30,12 @@ extern CNetGame *pNetGame;
 
 #include <stdio.h>
 #include "script.h"
-#include "squirrel/sqstdaux.h"
-#include "squirrel/sqstdblob.h"
-#include "squirrel/sqstdio.h"
-#include "squirrel/sqstdmath.h"
-#include "squirrel/sqstdstring.h"
-#include "squirrel/sqstdsystem.h"
+#include "../squirrel/sqstdaux.h"
+#include "../squirrel/sqstdblob.h"
+#include "../squirrel/sqstdio.h"
+#include "../squirrel/sqstdmath.h"
+#include "../squirrel/sqstdstring.h"
+#include "../squirrel/sqstdsystem.h"
 
 void printfunc(SQVM * pVM, const char * szFormat, ...)
 {

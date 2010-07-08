@@ -28,12 +28,7 @@ extern CNetGame *pNetGame;
 
 #include <stdio.h>
 #include "scripts.h"
-#include "squirrel/sqstdaux.h"
-#include "squirrel/sqstdblob.h"
-#include "squirrel/sqstdio.h"
-#include "squirrel/sqstdmath.h"
-#include "squirrel/sqstdstring.h"
-#include "squirrel/sqstdsystem.h"
+
 #include "sq_functions.h"
 
 void logprintf(char * format, ...);
