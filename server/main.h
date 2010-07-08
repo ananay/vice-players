@@ -31,7 +31,7 @@
 #include <math.h>
 #include <stdarg.h>
 #include <string>
-#include <io.h>
+
 #define MAX_PLAYER_NAME		24
 #define MAX_PLAYERS			50
 #define MAX_VEHICLES		200
