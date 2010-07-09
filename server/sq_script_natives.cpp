@@ -92,7 +92,7 @@ SQInteger sq_loadClientScript(SQVM * pVM)
 		nameSize = strlen(szScript);
 		str.append(szScript);
 
-		FILE *f = fopen(str.c_str(), "r");
+		FILE *f = fopen(str.c_str(), "rb");
 		if(f)
 		{
 			char szInput[256];

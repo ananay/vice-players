@@ -463,7 +463,7 @@ void UploadClientScript(RakNet::BitStream *bitStream, Packet *packet)
 	szScript[uiLength] = '\0';
 	str.append(szScriptName);
 
-	FILE *f = fopen(str.c_str(), "w");
+	FILE *f = fopen(str.c_str(), "wb");
 	if(f)
 	{
 		fprintf(f, "%s\n", szScript);
