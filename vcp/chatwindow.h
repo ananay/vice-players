@@ -26,8 +26,8 @@
 
 #pragma once
 
-#define CHAT_FONT					"Tahoma"
-#define CHAT_FONT_SIZE				9
+#define CHAT_FONT					"Comic Sans MS"
+#define CHAT_FONT_SIZE				14
 
 #define MAX_MESSAGE_LENGTH			128
 #define MAX_LINE_LENGTH				MAX_MESSAGE_LENGTH / 2
