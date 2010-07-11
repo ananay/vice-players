@@ -302,7 +302,7 @@ void EnterVehicle(RakNet::BitStream *bitStream, Packet *packet)
 	pPlayer->EnterVehicle(byteVehicleID,bytePassenger);
 	
 	pScripts->onPlayerEnterVehicle(byteSystemAddress, byteVehicleID);
-	//logprintf("%u enters vehicle %u",byteSystemAddress,byteVehicleID);
+	logprintf("%u enters vehicle %u",byteSystemAddress,byteVehicleID);
 }
 
 //----------------------------------------------------

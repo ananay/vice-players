@@ -172,7 +172,7 @@ void CCmdWindow::ProcessInput()
 						bSendToServer = false;
 					}
 				}
-				if(pNetGame->IsConnected() && bSendToServer) {
+				if(pNetGame->IsConnected()) {
 					RakNet::BitStream bsSend;
 					BYTE byteTextLen = strlen(command);
 					bsSend.Write(byteTextLen);
