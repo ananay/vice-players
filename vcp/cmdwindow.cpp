@@ -172,14 +172,16 @@ void CCmdWindow::ProcessInput()
 						bSendToServer = false;
 					}
 				}
-				if(pNetGame->IsConnected() && bSendToServer) {
-					RakNet::BitStream bsSend;
-					BYTE byteTextLen = strlen(command);
-					bsSend.Write(byteTextLen);
-					bsSend.Write(command,byteTextLen);
-					pNetGame->GetRPC4()->Call("ChatCommand",&bsSend,HIGH_PRIORITY,RELIABLE,0,UNASSIGNED_SYSTEM_ADDRESS,TRUE);
-				} else {
-					pChatWindow->AddInfoMessage("Not connected");
+				if(bSendToServer) {
+					if(pNetGame->IsConnected()) {
+											RakNet::BitStream bsSend;
+											BYTE byteTextLen = strlen(command);
+											bsSend.Write(byteTextLen);
+											bsSend.Write(command,byteTextLen);
+											pNetGame->GetRPC4()->Call("ChatCommand",&bsSend,HIGH_PRIORITY,RELIABLE,0,UNASSIGNED_SYSTEM_ADDRESS,TRUE);
+									} else {
+											pChatWindow->AddInfoMessage("Not connected");
+									}
 				}
 			}
 		}
