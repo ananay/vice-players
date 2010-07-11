@@ -1,27 +1,25 @@
 function onServerInit()
 {
-	createVehicle(159, 301.7180, 796.4058, 10.7562, 155.0758, 42, 42);
-	createVehicle(154, 296.7950, 787.2752, 10.7558, 151.6805, 42, 42);
-	createVehicle(226, 289.9197, 777.5255, 10.7558, 143.8585, 42, 42);
-	createVehicle(234, 279.5420, 763.7482, 10.7558, 141.6185, 42, 42);
-	createVehicle(235, 272.8984, 756.0524, 10.7558, 136.2074, 42, 42);
-	createVehicle(236, 261.3709, 744.7074, 10.7558, 134.1633, 42, 42);
 	print("---------------------------\n");
 	print("Vice Madness started\n");
 	print("---------------------------\n");
 
 
 	// Player classes
-	addPlayerClass(0, 1, -657.076294, 762.287720, 11.599755, 130.724121, 4, 1, 3, 35, 19, 15);
-	addPlayerClass(1, 87, 82.608452, 1102.561401, 25.491444, 75.496101, 9, 1, 22, 70, 21, 13);
-	addPlayerClass(2, 93, -597.619446, 653.861145, 11.071777, 13.441076, 1, 1, 23, 80, 19, 23);
+	addPlayerClass(0, 1, -673.2837, -1325.3040, 11.0715, 116.6886, 4, 1, 3, 35, 19, 15);
+	addPlayerClass(1, 87, -673.2837, -1325.3040, 11.0715, 116.6886, 9, 1, 22, 70, 21, 13);
+	addPlayerClass(2, 93, -673.2837, -1325.3040, 11.0715, 116.6886, 1, 1, 23, 80, 19, 23);
 	
 	// Some test vehicles
-	createVehicle(175, -675.0778, 804.6669, 11.1172, 179.6899, 42, 42);
-	createVehicle(175, -675.2230, 778.0158, 11.1102, 179.6989, 42, 42);
-	createVehicle(175, -666.7488, 772.2281, 11.0302, 266.1138, 42, 42);
-	createVehicle(175, -668.3047, 785.4417, 11.1171, 359.9105, 42, 42);
-	createVehicle(175, -665.1270, 750.6769, 10.9391, 44.7830, 42, 42);
+	createVehicle(149, -681.5270, -1329.4580, 10.8290, 292.6041, 5, 5);
+	createVehicle(150, -683.3698, -1326.5831, 10.8105, 290.5928, 5, 5);
+	createVehicle(151, -684.9037, -1323.8152, 10.9755, 292.5149, 5, 5);
+	createVehicle(152, -687.1147, -1321.3459, 11.1368, 292.0442, 5, 5);
+	createVehicle(162, -674.5535, -1343.4515, 11.2688, 294.7513, 5, 5);
+	createVehicle(162, -677.5064, -1342.6252, 11.2689, 289.3499, 5, 5);
+	createVehicle(164, -680.6094, -1333.6694, 10.8321, 290.6213, 5, 5);
+	createVehicle(164, -679.5953, -1337.7463, 10.8321, 292.4391, 5, 5);
+
 	setScriptAuthor("adamix & jenksta & chris");
 	setScriptVersion("0.1");
 }
@@ -44,22 +42,27 @@ function onVehicleSync(vehicleid)
 function onPlayerConnect(playerid)
 {
 	print("Connect: [ID: " + playerid + "] [Name: " + getPlayerName(playerid) + "] [IP: " + getPlayerIP(playerid) + "]");
-	sendPlayerMessageToAll(0xE60000FF, "Connected to the server " + getPlayerName(playerid));
+	sendPlayerMessage(playerid, 0xFFFF00FF, "-> Welcome to Vice Madness");
+	sendPlayerMessage(playerid, 0xFFFF00FF, "-> For help type /help");
+	sendPlayerMessage(playerid, 0xFFFF00FF, "-> Thanks for playing at Vice Madness!");
+	
+	sendPlayerMessageToAll(0xE60000FF, "[Join]: "  + getPlayerName(playerid) + " has joined Vice Maddness!.");
 	loadClientScript(playerid, "clienttest.nut");
 }
 
 
 function onPlayerDisconnect(playerid, reason)
 {
-	print("Disconnect: [ID: " + playerid + "] [Reason: " + reason + "]");
+	print("Disconnect: [ID: " + playerid + "] [Reason: " + returnQuitReason(reason) + "]");
+	sendPlayerMessageToAll(0xE60000FF, "[Join]: "  + getPlayerName(playerid) + " has left Vice Maddness!. Reason: " + returnQuitReason(reason));
 }
 
 
 function onPlayerSpawn(playerid)
 {
 	print("Spawn: [ID: " + playerid + "]");
-	sendPlayerMessageToAll(0xE60000FF, "Spawned on the server " + getPlayerName(playerid));
-	setPlayerTime(playerid, 0, 0);
+	sendPlayerMessageToAll(0xE60000FF, "[Spawn]: " + getPlayerName(playerid) + " has spawned on Vice Maddness!");
+	setPlayerTime(playerid, 12, 12);
 }
 
 
@@ -74,11 +77,17 @@ function onPlayerCommand(playerid, cmdtext)
 	local cmd = split(cmdtext, " ");
 	if(cmd[0] == "/createcar")
 	{
+		print("Processing command");
 		local pos = getPlayerPosition(playerid);
+		print("getPlayerPosition");
 		local carid = cmd[1].tointeger();
+		print("local carid = cmd[1].tointeger();");
 		local car = createVehicle(carid, pos[0], pos[1], pos[2], 0.0, 0, 0);
+		print("local car = createVehicle(carid, pos[0], pos[1], pos[2], 0.0, 0, 0);");
 		putPlayerInVehicle(playerid, car);
+		print("putPlayerInVehicle(playerid, car);");
 		setVehicleColor(car, 5, 5);
+		print("setVehicleColor(car, 5, 5);");
 		
 	}
 	if(cmd[0] == "/destroycar")
@@ -178,4 +187,19 @@ function onTimerCreate(timerid)
 function onTimerDestroy(timerid)
 {
 
+}
+
+
+
+function returnQuitReason(reason)
+{
+	switch(reason)
+	{
+		case 0:
+			return "Crash/Timeout";
+		break;
+		case 1:
+			return "Quit/Left";
+		break;
+	}
 }
