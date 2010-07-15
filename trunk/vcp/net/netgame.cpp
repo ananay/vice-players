@@ -34,7 +34,6 @@ using namespace RakNet;
 extern CGame		 *pGame;
 extern CChatWindow   *pChatWindow;
 extern CCmdWindow	 *pCmdWindow;
-extern CScripts		 *pScripts;
 RPC4				 *CNetGame::m_pRPC4;
 extern bool D3DInited;
 
@@ -69,8 +68,6 @@ CNetGame::CNetGame(PCHAR szHostOrIp, int iPort,
 	m_pPlayerPool->SetLocalPlayerName(szPlayerName);
 
 	m_pVehiclePool = new CVehiclePool();
-
-	m_pTimerPool = new CTimerPool();
 
 	m_pRakPeer = RakPeerInterface::GetInstance();
 	m_pRPC4 = RPC4::GetInstance();
@@ -122,8 +119,6 @@ void CNetGame::Process()
 	if(GetGameState() == GAMESTATE_CONNECTED) {
 		if(m_pPlayerPool) m_pPlayerPool->Process();
 		if(m_pVehiclePool) m_pVehiclePool->Process();
-		if(m_pTimerPool) m_pTimerPool->Process();
-		if(pScripts && D3DInited) pScripts->onPulse();
 	}
 
 	// For syncing rand()

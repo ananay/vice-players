@@ -65,7 +65,6 @@ typedef struct _GAME_SETTINGS {
 #include "net/netrpc.h"
 #include "net/playerpool.h"
 #include "net/vehiclepool.h"
-#include "timerpool.h"
 #include "net/netgame.h"
 
 #include "chatwindow.h"

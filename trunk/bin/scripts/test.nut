@@ -47,7 +47,6 @@ function onPlayerConnect(playerid)
 	sendPlayerMessage(playerid, 0xFFFF00FF, "-> Thanks for playing at Vice Madness!");
 	
 	sendPlayerMessageToAll(0xE60000FF, "[Join]: "  + getPlayerName(playerid) + " has joined Vice Maddness!.");
-	loadClientScript(playerid, "clienttest.nut");
 }
 
 
