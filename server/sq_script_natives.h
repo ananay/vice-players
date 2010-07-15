@@ -28,4 +28,3 @@
 
 SQInteger sq_setScriptAuthor(SQVM * pVM); // done
 SQInteger sq_setScriptVersion(SQVM * pVM); // done
-SQInteger sq_loadClientScript(SQVM * pVM); // done
