@@ -96,6 +96,10 @@ function onPlayerCommand(playerid, cmdtext)
 		destroyVehicle(car);
 		
 	}
+	if(cmd[0] == "/fade")
+	{
+		fadeScreen(playerid, 5, 1);
+	}
 	if(cmd[0] == "/mypos")
 	{
 		local pos = getPlayerPosition(playerid);
