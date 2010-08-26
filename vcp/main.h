@@ -33,6 +33,7 @@
 #define MAX_PLAYER_NAME		24
 #define MAX_NETWORK_PLAYERS	50
 #define MAX_SETTINGS_STRING 128
+#define CLIENT_VERSION "(Alpha-2)"
 
 typedef struct _GAME_SETTINGS {
 	BOOL bDebug;
@@ -57,7 +58,6 @@ typedef struct _GAME_SETTINGS {
 #include "../raknet/RPC4Plugin.h"
 #include "../raknet/BitStream.h"
 #include "../raknet/MessageIdentifiers.h"
-#include "scripting/scripts.h"
 
 #include "net/localplayer.h"
 #include "net/remoteplayer.h"
