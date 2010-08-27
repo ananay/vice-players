@@ -726,6 +726,12 @@ void Script_DestroyVehicle(RakNet::BitStream *bitStream, Packet *packet)
 	pNetGame->GetVehiclePool()->Delete(vehicle);
 }
 
+void Script_forceClassSelection(RakNet::BitStream *bitStream, Packet *packet)
+{
+	CLocalPlayer *pLocalPlayer = pNetGame->GetPlayerPool()->GetLocalPlayer();
+	pNetGame->GetGameLogic()->HandleClassSelection(pLocalPlayer);
+}
+
 // Play sound
 void Script_PlaySound(RakNet::BitStream *bitStream, Packet *packet)
 {
@@ -797,6 +803,7 @@ void RegisterRPCs()
 	pNetGame->GetRPC4()->RegisterFunction("Script_DestroyVehicle",Script_DestroyVehicle);
 	pNetGame->GetRPC4()->RegisterFunction("Script_PlaySound",Script_PlaySound);
 	pNetGame->GetRPC4()->RegisterFunction("Script_FadeScreen",Script_FadeScreen);
+	pNetGame->GetRPC4()->RegisterFunction("Script_forceClassSelection", Script_forceClassSelection);
 
 }
 
@@ -843,6 +850,7 @@ void UnRegisterRPCs()
 	pNetGame->GetRPC4()->UnregisterFunction("Script_DestroyVehicle");
 	pNetGame->GetRPC4()->UnregisterFunction("Script_PlaySound");
 	pNetGame->GetRPC4()->UnregisterFunction("Script_FadeScreen");
+	pNetGame->GetRPC4()->UnregisterFunction("Script_forceClassSelection");
 }
 
 //----------------------------------------------------

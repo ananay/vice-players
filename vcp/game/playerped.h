@@ -82,6 +82,7 @@ public:
 
 	float          GetHealth();
 	void           SetHealth(float fHealth);
+	void		   SetGameSpeed(float gSpeed);
 	float          GetArmour();
 	void           SetArmour(float fArmour);
 	BOOL           IsDead();

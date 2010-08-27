@@ -133,6 +133,7 @@ const SCRIPT_COMMAND give_player_weapon			= { 0x01B1, "iii" };	// PLAYER_CHAR, w
 const SCRIPT_COMMAND add_to_player_money		= { 0x0109, "vi" };		// PLAYER_CHAR, money
 const SCRIPT_COMMAND restart_if_wasted_at		= { 0x016C, "ffff" };	// x, y, z, a
 const SCRIPT_COMMAND restart_if_busted_at		= { 0x016D, "ffff" };	// x, y, z, a
+//const SCRIPT_COMMAND set_game_speed             = { 0x68F1F0, "f" };
 const SCRIPT_COMMAND is_key_pressed				= { 0x0e1, "ii" };
 
 // added by kyeman. (I don't use correct conventions so don't copy elsewhere

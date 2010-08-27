@@ -47,6 +47,8 @@ SQInteger sq_createVehicle(SQVM * pVM)
 	sq_getfloat(pVM, -3, &fRotation);
 	sq_getinteger(pVM, -2, &iColor1);
 	sq_getinteger(pVM, -1, &iColor2);
+
+
 	int vehID = pNetGame->GetVehiclePool()->New(byteVehicleType, &pos, fRotation, iColor1, iColor2);
 	CVehicle *pVehicle = pNetGame->GetVehiclePool()->GetAt(vehID);
 	pVehicle->SpawnForWorld();
