@@ -96,9 +96,9 @@ function onPlayerCommand(playerid, cmdtext)
 		destroyVehicle(car);
 		
 	}
-	if(cmd[0] == "/fade")
+	if(cmd[0] == "/classselect")
 	{
-		fadeScreen(playerid, 5, 1);
+		forceClassSelection(playerid);
 	}
 	if(cmd[0] == "/mypos")
 	{
