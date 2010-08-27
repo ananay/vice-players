@@ -34,6 +34,7 @@ SQInteger sq_setPlayerTurnSpeed(SQVM * pVM); // done
 SQInteger sq_setPlayerMoveSpeed(SQVM * pVM); // done
 SQInteger sq_getPlayerPosition(SQVM * v); // done
 SQInteger sq_setPlayerZAngle(SQVM * v); // done
+SQInteger sq_forceClassSelection(SQVM * v); // done
 SQInteger sq_getPlayerSkin(SQVM * v); // done
 SQInteger sq_setPlayerSkin(SQVM * v); //done
 SQInteger sq_setPlayerAction(SQVM * v); // done

@@ -175,6 +175,11 @@ void TheSceneEnd()
 				pGame->DisplayHud(FALSE);
 				pNetStats->Draw();
 			} 
+			else if((pNetGame) && GetAsyncKeyState(VK_F4)) {
+				CLocalPlayer *pLocalPlayer = pNetGame->GetPlayerPool()->GetLocalPlayer();
+				pChatWindow->AddDebugMessage("Returning to class selection.");
+				pNetGame->GetGameLogic()->HandleClassSelection(pLocalPlayer);
+			}
 			else
 			{
 				pGame->DisplayHud(TRUE);

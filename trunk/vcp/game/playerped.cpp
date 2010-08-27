@@ -466,6 +466,17 @@ void CPlayerPed::SetHealth(float fHealth)
 	}
 }	
 
+/*
+void CPlayerPed::SetGameSpeed(float gSpeed)
+{
+	PED_TYPE * pPed = (PED_TYPE *)GetEntity();
+	if(pPed) {
+		pPed->gSpeed = gSpeed;
+	}
+
+	ScriptCommand(&set_game_speed, gSpeed);
+}	
+*/
 //-----------------------------------------------------------
 
 float CPlayerPed::GetArmour()

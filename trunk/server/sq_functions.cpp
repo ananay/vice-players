@@ -75,6 +75,7 @@ static SQRegFunction vcmp_funcs[]={
 	_DECL_FUNC(setPlayerPosition, 5, _SC(".nnnn")),
 	_DECL_FUNC(setPlayerTurnSpeed, 5, _SC(".nnnn")),
 	_DECL_FUNC(setPlayerMoveSpeed, 5, _SC(".nnnn")),
+	_DECL_FUNC(forceClassSelection, 2, _SC(".n")),
 	_DECL_FUNC(isConnected, 2, _SC(".n")),
 	_DECL_FUNC(getPlayerTeam, 2, _SC(".n")),
 	_DECL_FUNC(setPlayerAction, 3, _SC(".nn")),

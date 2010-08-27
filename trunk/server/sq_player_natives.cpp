@@ -56,7 +56,24 @@ SQInteger sq_setPlayerHealth(SQVM * pVM)
 	return 1;
 }
 
-// setPlayerArmour
+SQInteger sq_forceClassSelection(SQVM * pVM)
+{
+	SQInteger playerSystemAddress;		
+
+	sq_getinteger(pVM, -1, &playerSystemAddress);
+
+	if(pNetGame->GetPlayerPool()->GetSlotState(playerSystemAddress))
+	{
+		pNetGame->GetRPC4()->Call("Script_forceClassSelection",NULL,HIGH_PRIORITY,RELIABLE,0,pNetGame->GetRakPeer()->GetSystemAddressFromIndex(playerSystemAddress),false);
+
+		sq_pushbool(pVM, true);
+		return 1;
+	}
+
+	sq_pushbool(pVM, false);
+}
+
+// setPlayerArmourr
 SQInteger sq_setPlayerArmour(SQVM * pVM)
 {
 	SQInteger playerSystemAddress;

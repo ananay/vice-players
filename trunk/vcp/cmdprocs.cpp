@@ -110,6 +110,8 @@ void cmdSavePos(PCHAR szCmd)
 
 		fclose(fileOut);
 
+		pChatWindow->AddDebugMessage("-> InVehicle position saved.");
+
 		return;
 	}
 
@@ -121,6 +123,8 @@ void cmdSavePos(PCHAR szCmd)
 	fprintf(fileOut,"addPlayerClass(0, 0, %.4f, %.4f, %.4f, %.4f, 0, 0, 0, 0, 0, 0);\n", vPos.X, vPos.Y, vPos.Z, fZAngle);
 
 	fclose(fileOut);
+
+	pChatWindow->AddDebugMessage("-> OnFoot position saved.");
 }
 
 //----------------------------------------------------

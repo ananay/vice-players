@@ -121,6 +121,7 @@ typedef struct _PED_TYPE {
 	BYTE	      byteAction;      // 244-245
 	_pad(__pad3b, 0x10F);          // 245-354
 	float	      fHealth;         // 354-358
+	float		  gSpeed;
 	float	      fArmour;         // 358-35C
 	_pad(__pad4b, 0x18);           // 35C-374
 	float	      fRotation1;      // 374-378

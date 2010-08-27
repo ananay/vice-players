@@ -88,6 +88,10 @@ CNetGame::CNetGame(PCHAR szHostOrIp, int iPort,
 	m_pGameLogic = NULL;
 	m_dwLastScoreUpdateTick = GetTickCount();
 	m_uiLastRandSeed = 0;
+
+	CPlayerPed *pPlayer = pGame->FindPlayerPed();
+
+	//pPlayer->SetGameSpeed(1000.00);
 }
 
 //----------------------------------------------------
@@ -236,29 +240,6 @@ void CNetGame::PlayerSync(Packet *p)
 		/*if(IS_FIRING(wKeys)) */pPlayer->StoreAimSyncData(&caAiming);
 		pPlayer->SetReportedHealth(bytePlayerHealth);
 		pPlayer->SetReportedArmour(bytePlayerArmour);
-	}
-}
-
-void CNetGame::AimSync(Packet *p)
-{
-	CRemotePlayer * pPlayer;
-	BitStream bsPlayerAimSync(p->data, p->length, FALSE);
-
-	AIM_SYNC_DATA aimSync;
-	BYTE byteSystemAddress=0;
-	WORD		wKeys;
-
-	if(GetGameState() != GAMESTATE_CONNECTED) return;
-
-	bsPlayerAimSync.Read(byteSystemAddress);
-	bsPlayerAimSync.Read(wKeys);
-	bsPlayerAimSync.Read((PCHAR)&aimSync,sizeof(AIM_SYNC_DATA));
-
-	if (m_pPlayerPool) {
-		pPlayer = m_pPlayerPool->GetAt(playerId);
-		if(pPlayer) {
-			pPlayer->UpdateAimFromSyncData(&aimSync);
-		}
 	}
 }
 
