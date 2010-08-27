@@ -60,9 +60,9 @@ BOOL HandleKeyPress(DWORD vKey)
 					break;
 				}
 			}
-		case VK_F6:
+		/*case VK_F6:
 			pCmdWindow->ToggleEnabled();
-			break;
+			break;*/
 
 		case VK_F7:
 			pChatWindow->ToggleEnabled();
