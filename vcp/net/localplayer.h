@@ -30,15 +30,22 @@ typedef struct _PLAYER_SPAWN_INFO
 {
 	BYTE byteTeam;
 	BYTE byteSkin;
-	VECTOR vecPos;
+	Vector3 vecPos;
 	float fRotation;
 	int iSpawnWeapons[3];
 	int iSpawnWeaponsAmmo[3];
 } PLAYER_SPAWN_INFO;
 
-// TODO: Fix these
-//#define IS_FIRING(x) (x & 0x200) // for checking the keystate firing bit
-//#define CEASE_FIRE_CEASE_FIRE(x) (x & 0xFDFF)
+typedef struct _PLAYER_SYNC_DATA
+{
+	WORD wKeys;
+	Vector3 vecPos;
+	float fRotation;
+	BYTE byteCurrentWeapon;
+	BYTE byteShootingFlags;
+	BYTE byteHealth;
+	BYTE byteArmour;
+} PLAYER_SYNC_DATA;
 
 #define NO_TEAM 255
 
@@ -85,11 +92,11 @@ public:
 	
 	void RequestClass(int iClass);
 
-	void SetSpawnInfo(BYTE byteTeam, BYTE byteSkin, VECTOR * vecPos, float fRotation,
+	void SetSpawnInfo(BYTE byteTeam, BYTE byteSkin, Vector3 * vecPos, float fRotation,
 		int iSpawnWeapon1, int iSpawnWeapon1Ammo, int iSpawnWeapon2, int iSpawnWeapon2Ammo,
 		int iSpawnWeapon3, int iSpawnWeapon3Ammo);
 
-	BOOL SpawnPlayer( BYTE byteTeam,BYTE byteSkin,VECTOR * vecPos,float fRotation,
+	BOOL SpawnPlayer( BYTE byteTeam,BYTE byteSkin,Vector3 * vecPos,float fRotation,
 		int iSpawnWeapon1,int iSpawnWeapon1Ammo,int iSpawnWeapon2,int iSpawnWeapon2Ammo,
 		int iSpawnWeapon3,int iSpawnWeapon3Ammo);
 

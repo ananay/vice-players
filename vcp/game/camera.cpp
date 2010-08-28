@@ -71,7 +71,7 @@ CAMERA_TYPE * CCamera::GetCamera()
 
 //-----------------------------------------------------------
 
-void CCamera::SetPosition(VECTOR vecPosition)
+void CCamera::SetPosition(Vector3 vecPosition)
 {
 	if(m_pCamera) {
 		m_pCamera->vecPosition.X = vecPosition.X;
@@ -83,7 +83,7 @@ void CCamera::SetPosition(VECTOR vecPosition)
 
 //-----------------------------------------------------------
 
-void CCamera::SetRotation(VECTOR vecRotation)
+void CCamera::SetRotation(Vector3 vecRotation)
 {
 	if(m_pCamera) {
 		m_pCamera->vecRotation.X = vecRotation.X;
@@ -95,14 +95,14 @@ void CCamera::SetRotation(VECTOR vecRotation)
 
 //-----------------------------------------------------------
 
-void CCamera::LookAtPoint(VECTOR vecPoint, int iType)
+void CCamera::LookAtPoint(Vector3 vecPoint, int iType)
 {
 	CAMERA_TYPE * pCamera = m_pCamera;
 	if(pCamera) {
 		/*if(fZ < -100.0) { // min ground point
 			fZ = FindGroundForZCoord
 		}*/
-		VECTOR * pPoint = &vecPoint;
+		Vector3 * pPoint = &vecPoint;
 		DWORD dwFunc = FUNC_CCamera__SetTargetPoint;
 		_asm
 		{

@@ -52,7 +52,7 @@ CVehiclePool::~CVehiclePool()
 //----------------------------------------------------
 
 BOOL CVehiclePool::New(BYTE byteVehicleID, BYTE byteVehicleType,
-					   VECTOR * vecPos, float fRotation,
+					   Vector3 * vecPos, float fRotation,
 					   int iColor1, int iColor2)
 {
 	m_pVehicles[byteVehicleID] = new CVehicle(byteVehicleType,vecPos,fRotation,iColor1,iColor2);
@@ -77,7 +77,7 @@ BOOL CVehiclePool::New(BYTE byteVehicleID, BYTE byteVehicleType,
 //----------------------------------------------------
 
 BYTE CVehiclePool::New(BYTE byteVehicleType,
-					   VECTOR * vecPos, float fRotation,
+					   Vector3 * vecPos, float fRotation,
 					   int iColor1, int iColor2)
 {
 	BYTE vehicleID = GetFreeSlot();

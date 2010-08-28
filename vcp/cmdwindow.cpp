@@ -198,6 +198,7 @@ CMDPROC CCmdWindow::GetCmdHandler(PCHAR szCmdName)
 {
 	int x=0;
 	while(x!=m_iCmdCount) {
+#pragma warning(disable:4996)
 		if(!stricmp(szCmdName,m_szCmdNames[x])) {
 			return m_pCmds[x];
 		}

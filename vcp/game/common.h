@@ -39,18 +39,18 @@ typedef struct _RGBA {
 	unsigned char r,g,b,a;
 } RGBA, *PRGBA;
 
-typedef struct _VECTOR {
+typedef struct _Vector3 {
 	float X,Y,Z;
-} VECTOR, *PVECTOR;
+} Vector3, *PVector3;
 
 typedef struct _MATRIX4X4 {
-	VECTOR vLookRight;
+	Vector3 vLookRight;
 	float  pad_r;
-	VECTOR vLookUp;
+	Vector3 vLookUp;
 	float  pad_u;
-	VECTOR vLookAt;
+	Vector3 vLookAt;
 	float  pad_a;
-	VECTOR vPos;
+	Vector3 vPos;
 	float  pad_p;
 } MATRIX4X4, *PMATRIX4X4;
 
@@ -82,13 +82,13 @@ typedef struct _ENTITY_TYPE {
 typedef struct _PHYSICAL_TYPE {
 	ENTITY_TYPE entity;          // 000-064
 	_pad(__pad0a, 0xC);          // 064-070
-	VECTOR      vecMoveSpeed;    // 070-07C
-	VECTOR      vecTurnSpeed;    // 07C-088
+	Vector3      vecMoveSpeed;    // 070-07C
+	Vector3      vecTurnSpeed;    // 07C-088
 	_pad(__pad1a, 0x30);         // 088-0B8
 	float       fMass;	         // 0B8-0BC
 	float       fTurnMass;       // 0BC-0C0
 	_pad(__pad2a, 0x10);         // 0C0-0D0
-	VECTOR      vecCenterOfMass; // 0D0-0DC
+	Vector3      vecCenterOfMass; // 0D0-0DC
 	_pad(__pad3a, 0x3E);         // 0DC-11A
 	BYTE        byteSunkFlags;   // 11A-11B
 	BYTE	    byteLockedFlags; // 11B-11C
@@ -191,10 +191,10 @@ typedef struct _AUTOMOBILE_TYPE
 
 typedef struct _CAMERA_AIM
 { // This is a MATRIX4X4?
-	VECTOR vecA1; // float f1x,f1y,f1z
-	VECTOR vecAPos1; // float pos1x,pos1y,pos1z
-	VECTOR vecAPos2; // float pos2x,pos2y,pos2z
-	VECTOR vecA2; // float f2x,f2y,f2z
+	Vector3 vecA1; // float f1x,f1y,f1z
+	Vector3 vecAPos1; // float pos1x,pos1y,pos1z
+	Vector3 vecAPos2; // float pos2x,pos2y,pos2z
+	Vector3 vecA2; // float f2x,f2y,f2z
 } CAMERA_AIM;
 
 typedef struct _CAMERA_TYPE
@@ -202,8 +202,8 @@ typedef struct _CAMERA_TYPE
 	_pad(__pad0, 0x2F0); // 000-2F0
 	CAMERA_AIM aim;      // 2F0-320
 	_pad(__pad1, 0x41C); // 320-73C
-	VECTOR vecPosition;  // 73C-748
-	VECTOR vecRotation;  // 748-754
+	Vector3 vecPosition;  // 73C-748
+	Vector3 vecRotation;  // 748-754
 	_pad(__pad2, 0x114); // 754-868
 	BYTE byteInFreeMode; // 868-869
 	_pad(__pad3, 0xEF);  // 869-958

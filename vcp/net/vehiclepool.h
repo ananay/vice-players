@@ -29,7 +29,7 @@
 typedef struct _VEHICLE_SPAWN_INFO
 {
 	BYTE byteVehicleType;
-	VECTOR vecPos;
+	Vector3 vecPos;
 	float fRotation;
 	int iColor1;
 	int iColor2;
@@ -52,9 +52,9 @@ public:
 	~CVehiclePool();
 
 	BOOL New(BYTE byteVehicleID, BYTE byteVehicleType,
-			 VECTOR * vecPos, float fRotation,
+			 Vector3 * vecPos, float fRotation,
 			 int iColor1, int iColor2,
-			 VECTOR * vecSpawnPos, float fSpawnRotation);
+			 Vector3 * vecSpawnPos, float fSpawnRotation);
 
 	BOOL Delete(BYTE byteVehicleID);	
 
@@ -69,7 +69,7 @@ public:
 	};
 
 	BOOL Spawn( BYTE byteVehicleID, BYTE byteVehicleType,
-				VECTOR * vecPos, float fRotation,
+				Vector3 * vecPos, float fRotation,
 				int iColor1, int iColor2 );
 
 	int FindIDFromGtaPtr(VEHICLE_TYPE * pGtaVehicle);

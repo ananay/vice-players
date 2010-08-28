@@ -66,6 +66,7 @@ public:
 
 	void           SetKeys(WORD wKeys);
 	WORD           GetKeys();
+	bool           IsFiring();
 
 	CAMERA_AIM *   GetCurrentAim();
 	void           SetCurrentAim(CAMERA_AIM *pAim);
@@ -127,7 +128,7 @@ public:
 	void           RemoveFromVehicleAndPutAt(float fX, float fY, float fZ);
 	void           TogglePlayerControllable(int iControllable);
 	BYTE           FindDeathReasonAndResponsiblePlayer(BYTE * nPlayer);
-	void           RestartIfWastedAt(VECTOR *vecRestart, float fRotation);
+	void           RestartIfWastedAt(Vector3 *vecRestart, float fRotation);
 	UINT           GetPassengerSeat();
 };
 

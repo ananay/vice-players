@@ -39,7 +39,7 @@ extern bool D3DInited;
 
 //----------------------------------------------------
 
-void CompressVector1(VECTOR * vec, C_VECTOR1 * c1)
+void CompressVector1(Vector3 * vec, C_VECTOR1 * c1)
 {
 	c1->X = (short)(vec->X * 10000);
 	c1->Y = (short)(vec->Y * 10000);
@@ -48,7 +48,7 @@ void CompressVector1(VECTOR * vec, C_VECTOR1 * c1)
 
 //----------------------------------------------------
 
-void DecompressVector1(VECTOR * vec, C_VECTOR1 * c1)
+void DecompressVector1(Vector3 * vec, C_VECTOR1 * c1)
 {
 	vec->X = (float)c1->X;
 	vec->X = (float)((double)vec->X / 10000.0);
@@ -200,46 +200,41 @@ void CNetGame::PlayerSync(Packet *p)
 {
 	CRemotePlayer * pPlayer;
 	BitStream bsPlayerSync(p->data, p->length, FALSE);
-	BYTE byteSystemAddress=0;
-
-	WORD wKeys=0;
-	float fRotation;
-	BYTE  bytePlayerHealth;
-	BYTE  bytePlayerArmour;
-	BYTE  byteCurrentWeapon;
-	BYTE  byteAction;
-
-	MATRIX4X4 matWorld;
-
-	CAMERA_AIM caAiming;
+	BYTE bytePlayerID;
 
 	bsPlayerSync.IgnoreBytes(sizeof(MessageID));
-	bsPlayerSync.Read(byteSystemAddress);
-	bsPlayerSync.Read(wKeys);
+	bsPlayerSync.Read(bytePlayerID);
 
-	pPlayer = GetPlayerPool()->GetAt(byteSystemAddress);
-	bsPlayerSync.Read(matWorld.vPos.X);
-	bsPlayerSync.Read(matWorld.vPos.Y);
-	bsPlayerSync.Read(matWorld.vPos.Z);
-	bsPlayerSync.Read(fRotation);
-	bsPlayerSync.Read(byteAction);
-	bsPlayerSync.Read(bytePlayerHealth);
-	bsPlayerSync.Read(bytePlayerArmour);
-	bsPlayerSync.Read(byteCurrentWeapon);
+	pPlayer = GetPlayerPool()->GetAt(bytePlayerID);
+	if(pPlayer)
+	{
+		PLAYER_SYNC_DATA playerSyncData;
+		CAMERA_AIM caAiming;
 
-	//if(IS_FIRING(wKeys)) {
-		// aiming
-		bsPlayerSync.Read((char *)&caAiming.vecA1, sizeof(VECTOR));
-		bsPlayerSync.Read((char *)&caAiming.vecA2, sizeof(VECTOR));
-		bsPlayerSync.Read((char *)&caAiming.vecAPos1, sizeof(VECTOR));
-		memcpy(&caAiming.vecA2, &caAiming.vecA1, sizeof(VECTOR));
-	//}
-	
-	if(pPlayer) {
-		pPlayer->StoreOnFootFullSyncData(wKeys,&matWorld,fRotation,byteCurrentWeapon,byteAction);
-		/*if(IS_FIRING(wKeys)) */pPlayer->StoreAimSyncData(&caAiming);
-		pPlayer->SetReportedHealth(bytePlayerHealth);
-		pPlayer->SetReportedArmour(bytePlayerArmour);
+		bsPlayerSync.Read((char *)&playerSyncData, sizeof(PLAYER_SYNC_DATA));
+
+		// read weather the bit stream has aim sync data or not
+		bool bHasAimSync = bsPlayerSync.ReadBit();
+
+		// read aim sync data if the bit stream has it
+		if(bHasAimSync)
+		{
+			// read the aim sync data
+			bsPlayerSync.Read((char *)&caAiming.vecA1, sizeof(Vector3));
+			bsPlayerSync.Read((char *)&caAiming.vecA2, sizeof(Vector3));
+			bsPlayerSync.Read((char *)&caAiming.vecAPos1, sizeof(Vector3));
+			// this needed?
+			memcpy(&caAiming.vecA2, &caAiming.vecA1, sizeof(Vector3));
+		}
+
+		// store the player sync data
+		pPlayer->StoreOnFootFullSyncData(&playerSyncData);
+
+		// store the aim sync data if the bit stream has it
+		if(bHasAimSync)
+		{
+			pPlayer->StoreAimSyncData(&caAiming);
+		}
 	}
 }
 
@@ -256,7 +251,7 @@ void CNetGame::VehicleSync(Packet *p)
 	C_VECTOR1 cvecRoll;
 	C_VECTOR1 cvecDirection;
 	MATRIX4X4	matWorld;
-	VECTOR	vecMoveSpeed;
+	Vector3	vecMoveSpeed;
 
 	float		fHealth;
 

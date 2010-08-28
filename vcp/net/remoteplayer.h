@@ -56,7 +56,7 @@ private:
 	WORD				m_wKeys;
 	MATRIX4X4			m_matWorld;
 
-	VECTOR				m_vecMoveSpeed;
+	Vector3				m_vecMoveSpeed;
 	float				m_fRotation;
 	float				m_fVehicleHealth;
 	BYTE				m_byteHealth; // health float casted to a byte.
@@ -67,7 +67,7 @@ private:
 	BOOL				m_bIsAPassenger;
 	BYTE				m_byteVehicleID;
 	UINT				m_uiPassengerSeat;
-	BYTE				m_byteAction;
+	BYTE				m_byteShootingFlags;
 
 	CHAR				m_szPlayerName[256]; // Note to self: use a fucking constant
 											 // for the size - dickhead.
@@ -105,27 +105,26 @@ public:
 
 	float GetReportedArmour() { return (float)m_byteArmour; };
 
-	void UpdateOnFootPosition(VECTOR vPos);
+	void UpdateOnFootPosition(Vector3 vPos);
 
 	void UpdateInCarMatrixAndSpeed(MATRIX4X4 * matWorld,
-								   VECTOR * vecMoveSpeed);
+								   Vector3 * vecMoveSpeed);
 
-	void StoreOnFootFullSyncData(WORD wKeys, MATRIX4X4 * matWorld,
-								 float fRotation, BYTE byteCurrentWeapon, BYTE byteAction);
+	void StoreOnFootFullSyncData(PLAYER_SYNC_DATA * pPlayerSyncData);
 
 	void StoreAimSyncData(CAMERA_AIM * pAim) { 
 		memcpy(&m_Aim,pAim,sizeof(CAMERA_AIM)); 
 	};
 	
 	void StoreInCarFullSyncData(BYTE byteVehicleID,WORD wKeys,MATRIX4X4 * matWorld,
-		VECTOR *vecMoveSpeed, float fVehicleHealth);
+		Vector3 *vecMoveSpeed, float fVehicleHealth);
 
 	void StorePassengerData(BYTE byteVehicleID, UINT uiSeat);
 
 	BOOL DestroyPlayer();
 
 	BOOL SpawnPlayer( BYTE byteTeam, BYTE byteSkin, 
-					  VECTOR * vecPos, float fRotation, int iSpawnWeapon1,
+					  Vector3 * vecPos, float fRotation, int iSpawnWeapon1,
 					  int iSpawnWeapon1Ammo, int iSpawnWeapon2, 
 					  int iSpawnWeapon2Ammo, int iSpawnWeapon3,
 					  int iSpawnWeapon3Ammo );

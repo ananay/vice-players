@@ -85,9 +85,9 @@ void InitGame(RakNet::BitStream *bitStream, Packet *packet)
 	CPlayerPool *pPlayerPool = pNetGame->GetPlayerPool();
 	BYTE byteMySystemAddress, showOnRadar;
 
-	bitStream->Read((char*)&pNetGame->m_vecInitPlayerPos, sizeof(VECTOR));
-	bitStream->Read((char*)&pNetGame->m_vecInitCameraPos, sizeof(VECTOR));
-	bitStream->Read((char*)&pNetGame->m_vecInitCameraLook, sizeof(VECTOR));
+	bitStream->Read((char*)&pNetGame->m_vecInitPlayerPos, sizeof(Vector3));
+	bitStream->Read((char*)&pNetGame->m_vecInitCameraPos, sizeof(Vector3));
+	bitStream->Read((char*)&pNetGame->m_vecInitCameraLook, sizeof(Vector3));
 	bitStream->Read(pNetGame->m_WorldBounds[0]);
 	bitStream->Read(pNetGame->m_WorldBounds[1]);
 	bitStream->Read(pNetGame->m_WorldBounds[2]);
@@ -169,7 +169,7 @@ void RequestClass(RakNet::BitStream *bitStream, Packet *packet)
 		bitStream->Read(iRequestedClass);
 		bitStream->Read(SpawnInfo.byteTeam);
 		bitStream->Read(SpawnInfo.byteSkin);
-		bitStream->Read((char *)&SpawnInfo.vecPos, sizeof(VECTOR));
+		bitStream->Read((char *)&SpawnInfo.vecPos, sizeof(Vector3));
 		bitStream->Read(SpawnInfo.fRotation);
 		bitStream->Read(SpawnInfo.iSpawnWeapons[0]);
 		bitStream->Read(SpawnInfo.iSpawnWeaponsAmmo[0]);
@@ -198,7 +198,7 @@ void Spawn(RakNet::BitStream *bitStream, Packet *packet)
 	BYTE byteSystemAddress=0;
 	BYTE byteTeam=0;
 	BYTE byteSkin=0;
-	VECTOR vecPos;
+	Vector3 vecPos;
 	float fRotation=0;
 	BYTE byteOnGround=0;
 	int iSpawnWeapons1,iSpawnWeapons2,iSpawnWeapons3;
@@ -300,8 +300,8 @@ void VehicleSpawn(RakNet::BitStream *bitStream, Packet *packet)
 	CVehiclePool *pVehiclePool = pNetGame->GetVehiclePool();
 	BYTE byteVehicleID=0;
 	BYTE byteVehicleType;
-	VECTOR vecPos;
-	VECTOR vecSpawnPos;
+	Vector3 vecPos;
+	Vector3 vecSpawnPos;
 	float fRotation;
 	float fSpawnRotation;
 	float fHealth;
@@ -403,7 +403,7 @@ void SetGameTime(RakNet::BitStream *bitStream, Packet *packet)
 
 void SetCameraPosition(RakNet::BitStream *bitStream, Packet *packet)
 {
-	VECTOR vPos;
+	Vector3 vPos;
 	bitStream->Read(vPos.X);
 	bitStream->Read(vPos.Y);
 	bitStream->Read(vPos.Z);
@@ -415,7 +415,7 @@ void SetCameraPosition(RakNet::BitStream *bitStream, Packet *packet)
 
 void SetCameraRotation(RakNet::BitStream *bitStream, Packet *packet)
 {
-	VECTOR vRot;
+	Vector3 vRot;
 	bitStream->Read(vRot.X);
 	bitStream->Read(vRot.Y);
 	bitStream->Read(vRot.Z);
@@ -427,7 +427,7 @@ void SetCameraRotation(RakNet::BitStream *bitStream, Packet *packet)
 
 void SetCameraLookAt(RakNet::BitStream *bitStream, Packet *packet)
 {
-	VECTOR vPoint;
+	Vector3 vPoint;
 	bitStream->Read(vPoint.X);
 	bitStream->Read(vPoint.Y);
 	bitStream->Read(vPoint.Z);
@@ -487,9 +487,9 @@ void Script_SetPos(RakNet::BitStream *bitStream, Packet *packet)
 {
 	CPlayerPed *pPlayer = pGame->FindPlayerPed();
 
-	VECTOR playerPos;
+	Vector3 playerPos;
 
-	bitStream->Read((char *)&playerPos, sizeof(VECTOR));
+	bitStream->Read((char *)&playerPos, sizeof(Vector3));
 
 	pPlayer->Teleport(playerPos.X, playerPos.Y, playerPos.Z);
 }
@@ -499,9 +499,9 @@ void Script_SetTurnSpeed(RakNet::BitStream *bitStream, Packet *packet)
 {
 	CPlayerPed *pPlayer = pGame->FindPlayerPed();
 
-	VECTOR speed;
+	Vector3 speed;
 
-	bitStream->Read((char *)&speed, sizeof(VECTOR));
+	bitStream->Read((char *)&speed, sizeof(Vector3));
 
 	pPlayer->SetTurnSpeed(speed);
 }
@@ -511,9 +511,9 @@ void Script_SetMoveSpeed(RakNet::BitStream *bitStream, Packet *packet)
 {
 	CPlayerPed *pPlayer = pGame->FindPlayerPed();
 
-	VECTOR speed;
+	Vector3 speed;
 
-	bitStream->Read((char *)&speed, sizeof(VECTOR));
+	bitStream->Read((char *)&speed, sizeof(Vector3));
 
 	pPlayer->SetMoveSpeed(speed);
 }
@@ -676,9 +676,9 @@ void Script_SetVehicleColor(RakNet::BitStream *bitStream, Packet *packet)
 void Script_SetVehiclePos(RakNet::BitStream *bitStream, Packet *packet)
 {
 	BYTE vehicle;
-	VECTOR pos;
+	Vector3 pos;
 	bitStream->Read(vehicle);
-	bitStream->Read((char *)&pos, sizeof(VECTOR));
+	bitStream->Read((char *)&pos, sizeof(Vector3));
 
 	CVehiclePool *pPool = pNetGame->GetVehiclePool();
 	if(pPool->GetSlotState(vehicle))
@@ -691,9 +691,9 @@ void Script_SetVehiclePos(RakNet::BitStream *bitStream, Packet *packet)
 void Script_SetVehicleTurnSpeed(RakNet::BitStream *bitStream, Packet *packet)
 {
 	BYTE vehicle;
-	VECTOR speed;
+	Vector3 speed;
 	bitStream->Read(vehicle);
-	bitStream->Read((char *)&speed, sizeof(VECTOR));
+	bitStream->Read((char *)&speed, sizeof(Vector3));
 
 	CVehiclePool *pPool = pNetGame->GetVehiclePool();
 	if(pPool->GetSlotState(vehicle))
@@ -706,9 +706,9 @@ void Script_SetVehicleTurnSpeed(RakNet::BitStream *bitStream, Packet *packet)
 void Script_SetVehicleMoveSpeed(RakNet::BitStream *bitStream, Packet *packet)
 {
 	BYTE vehicle;
-	VECTOR speed;
+	Vector3 speed;
 	bitStream->Read(vehicle);
-	bitStream->Read((char *)&speed, sizeof(VECTOR));
+	bitStream->Read((char *)&speed, sizeof(Vector3));
 
 	CVehiclePool *pPool = pNetGame->GetVehiclePool();
 	if(pPool->GetSlotState(vehicle))
@@ -736,7 +736,7 @@ void Script_forceClassSelection(RakNet::BitStream *bitStream, Packet *packet)
 void Script_PlaySound(RakNet::BitStream *bitStream, Packet *packet)
 {
 	int sound;
-	VECTOR vPos;
+	Vector3 vPos;
 
 	bitStream->Read(sound);
 	bitStream->Read(vPos.X);

@@ -199,43 +199,35 @@ void CNetGame::PlayerSync(Packet *p)
 	CPlayer * pPlayer = GetPlayerPool()->GetAt((BYTE)p->systemAddress.systemIndex);
 	BitStream bsPlayerSync(p->data, p->length, FALSE);
 
-	WORD		wKeys;
-	VECTOR		vecWorldPos;
-	float		fRotation;
-	BYTE		bytePlayerHealth;
-	BYTE		bytePlayerArmour;
-	BYTE		byteCurrentWeapon;
-	BYTE		byteAction;
+	PLAYER_SYNC_DATA playerSyncData;
+	S_CAMERA_AIM caAiming;
 
-	S_CAMERA_AIM	caAiming;
-
+	// ignore the packet id
 	bsPlayerSync.IgnoreBytes(sizeof(MessageID));
-	bsPlayerSync.Read(wKeys);
-	bsPlayerSync.Read(vecWorldPos.X);
-	bsPlayerSync.Read(vecWorldPos.Y);
-	bsPlayerSync.Read(vecWorldPos.Z);
-	bsPlayerSync.Read(fRotation);
-	bsPlayerSync.Read(byteAction);
-	bsPlayerSync.Read(bytePlayerHealth);
-	bsPlayerSync.Read(bytePlayerArmour);
-	bsPlayerSync.Read(byteCurrentWeapon);
 
-	//if(IS_FIRING(wKeys)) {
-		bsPlayerSync.Read((char *)&caAiming.vecA1, sizeof(VECTOR));
-		bsPlayerSync.Read((char *)&caAiming.vecA2, sizeof(VECTOR));
-		bsPlayerSync.Read((char *)&caAiming.vecAPos1, sizeof(VECTOR));
-	//}
+	// read the player sync data struct
+	bsPlayerSync.Read((char *)&playerSyncData, sizeof(PLAYER_SYNC_DATA));
+
+	// read weather the bit stream has aim sync data or not
+	bool bHasAimSync = bsPlayerSync.ReadBit();
+
+	// read aim sync data if the bit stream has it
+	if(bHasAimSync)
+	{
+		// read the aim sync data
+		bsPlayerSync.Read((char *)&caAiming.vecA1, sizeof(Vector3));
+		bsPlayerSync.Read((char *)&caAiming.vecA2, sizeof(Vector3));
+		bsPlayerSync.Read((char *)&caAiming.vecAPos1, sizeof(Vector3));
+	}
 
 	if(pPlayer)	{
-		pPlayer->StoreOnFootFullSyncData(wKeys,&vecWorldPos,fRotation,byteCurrentWeapon,byteAction);
-		/*if(IS_FIRING(wKeys)) */pPlayer->StoreAimSyncData(&caAiming);		
-		if(pPlayer->GetHealth() != bytePlayerHealth)
-			pScripts->onPlayerDamage((BYTE)p->systemAddress.systemIndex, pPlayer->GetHealth(), bytePlayerHealth);
+		// store the player sync data
+		pPlayer->StoreOnFootFullSyncData(&playerSyncData);
 
-		pPlayer->SetReportedHealth(bytePlayerHealth);
-		pPlayer->SetReportedArmour(bytePlayerArmour);
-
-		pScripts->onPlayerSync((BYTE)p->systemAddress.systemIndex);
+		// store the aim sync data if the bit stream has it
+		if(bHasAimSync) {
+			pPlayer->StoreAimSyncData(&caAiming);
+		}
 	}
 }
 
@@ -252,8 +244,8 @@ void CNetGame::VehicleSync(Packet *p)
 
 	C_VECTOR1 cvecRoll;
 	C_VECTOR1 cvecDirection;
-	VECTOR	vecWorldPos;
-	VECTOR	vecMoveSpeed;
+	Vector3	vecWorldPos;
+	Vector3	vecMoveSpeed;
 
 	BYTE		byteReadVehicleHealth;
 	float		fHealth;

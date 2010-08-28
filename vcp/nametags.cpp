@@ -176,7 +176,7 @@ void CNameTags::Draw()
 
 					if(PlayerPed->IsOnScreen()) { // They're onscreen 
 						// Get their position
-						VECTOR vPos;
+						Vector3 vPos;
 						PlayerPed->GetPosition(&vPos);
 
 						// Set the matrix position

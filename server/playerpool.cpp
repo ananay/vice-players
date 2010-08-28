@@ -198,8 +198,8 @@ BYTE CPlayerPool::AddResponsibleDeath(BYTE byteWhoKilled, BYTE byteWhoDied)
 
 float CPlayerPool::GetDistanceFromPlayerToPlayer(BYTE bytePlayer1, BYTE bytePlayer2)
 {
-	VECTOR	*vecFromPlayer;
-	VECTOR	*vecThisPlayer;
+	Vector3	*vecFromPlayer;
+	Vector3	*vecThisPlayer;
 	float	fSX,fSY;
 
 	CPlayer * pPlayer1 = GetAt(bytePlayer1);
@@ -221,6 +221,7 @@ BOOL CPlayerPool::IsNickInUse(PCHAR szNick)
 	int x=0;
 	while(x!=MAX_PLAYERS) {
 		if(GetSlotState((BYTE)x)) {
+#pragma warning(disable:4996)
 			if(!stricmp(GetPlayerName((BYTE)x),szNick)) {
 				return TRUE;
 			}

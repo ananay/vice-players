@@ -82,7 +82,7 @@ void CEntity::SetMatrix(MATRIX4X4 Matrix)
 
 //-----------------------------------------------------------
 
-void CEntity::GetPosition(PVECTOR Vector)
+void CEntity::GetPosition(PVector3 Vector)
 {
 	if(m_pEntity) {
 		Vector->X = m_pEntity->placeable.matMatrix.vPos.X;
@@ -93,7 +93,7 @@ void CEntity::GetPosition(PVECTOR Vector)
 
 //-----------------------------------------------------------
 
-void CEntity::SetPosition(VECTOR Vector)
+void CEntity::SetPosition(Vector3 Vector)
 {
 	if(m_pEntity) {
 		m_pEntity->placeable.matMatrix.vPos.X = Vector.X;

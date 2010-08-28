@@ -55,9 +55,9 @@ CVehiclePool::~CVehiclePool()
 //----------------------------------------------------
 
 BOOL CVehiclePool::New( BYTE byteVehicleID, BYTE byteVehicleType,
-					    VECTOR * vecPos, float fRotation,
+					    Vector3 * vecPos, float fRotation,
 					    int iColor1, int iColor2,
-					    VECTOR * vecSpawnPos, float fSpawnRotation )
+					    Vector3 * vecSpawnPos, float fSpawnRotation )
 {
 
 	// Setup the spawninfo for the next respawn.
@@ -91,7 +91,7 @@ BOOL CVehiclePool::Delete(BYTE byteVehicleID)
 //----------------------------------------------------
 
 BOOL CVehiclePool::Spawn( BYTE byteVehicleID, BYTE byteVehicleType,
-					      VECTOR * vecPos, float fRotation,
+					      Vector3 * vecPos, float fRotation,
 					      int iColor1, int iColor2 )
 {	
 	if(m_pVehicles[byteVehicleID] != NULL) {

@@ -31,9 +31,9 @@
 #include <dlfcn.h>
 #include <stdlib.h>
 #include <unistd.h>
-#endif
 
-#define  _us2ms(x) (x*1000)
+#define Sleep(x) usleep(x * 1000)
+#endif
 
 #include "main.h"
 #include "netgame.h"
@@ -56,7 +56,6 @@ char		*szAdminPass;
 
 int main (int argc, char* argv[])
 {
-
 	int iMaxPlayers=0;
 	int iListenPort=0;
 	char *szPass=NULL;
@@ -94,7 +93,11 @@ int main (int argc, char* argv[])
 		iMaxPlayers = DEFAULT_MAX_PLAYERS;
 	}
 
-	if(iMaxPlayers > 32) { iMaxPlayers = 32; };
+	// cap the max players setting if needed
+	if(iMaxPlayers > MAX_PLAYERS)
+	{
+		iMaxPlayers = MAX_PLAYERS;
+	}
 
 	// get the listen port setting
 	if((iListenPort=pServerConfig->GetConfigEntryAsInt("ListenPort"))==(-1)) {
@@ -165,13 +168,11 @@ int main (int argc, char* argv[])
 	{
 		pNetGame->Process();
 		pRcon->Process();
+
 		if(pScripts)
 			pScripts->onServerPulse();
-#ifdef WIN32
+
 		Sleep(5);
-#else
-		usleep(_us2ms(5));
-#endif
 
 	}
 

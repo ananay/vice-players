@@ -436,7 +436,7 @@ void CGame::DisplayTextMessage(PCHAR szText)
 
 //-----------------------------------------------------------
 
-void CGame::PlaySound(int iSoundId, VECTOR vPosition)
+void CGame::PlaySound(int iSoundId, Vector3 vPosition)
 {
 	ScriptCommand(&play_sound, vPosition.X, vPosition.Y, vPosition.Z, iSoundId);
 }

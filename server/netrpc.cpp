@@ -91,9 +91,9 @@ void ClientJoin(RakNet::BitStream *bitStream, Packet *packet)
 
 	// Send this client back an 'InitGame' RPC
 	RakNet::BitStream bsInitGame;
-	bsInitGame.Write((char*)&pNetGame->m_vecInitPlayerPos, sizeof(VECTOR));
-	bsInitGame.Write((char*)&pNetGame->m_vecInitCameraPos, sizeof(VECTOR));
-	bsInitGame.Write((char*)&pNetGame->m_vecInitCameraLook, sizeof(VECTOR));
+	bsInitGame.Write((char*)&pNetGame->m_vecInitPlayerPos, sizeof(Vector3));
+	bsInitGame.Write((char*)&pNetGame->m_vecInitCameraPos, sizeof(Vector3));
+	bsInitGame.Write((char*)&pNetGame->m_vecInitCameraLook, sizeof(Vector3));
 	bsInitGame.Write(pNetGame->m_WorldBounds[0]);
 	bsInitGame.Write(pNetGame->m_WorldBounds[1]);
 	bsInitGame.Write(pNetGame->m_WorldBounds[2]);
@@ -217,7 +217,7 @@ void RequestClass(RakNet::BitStream *bitStream, Packet *packet)
 		bsSpawnRequestReply.Write(iRequestedClass);
 		bsSpawnRequestReply.Write(SpawnInfo->byteTeam);
 		bsSpawnRequestReply.Write(SpawnInfo->byteSkin);
-		bsSpawnRequestReply.Write((char *)&SpawnInfo->vecPos, sizeof(VECTOR));
+		bsSpawnRequestReply.Write((char *)&SpawnInfo->vecPos, sizeof(Vector3));
 		bsSpawnRequestReply.Write(SpawnInfo->fRotation);
 		bsSpawnRequestReply.Write(SpawnInfo->iSpawnWeapons[0]);
 		bsSpawnRequestReply.Write(SpawnInfo->iSpawnWeaponsAmmo[0]);

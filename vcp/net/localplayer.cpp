@@ -83,33 +83,47 @@ BOOL CLocalPlayer::Process()
 		{
 			dwThisTick = GetTickCount();
 
-			if(m_pPlayerPed->IsInVehicle() && !m_pPlayerPed->IsAPassenger())
+			if(m_pPlayerPed->IsInVehicle())
 			{
-				// DRIVING VEHICLE
+				if(!m_pPlayerPed->IsAPassenger())
+				{
+					// DRIVING VEHICLE
 
-				// VEHICLE WORLD BOUNDS STUFF
-				pVehiclePool = pNetGame->GetVehiclePool();
-				byteVehicleID = (BYTE)pVehiclePool->FindIDFromGtaPtr(m_pPlayerPed->GetGtaVehicle());
-				if(byteVehicleID != 255) {
-					pGameVehicle = pVehiclePool->GetAt(byteVehicleID);
-					pGameVehicle->EnforceWorldBoundries(
-						pNetGame->m_WorldBounds[0],pNetGame->m_WorldBounds[1],
-						pNetGame->m_WorldBounds[2],pNetGame->m_WorldBounds[3]);
-				}
-
-				if((dwThisTick - m_dwLastSendTick) > (UINT)GetOptimumInCarSendRate()) {
-					m_dwLastSendTick = GetTickCount();
-				
-					// send nothing while we're getting out.
-					if(m_pPlayerPed->GetAction() != ACTION_EXITING_VEHICLE) {
-						SendInCarFullSyncData(); 
+					// VEHICLE WORLD BOUNDS STUFF
+					pVehiclePool = pNetGame->GetVehiclePool();
+					byteVehicleID = (BYTE)pVehiclePool->FindIDFromGtaPtr(m_pPlayerPed->GetGtaVehicle());
+					if(byteVehicleID != 255) {
+						pGameVehicle = pVehiclePool->GetAt(byteVehicleID);
+						pGameVehicle->EnforceWorldBoundries(
+							pNetGame->m_WorldBounds[0],pNetGame->m_WorldBounds[1],
+							pNetGame->m_WorldBounds[2],pNetGame->m_WorldBounds[3]);
 					}
+
+					if((dwThisTick - m_dwLastSendTick) > (UINT)GetOptimumInCarSendRate()) {
+						m_dwLastSendTick = GetTickCount();
+					
+						// send nothing while we're getting out.
+						if(m_pPlayerPed->GetAction() != ACTION_EXITING_VEHICLE) {
+							SendInCarFullSyncData(); 
+						}
+					}
+					pGame->DisablePassengerEngineAudio();
 				}
-				pGame->DisablePassengerEngineAudio();
+				else
+				{
+					// PASSENGER
+
+					if((dwThisTick - m_dwLastPassengerSendTick) > 1000) {
+						m_dwLastPassengerSendTick = GetTickCount();
+						SendInCarPassengerData();
+					}
+
+					pGame->EnablePassengerEngineAudio();
+				}
 			}
-			else if(!m_pPlayerPed->IsAPassenger()) 
+			else
 			{
-				// ONFOOT NOT PASSENGER
+				// ONFOOT
 
 				if((dwThisTick - m_dwLastSendTick) > (UINT)GetOptimumOnFootSendRate()) {
 					m_dwLastSendTick = GetTickCount();
@@ -122,17 +136,6 @@ BOOL CLocalPlayer::Process()
 				}
 
 				pGame->DisablePassengerEngineAudio();
-			}
-			else if(m_pPlayerPed->IsAPassenger()) 
-			{
-				// PASSENGER
-
-				if((dwThisTick - m_dwLastPassengerSendTick) > 1000) {
-					m_dwLastPassengerSendTick = GetTickCount();
-					SendInCarPassengerData();
-				}
-
-				pGame->EnablePassengerEngineAudio();
 			}			
 		}
 	}
@@ -155,52 +158,59 @@ BOOL CLocalPlayer::Process()
 
 void CLocalPlayer::SendOnFootFullSyncData()
 {
-	RakNet::BitStream bsPlayerSync;
-	CPlayerPed *pGamePlayer = pGame->FindPlayerPed();
-	VECTOR vPos;
-	WORD wKeys = pGamePlayer->GetKeys();
-	BYTE bytePlayerHealth;
-	BYTE bytePlayerArmour;
-	CAMERA_AIM * pCameraAim = pGamePlayer->GetCurrentAim();
-
 	if(m_pPlayerPed)
 	{
-		// Don't allow them to send firing actions if
-		// they got no ammo.
-		/*if(!m_pPlayerPed->HasAmmoForCurrentWeapon()) {
-			wKeys = CEASE_FIRE_CEASE_FIRE(wKeys);
-		}*/
+		RakNet::BitStream bsPlayerSync;
+		PLAYER_SYNC_DATA playerSyncData;
 
-		// packet ID
-		bsPlayerSync.Write((BYTE)ID_PLAYER_SYNC);
+		// get the camera aim
+		CAMERA_AIM * pCameraAim = m_pPlayerPed->GetCurrentAim();
 
-		// contents
-		bsPlayerSync.Write(wKeys);
-		m_pPlayerPed->GetPosition(&vPos);
+		// write packet id
+		bsPlayerSync.Write((MessageID)ID_PLAYER_SYNC);
+		
+		// get the player keys
+		playerSyncData.wKeys = m_pPlayerPed->GetKeys();
+		
+		// get the player position
+		m_pPlayerPed->GetPosition(&playerSyncData.vecPos);
 
-		// PART OF THE ANTI-CHEAT
-		if(vPos.Z > 499.1f) exit(1);
+		// get the player rotation
+		playerSyncData.fRotation = m_pPlayerPed->GetRotation();
+		
+		// get player current weapon (casted to a byte to save space)
+		playerSyncData.byteCurrentWeapon = m_pPlayerPed->GetCurrentWeapon();
+		
+		// get player shooting flags
+		playerSyncData.byteShootingFlags = m_pPlayerPed->GetShootingFlags();
+		
+		// get player health (casted to a byte to save space)
+		playerSyncData.byteHealth = (BYTE)m_pPlayerPed->GetHealth();
 
-		bsPlayerSync.Write(vPos.X);
-		bsPlayerSync.Write(vPos.Y);
-		bsPlayerSync.Write(vPos.Z);
-		bsPlayerSync.Write(m_pPlayerPed->GetRotation());
-		bsPlayerSync.Write(m_pPlayerPed->GetShootingFlags());
-	
-		bytePlayerHealth = (BYTE)m_pPlayerPed->GetHealth();
-		bytePlayerArmour = (BYTE)m_pPlayerPed->GetArmour();
-		bsPlayerSync.Write(bytePlayerHealth);
-		bsPlayerSync.Write(bytePlayerArmour);
-		bsPlayerSync.Write((BYTE)m_pPlayerPed->GetCurrentWeapon());
+		// get player armour (casted to a byte to save space)
+		playerSyncData.byteArmour = (BYTE)m_pPlayerPed->GetArmour();
 
-		// send aiming data if the firing button is held
-		//if(IS_FIRING(wKeys)) {
-			// aiming
-			bsPlayerSync.Write((char *)&pCameraAim->vecA1, sizeof(VECTOR));
-			bsPlayerSync.Write((char *)&pCameraAim->vecA2, sizeof(VECTOR));
-			bsPlayerSync.Write((char *)&pCameraAim->vecAPos1, sizeof(VECTOR));
-		//}
+		// write player sync data struct
+		bsPlayerSync.Write((char *)&playerSyncData, sizeof(PLAYER_SYNC_DATA));
 
+		// send aiming data if player has fire key held down and we have ammo
+		if(m_pPlayerPed->IsFiring() && m_pPlayerPed->HasAmmoForCurrentWeapon())
+		{
+			// write a 1 bit to say the bit stream has aim sync data
+			bsPlayerSync.Write1();
+
+			// write the aim sync data
+			bsPlayerSync.Write((char *)&pCameraAim->vecA1, sizeof(Vector3));
+			bsPlayerSync.Write((char *)&pCameraAim->vecA2, sizeof(Vector3));
+			bsPlayerSync.Write((char *)&pCameraAim->vecAPos1, sizeof(Vector3));
+		}
+		else
+		{
+			// write a 0 bit to say the bit stream has no aim sync data
+			bsPlayerSync.Write0();
+		}
+
+		// send sync data
 		pNetGame->GetRakPeer()->Send(&bsPlayerSync,HIGH_PRIORITY,UNRELIABLE_SEQUENCED,0,UNASSIGNED_SYSTEM_ADDRESS,TRUE);
 	}
 }
@@ -220,7 +230,7 @@ void CLocalPlayer::SendInCarFullSyncData()
 	C_VECTOR1 cvecCompressedRoll;
 	C_VECTOR1 cvecCompressedDirection;
 	
-	VECTOR	vecMoveSpeed;
+	Vector3	vecMoveSpeed;
 
 	BYTE		byteWriteVehicleHealth;
 	BYTE		bytePlayerHealth;
@@ -284,7 +294,7 @@ void CLocalPlayer::SendInCarFullSyncData()
 void CLocalPlayer::SendInCarPassengerData()
 {
 	RakNet::BitStream bsPassengerSync;
-	VECTOR vPos;
+	Vector3 vPos;
 	CVehiclePool *pVehiclePool = pNetGame->GetVehiclePool();
 
 	BYTE byteVehicleID = (BYTE)pVehiclePool->FindIDFromGtaPtr(m_pPlayerPed->GetGtaVehicle());
@@ -309,7 +319,7 @@ int CLocalPlayer::GetOptimumInCarSendRate()
 {
 	CVehiclePool *pVehiclePool = pNetGame->GetVehiclePool();
 	CVehicle	 *pGameVehicle=NULL;
-	VECTOR	 vecMoveSpeed;
+	Vector3	 vecMoveSpeed;
 	BYTE		 byteVehicleID=0;
 
 	if(m_pPlayerPed) {
@@ -338,7 +348,7 @@ int CLocalPlayer::GetOptimumInCarSendRate()
 
 int CLocalPlayer::GetOptimumOnFootSendRate()
 {	
-	VECTOR	 vecMoveSpeed;
+	Vector3	 vecMoveSpeed;
 
 	if(m_pPlayerPed) {
 
@@ -386,7 +396,7 @@ void CLocalPlayer::RequestClass(int iClass)
 
 //----------------------------------------------------------
 
-void CLocalPlayer::SetSpawnInfo(BYTE byteTeam, BYTE byteSkin, VECTOR * vecPos, float fRotation,
+void CLocalPlayer::SetSpawnInfo(BYTE byteTeam, BYTE byteSkin, Vector3 * vecPos, float fRotation,
 		int iSpawnWeapon1, int iSpawnWeapon1Ammo, int iSpawnWeapon2, int iSpawnWeapon2Ammo,
 		int iSpawnWeapon3, int iSpawnWeapon3Ammo)
 {
@@ -423,7 +433,7 @@ BOOL CLocalPlayer::SpawnPlayer()
 
 BOOL CLocalPlayer::SpawnPlayer( BYTE byteTeam,
 							    BYTE byteSkin, 
-							    VECTOR * vecPos,
+							    Vector3 * vecPos,
 							    float fRotation,int iSpawnWeapon1,
 								int iSpawnWeapon1Ammo, int iSpawnWeapon2, 
 								int iSpawnWeapon2Ammo, int iSpawnWeapon3,

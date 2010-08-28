@@ -71,6 +71,7 @@ SQInteger sq_forceClassSelection(SQVM * pVM)
 	}
 
 	sq_pushbool(pVM, false);
+	return 1;
 }
 
 // setPlayerArmourr
@@ -101,7 +102,7 @@ SQInteger sq_setPlayerPosition(SQVM * pVM)
 {
 	SQInteger playerSystemAddress;
 
-	VECTOR pVec;
+	Vector3 pVec;
 
 	sq_getinteger(pVM, -4, &playerSystemAddress);
 	sq_getfloat(pVM, -3, &pVec.X);
@@ -111,7 +112,7 @@ SQInteger sq_setPlayerPosition(SQVM * pVM)
 	if(pNetGame->GetPlayerPool()->GetSlotState(playerSystemAddress))
 	{
 		RakNet::BitStream bsSend;
-		bsSend.Write((char *)&pVec, sizeof(VECTOR));
+		bsSend.Write((char *)&pVec, sizeof(Vector3));
 		pNetGame->GetRPC4()->Call("Script_SetPos",&bsSend,HIGH_PRIORITY,RELIABLE,0,pNetGame->GetRakPeer()->GetSystemAddressFromIndex(playerSystemAddress),false);
 
 		sq_pushbool(pVM, true);
@@ -127,7 +128,7 @@ SQInteger sq_setPlayerTurnSpeed(SQVM * pVM)
 {
 	SQInteger playerSystemAddress;
 
-	VECTOR pVec;
+	Vector3 pVec;
 
 	sq_getinteger(pVM, -4, &playerSystemAddress);
 	sq_getfloat(pVM, -3, &pVec.X);
@@ -137,7 +138,7 @@ SQInteger sq_setPlayerTurnSpeed(SQVM * pVM)
 	if(pNetGame->GetPlayerPool()->GetSlotState(playerSystemAddress))
 	{
 		RakNet::BitStream bsSend;
-		bsSend.Write((char *)&pVec, sizeof(VECTOR));
+		bsSend.Write((char *)&pVec, sizeof(Vector3));
 		pNetGame->GetRPC4()->Call("Script_SetTurnSpeed",&bsSend,HIGH_PRIORITY,RELIABLE,0,pNetGame->GetRakPeer()->GetSystemAddressFromIndex(playerSystemAddress),false);
 
 		sq_pushbool(pVM, true);
@@ -153,7 +154,7 @@ SQInteger sq_setPlayerMoveSpeed(SQVM * pVM)
 {
 	SQInteger playerSystemAddress;
 
-	VECTOR pVec;
+	Vector3 pVec;
 
 	sq_getinteger(pVM, -4, &playerSystemAddress);
 	sq_getfloat(pVM, -3, &pVec.X);
@@ -163,7 +164,7 @@ SQInteger sq_setPlayerMoveSpeed(SQVM * pVM)
 	if(pNetGame->GetPlayerPool()->GetSlotState(playerSystemAddress))
 	{
 		RakNet::BitStream bsSend;
-		bsSend.Write((char *)&pVec, sizeof(VECTOR));
+		bsSend.Write((char *)&pVec, sizeof(Vector3));
 		pNetGame->GetRPC4()->Call("Script_SetMoveSpeed",&bsSend,HIGH_PRIORITY,RELIABLE,0,pNetGame->GetRakPeer()->GetSystemAddressFromIndex(playerSystemAddress),false);
 
 		sq_pushbool(pVM, true);
@@ -177,7 +178,7 @@ SQInteger sq_setPlayerMoveSpeed(SQVM * pVM)
 // getPlayerPos
 SQInteger sq_getPlayerPosition(SQVM * pVM)
 {
-	VECTOR pos;
+	Vector3 pos;
 	SQInteger playerSystemAddress;
 	sq_getinteger(pVM, -1, &playerSystemAddress);
 
@@ -724,7 +725,7 @@ SQInteger sq_setPlayerCameraPos(SQVM * pVM)
 
 	if(pNetGame->GetPlayerPool()->GetSlotState(playerSystemAddress))
 	{
-		VECTOR vPos;
+		Vector3 vPos;
 		vPos.X = X;
 		vPos.Y = Y;
 		vPos.Z = Z;
@@ -749,7 +750,7 @@ SQInteger sq_setPlayerCameraRot(SQVM * pVM)
 
 	if(pNetGame->GetPlayerPool()->GetSlotState(playerSystemAddress))
 	{
-		VECTOR vRot;
+		Vector3 vRot;
 		vRot.X = X;
 		vRot.Y = Y;
 		vRot.Z = Z;
@@ -774,7 +775,7 @@ SQInteger sq_setPlayerCameraLookAt(SQVM * pVM)
 
 	if(pNetGame->GetPlayerPool()->GetSlotState(playerSystemAddress))
 	{
-		VECTOR vPoint;
+		Vector3 vPoint;
 		vPoint.X = X;
 		vPoint.Y = Y;
 		vPoint.Z = Z;
@@ -906,7 +907,7 @@ SQInteger sq_getPlayerTeam(SQVM * pVM)
 // getPlayerTurnSpeed
 SQInteger sq_getPlayerTurnSpeed(SQVM * pVM)
 {
-	VECTOR speed;
+	Vector3 speed;
 	SQInteger playerSystemAddress;
 	sq_getinteger(pVM, -1, &playerSystemAddress);
 
@@ -933,7 +934,7 @@ SQInteger sq_getPlayerTurnSpeed(SQVM * pVM)
 // getPlayerMoveSpeed
 SQInteger sq_getPlayerMoveSpeed(SQVM * pVM)
 {
-	VECTOR speed;
+	Vector3 speed;
 	SQInteger playerSystemAddress;
 	sq_getinteger(pVM, -1, &playerSystemAddress);
 
@@ -964,7 +965,7 @@ SQInteger sq_addPlayerClass(SQVM * pVM)
 	int iModel;
 	int iWeapons[3];
 	int iAmmo[3];
-	VECTOR vecPosition;
+	Vector3 vecPosition;
 	float fRotation;
 
 	sq_getinteger(pVM, -12, &iTeam);

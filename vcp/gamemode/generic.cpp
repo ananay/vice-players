@@ -50,7 +50,7 @@ void CGameModeGeneric::ProcessLocalPlayer(CLocalPlayer *pLocalPlayer)
 	CCamera *pGameCamera;
 	CPlayerPed *pGamePlayer;
 	DWORD dwTicksSinceLastSelection;
-	VECTOR vPlayerPos;
+	Vector3 vPlayerPos;
 	float fDrawX=25.0f;
 	float fDrawY=250.0f;
 	char szMsg[256];

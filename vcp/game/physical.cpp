@@ -34,7 +34,7 @@ PHYSICAL_TYPE *CPhysical::GetPhysical()
 
 //----------------------------------------------------------
 
-void CPhysical::GetMoveSpeed(PVECTOR Vector)
+void CPhysical::GetMoveSpeed(PVector3 Vector)
 {
 	PHYSICAL_TYPE * pPhysical = (PHYSICAL_TYPE *)GetEntity();
 	if(pPhysical) {
@@ -46,7 +46,7 @@ void CPhysical::GetMoveSpeed(PVECTOR Vector)
 
 //-----------------------------------------------------------
 
-void CPhysical::SetMoveSpeed(VECTOR Vector)
+void CPhysical::SetMoveSpeed(Vector3 Vector)
 {
 	PHYSICAL_TYPE * pPhysical = (PHYSICAL_TYPE *)GetEntity();
 	if(pPhysical) {
@@ -58,7 +58,7 @@ void CPhysical::SetMoveSpeed(VECTOR Vector)
 
 //-----------------------------------------------------------
 
-void CPhysical::GetTurnSpeed(PVECTOR Vector)
+void CPhysical::GetTurnSpeed(PVector3 Vector)
 {
 	PHYSICAL_TYPE * pPhysical = (PHYSICAL_TYPE *)GetEntity();
 	if(pPhysical) {
@@ -70,7 +70,7 @@ void CPhysical::GetTurnSpeed(PVECTOR Vector)
 
 //-----------------------------------------------------------
 
-void CPhysical::SetTurnSpeed(VECTOR Vector)
+void CPhysical::SetTurnSpeed(Vector3 Vector)
 {
 	PHYSICAL_TYPE * pPhysical = (PHYSICAL_TYPE *)GetEntity();
 	if(pPhysical) {

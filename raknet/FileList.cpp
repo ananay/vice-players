@@ -684,7 +684,7 @@ void FileList::DeleteFiles(const char *applicationDirectory)
 		strcat(fullPath, fileList[i].filename.C_String());
 
 #ifdef _MSC_VER
-#pragma warning( disable : 4966 ) // unlink declared deprecated by Microsoft in order to make it harder to be cross platform.  I don't agree it's deprecated.
+#pragma warning( disable : 4996 ) // unlink declared deprecated by Microsoft in order to make it harder to be cross platform.  I don't agree it's deprecated.
 #endif
         int result = unlink(fullPath);
 		if (result!=0)

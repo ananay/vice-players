@@ -101,7 +101,7 @@ void cmdSavePos(PCHAR szCmd)
 	if(pPlayer->IsInVehicle()) {
 		VEHICLE_TYPE *pVehicle = pPlayer->GetGtaVehicle();
 		WORD wModelIndex = pVehicle->physical.entity.wModelIndex;
-		VECTOR * vPos = &pVehicle->physical.entity.placeable.matMatrix.vPos;
+		Vector3 * vPos = &pVehicle->physical.entity.placeable.matMatrix.vPos;
 		dwVehicleID = CPools::GetIndexFromVehicle(pVehicle);
 		ScriptCommand(&get_car_z_angle,dwVehicleID,&fZAngle);
 
@@ -116,7 +116,7 @@ void cmdSavePos(PCHAR szCmd)
 	}
 
 	// onfoot savepos
-	VECTOR vPos;
+	Vector3 vPos;
 	pPlayer->GetPosition(&vPos);
 	fZAngle = pPlayer->GetRotation();
 
@@ -153,7 +153,7 @@ void cmdCreateVehicle(PCHAR szCmd)
 
 	if(pPlayer) 
 	{
-		VECTOR vPos;
+		Vector3 vPos;
 		pPlayer->GetPosition(&vPos);
 		CVehicle *pTestVehicle = pGame->NewVehicle(iVehicleType, (vPos.X - 5.0f), (vPos.Y - 5.0f), vPos.Z, 0.0f);
 	}
@@ -267,7 +267,7 @@ void cmdNewPlayer(PCHAR szCmd)
 	CRemotePlayer *pRemotePlayer = pPlayerPool->GetAt(1);
 	CPlayerPed *pPlayerPed = pGame->FindPlayerPed();
 	BYTE byteSkin = (BYTE)pPlayerPed->GetModelIndex();
-	VECTOR vPos;
+	Vector3 vPos;
 	pPlayerPed->GetPosition(&vPos);
 	float fRotation = pPlayerPed->GetRotation();
 	pRemotePlayer->SpawnPlayer(255, byteSkin, &vPos, fRotation, 0,0, 0,0, 0,0);

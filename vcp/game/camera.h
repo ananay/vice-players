@@ -42,9 +42,9 @@ public:
 	void         SetCamera(CAMERA_TYPE * pCamera);
 	CAMERA_TYPE * GetCamera();
 	void         SetBehindPlayer();
-	void         SetPosition(VECTOR vecPosition);
-	void         SetRotation(VECTOR vecRotation);
-	void         LookAtPoint(VECTOR vecPoint, int iType);
+	void         SetPosition(Vector3 vecPosition);
+	void         SetRotation(Vector3 vecRotation);
+	void         LookAtPoint(Vector3 vecPoint, int iType);
 	void         Restore();
 	void         SetInFreeMode(BOOL bFreeMode);
 	BOOL         IsInFreeMode();

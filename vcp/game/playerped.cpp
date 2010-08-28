@@ -259,7 +259,7 @@ WORD CPlayerPed::GetKeys()
 	if(pInternalKeys->wKeys1[KEY_ONFOOT_SPRINT]) wKeys |= 1;
 	wKeys <<= 1;
 
-	if(pInternalKeys->wKeys1[KEY_ONFOOT_FIRE]) wKeys |= 1;
+	if(HasAmmoForCurrentWeapon() && pInternalKeys->wKeys1[KEY_ONFOOT_FIRE]) wKeys |= 1;
 	wKeys <<= 1;
 
 	if(pInternalKeys->wKeys1[KEY_ONFOOT_CROUCH]) wKeys |= 1;
@@ -284,6 +284,15 @@ WORD CPlayerPed::GetKeys()
 
 //-----------------------------------------------------------
 
+bool CPlayerPed::IsFiring()
+{
+	GTA_CONTROLSET * pInternalKeys = GameGetInternalKeys();
+
+	return (pInternalKeys->wKeys1[KEY_ONFOOT_FIRE] != 0);
+}
+
+//-----------------------------------------------------------
+
 CAMERA_AIM * CPlayerPed::GetCurrentAim()
 {
 	return GameGetInternalAim();
@@ -300,8 +309,8 @@ void CPlayerPed::SetCurrentAim(CAMERA_AIM *pAim)
 
 BOOL CPlayerPed::EnforceWorldBoundries(float fPX, float fZX, float fPY, float fNY)
 {
-	VECTOR vPos;
-	VECTOR vecMoveSpeed;
+	Vector3 vPos;
+	Vector3 vecMoveSpeed;
 
 	if(!GetEntity()) return FALSE;
 
@@ -953,7 +962,7 @@ void CPlayerPed::SetObjective(PDWORD pObjectiveEntity, eObjectiveType objectiveT
 
 //-----------------------------------------------------------
 
-void CPlayerPed::RestartIfWastedAt(VECTOR *vecRestart, float fRotation)
+void CPlayerPed::RestartIfWastedAt(Vector3 *vecRestart, float fRotation)
 {
 	ScriptCommand(&restart_if_wasted_at, vecRestart->X, vecRestart->Y, vecRestart->Z, fRotation);
 }
