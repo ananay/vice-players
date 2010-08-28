@@ -57,7 +57,7 @@ CVehicle::CVehicle(int iType, float fPosX, float fPosY,
 	SetEntity((ENTITY_TYPE*)CPools::GetVehicleFromIndex(dwRetID));
 	m_dwGTAId = dwRetID;
 	
-	VECTOR vPos;
+	Vector3 vPos;
 	GetPosition(&vPos);
 	vPos.Z = fPosZ;
 	SetPosition(vPos);
@@ -88,8 +88,8 @@ VEHICLE_TYPE *CVehicle::GetVehicle()
 
 void CVehicle::EnforceWorldBoundries(float fPX, float fZX, float fPY, float fNY)
 {
-	VECTOR vPos;
-	VECTOR vecMoveSpeed;
+	Vector3 vPos;
+	Vector3 vecMoveSpeed;
 
 	if(!GetEntity()) return;
 
@@ -136,7 +136,7 @@ void CVehicle::EnforceWorldBoundries(float fPX, float fZX, float fPY, float fNY)
 
 BOOL CVehicle::HasExceededWorldBoundries(float fPX, float fZX, float fPY, float fNY)
 {
-	VECTOR vPos;
+	Vector3 vPos;
 
 	if(!GetEntity()) return FALSE;
 
@@ -161,8 +161,8 @@ BOOL CVehicle::HasExceededWorldBoundries(float fPX, float fZX, float fPY, float 
 
 float CVehicle::GetDistanceFromLocalPlayerPed()
 {
-	VECTOR vThisVehicle;
-	VECTOR vFromPlayer;
+	Vector3 vThisVehicle;
+	Vector3 vFromPlayer;
 	float  fSX,fSY;
 
 	CPlayerPed *pLocalPlayerPed = pGame->FindPlayerPed();

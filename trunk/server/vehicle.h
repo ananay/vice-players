@@ -30,7 +30,7 @@
 typedef struct _VEHICLE_SPAWN_INFO
 {
 	BYTE byteVehicleType;
-	VECTOR vecPos;
+	Vector3 vecPos;
 	float fRotation;
 	int iColor1;
 	int iColor2;
@@ -49,8 +49,8 @@ public:
 	BOOL					m_bIsWasted;
 	VEHICLE_SPAWN_INFO		m_SpawnInfo;
 	MATRIX4X4				m_matWorld;
-	VECTOR					m_vecMoveSpeed;
-	VECTOR					m_vecTurnSpeed;
+	Vector3					m_vecMoveSpeed;
+	Vector3					m_vecTurnSpeed;
 	int						m_iColors[2];
 	float					m_fHealth;
 	BOOL					m_bHasHadUpdate;
@@ -58,7 +58,7 @@ public:
 	DWORD					m_dwTimeSinceLastDriven;
 	BOOL					m_bHasBeenDriven;
 
-	CVehicle(BYTE byteModel,VECTOR *vecPos,float fRotation,int iColor1,int iColor2);
+	CVehicle(BYTE byteModel,Vector3 *vecPos,float fRotation,int iColor1,int iColor2);
 	~CVehicle();
 
 	void Reset();
@@ -68,9 +68,9 @@ public:
 	void SetColor(int color1, int color2);
 	void GetColor(int * iColor1, int * iColor2) { *iColor1 = m_iColors[0]; *iColor2 = m_iColors[1]; }
 
-	void GetPosition(VECTOR * vecPosition);
-	void GetMoveSpeed(VECTOR * vecMoveSpeed);
-	void GetTurnSpeed(VECTOR * vecTurnSpeed);
+	void GetPosition(Vector3 * vecPosition);
+	void GetMoveSpeed(Vector3 * vecMoveSpeed);
+	void GetTurnSpeed(Vector3 * vecTurnSpeed);
 
 	void SetDriverId(BYTE byteDriverId) { m_byteDriverID = byteDriverId; };
 	BYTE GetDriverId() { return m_byteDriverID; };
@@ -95,5 +95,5 @@ public:
 	void UpdateLastDrivenTime();
 
 	void Update(BYTE byteSystemAddress, MATRIX4X4 * matWorld,
-		VECTOR * vecMoveSpeed, float fHealth);
+		Vector3 * vecMoveSpeed, float fHealth);
 };

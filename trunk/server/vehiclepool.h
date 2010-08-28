@@ -42,8 +42,8 @@ public:
 	CVehiclePool();
 	~CVehiclePool();
 
-	BOOL New(BYTE byteVehicleID, BYTE byteVehicleType, VECTOR * vecPos, float fRotation, int iColor1, int iColor2);
-	BYTE New(BYTE byteVehicleType, VECTOR * vecPos, float fRotation, int iColor1, int iColor2);
+	BOOL New(BYTE byteVehicleID, BYTE byteVehicleType, Vector3 * vecPos, float fRotation, int iColor1, int iColor2);
+	BYTE New(BYTE byteVehicleType, Vector3 * vecPos, float fRotation, int iColor1, int iColor2);
 	BOOL Delete(BYTE byteVehicleID);	
 		
 	// Retrieve a vehicle by id

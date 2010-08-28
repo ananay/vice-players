@@ -32,8 +32,8 @@ class CPhysical : public CEntity
 public:
 	PHYSICAL_TYPE *GetPhysical();
 
-	void GetMoveSpeed(PVECTOR Vector);
-	void SetMoveSpeed(VECTOR Vector);
-	void GetTurnSpeed(PVECTOR Vector);
-	void SetTurnSpeed(VECTOR Vector);
+	void GetMoveSpeed(PVector3 Vector);
+	void SetMoveSpeed(Vector3 Vector);
+	void GetTurnSpeed(PVector3 Vector);
+	void SetTurnSpeed(Vector3 Vector);
 };

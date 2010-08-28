@@ -70,9 +70,9 @@ private:
 
 	// TODO: Make private
 public:
-	VECTOR						m_vecInitPlayerPos;
-	VECTOR						m_vecInitCameraPos;
-	VECTOR						m_vecInitCameraLook;
+	Vector3						m_vecInitPlayerPos;
+	Vector3						m_vecInitCameraPos;
+	Vector3						m_vecInitCameraLook;
 	float						m_WorldBounds[4]; // pos_x neg_x pos_y neg_y
 	BYTE						m_byteFriendlyFire;
 	BYTE						m_byteShowOnRadar;

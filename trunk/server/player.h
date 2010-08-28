@@ -45,19 +45,30 @@ typedef struct _PLAYER_SPAWN_INFO
 {
 	BYTE byteTeam;
 	BYTE byteSkin;
-	VECTOR vecPos;
+	Vector3 vecPos;
 	float fRotation;
 	int iSpawnWeapons[3];
 	int iSpawnWeaponsAmmo[3];
 	BOOL loaded;
 } PLAYER_SPAWN_INFO;
 
+typedef struct _PLAYER_SYNC_DATA
+{
+	WORD wKeys;
+	Vector3 vecPos;
+	float fRotation;
+	BYTE byteCurrentWeapon;
+	BYTE byteShootingFlags;
+	BYTE byteHealth;
+	BYTE byteArmour;
+} PLAYER_SYNC_DATA;
+
 typedef struct _S_CAMERA_AIM
 { // This is a MATRIX4X4?
-	VECTOR vecA1; // float f1x,f1y,f1z
-	VECTOR vecAPos1; // float pos1x,pos1y,pos1z
-	VECTOR vecAPos2; // float pos2x,pos2y,pos2z
-	VECTOR vecA2; // float f2x,f2y,f2z
+	Vector3 vecA1; // float f1x,f1y,f1z
+	Vector3 vecAPos1; // float pos1x,pos1y,pos1z
+	Vector3 vecAPos2; // float pos2x,pos2y,pos2z
+	Vector3 vecA2; // float f2x,f2y,f2z
 } S_CAMERA_AIM;
 
 //----------------------------------------------------
@@ -65,7 +76,7 @@ typedef struct _S_CAMERA_AIM
 class CPlayer
 {
 private:
-	BYTE					m_byteSystemAddress;
+	BYTE					m_bytePlayerID;
 	BOOL					m_bIsActive;
 	BOOL					m_bIsWasted;
 	BYTE					m_byteUpdateFromNetwork;
@@ -77,16 +88,17 @@ public:
 	WORD					m_wKeys;
 	C_VECTOR1				m_cvecRoll;
 	C_VECTOR1				m_cvecDirection;
-	VECTOR					m_vecPos;
-	VECTOR					m_vecMoveSpeed;
-	VECTOR					m_vecTurnSpeed;
+	Vector3					m_vecPos;
+	Vector3					m_vecMoveSpeed;
+	Vector3					m_vecTurnSpeed;
 	float					m_fRotation;
 	float					m_fVehicleHealth;
 	BYTE					m_byteHealth;
 	BYTE					m_byteArmour;
 	BYTE					m_byteCurrentWeapon;
-	BYTE					m_byteAction;
+	BYTE					m_byteShootingFlags;
 
+	bool					m_bHasAim;
 	S_CAMERA_AIM			m_Aiming; // server's version of the player aiming.
 
 	BOOL					m_bIsInVehicle;
@@ -104,22 +116,20 @@ public:
 	void BroadcastSyncData();	
 
 	void Say(PCHAR szText, BYTE byteTextLength);
-	void SetID(BYTE byteSystemAddress) { m_byteSystemAddress = byteSystemAddress; };	
+	void SetID(BYTE byteSystemAddress) { m_bytePlayerID = byteSystemAddress; };	
 	
-	void StoreOnFootFullSyncData(WORD wKeys,VECTOR * vecPos, 
-								 float fRotation,BYTE byteCurrentWeapon,
-								 BYTE byteAction);
+	void StoreOnFootFullSyncData(PLAYER_SYNC_DATA * pPlayerSyncData);
 
-	void StoreAimSyncData(S_CAMERA_AIM * pAim) { memcpy(&m_Aiming,pAim,sizeof(S_CAMERA_AIM)); };
+	void StoreAimSyncData(S_CAMERA_AIM * pAim);
 
 	void SetReportedHealth(BYTE byteHealth) { m_byteHealth = byteHealth; };
 	void SetReportedArmour(BYTE byteArmour) { m_byteArmour = byteArmour; };
 
 	void StoreInCarFullSyncData(BYTE byteVehicleID,WORD wKeys,
 		C_VECTOR1 * cvecRoll, C_VECTOR1 * cvecDirection,
-		VECTOR * vecPos, VECTOR * vecMoveSpeed, float fVehicleHealth);
+		Vector3 * vecPos, Vector3 * vecMoveSpeed, float fVehicleHealth);
 
-	void SetSpawnInfo(BYTE byteTeam, BYTE byteSkin, VECTOR * vecPos, float fRotation,
+	void SetSpawnInfo(BYTE byteTeam, BYTE byteSkin, Vector3 * vecPos, float fRotation,
 		int iSpawnWeapon1, int iSpawnWeapon1Ammo, int iSpawnWeapon2, int iSpawnWeapon2Ammo,
 		int iSpawnWeapon3, int iSpawnWeapon3Ammo);
 
@@ -142,16 +152,16 @@ public:
 
 	void HandleDeath(BYTE byteReason, BYTE byteWhoWasResponsible);
 	void Spawn();
-	void SpawnForWorld(BYTE byteTeam,BYTE byteSkin,VECTOR * vecPos,float fRotation);
+	void SpawnForWorld(BYTE byteTeam,BYTE byteSkin,Vector3 * vecPos,float fRotation);
 	void SpawnForPlayer(BYTE byteForSystemAddress);
 
 	void EnterVehicle(BYTE byteVehicleID,BYTE bytePassenger);
 	void ExitVehicle(BYTE byteVehicleID);
 
 	WORD GetKeys();
-	void GetPosition(VECTOR * vecPosition);
-	void GetMoveSpeed(VECTOR * vecMoveSpeed);
-	void GetTurnSpeed(VECTOR * vecTurnSpeed);
+	void GetPosition(Vector3 * vecPosition);
+	void GetMoveSpeed(Vector3 * vecMoveSpeed);
+	void GetTurnSpeed(Vector3 * vecTurnSpeed);
 	float GetRotation();
 	BYTE GetHealth();
 	BYTE GetArmour();
@@ -165,9 +175,9 @@ public:
 
 	void SetGameTime(BYTE hours, BYTE minutes);
 
-	void SetCameraPos(VECTOR vPos);
-	void SetCameraRot(VECTOR vPos);
-	void SetCameraLookAt(VECTOR vPoint);
+	void SetCameraPos(Vector3 vPos);
+	void SetCameraRot(Vector3 vPos);
+	void SetCameraLookAt(Vector3 vPoint);
 	void SetCameraBehindPlayer();
 };
 

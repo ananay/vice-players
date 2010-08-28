@@ -81,7 +81,7 @@ public:
 	void    SetWidescreen(BOOL bWidescreen);
 	BOOL    GetWidescreen();
 	void	DisplayTextMessage(PCHAR szText);
-	void    PlaySound(int iSoundId, VECTOR vPosition);
+	void    PlaySound(int iSoundId, Vector3 vPosition);
 	void    FadeScreen(int iType, int iTime);
 	void	SetGameTime(BYTE hours, BYTE minutes);
 		

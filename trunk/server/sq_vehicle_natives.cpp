@@ -37,7 +37,7 @@ using namespace RakNet;
 SQInteger sq_createVehicle(SQVM * pVM)
 {
 	SQInteger byteVehicleType;
-	VECTOR pos;
+	Vector3 pos;
 	float fRotation;
 	SQInteger iColor1, iColor2;
 	sq_getinteger(pVM, -7, &byteVehicleType);
@@ -153,7 +153,7 @@ SQInteger sq_getVehicleColors(SQVM * pVM)
 // getVehicleTurnSpeed
 SQInteger sq_getVehicleTurnSpeed(SQVM * pVM)
 {
-	VECTOR speed;
+	Vector3 speed;
 	SQInteger vehicle;
 	sq_getinteger(pVM, -1, &vehicle);
 
@@ -180,7 +180,7 @@ SQInteger sq_getVehicleTurnSpeed(SQVM * pVM)
 // getVehicleMoveSpeed
 SQInteger sq_getVehicleMoveSpeed(SQVM * pVM)
 {
-	VECTOR speed;
+	Vector3 speed;
 	SQInteger vehicle;
 	sq_getinteger(pVM, -1, &vehicle);
 
@@ -207,7 +207,7 @@ SQInteger sq_getVehicleMoveSpeed(SQVM * pVM)
 // getVehiclePos
 SQInteger sq_getVehiclePosition(SQVM * pVM)
 {
-	VECTOR pos;
+	Vector3 pos;
 	SQInteger vehicle;
 	sq_getinteger(pVM, -1, &vehicle);
 
@@ -236,7 +236,7 @@ SQInteger sq_setVehiclePosition(SQVM * pVM)
 {
 	SQInteger vehicle;
 
-	VECTOR pVec;
+	Vector3 pVec;
 
 	sq_getinteger(pVM, -4, &vehicle);
 	sq_getfloat(pVM, -3, &pVec.X);
@@ -247,7 +247,7 @@ SQInteger sq_setVehiclePosition(SQVM * pVM)
 	{
 		RakNet::BitStream bsSend;
 		bsSend.Write(vehicle);
-		bsSend.Write((char *)&pVec, sizeof(VECTOR));
+		bsSend.Write((char *)&pVec, sizeof(Vector3));
 		pNetGame->GetRPC4()->Call("Script_SetVehiclePos",&bsSend,HIGH_PRIORITY,RELIABLE,0,UNASSIGNED_SYSTEM_ADDRESS,true);
 
 		sq_pushbool(pVM, true);
@@ -263,7 +263,7 @@ SQInteger sq_setVehicleTurnSpeed(SQVM * pVM)
 {
 	SQInteger vehicle;
 
-	VECTOR pVec;
+	Vector3 pVec;
 
 	sq_getinteger(pVM, -4, &vehicle);
 	sq_getfloat(pVM, -3, &pVec.X);
@@ -274,7 +274,7 @@ SQInteger sq_setVehicleTurnSpeed(SQVM * pVM)
 	{
 		RakNet::BitStream bsSend;
 		bsSend.Write(vehicle);
-		bsSend.Write((char *)&pVec, sizeof(VECTOR));
+		bsSend.Write((char *)&pVec, sizeof(Vector3));
 		pNetGame->GetRPC4()->Call("Script_SetVehicleTurnSpeed",&bsSend,HIGH_PRIORITY,RELIABLE,0,UNASSIGNED_SYSTEM_ADDRESS,true);
 
 		sq_pushbool(pVM, true);
@@ -290,7 +290,7 @@ SQInteger sq_setVehicleMoveSpeed(SQVM * pVM)
 {
 	SQInteger vehicle;
 
-	VECTOR pVec;
+	Vector3 pVec;
 
 	sq_getinteger(pVM, -4, &vehicle);
 	sq_getfloat(pVM, -3, &pVec.X);
@@ -301,7 +301,7 @@ SQInteger sq_setVehicleMoveSpeed(SQVM * pVM)
 	{
 		RakNet::BitStream bsSend;
 		bsSend.Write(vehicle);
-		bsSend.Write((char *)&pVec, sizeof(VECTOR));
+		bsSend.Write((char *)&pVec, sizeof(Vector3));
 		pNetGame->GetRPC4()->Call("Script_SetVehicleMoveSpeed",&bsSend,HIGH_PRIORITY,RELIABLE,0,UNASSIGNED_SYSTEM_ADDRESS,true);
 
 		sq_pushbool(pVM, true);

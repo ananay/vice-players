@@ -37,7 +37,7 @@ using namespace RakNet;
 
 //----------------------------------------------------------
 
-CVehicle::CVehicle( BYTE byteModel, VECTOR *vecPos,
+CVehicle::CVehicle( BYTE byteModel, Vector3 *vecPos,
 				    float fRotation, int iColor1,
 				    int iColor2)
 {
@@ -78,8 +78,8 @@ void CVehicle::Reset()
 	m_matWorld.vPos.Z = m_SpawnInfo.vecPos.Z;
 
 	// Reset the initial turn speed and move speed
-	memset(&m_vecMoveSpeed,0,sizeof(VECTOR));
-	memset(&m_vecTurnSpeed,0,sizeof(VECTOR));
+	memset(&m_vecMoveSpeed,0,sizeof(Vector3));
+	memset(&m_vecTurnSpeed,0,sizeof(Vector3));
 
 	// Set the initial colors to the spawn colors
 	m_iColors[0] = m_SpawnInfo.iColor1;
@@ -100,11 +100,11 @@ void CVehicle::Reset()
 // network vehicle.
 
 void CVehicle::Update(BYTE byteSystemAddress, MATRIX4X4 * matWorld,
-		VECTOR * vecMoveSpeed, float fHealth)
+		Vector3 * vecMoveSpeed, float fHealth)
 {
 	m_byteDriverID = byteSystemAddress;
 	memcpy(&m_matWorld,matWorld,sizeof(MATRIX4X4));
-	memcpy(&m_vecMoveSpeed,vecMoveSpeed,sizeof(VECTOR));
+	memcpy(&m_vecMoveSpeed,vecMoveSpeed,sizeof(Vector3));
 	m_fHealth = fHealth;
 	m_bHasHadUpdate = TRUE;
 }
@@ -224,7 +224,7 @@ void CVehicle::SetColor(int color1, int color2)
 
 //----------------------------------------------------------
 
-void CVehicle::GetPosition(VECTOR * vecPosition)
+void CVehicle::GetPosition(Vector3 * vecPosition)
 {
 	vecPosition->X = m_matWorld.vPos.X;
 	vecPosition->Y = m_matWorld.vPos.Y;
@@ -233,16 +233,16 @@ void CVehicle::GetPosition(VECTOR * vecPosition)
 
 //----------------------------------------------------
 
-void CVehicle::GetMoveSpeed(VECTOR * vecMoveSpeed)
+void CVehicle::GetMoveSpeed(Vector3 * vecMoveSpeed)
 {
-	memcpy(vecMoveSpeed, &m_vecMoveSpeed, sizeof(VECTOR));
+	memcpy(vecMoveSpeed, &m_vecMoveSpeed, sizeof(Vector3));
 }
 
 //----------------------------------------------------
 
-void CVehicle::GetTurnSpeed(VECTOR * vecTurnSpeed)
+void CVehicle::GetTurnSpeed(Vector3 * vecTurnSpeed)
 {
-	memcpy(vecTurnSpeed, &m_vecTurnSpeed, sizeof(VECTOR));
+	memcpy(vecTurnSpeed, &m_vecTurnSpeed, sizeof(Vector3));
 }
 
 //----------------------------------------------------------

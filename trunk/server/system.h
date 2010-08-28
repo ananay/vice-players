@@ -26,9 +26,9 @@
 
 #pragma once
 
-typedef struct _VECTOR {
+typedef struct _Vector3 {
 	float X,Y,Z;
-} VECTOR, *PVECTOR;
+} Vector3, *PVector3;
 
 typedef struct _VECTOR_PAD {
 	float X,Y,Z,pad;

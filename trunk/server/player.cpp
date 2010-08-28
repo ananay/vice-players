@@ -27,6 +27,7 @@
 #include "netgame.h"
 
 extern CNetGame *pNetGame;
+extern CScripts	*pScripts;
 
 using namespace RakNet;
 
@@ -47,10 +48,11 @@ void DecompressVector1(VECTOR_PAD * vec, C_VECTOR1 * c1)
 CPlayer::CPlayer()
 {
 	m_byteUpdateFromNetwork = UPDATE_TYPE_NONE;
-	m_byteSystemAddress = INVALID_PLAYER_ID;
+	m_bytePlayerID = INVALID_PLAYER_ID;
 	m_bIsActive = FALSE;
 	m_bIsWasted = FALSE;
 	m_byteVehicleID = 0;
+	m_bHasAim = false;
 }
 
 //----------------------------------------------------
@@ -95,26 +97,29 @@ void CPlayer::BroadcastSyncData()
 		
 	if(m_byteUpdateFromNetwork == UPDATE_TYPE_FULL_ONFOOT)
 	{
+		PLAYER_SYNC_DATA playerSyncData;
 		bsSync.Write((BYTE)ID_PLAYER_SYNC);
-		bsSync.Write(m_byteSystemAddress);
-		bsSync.Write((WORD)m_wKeys);
-		bsSync.Write(m_vecPos.X);
-		bsSync.Write(m_vecPos.Y);
-		bsSync.Write(m_vecPos.Z);
-		bsSync.Write(m_fRotation);
-		bsSync.Write(m_byteAction);
-		bsSync.Write(m_byteHealth);
-		bsSync.Write(m_byteArmour);
-		bsSync.Write(m_byteCurrentWeapon);
+		bsSync.Write(m_bytePlayerID);
+		playerSyncData.wKeys = m_wKeys;
+		memcpy(&playerSyncData.vecPos, &m_vecPos, sizeof(Vector3));
+		playerSyncData.fRotation = m_fRotation;
+		playerSyncData.byteCurrentWeapon = m_byteCurrentWeapon;
+		playerSyncData.byteShootingFlags = m_byteShootingFlags;
+		playerSyncData.byteHealth = m_byteHealth;
+		playerSyncData.byteArmour = m_byteArmour;
+		bsSync.Write((char *)&playerSyncData, sizeof(PLAYER_SYNC_DATA));
 
-		//if(IS_FIRING(m_wKeys)) {
-			// aiming
-			bsSync.Write((char *)&m_Aiming.vecA1, sizeof(VECTOR));
-			bsSync.Write((char *)&m_Aiming.vecA2, sizeof(VECTOR));
-			bsSync.Write((char *)&m_Aiming.vecAPos1, sizeof(VECTOR));
-		//}
+		if(m_bHasAim) {
+			bsSync.Write1();
+			bsSync.Write((char *)&m_Aiming.vecA1, sizeof(Vector3));
+			bsSync.Write((char *)&m_Aiming.vecA2, sizeof(Vector3));
+			bsSync.Write((char *)&m_Aiming.vecAPos1, sizeof(Vector3));
+		}
+		else {
+			bsSync.Write0();
+		}
 		
-		pNetGame->BroadcastData(&bsSync,HIGH_PRIORITY,UNRELIABLE_SEQUENCED,0,m_byteSystemAddress);
+		pNetGame->BroadcastData(&bsSync,HIGH_PRIORITY,UNRELIABLE_SEQUENCED,0,m_bytePlayerID);
 	}
 	else if(m_byteUpdateFromNetwork == UPDATE_TYPE_FULL_INCAR)
 	{			
@@ -125,7 +130,7 @@ void CPlayer::BroadcastSyncData()
 
 		// storing
 		bsSync.Write((BYTE)ID_VEHICLE_SYNC);
-		bsSync.Write(m_byteSystemAddress);
+		bsSync.Write(m_bytePlayerID);
 		bsSync.Write(m_byteVehicleID);
 		bsSync.Write((WORD)m_wKeys);
 		bsSync.Write(m_cvecRoll.X);
@@ -147,33 +152,52 @@ void CPlayer::BroadcastSyncData()
 		bsSync.Write(m_byteArmour);
 
 		// sending...
-		pNetGame->BroadcastData(&bsSync,HIGH_PRIORITY,UNRELIABLE_SEQUENCED,0,m_byteSystemAddress);
+		pNetGame->BroadcastData(&bsSync,HIGH_PRIORITY,UNRELIABLE_SEQUENCED,0,m_bytePlayerID);
 	}	
 }
 
 //----------------------------------------------------
 
-void CPlayer::StoreOnFootFullSyncData(WORD wKeys,VECTOR * vecPos, 
-									  float fRotation,BYTE byteCurrentWeapon,
-									  BYTE byteAction)
+void CPlayer::StoreOnFootFullSyncData(PLAYER_SYNC_DATA * pPlayerSyncData)
 {
 	if(m_byteVehicleID != 0) {
 		pNetGame->GetVehiclePool()->GetAt(m_byteVehicleID)->SetDriverId(INVALID_PLAYER_ID);
 		m_byteVehicleID = 0;
 	}
-	m_wKeys = wKeys;
-	memcpy(&m_vecPos,vecPos,sizeof(VECTOR));
-	m_fRotation = fRotation;
-	m_byteCurrentWeapon = byteCurrentWeapon;
-	m_byteAction = byteAction;
+
+	m_wKeys = pPlayerSyncData->wKeys;
+	memcpy(&m_vecPos, &pPlayerSyncData->vecPos, sizeof(Vector3));
+	m_fRotation = pPlayerSyncData->fRotation;
+	m_byteCurrentWeapon = pPlayerSyncData->byteCurrentWeapon;
+	m_byteShootingFlags = pPlayerSyncData->byteShootingFlags;
+
+	// note: should do something like this for armour too?
+	if(GetHealth() != pPlayerSyncData->byteHealth) {
+		pScripts->onPlayerDamage(m_bytePlayerID, GetHealth(), pPlayerSyncData->byteHealth);
+	}
+
+	m_byteHealth = pPlayerSyncData->byteHealth;
+	m_byteArmour = pPlayerSyncData->byteArmour;
+
+	// todo: if this returns 0 then m_byteUpdateFromNetwork should NOT be set
+	pScripts->onPlayerSync(m_bytePlayerID);
+
 	m_byteUpdateFromNetwork = UPDATE_TYPE_FULL_ONFOOT;
+}
+
+//----------------------------------------------------
+
+void CPlayer::StoreAimSyncData(S_CAMERA_AIM * pAim)
+{
+	m_bHasAim = true;
+	memcpy(&m_Aiming, pAim, sizeof(S_CAMERA_AIM));
 }
 
 //----------------------------------------------------
 
 void CPlayer::StoreInCarFullSyncData(BYTE byteVehicleID, WORD wKeys,
 									 C_VECTOR1 * cvecRoll, C_VECTOR1 * cvecDirection, 
-									 VECTOR * vecPos, VECTOR * vecMoveSpeed,float fVehicleHealth)
+									 Vector3 * vecPos, Vector3 * vecMoveSpeed,float fVehicleHealth)
 {
 	m_byteVehicleID = byteVehicleID;
 	m_bIsInVehicle = TRUE;
@@ -182,7 +206,7 @@ void CPlayer::StoreInCarFullSyncData(BYTE byteVehicleID, WORD wKeys,
 
 	memcpy(&m_cvecRoll,cvecRoll,sizeof(C_VECTOR1));
 	memcpy(&m_cvecDirection,cvecDirection,sizeof(C_VECTOR1));
-	memcpy(&m_vecPos,vecPos,sizeof(VECTOR));
+	memcpy(&m_vecPos,vecPos,sizeof(Vector3));
 
 	m_fVehicleHealth = fVehicleHealth;
 	m_byteUpdateFromNetwork = UPDATE_TYPE_FULL_INCAR;
@@ -191,11 +215,11 @@ void CPlayer::StoreInCarFullSyncData(BYTE byteVehicleID, WORD wKeys,
 
 	DecompressVector1(&matWorld.vLookRight,cvecRoll);
 	DecompressVector1(&matWorld.vLookUp,cvecDirection);
-	memcpy(&matWorld.vPos,vecPos,sizeof(VECTOR));
-	memcpy(&m_vecMoveSpeed,vecMoveSpeed,sizeof(VECTOR));
+	memcpy(&matWorld.vPos,vecPos,sizeof(Vector3));
+	memcpy(&m_vecMoveSpeed,vecMoveSpeed,sizeof(Vector3));
 
 	CVehicle *pVehicle = pNetGame->GetVehiclePool()->GetAt(byteVehicleID);
-	pVehicle->Update(m_byteSystemAddress,&matWorld,vecMoveSpeed,fVehicleHealth);
+	pVehicle->Update(m_bytePlayerID,&matWorld,vecMoveSpeed,fVehicleHealth);
 }
 
 //----------------------------------------------------
@@ -210,7 +234,7 @@ void CPlayer::Say(PCHAR szText, BYTE byteTextLength)
 void CPlayer::HandleDeath(BYTE byteReason, BYTE byteWhoWasResponsible)
 {
 	RakNet::BitStream bsPlayerDeath;
-	SystemAddress playerid = pNetGame->GetRakPeer()->GetSystemAddressFromIndex(m_byteSystemAddress);
+	SystemAddress playerid = pNetGame->GetRakPeer()->GetSystemAddressFromIndex(m_bytePlayerID);
 
 	m_bIsActive = FALSE;
 	m_bIsWasted = TRUE;
@@ -218,9 +242,9 @@ void CPlayer::HandleDeath(BYTE byteReason, BYTE byteWhoWasResponsible)
 	BYTE byteScoringModifier;
 
 	byteScoringModifier = 
-		pNetGame->GetPlayerPool()->AddResponsibleDeath(byteWhoWasResponsible,m_byteSystemAddress);
+		pNetGame->GetPlayerPool()->AddResponsibleDeath(byteWhoWasResponsible,m_bytePlayerID);
 
-	bsPlayerDeath.Write(m_byteSystemAddress);
+	bsPlayerDeath.Write(m_bytePlayerID);
 	bsPlayerDeath.Write(byteReason);
 	bsPlayerDeath.Write(byteWhoWasResponsible);
 	bsPlayerDeath.Write(byteScoringModifier);
@@ -229,13 +253,13 @@ void CPlayer::HandleDeath(BYTE byteReason, BYTE byteWhoWasResponsible)
 	pNetGame->GetRPC4()->Call("Death", &bsPlayerDeath,HIGH_PRIORITY,RELIABLE,0,playerid,true);
 	
 	logprintf("<%s> died",
-		pNetGame->GetPlayerPool()->GetPlayerName(m_byteSystemAddress),
+		pNetGame->GetPlayerPool()->GetPlayerName(m_bytePlayerID),
 		byteReason,byteWhoWasResponsible,byteScoringModifier);
 }
 
 //----------------------------------------------------
 
-void CPlayer::SetSpawnInfo(BYTE byteTeam, BYTE byteSkin, VECTOR * vecPos, float fRotation,
+void CPlayer::SetSpawnInfo(BYTE byteTeam, BYTE byteSkin, Vector3 * vecPos, float fRotation,
 		int iSpawnWeapon1, int iSpawnWeapon1Ammo, int iSpawnWeapon2, int iSpawnWeapon2Ammo,
 		int iSpawnWeapon3, int iSpawnWeapon3Ammo)
 {
@@ -266,8 +290,8 @@ void CPlayer::Spawn()
 		m_vecPos.Z = m_SpawnInfo.vecPos.Z;
 
 		m_fRotation = m_SpawnInfo.fRotation;
-		memset(&m_vecMoveSpeed,0,sizeof(VECTOR));
-		memset(&m_vecTurnSpeed,0,sizeof(VECTOR));
+		memset(&m_vecMoveSpeed,0,sizeof(Vector3));
+		memset(&m_vecTurnSpeed,0,sizeof(Vector3));
 		m_fRotation = 0.0f;
 		m_bIsInVehicle=FALSE;
 		m_bIsAPassenger=FALSE;
@@ -280,13 +304,13 @@ void CPlayer::Spawn()
 //----------------------------------------------------
 // This is the method used for respawning.
 
-void CPlayer::SpawnForWorld( BYTE byteTeam, BYTE byteSkin, VECTOR * vecPos, 
+void CPlayer::SpawnForWorld( BYTE byteTeam, BYTE byteSkin, Vector3 * vecPos, 
 							  float fRotation )
 {
 	RakNet::BitStream bsPlayerSpawn;
-	SystemAddress playerid = pNetGame->GetRakPeer()->GetSystemAddressFromIndex(m_byteSystemAddress);
+	SystemAddress playerid = pNetGame->GetRakPeer()->GetSystemAddressFromIndex(m_bytePlayerID);
 
-	bsPlayerSpawn.Write(m_byteSystemAddress);
+	bsPlayerSpawn.Write(m_bytePlayerID);
 	bsPlayerSpawn.Write(byteTeam);
 	bsPlayerSpawn.Write(byteSkin);
 	bsPlayerSpawn.Write(vecPos->X);
@@ -310,7 +334,7 @@ void CPlayer::SpawnForWorld( BYTE byteTeam, BYTE byteSkin, VECTOR * vecPos,
 	m_vecPos.Y = vecPos->Y;
 	m_vecPos.Z = vecPos->Z;
 
-	m_byteAction = 1;
+	m_byteShootingFlags = 1;
 }
 
 //----------------------------------------------------
@@ -321,7 +345,7 @@ void CPlayer::SpawnForPlayer(BYTE byteForSystemAddress)
 {
 	RakNet::BitStream bsPlayerSpawn;
 
-	bsPlayerSpawn.Write(m_byteSystemAddress);
+	bsPlayerSpawn.Write(m_bytePlayerID);
 	bsPlayerSpawn.Write(m_SpawnInfo.byteTeam);
 	bsPlayerSpawn.Write(m_SpawnInfo.byteSkin);
 	bsPlayerSpawn.Write(m_vecPos.X);
@@ -343,9 +367,9 @@ void CPlayer::SpawnForPlayer(BYTE byteForSystemAddress)
 void CPlayer::EnterVehicle(BYTE byteVehicleID, BYTE bytePassenger)
 {
 	RakNet::BitStream bsVehicle;
-	SystemAddress playerid = pNetGame->GetRakPeer()->GetSystemAddressFromIndex(m_byteSystemAddress);
+	SystemAddress playerid = pNetGame->GetRakPeer()->GetSystemAddressFromIndex(m_bytePlayerID);
 
-	bsVehicle.Write(m_byteSystemAddress);
+	bsVehicle.Write(m_bytePlayerID);
 	bsVehicle.Write(byteVehicleID);
 	bsVehicle.Write(bytePassenger);
 
@@ -357,9 +381,9 @@ void CPlayer::EnterVehicle(BYTE byteVehicleID, BYTE bytePassenger)
 void CPlayer::ExitVehicle(BYTE byteVehicleID)
 {
 	RakNet::BitStream bsVehicle;
-	SystemAddress playerid = pNetGame->GetRakPeer()->GetSystemAddressFromIndex(m_byteSystemAddress);
+	SystemAddress playerid = pNetGame->GetRakPeer()->GetSystemAddressFromIndex(m_bytePlayerID);
 
-	bsVehicle.Write(m_byteSystemAddress);
+	bsVehicle.Write(m_bytePlayerID);
 	bsVehicle.Write(byteVehicleID);
 
 	pNetGame->GetRPC4()->Call("ExitVehicle", &bsVehicle,HIGH_PRIORITY,RELIABLE_ORDERED,0,playerid,true);
@@ -374,23 +398,23 @@ WORD CPlayer::GetKeys()
 
 //----------------------------------------------------
 
-void CPlayer::GetPosition(VECTOR * vecPosition)
+void CPlayer::GetPosition(Vector3 * vecPosition)
 {
-	memcpy(vecPosition, &m_vecPos, sizeof(VECTOR));
+	memcpy(vecPosition, &m_vecPos, sizeof(Vector3));
 }
 
 //----------------------------------------------------
 
-void CPlayer::GetMoveSpeed(VECTOR * vecMoveSpeed)
+void CPlayer::GetMoveSpeed(Vector3 * vecMoveSpeed)
 {
-	memcpy(vecMoveSpeed, &m_vecMoveSpeed, sizeof(VECTOR));
+	memcpy(vecMoveSpeed, &m_vecMoveSpeed, sizeof(Vector3));
 }
 
 //----------------------------------------------------
 
-void CPlayer::GetTurnSpeed(VECTOR * vecTurnSpeed)
+void CPlayer::GetTurnSpeed(Vector3 * vecTurnSpeed)
 {
-	memcpy(vecTurnSpeed, &m_vecTurnSpeed, sizeof(VECTOR));
+	memcpy(vecTurnSpeed, &m_vecTurnSpeed, sizeof(Vector3));
 }
 
 //----------------------------------------------------
@@ -425,7 +449,7 @@ BYTE CPlayer::GetCurrentWeapon()
 
 BYTE CPlayer::GetAction()
 {
-	return m_byteAction;
+	return m_byteShootingFlags;
 }
 
 //----------------------------------------------------
@@ -447,7 +471,7 @@ BYTE CPlayer::GetVehicleID()
 void CPlayer::SetGameTime(BYTE hours, BYTE minutes)
 {
 	RakNet::BitStream bsTime;
-	SystemAddress playerid = pNetGame->GetRakPeer()->GetSystemAddressFromIndex(m_byteSystemAddress);
+	SystemAddress playerid = pNetGame->GetRakPeer()->GetSystemAddressFromIndex(m_bytePlayerID);
 
 	bsTime.Write(hours);
 	bsTime.Write(minutes);
@@ -457,10 +481,10 @@ void CPlayer::SetGameTime(BYTE hours, BYTE minutes)
 
 //----------------------------------------------------
 
-void CPlayer::SetCameraPos(VECTOR vPos)
+void CPlayer::SetCameraPos(Vector3 vPos)
 {
 	RakNet::BitStream bsSend;
-	SystemAddress playerid = pNetGame->GetRakPeer()->GetSystemAddressFromIndex(m_byteSystemAddress);
+	SystemAddress playerid = pNetGame->GetRakPeer()->GetSystemAddressFromIndex(m_bytePlayerID);
 
 	bsSend.Write(vPos.X);
 	bsSend.Write(vPos.Y);
@@ -471,10 +495,10 @@ void CPlayer::SetCameraPos(VECTOR vPos)
 
 //----------------------------------------------------
 
-void CPlayer::SetCameraRot(VECTOR vRot)
+void CPlayer::SetCameraRot(Vector3 vRot)
 {
 	RakNet::BitStream bsSend;
-	SystemAddress playerid = pNetGame->GetRakPeer()->GetSystemAddressFromIndex(m_byteSystemAddress);
+	SystemAddress playerid = pNetGame->GetRakPeer()->GetSystemAddressFromIndex(m_bytePlayerID);
 
 	bsSend.Write(vRot.X);
 	bsSend.Write(vRot.Y);
@@ -485,10 +509,10 @@ void CPlayer::SetCameraRot(VECTOR vRot)
 
 //----------------------------------------------------
 
-void CPlayer::SetCameraLookAt(VECTOR vPoint)
+void CPlayer::SetCameraLookAt(Vector3 vPoint)
 {
 	RakNet::BitStream bsSend;
-	SystemAddress playerid = pNetGame->GetRakPeer()->GetSystemAddressFromIndex(m_byteSystemAddress);
+	SystemAddress playerid = pNetGame->GetRakPeer()->GetSystemAddressFromIndex(m_bytePlayerID);
 
 	bsSend.Write(vPoint.X);
 	bsSend.Write(vPoint.Y);
@@ -501,7 +525,7 @@ void CPlayer::SetCameraLookAt(VECTOR vPoint)
 
 void CPlayer::SetCameraBehindPlayer()
 {
-	SystemAddress playerid = pNetGame->GetRakPeer()->GetSystemAddressFromIndex(m_byteSystemAddress);
+	SystemAddress playerid = pNetGame->GetRakPeer()->GetSystemAddressFromIndex(m_bytePlayerID);
 
 	pNetGame->GetRPC4()->Call("SetCameraBehindPlayer", NULL,HIGH_PRIORITY,RELIABLE_ORDERED,0,playerid,false);
 }

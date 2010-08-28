@@ -121,7 +121,7 @@ void CRemotePlayer::Process()
 					}
 				}
 
-				m_pPlayerPed->SetShootingFlags(m_byteAction);
+				m_pPlayerPed->SetShootingFlags(m_byteShootingFlags);
 				m_byteUpdateFromNetwork = UPDATE_TYPE_NONE;
 			}
 			else if(m_byteUpdateFromNetwork == UPDATE_TYPE_FULL_INCAR)
@@ -175,30 +175,30 @@ void CRemotePlayer::HandleVehicleEntryExit()
 
 //----------------------------------------------------
 
-void CRemotePlayer::UpdateOnFootPosition(VECTOR vPos)
+void CRemotePlayer::UpdateOnFootPosition(Vector3 vPos)
 {
 	m_pPlayerPed->SetPosition(vPos);
 }
 
 //----------------------------------------------------
 
-void CRemotePlayer::StoreOnFootFullSyncData( WORD wKeys, MATRIX4X4 * matWorld,
-											 float fRotation, BYTE byteCurrentWeapon,
-											 BYTE byteAction )
+void CRemotePlayer::StoreOnFootFullSyncData(PLAYER_SYNC_DATA * pPlayerSyncData)
 {
 	m_byteVehicleID = 0;
-	m_wKeys = wKeys;
-	memcpy(&m_matWorld,matWorld,sizeof(MATRIX4X4));
-	m_fRotation = fRotation;
-	m_byteCurrentWeapon = byteCurrentWeapon;
-	m_byteAction = byteAction;
+	m_wKeys = pPlayerSyncData->wKeys;
+	memcpy(&m_matWorld.vPos, &pPlayerSyncData->vecPos, sizeof(Vector3));
+	m_fRotation = pPlayerSyncData->fRotation;
+	m_byteCurrentWeapon = pPlayerSyncData->byteCurrentWeapon;
+	m_byteShootingFlags = pPlayerSyncData->byteShootingFlags;
+	m_byteHealth = pPlayerSyncData->byteHealth;
+	m_byteArmour = pPlayerSyncData->byteArmour;
 	m_byteUpdateFromNetwork = UPDATE_TYPE_FULL_ONFOOT;
 }
 
 //----------------------------------------------------
 
 void CRemotePlayer::UpdateInCarMatrixAndSpeed(MATRIX4X4 * matWorld,
-											  VECTOR * vecMoveSpeed)
+											  Vector3 * vecMoveSpeed)
 {
 	MATRIX4X4 matVehicle;
 	CVehicle * pVehicle = pNetGame->GetVehiclePool()->GetAt(m_byteVehicleID);
@@ -255,7 +255,7 @@ void CRemotePlayer::UpdateInCarMatrixAndSpeed(MATRIX4X4 * matWorld,
 
 void CRemotePlayer::StoreInCarFullSyncData( BYTE byteVehicleID,
 										    WORD wKeys,MATRIX4X4 * matWorld,
-											VECTOR *vecMoveSpeed,float fVehicleHealth )
+											Vector3 *vecMoveSpeed,float fVehicleHealth )
 {
 	m_byteVehicleID = byteVehicleID;
 	m_bIsInVehicle = TRUE;
@@ -263,7 +263,7 @@ void CRemotePlayer::StoreInCarFullSyncData( BYTE byteVehicleID,
 
 	m_wKeys = wKeys;
 	memcpy(&m_matWorld,matWorld,sizeof(MATRIX4X4));
-	memcpy(&m_vecMoveSpeed,vecMoveSpeed,sizeof(VECTOR));
+	memcpy(&m_vecMoveSpeed,vecMoveSpeed,sizeof(Vector3));
 	m_fVehicleHealth = fVehicleHealth;
 	m_byteUpdateFromNetwork = UPDATE_TYPE_FULL_INCAR;
 }
@@ -281,7 +281,7 @@ void CRemotePlayer::StorePassengerData(BYTE byteVehicleID, UINT uiSeat)
 //----------------------------------------------------
 
 BOOL CRemotePlayer::SpawnPlayer( BYTE byteTeam, BYTE byteSkin, 
-								 VECTOR * vecPos, float fRotation, int iSpawnWeapon1,
+								 Vector3 * vecPos, float fRotation, int iSpawnWeapon1,
 								 int iSpawnWeapon1Ammo, int iSpawnWeapon2, 
 								 int iSpawnWeapon2Ammo, int iSpawnWeapon3,
 								 int iSpawnWeapon3Ammo )
@@ -375,8 +375,8 @@ void CRemotePlayer::Say(char *szText)
 
 float CRemotePlayer::GetDistanceFromRemotePlayer(CRemotePlayer *pFromPlayer)
 {
-	VECTOR vecThisPlayer;
-	VECTOR vecFromPlayer;
+	Vector3 vecThisPlayer;
+	Vector3 vecFromPlayer;
 	float  fSX,fSY;
 
 	if(!pFromPlayer->IsActive()) return 10000.0f; // very far away
@@ -395,8 +395,8 @@ float CRemotePlayer::GetDistanceFromRemotePlayer(CRemotePlayer *pFromPlayer)
 
 float CRemotePlayer::GetDistanceFromLocalPlayer()
 {
-	VECTOR vecThisPlayer;
-	VECTOR vecFromPlayer;
+	Vector3 vecThisPlayer;
+	Vector3 vecFromPlayer;
 	float  fSX,fSY;
 
 	CLocalPlayer *pLocalPlayer = pNetGame->GetPlayerPool()->GetLocalPlayer();
