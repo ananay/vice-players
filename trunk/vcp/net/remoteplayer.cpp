@@ -138,8 +138,6 @@ void CRemotePlayer::Process()
 					pVehicle->SetHealth(m_fVehicleHealth);
 				}
 
-				pChatWindow->AddDebugMessage("Processed player %d vehicle sync", m_bytePlayerID);
-
 				m_byteUpdateFromNetwork = UPDATE_TYPE_NONE;
 			}
 
