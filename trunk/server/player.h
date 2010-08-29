@@ -63,6 +63,23 @@ typedef struct _PLAYER_SYNC_DATA
 	BYTE byteArmour;
 } PLAYER_SYNC_DATA;
 
+typedef struct _VEHICLE_SYNC_DATA
+{
+	BYTE byteVehicleID;
+	WORD wKeys;
+	Vector3 vecRoll;
+	Vector3 vecDirection;
+	// No more compression
+	//C_VECTOR1 cvecRoll;
+	//C_VECTOR1 cvecDirection;
+	Vector3 vecPos;
+	Vector3 vecMoveSpeed;
+	Vector3 vecTurnSpeed;
+	BYTE byteVehicleHealth;
+	BYTE bytePlayerHealth;
+	BYTE bytePlayerArmour;
+} VEHICLE_SYNC_DATA;
+
 typedef struct _S_CAMERA_AIM
 { // This is a MATRIX4X4?
 	Vector3 vecA1; // float f1x,f1y,f1z
@@ -86,8 +103,10 @@ private:
 public:
 
 	WORD					m_wKeys;
-	C_VECTOR1				m_cvecRoll;
-	C_VECTOR1				m_cvecDirection;
+	Vector3					m_vecRoll;
+	Vector3					m_vecDirection;
+	//C_VECTOR1				m_cvecRoll;
+	//C_VECTOR1				m_cvecDirection;
 	Vector3					m_vecPos;
 	Vector3					m_vecMoveSpeed;
 	Vector3					m_vecTurnSpeed;
@@ -125,9 +144,7 @@ public:
 	void SetReportedHealth(BYTE byteHealth) { m_byteHealth = byteHealth; };
 	void SetReportedArmour(BYTE byteArmour) { m_byteArmour = byteArmour; };
 
-	void StoreInCarFullSyncData(BYTE byteVehicleID,WORD wKeys,
-		C_VECTOR1 * cvecRoll, C_VECTOR1 * cvecDirection,
-		Vector3 * vecPos, Vector3 * vecMoveSpeed, float fVehicleHealth);
+	void StoreInCarFullSyncData(VEHICLE_SYNC_DATA * pVehicleSyncData);
 
 	void SetSpawnInfo(BYTE byteTeam, BYTE byteSkin, Vector3 * vecPos, float fRotation,
 		int iSpawnWeapon1, int iSpawnWeapon1Ammo, int iSpawnWeapon2, int iSpawnWeapon2Ammo,

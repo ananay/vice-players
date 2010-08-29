@@ -43,19 +43,16 @@ void CompressVector1(Vector3 * vec, C_VECTOR1 * c1)
 {
 	c1->X = (short)(vec->X * 10000);
 	c1->Y = (short)(vec->Y * 10000);
-	c1->Z = (short)(vec->Z * 10000);	
+	c1->Z = (short)(vec->Z * 10000);
 }
 
 //----------------------------------------------------
 
 void DecompressVector1(Vector3 * vec, C_VECTOR1 * c1)
 {
-	vec->X = (float)c1->X;
-	vec->X = (float)((double)vec->X / 10000.0);
-	vec->Y = (float)c1->Y;
-	vec->Y = (float)((double)vec->Y / 10000.0);
-	vec->Z = (float)c1->Z;
-	vec->Z = (float)((double)vec->Z / 10000.0);	
+	vec->X = (float)(c1->X / 10000.0);
+	vec->Y = (float)(c1->Y / 10000.0);
+	vec->Z = (float)(c1->Z / 10000.0);	
 }
 
 //----------------------------------------------------
@@ -244,57 +241,20 @@ void CNetGame::VehicleSync(Packet *p)
 {
 	CRemotePlayer * pPlayer;
 	BitStream bsVehicleSync(p->data, p->length, FALSE);
-	BYTE		byteSystemAddress=0;
-	BYTE		byteVehicleID=0;
-
-	WORD		wKeys;
-	C_VECTOR1 cvecRoll;
-	C_VECTOR1 cvecDirection;
-	MATRIX4X4	matWorld;
-	Vector3	vecMoveSpeed;
-
-	float		fHealth;
-
-	BYTE		byteReadVehicleHealth;
-	BYTE		bytePlayerHealth;
-	BYTE		bytePlayerArmour;
+	BYTE bytePlayerID;
 
 	bsVehicleSync.IgnoreBytes(sizeof(MessageID));
-	bsVehicleSync.Read(byteSystemAddress);
-	bsVehicleSync.Read(byteVehicleID);
-	bsVehicleSync.Read(wKeys);
-	bsVehicleSync.Read(cvecRoll.X);
-	bsVehicleSync.Read(cvecRoll.Y);
-	bsVehicleSync.Read(cvecRoll.Z);
-	bsVehicleSync.Read(cvecDirection.X);
-	bsVehicleSync.Read(cvecDirection.Y);
-	bsVehicleSync.Read(cvecDirection.Z);
-	bsVehicleSync.Read(matWorld.vPos.X);
-	bsVehicleSync.Read(matWorld.vPos.Y);
-	bsVehicleSync.Read(matWorld.vPos.Z);
+	bsVehicleSync.Read(bytePlayerID);
 
-	// move + turn speed.
-	bsVehicleSync.Read(vecMoveSpeed.X);
-	bsVehicleSync.Read(vecMoveSpeed.Y);
+	pPlayer = GetPlayerPool()->GetAt(bytePlayerID);
+	if(pPlayer)
+	{
+		VEHICLE_SYNC_DATA vehicleSyncData;
 
-	bsVehicleSync.Read(byteReadVehicleHealth);
-	bsVehicleSync.Read(bytePlayerHealth);
-	bsVehicleSync.Read(bytePlayerArmour);
+		bsVehicleSync.Read((char *)&vehicleSyncData, sizeof(VEHICLE_SYNC_DATA));
 
-	// now unpack the roll, direction vectors from the shorts.
-	DecompressVector1(&matWorld.vLookRight,&cvecRoll);
-	DecompressVector1(&matWorld.vLookUp,&cvecDirection);
-
-	// unpack vehicle health
-	fHealth = UNPACK_VEHICLE_HEALTH(byteReadVehicleHealth);
-
-	pPlayer = GetPlayerPool()->GetAt(byteSystemAddress);
-
-	if(pPlayer)	{
-		pPlayer->StoreInCarFullSyncData(byteVehicleID,wKeys,&matWorld,
-			&vecMoveSpeed,fHealth);
-		pPlayer->SetReportedHealth(bytePlayerHealth);
-		pPlayer->SetReportedArmour(bytePlayerArmour);
+		// store the vehicle sync data
+		pPlayer->StoreInCarFullSyncData(&vehicleSyncData);
 	}
 }
 

@@ -47,6 +47,23 @@ typedef struct _PLAYER_SYNC_DATA
 	BYTE byteArmour;
 } PLAYER_SYNC_DATA;
 
+typedef struct _VEHICLE_SYNC_DATA
+{
+	BYTE byteVehicleID;
+	WORD wKeys;
+	Vector3 vecRoll;
+	Vector3 vecDirection;
+	// No more compression
+	//C_VECTOR1 cvecRoll;
+	//C_VECTOR1 cvecDirection;
+	Vector3 vecPos;
+	Vector3 vecMoveSpeed;
+	Vector3 vecTurnSpeed;
+	BYTE byteVehicleHealth;
+	BYTE bytePlayerHealth;
+	BYTE bytePlayerArmour;
+} VEHICLE_SYNC_DATA;
+
 #define NO_TEAM 255
 
 //----------------------------------------------------------

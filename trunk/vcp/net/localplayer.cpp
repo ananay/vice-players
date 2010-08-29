@@ -163,15 +163,12 @@ void CLocalPlayer::SendOnFootFullSyncData()
 		RakNet::BitStream bsPlayerSync;
 		PLAYER_SYNC_DATA playerSyncData;
 
-		// get the camera aim
-		CAMERA_AIM * pCameraAim = m_pPlayerPed->GetCurrentAim();
-
 		// write packet id
 		bsPlayerSync.Write((MessageID)ID_PLAYER_SYNC);
-		
+
 		// get the player keys
 		playerSyncData.wKeys = m_pPlayerPed->GetKeys();
-		
+
 		// get the player position
 		m_pPlayerPed->GetPosition(&playerSyncData.vecPos);
 
@@ -199,6 +196,9 @@ void CLocalPlayer::SendOnFootFullSyncData()
 			// write a 1 bit to say the bit stream has aim sync data
 			bsPlayerSync.Write1();
 
+			// get the camera aim
+			CAMERA_AIM * pCameraAim = m_pPlayerPed->GetCurrentAim();
+
 			// write the aim sync data
 			bsPlayerSync.Write((char *)&pCameraAim->vecA1, sizeof(Vector3));
 			bsPlayerSync.Write((char *)&pCameraAim->vecA2, sizeof(Vector3));
@@ -219,72 +219,66 @@ void CLocalPlayer::SendOnFootFullSyncData()
 
 void CLocalPlayer::SendInCarFullSyncData()
 {
-	RakNet::BitStream bsVehicleSync;
-	CVehiclePool *pVehiclePool = pNetGame->GetVehiclePool();
-
-	MATRIX4X4 matPlayer;
-	WORD wKeys = m_pPlayerPed->GetKeys();
-	CVehicle *pGameVehicle=NULL;
-	BYTE byteVehicleID=0;
-	
-	C_VECTOR1 cvecCompressedRoll;
-	C_VECTOR1 cvecCompressedDirection;
-	
-	Vector3	vecMoveSpeed;
-
-	BYTE		byteWriteVehicleHealth;
-	BYTE		bytePlayerHealth;
-	BYTE		bytePlayerArmour;
-
 	if(m_pPlayerPed)
 	{
-		byteVehicleID = (BYTE)pVehiclePool->FindIDFromGtaPtr(m_pPlayerPed->GetGtaVehicle());
-		if(byteVehicleID == 255) return;
+		RakNet::BitStream bsVehicleSync;
+		VEHICLE_SYNC_DATA vehicleSyncData;
+		MATRIX4X4 matVehicle;
+		CVehiclePool * pVehiclePool = pNetGame->GetVehiclePool();
+		CVehicle * pGameVehicle = NULL;
 
-		// Don't allow them to send firing actions if
-		// they got no ammo.
-		/*if(!m_pPlayerPed->HasAmmoForCurrentWeapon()) {
-			wKeys = CEASE_FIRE_CEASE_FIRE(wKeys);
-		}*/
+		// write packet id
+		bsVehicleSync.Write((MessageID)ID_VEHICLE_SYNC);
+
+		vehicleSyncData.byteVehicleID = (BYTE)pVehiclePool->FindIDFromGtaPtr(m_pPlayerPed->GetGtaVehicle());
+
+		// make sure we have a valid vehicle
+		if(vehicleSyncData.byteVehicleID == 255)
+		{
+			return;
+		}
+
+		// get the player keys
+		vehicleSyncData.wKeys = m_pPlayerPed->GetKeys();
+
+		// get the vehicle pointer
+		pGameVehicle = pVehiclePool->GetAt(vehicleSyncData.byteVehicleID);
+
+		// make sure the vehicle pointer is valid
+		if(!pGameVehicle)
+		{
+			return;
+		}
 
 		// get the vehicle matrix
-		pGameVehicle = pVehiclePool->GetAt(byteVehicleID);
-		pGameVehicle->GetMatrix(&matPlayer);
+		pGameVehicle->GetMatrix(&matVehicle);
 
-		// packing
-		CompressVector1(&matPlayer.vLookRight,&cvecCompressedRoll);
-		CompressVector1(&matPlayer.vLookUp,&cvecCompressedDirection);
-		byteWriteVehicleHealth = PACK_VEHICLE_HEALTH(pGameVehicle->GetHealth());
+		// copy the roll and direction vectors
+		memcpy(&vehicleSyncData.vecRoll, &matVehicle.vLookRight, sizeof(Vector3));
+		memcpy(&vehicleSyncData.vecDirection, &matVehicle.vLookUp, sizeof(Vector3));
+		// pack the roll and direction vectors
+		//CompressVector1(&matVehicle.vLookRight, &vehicleSyncData.cvecRoll);
+		//CompressVector1(&matVehicle.vLookUp, &vehicleSyncData.cvecDirection);
 
-		// writing
-		bsVehicleSync.Write((BYTE)ID_VEHICLE_SYNC);
-		bsVehicleSync.Write(byteVehicleID);
-		bsVehicleSync.Write(wKeys);
+		// copy the vehicle position
+		memcpy(&vehicleSyncData.vecPos, &matVehicle.vPos, sizeof(Vector3));
 
-		// matrix stuff
-		bsVehicleSync.Write(cvecCompressedRoll.X);
-		bsVehicleSync.Write(cvecCompressedRoll.Y);
-		bsVehicleSync.Write(cvecCompressedRoll.Z);
-		bsVehicleSync.Write(cvecCompressedDirection.X);
-		bsVehicleSync.Write(cvecCompressedDirection.Y);
-		bsVehicleSync.Write(cvecCompressedDirection.Z);
-		bsVehicleSync.Write(matPlayer.vPos.X);
-		bsVehicleSync.Write(matPlayer.vPos.Y);
-		bsVehicleSync.Write(matPlayer.vPos.Z);
+		// get the vehicle move speed
+		pGameVehicle->GetMoveSpeed(&vehicleSyncData.vecMoveSpeed);
 
-		// speed vectors
-		pGameVehicle->GetMoveSpeed(&vecMoveSpeed);
-		bsVehicleSync.Write(vecMoveSpeed.X);
-		bsVehicleSync.Write(vecMoveSpeed.Y);
-		
-		bsVehicleSync.Write(byteWriteVehicleHealth);
+		// get the vehicle turn speed
+		pGameVehicle->GetTurnSpeed(&vehicleSyncData.vecTurnSpeed);
 
-		bytePlayerHealth = (BYTE)m_pPlayerPed->GetHealth();
-		bytePlayerArmour = (BYTE)m_pPlayerPed->GetArmour();
-		bsVehicleSync.Write(bytePlayerHealth);
-		bsVehicleSync.Write(bytePlayerArmour);
+		// pack the vehicle health
+		vehicleSyncData.byteVehicleHealth = PACK_VEHICLE_HEALTH(pGameVehicle->GetHealth());
 
-		// ..sending
+		// get the player health (casted to a byte to save space)
+		vehicleSyncData.bytePlayerHealth = (BYTE)m_pPlayerPed->GetHealth();
+
+		// get the player armour (casted to a byte to save space)
+		vehicleSyncData.bytePlayerArmour = (BYTE)m_pPlayerPed->GetArmour();
+
+		// send sync data
 		pNetGame->GetRakPeer()->Send(&bsVehicleSync,HIGH_PRIORITY,UNRELIABLE_SEQUENCED,0,UNASSIGNED_SYSTEM_ADDRESS,TRUE);
 	}
 }

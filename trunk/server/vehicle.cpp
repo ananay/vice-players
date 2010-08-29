@@ -28,6 +28,7 @@
 #include <math.h>
 
 extern CNetGame *pNetGame;
+extern CScripts * pScripts;
 
 #define PI 3.14159265
 
@@ -99,14 +100,21 @@ void CVehicle::Reset()
 // Updates our stored data structures for this
 // network vehicle.
 
-void CVehicle::Update(BYTE byteSystemAddress, MATRIX4X4 * matWorld,
-		Vector3 * vecMoveSpeed, float fHealth)
+void CVehicle::Update(BYTE bytePlayerID, MATRIX4X4 * matWorld, Vector3 * vecMoveSpeed, Vector3 * vecTurnSpeed, float fHealth)
 {
-	m_byteDriverID = byteSystemAddress;
-	memcpy(&m_matWorld,matWorld,sizeof(MATRIX4X4));
-	memcpy(&m_vecMoveSpeed,vecMoveSpeed,sizeof(Vector3));
+	m_byteDriverID = bytePlayerID;
+	memcpy(&m_matWorld, matWorld, sizeof(MATRIX4X4));
+	memcpy(&m_vecMoveSpeed,vecMoveSpeed, sizeof(Vector3));
+	memcpy(&m_vecTurnSpeed, vecTurnSpeed, sizeof(Vector3));
+
+	if(m_fHealth != fHealth)
+	{
+		pScripts->onVehicleDamage(m_byteVehicleID, m_fHealth, fHealth);
+	}
+
 	m_fHealth = fHealth;
 	m_bHasHadUpdate = TRUE;
+	pScripts->onVehicleSync(m_byteVehicleID);
 }
 
 //----------------------------------------------------

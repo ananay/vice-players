@@ -57,6 +57,7 @@ private:
 	MATRIX4X4			m_matWorld;
 
 	Vector3				m_vecMoveSpeed;
+	Vector3				m_vecTurnSpeed;
 	float				m_fRotation;
 	float				m_fVehicleHealth;
 	BYTE				m_byteHealth; // health float casted to a byte.
@@ -69,12 +70,12 @@ private:
 	UINT				m_uiPassengerSeat;
 	BYTE				m_byteShootingFlags;
 
-	CHAR				m_szPlayerName[256]; // Note to self: use a fucking constant
-											 // for the size - dickhead.
+	CHAR				m_szPlayerName[MAX_PLAYER_NAME];
 
 	BYTE				m_iJustSpawned; // Indicates that we shouldn't process
 										// this player straight away.
 
+	bool				m_bHasAim;
 	CAMERA_AIM			m_Aim;
 
 public:
@@ -107,17 +108,13 @@ public:
 
 	void UpdateOnFootPosition(Vector3 vPos);
 
-	void UpdateInCarMatrixAndSpeed(MATRIX4X4 * matWorld,
-								   Vector3 * vecMoveSpeed);
+	void UpdateInCarMatrixAndSpeed(MATRIX4X4 * matWorld, Vector3 * vecMoveSpeed, Vector3 * vecTurnSpeed);
 
 	void StoreOnFootFullSyncData(PLAYER_SYNC_DATA * pPlayerSyncData);
 
-	void StoreAimSyncData(CAMERA_AIM * pAim) { 
-		memcpy(&m_Aim,pAim,sizeof(CAMERA_AIM)); 
-	};
+	void StoreAimSyncData(CAMERA_AIM * pAim);
 	
-	void StoreInCarFullSyncData(BYTE byteVehicleID,WORD wKeys,MATRIX4X4 * matWorld,
-		Vector3 *vecMoveSpeed, float fVehicleHealth);
+	void StoreInCarFullSyncData(VEHICLE_SYNC_DATA * pVehicleSyncData);
 
 	void StorePassengerData(BYTE byteVehicleID, UINT uiSeat);
 

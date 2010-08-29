@@ -196,7 +196,17 @@ void CNetGame::BroadcastData( BitStream *bitStream,
 
 void CNetGame::PlayerSync(Packet *p)
 {
+	// get the player pointer
 	CPlayer * pPlayer = GetPlayerPool()->GetAt((BYTE)p->systemAddress.systemIndex);
+
+	// make sure player is in player pool
+	if(!pPlayer)
+	{
+		// player is not in player pool
+		return;
+	}
+
+	// construct the player sync bit stream
 	BitStream bsPlayerSync(p->data, p->length, FALSE);
 
 	PLAYER_SYNC_DATA playerSyncData;
@@ -220,14 +230,12 @@ void CNetGame::PlayerSync(Packet *p)
 		bsPlayerSync.Read((char *)&caAiming.vecAPos1, sizeof(Vector3));
 	}
 
-	if(pPlayer)	{
-		// store the player sync data
-		pPlayer->StoreOnFootFullSyncData(&playerSyncData);
+	// store the player sync data
+	pPlayer->StoreOnFootFullSyncData(&playerSyncData);
 
-		// store the aim sync data if the bit stream has it
-		if(bHasAimSync) {
-			pPlayer->StoreAimSyncData(&caAiming);
-		}
+	// store the aim sync data if the bit stream has it
+	if(bHasAimSync) {
+		pPlayer->StoreAimSyncData(&caAiming);
 	}
 }
 
@@ -235,56 +243,34 @@ void CNetGame::PlayerSync(Packet *p)
 
 void CNetGame::VehicleSync(Packet *p)
 {
+	// get the player pointer
 	CPlayer * pPlayer = GetPlayerPool()->GetAt((BYTE)p->systemAddress.systemIndex);
+
+	// make sure player is in player pool
+	if(!pPlayer)
+	{
+		// player is not in player pool
+		return;
+	}
+
+	// construct the vehicle sync bit stream
 	BitStream bsVehicleSync(p->data, p->length, FALSE);
 
-	BYTE		byteVehicleID=0;
+	BYTE byteVehicleID;
+	VEHICLE_SYNC_DATA vehicleSyncData;
+	S_CAMERA_AIM caAiming;
 
-	WORD		wKeys;
-
-	C_VECTOR1 cvecRoll;
-	C_VECTOR1 cvecDirection;
-	Vector3	vecWorldPos;
-	Vector3	vecMoveSpeed;
-
-	BYTE		byteReadVehicleHealth;
-	float		fHealth;
-	BYTE		bytePlayerHealth;
-	BYTE		bytePlayerArmour;
-
+	// ignore the packet id
 	bsVehicleSync.IgnoreBytes(sizeof(MessageID));
+
+	// read the vehicle id
 	bsVehicleSync.Read(byteVehicleID);
-	bsVehicleSync.Read(wKeys);
-	bsVehicleSync.Read(cvecRoll.X);
-	bsVehicleSync.Read(cvecRoll.Y);
-	bsVehicleSync.Read(cvecRoll.Z);
-	bsVehicleSync.Read(cvecDirection.X);
-	bsVehicleSync.Read(cvecDirection.Y);
-	bsVehicleSync.Read(cvecDirection.Z);
-	bsVehicleSync.Read(vecWorldPos.X);
-	bsVehicleSync.Read(vecWorldPos.Y);
-	bsVehicleSync.Read(vecWorldPos.Z);
 
-	// move and turn speed vectors
-	bsVehicleSync.Read(vecMoveSpeed.X);
-	bsVehicleSync.Read(vecMoveSpeed.Y);
-	bsVehicleSync.Read(byteReadVehicleHealth);
-	bsVehicleSync.Read(bytePlayerHealth);
-	bsVehicleSync.Read(bytePlayerArmour);
+	// read the vehicle sync data struct
+	bsVehicleSync.Read((char *)&vehicleSyncData, sizeof(VEHICLE_SYNC_DATA));
 
-	fHealth = UNPACK_VEHICLE_HEALTH(byteReadVehicleHealth);
-
-	if(pPlayer)	{
-		if(GetVehiclePool()->GetAt(byteVehicleID)->GetHealth() != fHealth)
-			pScripts->onVehicleDamage(byteVehicleID, GetVehiclePool()->GetAt(byteVehicleID)->GetHealth(), fHealth);
-		pPlayer->StoreInCarFullSyncData(byteVehicleID,wKeys,&cvecRoll,
-			&cvecDirection,&vecWorldPos,&vecMoveSpeed,fHealth);
-		pPlayer->SetReportedHealth(bytePlayerHealth);
-		pPlayer->SetReportedArmour(bytePlayerArmour);
-
-		pScripts->onPlayerSync((BYTE)p->systemAddress.systemIndex);
-		pScripts->onVehicleSync(byteVehicleID);
-	}
+	// store the vehicle sync data
+	pPlayer->StoreInCarFullSyncData(&vehicleSyncData);
 }
 
 //----------------------------------------------------
