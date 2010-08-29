@@ -73,6 +73,7 @@ BOOL CLocalPlayer::Process()
 		if(m_pPlayerPed->IsInVehicle() && m_pPlayerPed->IsDead()) {
 			m_pPlayerPed->SetDead();
 		}
+
 		if((m_pPlayerPed->GetAction() == ACTION_WASTED) && !m_bIsWasted)
 		{
 			m_bIsWasted = TRUE;
@@ -107,6 +108,7 @@ BOOL CLocalPlayer::Process()
 							SendInCarFullSyncData(); 
 						}
 					}
+
 					pGame->DisablePassengerEngineAudio();
 				}
 				else
@@ -278,7 +280,8 @@ void CLocalPlayer::SendInCarFullSyncData()
 		// get the player armour (casted to a byte to save space)
 		vehicleSyncData.bytePlayerArmour = (BYTE)m_pPlayerPed->GetArmour();
 
-		pChatWindow->AddDebugMessage("Sending vehicle sync");
+		// write vehicle sync struct to bit stream
+		bsVehicleSync.Write((char *)&vehicleSyncData, sizeof(VEHICLE_SYNC_DATA));
 
 		// send sync data
 		pNetGame->GetRakPeer()->Send(&bsVehicleSync,HIGH_PRIORITY,UNRELIABLE_SEQUENCED,0,UNASSIGNED_SYSTEM_ADDRESS,TRUE);

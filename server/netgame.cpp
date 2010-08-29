@@ -256,15 +256,10 @@ void CNetGame::VehicleSync(Packet *p)
 	// construct the vehicle sync bit stream
 	BitStream bsVehicleSync(p->data, p->length, FALSE);
 
-	BYTE byteVehicleID;
 	VEHICLE_SYNC_DATA vehicleSyncData;
-	S_CAMERA_AIM caAiming;
 
 	// ignore the packet id
 	bsVehicleSync.IgnoreBytes(sizeof(MessageID));
-
-	// read the vehicle id
-	bsVehicleSync.Read(byteVehicleID);
 
 	// read the vehicle sync data struct
 	bsVehicleSync.Read((char *)&vehicleSyncData, sizeof(VEHICLE_SYNC_DATA));
