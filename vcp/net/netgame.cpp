@@ -253,6 +253,8 @@ void CNetGame::VehicleSync(Packet *p)
 
 		bsVehicleSync.Read((char *)&vehicleSyncData, sizeof(VEHICLE_SYNC_DATA));
 
+		pChatWindow->AddDebugMessage("Got vehicle sync from player %d", bytePlayerID);
+
 		// store the vehicle sync data
 		pPlayer->StoreInCarFullSyncData(&vehicleSyncData);
 	}
