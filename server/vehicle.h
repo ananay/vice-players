@@ -94,6 +94,5 @@ public:
 
 	void UpdateLastDrivenTime();
 
-	void Update(BYTE byteSystemAddress, MATRIX4X4 * matWorld,
-		Vector3 * vecMoveSpeed, float fHealth);
+	void Update(BYTE bytePlayerID, MATRIX4X4 * matWorld, Vector3 * vecMoveSpeed, Vector3 * vecTurnSpeed, float fHealth);
 };

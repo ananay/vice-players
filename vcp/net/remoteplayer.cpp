@@ -49,6 +49,7 @@ CRemotePlayer::CRemotePlayer()
 	m_fRotation = 0.0f;
 	m_byteVehicleID = 0;
 	m_uiPassengerSeat = 0;
+	m_bHasAim = false;
 }
 
 //----------------------------------------------------
@@ -107,8 +108,12 @@ void CRemotePlayer::Process()
 				// Update the ingame player.
 				UpdateOnFootPosition(m_matWorld.vPos);
 
-				// Update aiming.
-				m_pPlayerPed->SetCurrentAim(&m_Aim);
+				if(m_bHasAim)
+				{
+					// Update aiming.
+					m_pPlayerPed->SetCurrentAim(&m_Aim);
+					m_bHasAim = false;
+				}
 
 				// update current weapon
 				if(m_pPlayerPed->GetCurrentWeapon() != m_byteCurrentWeapon) {
@@ -129,7 +134,7 @@ void CRemotePlayer::Process()
 				CVehicle *pVehicle = pVehiclePool->GetAt(m_byteVehicleID);
 				
 				if(pVehicle) {
-					UpdateInCarMatrixAndSpeed(&m_matWorld,&m_vecMoveSpeed);
+					UpdateInCarMatrixAndSpeed(&m_matWorld, &m_vecMoveSpeed, &m_vecTurnSpeed);
 					pVehicle->SetHealth(m_fVehicleHealth);
 				}
 
@@ -197,8 +202,15 @@ void CRemotePlayer::StoreOnFootFullSyncData(PLAYER_SYNC_DATA * pPlayerSyncData)
 
 //----------------------------------------------------
 
-void CRemotePlayer::UpdateInCarMatrixAndSpeed(MATRIX4X4 * matWorld,
-											  Vector3 * vecMoveSpeed)
+void CRemotePlayer::StoreAimSyncData(CAMERA_AIM * pAim)
+{ 
+	m_bHasAim = true;
+	memcpy(&m_Aim, pAim, sizeof(CAMERA_AIM));
+};
+
+//----------------------------------------------------
+
+void CRemotePlayer::UpdateInCarMatrixAndSpeed(MATRIX4X4 * matWorld, Vector3 * vecMoveSpeed, Vector3 * vecTurnSpeed)
 {
 	MATRIX4X4 matVehicle;
 	CVehicle * pVehicle = pNetGame->GetVehiclePool()->GetAt(m_byteVehicleID);
@@ -248,23 +260,26 @@ void CRemotePlayer::UpdateInCarMatrixAndSpeed(MATRIX4X4 * matWorld,
 		pVehicle->SetMatrix(matVehicle);
 
 		pVehicle->SetMoveSpeed(*vecMoveSpeed);
+		pVehicle->SetTurnSpeed(*vecTurnSpeed);
 	}
 }
 
 //----------------------------------------------------
 
-void CRemotePlayer::StoreInCarFullSyncData( BYTE byteVehicleID,
-										    WORD wKeys,MATRIX4X4 * matWorld,
-											Vector3 *vecMoveSpeed,float fVehicleHealth )
+void CRemotePlayer::StoreInCarFullSyncData(VEHICLE_SYNC_DATA * pVehicleSyncData)
 {
-	m_byteVehicleID = byteVehicleID;
+	m_byteVehicleID = pVehicleSyncData->byteVehicleID;
+	m_wKeys = pVehicleSyncData->wKeys;
+	memcpy(&m_matWorld.vLookRight, &pVehicleSyncData->vecRoll, sizeof(Vector3));
+	memcpy(&m_matWorld.vLookUp, &pVehicleSyncData->vecDirection, sizeof(Vector3));
+	memcpy(&m_matWorld.vPos, &pVehicleSyncData->vecPos, sizeof(Vector3));
+	memcpy(&m_vecMoveSpeed, &pVehicleSyncData->vecMoveSpeed, sizeof(Vector3));
+	memcpy(&m_vecTurnSpeed, &pVehicleSyncData->vecTurnSpeed, sizeof(Vector3));
+	m_fVehicleHealth = UNPACK_VEHICLE_HEALTH(pVehicleSyncData->byteVehicleHealth);
+	m_byteHealth = pVehicleSyncData->bytePlayerHealth;
+	m_byteArmour = pVehicleSyncData->bytePlayerArmour;
 	m_bIsInVehicle = TRUE;
 	m_bIsAPassenger = FALSE;
-
-	m_wKeys = wKeys;
-	memcpy(&m_matWorld,matWorld,sizeof(MATRIX4X4));
-	memcpy(&m_vecMoveSpeed,vecMoveSpeed,sizeof(Vector3));
-	m_fVehicleHealth = fVehicleHealth;
 	m_byteUpdateFromNetwork = UPDATE_TYPE_FULL_INCAR;
 }
 

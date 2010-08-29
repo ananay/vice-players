@@ -98,7 +98,7 @@ void CPlayer::BroadcastSyncData()
 	if(m_byteUpdateFromNetwork == UPDATE_TYPE_FULL_ONFOOT)
 	{
 		PLAYER_SYNC_DATA playerSyncData;
-		bsSync.Write((BYTE)ID_PLAYER_SYNC);
+		bsSync.Write((MessageID)ID_PLAYER_SYNC);
 		bsSync.Write(m_bytePlayerID);
 		playerSyncData.wKeys = m_wKeys;
 		memcpy(&playerSyncData.vecPos, &m_vecPos, sizeof(Vector3));
@@ -114,6 +114,7 @@ void CPlayer::BroadcastSyncData()
 			bsSync.Write((char *)&m_Aiming.vecA1, sizeof(Vector3));
 			bsSync.Write((char *)&m_Aiming.vecA2, sizeof(Vector3));
 			bsSync.Write((char *)&m_Aiming.vecAPos1, sizeof(Vector3));
+			m_bHasAim = false;
 		}
 		else {
 			bsSync.Write0();
@@ -122,36 +123,22 @@ void CPlayer::BroadcastSyncData()
 		pNetGame->BroadcastData(&bsSync,HIGH_PRIORITY,UNRELIABLE_SEQUENCED,0,m_bytePlayerID);
 	}
 	else if(m_byteUpdateFromNetwork == UPDATE_TYPE_FULL_INCAR)
-	{			
-		BYTE	byteWriteVehicleHealth;
-
-		// packing
-		byteWriteVehicleHealth = PACK_VEHICLE_HEALTH(m_fVehicleHealth);
-
-		// storing
-		bsSync.Write((BYTE)ID_VEHICLE_SYNC);
+	{
+		VEHICLE_SYNC_DATA vehicleSyncData;
+		bsSync.Write((MessageID)ID_VEHICLE_SYNC);
 		bsSync.Write(m_bytePlayerID);
-		bsSync.Write(m_byteVehicleID);
-		bsSync.Write((WORD)m_wKeys);
-		bsSync.Write(m_cvecRoll.X);
-		bsSync.Write(m_cvecRoll.Y);
-		bsSync.Write(m_cvecRoll.Z);
-		bsSync.Write(m_cvecDirection.X);
-		bsSync.Write(m_cvecDirection.Y);
-		bsSync.Write(m_cvecDirection.Z);
-		bsSync.Write(m_vecPos.X);
-		bsSync.Write(m_vecPos.Y);
-		bsSync.Write(m_vecPos.Z);
+		vehicleSyncData.byteVehicleID = m_byteVehicleID;
+		vehicleSyncData.wKeys = m_wKeys;
+		memcpy(&vehicleSyncData.vecRoll, &m_vecRoll, sizeof(Vector3));
+		memcpy(&vehicleSyncData.vecDirection, &m_vecDirection, sizeof(Vector3));
+		memcpy(&vehicleSyncData.vecPos, &m_vecPos, sizeof(Vector3));
+		memcpy(&vehicleSyncData.vecMoveSpeed, &m_vecMoveSpeed, sizeof(Vector3));
+		memcpy(&vehicleSyncData.vecTurnSpeed, &m_vecTurnSpeed, sizeof(Vector3));
+		vehicleSyncData.byteVehicleHealth = PACK_VEHICLE_HEALTH(m_fVehicleHealth);
+		vehicleSyncData.bytePlayerHealth = m_byteHealth;
+		vehicleSyncData.bytePlayerArmour = m_byteArmour;
+		bsSync.Write((char *)&vehicleSyncData, sizeof(VEHICLE_SYNC_DATA));
 
-		// move + turn speed
-		bsSync.Write(m_vecMoveSpeed.X);
-		bsSync.Write(m_vecMoveSpeed.Y);
-
-		bsSync.Write(byteWriteVehicleHealth);
-		bsSync.Write(m_byteHealth);
-		bsSync.Write(m_byteArmour);
-
-		// sending...
 		pNetGame->BroadcastData(&bsSync,HIGH_PRIORITY,UNRELIABLE_SEQUENCED,0,m_bytePlayerID);
 	}	
 }
@@ -165,13 +152,14 @@ void CPlayer::StoreOnFootFullSyncData(PLAYER_SYNC_DATA * pPlayerSyncData)
 		m_byteVehicleID = 0;
 	}
 
+	// update player data
 	m_wKeys = pPlayerSyncData->wKeys;
 	memcpy(&m_vecPos, &pPlayerSyncData->vecPos, sizeof(Vector3));
 	m_fRotation = pPlayerSyncData->fRotation;
 	m_byteCurrentWeapon = pPlayerSyncData->byteCurrentWeapon;
 	m_byteShootingFlags = pPlayerSyncData->byteShootingFlags;
 
-	// note: should do something like this for armour too?
+	// note: should do something like this for armour too (or add armour to this callback)?
 	if(GetHealth() != pPlayerSyncData->byteHealth) {
 		pScripts->onPlayerDamage(m_bytePlayerID, GetHealth(), pPlayerSyncData->byteHealth);
 	}
@@ -179,10 +167,11 @@ void CPlayer::StoreOnFootFullSyncData(PLAYER_SYNC_DATA * pPlayerSyncData)
 	m_byteHealth = pPlayerSyncData->byteHealth;
 	m_byteArmour = pPlayerSyncData->byteArmour;
 
-	// todo: if this returns 0 then m_byteUpdateFromNetwork should NOT be set
-	pScripts->onPlayerSync(m_bytePlayerID);
-
+	// update network update type
 	m_byteUpdateFromNetwork = UPDATE_TYPE_FULL_ONFOOT;
+
+	// call onPlayerSync scripting callback
+	pScripts->onPlayerSync(m_bytePlayerID);
 }
 
 //----------------------------------------------------
@@ -195,31 +184,54 @@ void CPlayer::StoreAimSyncData(S_CAMERA_AIM * pAim)
 
 //----------------------------------------------------
 
-void CPlayer::StoreInCarFullSyncData(BYTE byteVehicleID, WORD wKeys,
-									 C_VECTOR1 * cvecRoll, C_VECTOR1 * cvecDirection, 
-									 Vector3 * vecPos, Vector3 * vecMoveSpeed,float fVehicleHealth)
+void CPlayer::StoreInCarFullSyncData(VEHICLE_SYNC_DATA * pVehicleSyncData)
 {
-	m_byteVehicleID = byteVehicleID;
+	// get the vehicle pointer
+	CVehicle * pVehicle = pNetGame->GetVehiclePool()->GetAt(pVehicleSyncData->byteVehicleID);
+
+	// make sure vehicle is valid
+	if(!pVehicle)
+	{
+		// sending vehicle sync data for invalid vehicle
+		return;
+	}
+
+	// update player data
+	m_byteVehicleID = pVehicleSyncData->byteVehicleID;
+	m_wKeys = pVehicleSyncData->wKeys;
+	memcpy(&m_vecRoll, &pVehicleSyncData->vecRoll, sizeof(Vector3));
+	memcpy(&m_vecDirection, &pVehicleSyncData->vecDirection, sizeof(Vector3));
+	//memcpy(&m_cvecRoll, &pVehicleSyncData->cvecRoll, sizeof(C_VECTOR1));
+	//memcpy(&m_cvecDirection, &pVehicleSyncData->cvecDirection, sizeof(C_VECTOR1));
+	memcpy(&m_vecPos, &pVehicleSyncData->vecPos, sizeof(Vector3));
+	memcpy(&m_vecMoveSpeed, &pVehicleSyncData->vecMoveSpeed, sizeof(Vector3));
+	memcpy(&m_vecTurnSpeed, &pVehicleSyncData->vecTurnSpeed, sizeof(Vector3));
+	m_fVehicleHealth = UNPACK_VEHICLE_HEALTH(pVehicleSyncData->byteVehicleHealth);
+	m_byteHealth = pVehicleSyncData->bytePlayerHealth;
+	m_byteArmour = pVehicleSyncData->bytePlayerArmour;
 	m_bIsInVehicle = TRUE;
 	m_bIsAPassenger = FALSE;
-	m_wKeys = wKeys;
 
-	memcpy(&m_cvecRoll,cvecRoll,sizeof(C_VECTOR1));
-	memcpy(&m_cvecDirection,cvecDirection,sizeof(C_VECTOR1));
-	memcpy(&m_vecPos,vecPos,sizeof(Vector3));
-
-	m_fVehicleHealth = fVehicleHealth;
+	// update network update type
 	m_byteUpdateFromNetwork = UPDATE_TYPE_FULL_INCAR;
+
+	// call onPlayerSync scripting callback
+	pScripts->onPlayerSync(m_bytePlayerID);
 
 	MATRIX4X4 matWorld;
 
-	DecompressVector1(&matWorld.vLookRight,cvecRoll);
-	DecompressVector1(&matWorld.vLookUp,cvecDirection);
-	memcpy(&matWorld.vPos,vecPos,sizeof(Vector3));
-	memcpy(&m_vecMoveSpeed,vecMoveSpeed,sizeof(Vector3));
+	// copy the roll and direction vectors into the new matrix
+	memcpy(&matWorld.vLookRight, &pVehicleSyncData->vecRoll, sizeof(Vector3));
+	memcpy(&matWorld.vLookUp, &pVehicleSyncData->vecDirection, sizeof(Vector3));
+	// decompress the roll and direction vectors into the new vehicle matrix
+	//DecompressVector1(&matWorld.vLookRight, pVehicleSyncData->cvecRoll);
+	//DecompressVector1(&matWorld.vLookUp, pVehicleSyncData->cvecDirection);
 
-	CVehicle *pVehicle = pNetGame->GetVehiclePool()->GetAt(byteVehicleID);
-	pVehicle->Update(m_bytePlayerID,&matWorld,vecMoveSpeed,fVehicleHealth);
+	// copy the vehicle pos into the new vehicle matrix
+	memcpy(&matWorld.vPos, &pVehicleSyncData->vecPos, sizeof(Vector3));
+
+	// update the vehicle data
+	pVehicle->Update(m_bytePlayerID, &matWorld, &pVehicleSyncData->vecMoveSpeed, &pVehicleSyncData->vecTurnSpeed, m_fVehicleHealth);
 }
 
 //----------------------------------------------------
