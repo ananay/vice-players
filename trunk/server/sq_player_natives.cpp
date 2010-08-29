@@ -994,15 +994,15 @@ SQInteger sq_forceClassSelection(SQVM * pVM)
 SQInteger sq_togglePlayerBleeding(SQVM * pVM)
 {
 	SQInteger playerSystemAddress;
-	int item;
+	SQInteger toggle;
 
 	sq_getinteger(pVM, -2, &playerSystemAddress);
-    sq_getinteger(pVM, -1, &item);
+    sq_getinteger(pVM, -1, &toggle);
 
 	if(pNetGame->GetPlayerPool()->GetSlotState(playerSystemAddress))
 	{
 		RakNet::BitStream bsSend;
-		bsSend.Write(item);
+		bsSend.Write(toggle);
 		pNetGame->GetRPC4()->Call("Script_togglePlayerBleeding",&bsSend,HIGH_PRIORITY,RELIABLE,0,pNetGame->GetRakPeer()->GetSystemAddressFromIndex(playerSystemAddress),false);
 
 		sq_pushbool(pVM, true);
@@ -1018,7 +1018,7 @@ SQInteger sq_togglePlayerBleeding(SQVM * pVM)
 SQInteger sq_setItemFlashing(SQVM * pVM)
 {
 	SQInteger playerSystemAddress;
-	int item;
+	SQInteger item;
 
 	sq_getinteger(pVM, -2, &playerSystemAddress);
     sq_getinteger(pVM, -1, &item);
