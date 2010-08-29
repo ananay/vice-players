@@ -70,3 +70,8 @@ SQInteger sq_getPlayerTeam(SQVM * v); // done
 SQInteger sq_getPlayerTurnSpeed(SQVM * v); // done
 SQInteger sq_getPlayerMoveSpeed(SQVM * v); // done
 SQInteger sq_addPlayerClass(SQVM * v); // done
+
+// Added by VC-Players team.
+SQInteger sq_forceClassSelection(SQVM * pVM);
+SQInteger sq_togglePlayerBleeding(SQVM * pVM);
+SQInteger sq_setItemFlashing(SQVM * pVM);

@@ -726,12 +726,6 @@ void Script_DestroyVehicle(RakNet::BitStream *bitStream, Packet *packet)
 	pNetGame->GetVehiclePool()->Delete(vehicle);
 }
 
-void Script_forceClassSelection(RakNet::BitStream *bitStream, Packet *packet)
-{
-	CLocalPlayer *pLocalPlayer = pNetGame->GetPlayerPool()->GetLocalPlayer();
-	pNetGame->GetGameLogic()->HandleClassSelection(pLocalPlayer);
-}
-
 // Play sound
 void Script_PlaySound(RakNet::BitStream *bitStream, Packet *packet)
 {
@@ -755,6 +749,52 @@ void Script_FadeScreen(RakNet::BitStream *bitStream, Packet *packet)
 	bitStream->Read(time);
 
 	pGame->FadeScreen(type, time);
+}
+
+// Added by the VC-Players team. (Custom functions)
+
+// setItemFlashing Native.
+void Script_FlashItem(RakNet::BitStream *bitStream, Packet *packet)
+{
+	CPlayerPed *pPlayer = pGame->FindPlayerPed();
+
+	int item;
+
+	bitStream->Read(item);
+
+	pPlayer->Flash(item);
+}
+
+// forceClassSelection Native.
+void Script_forceClassSelection(RakNet::BitStream *bitStream, Packet *packet)
+{
+	CLocalPlayer *pLocalPlayer = pNetGame->GetPlayerPool()->GetLocalPlayer();
+	pNetGame->GetGameLogic()->HandleClassSelection(pLocalPlayer);
+}
+
+// togglePlayerBleeding Native.
+void Script_togglePlayerBleeding(RakNet::BitStream *bitStream, Packet *packet)
+{
+	CPlayerPed *pPlayer = pGame->FindPlayerPed();
+
+	int toggle;
+
+	bitStream->Read(toggle);
+
+	pPlayer->SetActorBleeding(toggle);
+}
+
+// toggleVehicleSiren Native.
+void Script_toggleVehicleSiren(RakNet::BitStream *bitStream, Packet *packet)
+{
+	BYTE vehicle;
+	int iToggle;
+
+	bitStream->Read(vehicle);
+	bitStream->Read(iToggle);
+	
+	CVehicle *pVehicle = pNetGame->GetVehiclePool()->GetAt(vehicle);
+	pVehicle->toggleVehicleSiren(iToggle);
 }
 
 void RegisterRPCs()
@@ -803,7 +843,12 @@ void RegisterRPCs()
 	pNetGame->GetRPC4()->RegisterFunction("Script_DestroyVehicle",Script_DestroyVehicle);
 	pNetGame->GetRPC4()->RegisterFunction("Script_PlaySound",Script_PlaySound);
 	pNetGame->GetRPC4()->RegisterFunction("Script_FadeScreen",Script_FadeScreen);
-	pNetGame->GetRPC4()->RegisterFunction("Script_forceClassSelection", Script_forceClassSelection);
+
+	// Added by VC-Players team.
+	pNetGame->GetRPC4()->RegisterFunction("Script_forceClassSelection",Script_forceClassSelection);
+	pNetGame->GetRPC4()->RegisterFunction("Script_togglePlayerBleeding",Script_togglePlayerBleeding);
+	pNetGame->GetRPC4()->RegisterFunction("Script_togglePlayerBleeding",Script_togglePlayerBleeding);
+	pNetGame->GetRPC4()->RegisterFunction("Script_toggleVehicleSiren",Script_toggleVehicleSiren);
 
 }
 
@@ -850,7 +895,12 @@ void UnRegisterRPCs()
 	pNetGame->GetRPC4()->UnregisterFunction("Script_DestroyVehicle");
 	pNetGame->GetRPC4()->UnregisterFunction("Script_PlaySound");
 	pNetGame->GetRPC4()->UnregisterFunction("Script_FadeScreen");
+
+	// Added by VC-Players team.
 	pNetGame->GetRPC4()->UnregisterFunction("Script_forceClassSelection");
+	pNetGame->GetRPC4()->UnregisterFunction("Script_togglePlayerBleeding");
+	pNetGame->GetRPC4()->UnregisterFunction("Script_togglePlayerBleeding");
+	pNetGame->GetRPC4()->UnregisterFunction("Script_toggleVehicleSiren");
 }
 
 //----------------------------------------------------

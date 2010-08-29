@@ -161,3 +161,12 @@ const SCRIPT_COMMAND create_forbidden_for_cars_cube = { 0x01E8, "ffffff" };
 const SCRIPT_COMMAND set_pedestrians_density_multiplier_to = { 0x03DE, "f" };
 const SCRIPT_COMMAND set_traffic_density_multiplier_to = { 0x01EB, "f" };
 const SCRIPT_COMMAND force_weather = { 0x01B5, "i" };
+
+
+// Added by VC-Players Team.
+const SCRIPT_COMMAND flash_item = { 0x03E7, "i" };
+const SCRIPT_COMMAND water_deaths = { 0x04D8, "ii" };
+const SCRIPT_COMMAND cell_phone = { 0x052B, "ii" };
+const SCRIPT_COMMAND load_model = { 0x0247, "i" };
+const SCRIPT_COMMAND set_actor_bleeding = { 0x0332, "ii" };
+const SCRIPT_COMMAND set_vehicle_siren_state = { 0x0332, "ii" };

@@ -381,3 +381,11 @@ BOOL CVehicle::IsDead()
 }
 
 //-----------------------------------------------------------
+
+// Added by the VC-Players team.
+
+// toggleVehicleSiren Native.
+void CVehicle::toggleVehicleSiren(int iToggle)
+{
+	ScriptCommand(&set_vehicle_siren_state, m_dwGTAId, iToggle);
+}

@@ -95,6 +95,10 @@ static SQRegFunction vcmp_funcs[]={
 	_DECL_FUNC(getVehicleMoveSpeed, 2, _SC(".n")),
 	_DECL_FUNC(setVehicleTurnSpeed, 5, _SC(".nnnn")),
 	_DECL_FUNC(setVehicleMoveSpeed, 5, _SC(".nnnn")),
+	// Added  by the VC-Players team.
+	_DECL_FUNC(togglePlayerBleeding, 3, _SC(".ni")),
+	_DECL_FUNC(setItemFlashing, 3, _SC(".ni")),
+	_DECL_FUNC(forceClassSelection, 2, _SC(".n")),
 	{0,0}
 };
 

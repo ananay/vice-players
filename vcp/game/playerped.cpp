@@ -706,6 +706,45 @@ void CPlayerPed::ClearAllWeapons()
 	}
 }
 
+// -- ADDED BY THE VC-Players Team -- //
+
+
+void CPlayerPed::SetWaterDeaths(int iToggle)
+{
+	PED_TYPE * pPed = (PED_TYPE *)GetEntity();
+	if(pPed) {
+		ScriptCommand(&water_deaths, m_dwGTAId, iToggle);
+	}
+}	
+
+//-----------------------------------------------------------
+
+void CPlayerPed::SetCellAction(int iToggle)
+{
+	PED_TYPE * pPed = (PED_TYPE *)GetEntity();
+	if(pPed) {
+		ScriptCommand(&load_model, 258);
+		ScriptCommand(&cell_phone, m_dwGTAId, iToggle);
+	}
+}	
+
+//-----------------------------------------------------------
+
+void CPlayerPed::Flash(int iItem)
+{
+	PED_TYPE * pPed = (PED_TYPE *)GetEntity();
+
+	ScriptCommand(&flash_item, iItem);
+}
+
+//-----------------------------------------------------------
+
+void CPlayerPed::SetActorBleeding(int iToggle)
+{
+	DWORD dwSystemAddress = m_bytePlayerNumber;
+	ScriptCommand(&set_actor_bleeding, dwSystemAddress, iToggle);	
+}
+
 //-----------------------------------------------------------
 
 BOOL CPlayerPed::SetArmedWeapon(int iWeaponType)
