@@ -784,19 +784,6 @@ void Script_togglePlayerBleeding(RakNet::BitStream *bitStream, Packet *packet)
 	pPlayer->SetActorBleeding(toggle);
 }
 
-// toggleVehicleSiren Native.
-void Script_toggleVehicleSiren(RakNet::BitStream *bitStream, Packet *packet)
-{
-	BYTE vehicle;
-	int iToggle;
-
-	bitStream->Read(vehicle);
-	bitStream->Read(iToggle);
-	
-	CVehicle *pVehicle = pNetGame->GetVehiclePool()->GetAt(vehicle);
-	pVehicle->toggleVehicleSiren(iToggle);
-}
-
 void RegisterRPCs()
 {
 	pNetGame->GetRPC4()->RegisterFunction("ServerJoin",ServerJoin);
@@ -847,8 +834,7 @@ void RegisterRPCs()
 	// Added by VC-Players team.
 	pNetGame->GetRPC4()->RegisterFunction("Script_forceClassSelection",Script_forceClassSelection);
 	pNetGame->GetRPC4()->RegisterFunction("Script_togglePlayerBleeding",Script_togglePlayerBleeding);
-	pNetGame->GetRPC4()->RegisterFunction("Script_togglePlayerBleeding",Script_togglePlayerBleeding);
-	pNetGame->GetRPC4()->RegisterFunction("Script_toggleVehicleSiren",Script_toggleVehicleSiren);
+	pNetGame->GetRPC4()->RegisterFunction("Script_FlashItem",Script_FlashItem);
 
 }
 
@@ -899,8 +885,7 @@ void UnRegisterRPCs()
 	// Added by VC-Players team.
 	pNetGame->GetRPC4()->UnregisterFunction("Script_forceClassSelection");
 	pNetGame->GetRPC4()->UnregisterFunction("Script_togglePlayerBleeding");
-	pNetGame->GetRPC4()->UnregisterFunction("Script_togglePlayerBleeding");
-	pNetGame->GetRPC4()->UnregisterFunction("Script_toggleVehicleSiren");
+	pNetGame->GetRPC4()->UnregisterFunction("Script_FlashItem");
 }
 
 //----------------------------------------------------

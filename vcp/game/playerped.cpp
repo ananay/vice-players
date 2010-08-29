@@ -35,6 +35,7 @@
 
 extern CGame *pGame;
 extern CNetGame *pNetGame;
+extern CChatWindow   *pChatWindow;
 
 //-----------------------------------------------------------
 
@@ -706,6 +707,10 @@ void CPlayerPed::ClearAllWeapons()
 	}
 }
 
+
+
+
+
 // -- ADDED BY THE VC-Players Team -- //
 
 
@@ -732,9 +737,8 @@ void CPlayerPed::SetCellAction(int iToggle)
 
 void CPlayerPed::Flash(int iItem)
 {
-	PED_TYPE * pPed = (PED_TYPE *)GetEntity();
-
 	ScriptCommand(&flash_item, iItem);
+	pChatWindow->AddDebugMessage("Flashing called");
 }
 
 //-----------------------------------------------------------
@@ -742,10 +746,18 @@ void CPlayerPed::Flash(int iItem)
 void CPlayerPed::SetActorBleeding(int iToggle)
 {
 	DWORD dwSystemAddress = m_bytePlayerNumber;
-	ScriptCommand(&set_actor_bleeding, dwSystemAddress, iToggle);	
+
+	ScriptCommand(&set_actor_bleeding, m_dwGTAId, iToggle);	
 }
 
 //-----------------------------------------------------------
+
+
+
+
+
+
+
 
 BOOL CPlayerPed::SetArmedWeapon(int iWeaponType)
 {

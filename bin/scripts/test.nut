@@ -11,14 +11,14 @@ function onServerInit()
 	addPlayerClass(2, 93, -673.2837, -1325.3040, 11.0715, 116.6886, 1, 1, 23, 80, 19, 23);
 	
 	// Some test vehicles
-	createVehicle(149, -681.5270, -1329.4580, 10.8290, 292.6041, 5, 5);
-	createVehicle(150, -683.3698, -1326.5831, 10.8105, 290.5928, 5, 5);
-	createVehicle(151, -684.9037, -1323.8152, 10.9755, 292.5149, 5, 5);
-	createVehicle(152, -687.1147, -1321.3459, 11.1368, 292.0442, 5, 5);
-	createVehicle(162, -674.5535, -1343.4515, 11.2688, 294.7513, 5, 5);
-	createVehicle(162, -677.5064, -1342.6252, 11.2689, 289.3499, 5, 5);
-	createVehicle(164, -680.6094, -1333.6694, 10.8321, 290.6213, 5, 5);
-	createVehicle(164, -679.5953, -1337.7463, 10.8321, 292.4391, 5, 5);
+	local v1 = createVehicle(149, -681.5270, -1329.4580, 10.8290, 292.6041, 5, 5);
+	local v2 = createVehicle(150, -683.3698, -1326.5831, 10.8105, 290.5928, 5, 5);
+	local v3 = createVehicle(151, -684.9037, -1323.8152, 10.9755, 292.5149, 5, 5);
+	local v4 = createVehicle(152, -687.1147, -1321.3459, 11.1368, 292.0442, 5, 5);
+	local v5 = createVehicle(162, -674.5535, -1343.4515, 11.2688, 294.7513, 5, 5);
+	local v6 = createVehicle(162, -677.5064, -1342.6252, 11.2689, 289.3499, 5, 5);
+	local v7 = createVehicle(164, -680.6094, -1333.6694, 10.8321, 290.6213, 5, 5);
+	local v8 = createVehicle(164, -679.5953, -1337.7463, 10.8321, 292.4391, 5, 5);
 
 	setScriptAuthor("adamix & jenksta & chris");
 	setScriptVersion("0.1");
@@ -47,6 +47,7 @@ function onPlayerConnect(playerid)
 	sendPlayerMessage(playerid, 0xFFFF00FF, "-> Thanks for playing at Vice Madness!");
 	
 	sendPlayerMessageToAll(0xE60000FF, "[Join]: "  + getPlayerName(playerid) + " has joined Vice Maddness!.");
+	
 }
 
 
@@ -96,9 +97,27 @@ function onPlayerCommand(playerid, cmdtext)
 		destroyVehicle(car);
 		
 	}
+	if(cmd[0] == "/bleed")
+	{
+		togglePlayerBleeding(playerid, cmd[1].tointeger());
+	}
+	if(cmd[0] == "/mycar")
+	{
+		sendPlayerMessage(playerid, 0x00FF00FF, "Your Vehicle: " + getPlayerVehicleID(playerid));
+	}
 	if(cmd[0] == "/classselect")
 	{
 		forceClassSelection(playerid);
+	}
+	if(cmd[0] == "/vehicleme") 
+	{
+		if(isPlayerInVehicle(playerid)) sendPlayerMessage(playerid, 0x00FF00FF, "true");
+			else sendPlayerMessage(playerid, 0x00FF00FF, "false");
+	}
+	if(cmd[0] == "/flashitem")
+	{
+		setItemFlashing(playerid, cmd[1].tointeger());
+		sendPlayerMessage(playerid, 0xFFFF00FF, "Flashing item: " + cmd[1]);
 	}
 	if(cmd[0] == "/mypos")
 	{
