@@ -46,7 +46,7 @@ class CRemotePlayer
 private:
 	CPlayerPed			*m_pPlayerPed;
 
-	BYTE				m_byteSystemAddress;
+	BYTE				m_bytePlayerID;
 	BYTE				m_byteUpdateFromNetwork;
 	BOOL				m_bIsActive;
 	BOOL				m_bIsWasted;
@@ -89,8 +89,8 @@ public:
 	void HandleVehicleEntryExit();
 	void Say(PCHAR szText);
 
-	void SetID(BYTE byteSystemAddress) { m_byteSystemAddress = byteSystemAddress; };
-	BYTE GetID() { return m_byteSystemAddress; };
+	void SetID(BYTE byteSystemAddress) { m_bytePlayerID = byteSystemAddress; };
+	BYTE GetID() { return m_bytePlayerID; };
 	BYTE GetTeam() { return m_byteTeam; };	
 
 	CPlayerPed * GetPlayerPed() { return m_pPlayerPed; };

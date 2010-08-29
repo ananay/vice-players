@@ -39,7 +39,7 @@ extern CNetGame* pNetGame;
 CRemotePlayer::CRemotePlayer()
 {
 	m_byteUpdateFromNetwork = UPDATE_TYPE_NONE;
-	m_byteSystemAddress = INVALID_PLAYER_ID;
+	m_bytePlayerID = INVALID_PLAYER_ID;
 	m_bIsActive = FALSE;
 	m_bIsWasted = FALSE;
 	m_pPlayerPed = NULL;
@@ -137,6 +137,8 @@ void CRemotePlayer::Process()
 					UpdateInCarMatrixAndSpeed(&m_matWorld, &m_vecMoveSpeed, &m_vecTurnSpeed);
 					pVehicle->SetHealth(m_fVehicleHealth);
 				}
+
+				pChatWindow->AddDebugMessage("Processed player %d vehicle sync", m_bytePlayerID);
 
 				m_byteUpdateFromNetwork = UPDATE_TYPE_NONE;
 			}
@@ -306,7 +308,7 @@ BOOL CRemotePlayer::SpawnPlayer( BYTE byteTeam, BYTE byteSkin,
 		delete m_pPlayerPed;
 	}
 
-	CPlayerPed *pGamePlayer = pGame->NewPlayer(m_byteSystemAddress+2,byteSkin,vecPos->X,
+	CPlayerPed *pGamePlayer = pGame->NewPlayer(m_bytePlayerID+2,byteSkin,vecPos->X,
 		vecPos->Y,vecPos->Z,fRotation);
 	
 	if(pGamePlayer) 
@@ -343,7 +345,7 @@ BOOL CRemotePlayer::SpawnPlayer( BYTE byteTeam, BYTE byteSkin,
 void CRemotePlayer::HandleDeath(BYTE byteReason, BYTE byteWhoKilled, BYTE byteScoringModifier)
 {
 
-	char * szPlayerName = pNetGame->GetPlayerPool()->GetPlayerName(m_byteSystemAddress);
+	char * szPlayerName = pNetGame->GetPlayerPool()->GetPlayerName(m_bytePlayerID);
 	char * szWhoKilledName;
 
 	if(byteWhoKilled != INVALID_PLAYER_ID) {
@@ -381,7 +383,7 @@ void CRemotePlayer::HandleDeath(BYTE byteReason, BYTE byteWhoKilled, BYTE byteSc
 
 void CRemotePlayer::Say(char *szText)
 {
-	char * szPlayerName = pNetGame->GetPlayerPool()->GetPlayerName(m_byteSystemAddress);
+	char * szPlayerName = pNetGame->GetPlayerPool()->GetPlayerName(m_bytePlayerID);
 	pChatWindow->AddChatMessage(szPlayerName,GetTeamColorAsARGB(),szText);
 }
 

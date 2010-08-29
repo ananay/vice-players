@@ -278,6 +278,8 @@ void CLocalPlayer::SendInCarFullSyncData()
 		// get the player armour (casted to a byte to save space)
 		vehicleSyncData.bytePlayerArmour = (BYTE)m_pPlayerPed->GetArmour();
 
+		pChatWindow->AddDebugMessage("Sending vehicle sync");
+
 		// send sync data
 		pNetGame->GetRakPeer()->Send(&bsVehicleSync,HIGH_PRIORITY,UNRELIABLE_SEQUENCED,0,UNASSIGNED_SYSTEM_ADDRESS,TRUE);
 	}
