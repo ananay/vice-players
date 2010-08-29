@@ -56,25 +56,7 @@ SQInteger sq_setPlayerHealth(SQVM * pVM)
 	return 1;
 }
 
-SQInteger sq_forceClassSelection(SQVM * pVM)
-{
-	SQInteger playerSystemAddress;		
-
-	sq_getinteger(pVM, -1, &playerSystemAddress);
-
-	if(pNetGame->GetPlayerPool()->GetSlotState(playerSystemAddress))
-	{
-		pNetGame->GetRPC4()->Call("Script_forceClassSelection",NULL,HIGH_PRIORITY,RELIABLE,0,pNetGame->GetRakPeer()->GetSystemAddressFromIndex(playerSystemAddress),false);
-
-		sq_pushbool(pVM, true);
-		return 1;
-	}
-
-	sq_pushbool(pVM, false);
-	return 1;
-}
-
-// setPlayerArmourr
+// setPlayerArmour
 SQInteger sq_setPlayerArmour(SQVM * pVM)
 {
 	SQInteger playerSystemAddress;
@@ -987,3 +969,71 @@ SQInteger sq_addPlayerClass(SQVM * pVM)
 	sq_pushinteger(pVM, classid);
 	return 1;
 }
+
+
+// Added by VC-Players team.
+SQInteger sq_forceClassSelection(SQVM * pVM)
+{
+	SQInteger playerSystemAddress;		
+
+	sq_getinteger(pVM, -1, &playerSystemAddress);
+
+	if(pNetGame->GetPlayerPool()->GetSlotState(playerSystemAddress))
+	{
+		pNetGame->GetRPC4()->Call("Script_forceClassSelection",NULL,HIGH_PRIORITY,RELIABLE,0,pNetGame->GetRakPeer()->GetSystemAddressFromIndex(playerSystemAddress),false);
+
+		sq_pushbool(pVM, true);
+		return 1;
+	}
+
+	sq_pushbool(pVM, false);
+}
+
+//-----------------------------------------------------------------
+
+SQInteger sq_togglePlayerBleeding(SQVM * pVM)
+{
+	SQInteger playerSystemAddress;
+	int item;
+
+	sq_getinteger(pVM, -2, &playerSystemAddress);
+    sq_getinteger(pVM, -1, &item);
+
+	if(pNetGame->GetPlayerPool()->GetSlotState(playerSystemAddress))
+	{
+		RakNet::BitStream bsSend;
+		bsSend.Write(item);
+		pNetGame->GetRPC4()->Call("Script_togglePlayerBleeding",&bsSend,HIGH_PRIORITY,RELIABLE,0,pNetGame->GetRakPeer()->GetSystemAddressFromIndex(playerSystemAddress),false);
+
+		sq_pushbool(pVM, true);
+		return 1;
+	}
+
+	sq_pushbool(pVM, false);
+	return 1;
+}
+
+//-----------------------------------------------------------------
+
+SQInteger sq_setItemFlashing(SQVM * pVM)
+{
+	SQInteger playerSystemAddress;
+	int item;
+
+	sq_getinteger(pVM, -2, &playerSystemAddress);
+    sq_getinteger(pVM, -1, &item);
+
+	if(pNetGame->GetPlayerPool()->GetSlotState(playerSystemAddress))
+	{
+		RakNet::BitStream bsSend;
+		bsSend.Write(item);
+		pNetGame->GetRPC4()->Call("Script_FlashItem",&bsSend,HIGH_PRIORITY,RELIABLE,0,pNetGame->GetRakPeer()->GetSystemAddressFromIndex(playerSystemAddress),false);
+
+		sq_pushbool(pVM, true);
+		return 1;
+	}
+
+	sq_pushbool(pVM, false);
+	return 1;
+}
+

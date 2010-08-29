@@ -39,3 +39,5 @@ SQInteger sq_getVehiclePosition(SQVM * pVM); // done
 SQInteger sq_setVehiclePosition(SQVM * pVM); // done
 SQInteger sq_setVehicleTurnSpeed(SQVM * pVM); // done
 SQInteger sq_setVehicleMoveSpeed(SQVM * pVM); // done
+
+// Added by VC-Players team.

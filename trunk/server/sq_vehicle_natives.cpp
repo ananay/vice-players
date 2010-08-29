@@ -311,3 +311,5 @@ SQInteger sq_setVehicleMoveSpeed(SQVM * pVM)
 	sq_pushbool(pVM, false);
 	return 1;
 }
+
+// Added by VC-Players team.

@@ -81,6 +81,12 @@ public:
 	void           SetInitialState();
 	BOOL           IsOnScreen();
 
+	// Added by VC-Players Team
+	void		   SetWaterDeaths(int iToggle);
+	void		   SetCellAction(int iToggle);
+	void		   Flash(int iItem);
+	void		   SetActorBleeding(int iToggle);
+
 	float          GetHealth();
 	void           SetHealth(float fHealth);
 	void		   SetGameSpeed(float gSpeed);
