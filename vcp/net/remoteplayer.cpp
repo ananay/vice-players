@@ -136,7 +136,9 @@ void CRemotePlayer::Process()
 				if(pVehicle) {
 					UpdateInCarMatrixAndSpeed(&m_matWorld, &m_vecMoveSpeed, &m_vecTurnSpeed);
 					pVehicle->SetHealth(m_fVehicleHealth);
+					pChatWindow->AddDebugMessage("Done with vehicle sync from player %d 1", m_bytePlayerID);
 				}
+				pChatWindow->AddDebugMessage("Done with vehicle sync from player %d", m_bytePlayerID);
 
 				m_byteUpdateFromNetwork = UPDATE_TYPE_NONE;
 			}
@@ -281,6 +283,7 @@ void CRemotePlayer::StoreInCarFullSyncData(VEHICLE_SYNC_DATA * pVehicleSyncData)
 	m_bIsInVehicle = TRUE;
 	m_bIsAPassenger = FALSE;
 	m_byteUpdateFromNetwork = UPDATE_TYPE_FULL_INCAR;
+	pChatWindow->AddDebugMessage("Stored vehicle sync data for player %d", m_bytePlayerID);
 }
 
 //----------------------------------------------------
