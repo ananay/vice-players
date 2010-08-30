@@ -90,6 +90,8 @@ BOOL CLocalPlayer::Process()
 				{
 					// DRIVING VEHICLE
 
+					pChatWindow->AddDebugMessage("In vehicle as driver");
+
 					// VEHICLE WORLD BOUNDS STUFF
 					pVehiclePool = pNetGame->GetVehiclePool();
 					byteVehicleID = (BYTE)pVehiclePool->FindIDFromGtaPtr(m_pPlayerPed->GetGtaVehicle());
@@ -103,9 +105,11 @@ BOOL CLocalPlayer::Process()
 					if((dwThisTick - m_dwLastSendTick) > (UINT)GetOptimumInCarSendRate()) {
 						m_dwLastSendTick = GetTickCount();
 					
+						pChatWindow->AddDebugMessage("Sending vehicle sync");
 						// send nothing while we're getting out.
 						if(m_pPlayerPed->GetAction() != ACTION_EXITING_VEHICLE) {
-							SendInCarFullSyncData(); 
+							SendInCarFullSyncData();
+							pChatWindow->AddDebugMessage("Sent vehicle sync");
 						}
 					}
 

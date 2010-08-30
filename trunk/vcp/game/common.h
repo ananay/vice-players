@@ -58,11 +58,17 @@ typedef struct _MATRIX4X4 {
 
 #define _pad(x,y) BYTE x[y]
 
+//-----------------------------------------------------------
+// CPlaceable
+
 typedef struct _PLACEABLE {
 	MATRIX4X4 matMatrix;
 	DWORD     pMatrix;
 	DWORD     dwHasMatrix;
 } PLACEABLE;
+
+//-----------------------------------------------------------
+// CEntity
 
 typedef struct _ENTITY_TYPE {
 	DWORD	  func_table;         // 00-04
@@ -78,6 +84,9 @@ typedef struct _ENTITY_TYPE {
 	BYTE      byteInterior;       // 5F-60
 	_pad(__pad3, 0x4);            // 60-64
 } ENTITY_TYPE;
+
+//-----------------------------------------------------------
+// CPhysical
 
 typedef struct _PHYSICAL_TYPE {
 	ENTITY_TYPE entity;          // 000-064
@@ -95,12 +104,17 @@ typedef struct _PHYSICAL_TYPE {
 	_pad(__pad4a, 0x4);          // 11C-120
 } PHYSICAL_TYPE;
 
+//-----------------------------------------------------------
+// Weapon State Enumeration
+
 enum eWeaponState
 {
 	WS_NONE,
 	WS_FIRING, // seems to be firing
 	WS_RELOADING // seems to be reloading
 };
+
+//-----------------------------------------------------------
 
 typedef struct _WEAPON_SLOT {
 	DWORD dwType;        // 00-04
@@ -109,6 +123,9 @@ typedef struct _WEAPON_SLOT {
 	DWORD dwAmmo;        // 0C-10
 	_pad(__pad0a, 0x8);  // 10-18
 } WEAPON_SLOT;
+
+//-----------------------------------------------------------
+// CPed
 
 typedef struct _PED_TYPE {
 	PHYSICAL_TYPE physical;        // 000-120
@@ -144,6 +161,9 @@ typedef struct _PED_TYPE {
 	BYTE		  byteCurWepSlot;  // 60C-60D
 } PED_TYPE;
 
+//-----------------------------------------------------------
+// CVehicle
+
 typedef struct _VEHICLE_TYPE {
 	PHYSICAL_TYPE physical;           // 000-120
 	_pad(__pad0b, 0x80);              // 120-1A0
@@ -172,6 +192,9 @@ typedef struct _VEHICLE_TYPE {
 	_pad(__pad7b, 0x5A);              // 246-2A0
 } VEHICLE_TYPE;
 
+//-----------------------------------------------------------
+// CAutomobile
+
 typedef struct _AUTOMOBILE_TYPE
 {
 	VEHICLE_TYPE vehicle;                 // 000-2A0
@@ -188,13 +211,18 @@ typedef struct _AUTOMOBILE_TYPE
 	_pad(__pad3c, 0x24);                  // 5B8-5DC
 } AUTOMOBILE_TYPE;
 
+//-----------------------------------------------------------
+
 typedef struct _CAMERA_AIM
-{ // This is a MATRIX4X4?
+{
 	Vector3 vecA1; // float f1x,f1y,f1z
 	Vector3 vecAPos1; // float pos1x,pos1y,pos1z
 	Vector3 vecAPos2; // float pos2x,pos2y,pos2z
 	Vector3 vecA2; // float f2x,f2y,f2z
 } CAMERA_AIM;
+
+//-----------------------------------------------------------
+// CCamera
 
 typedef struct _CAMERA_TYPE
 {
@@ -209,6 +237,7 @@ typedef struct _CAMERA_TYPE
 } CAMERA_TYPE;
 
 //-----------------------------------------------------------
+// Weather IDs
 
 #define WEATHER_SUNNY		0
 #define WEATHER_CLOUDY		1
@@ -219,6 +248,7 @@ typedef struct _CAMERA_TYPE
 #define WEATHER_INTERIOR	6
 
 //-----------------------------------------------------------
+// Interior IDs
 
 #define INTERIOR_OUTSIDE	0
 #define INTERIOR_HOTEL		1
@@ -241,11 +271,13 @@ typedef struct _CAMERA_TYPE
 #define INTERIOR_PRINTWORKS	18
 
 //-----------------------------------------------------------
+// Fade Types
 
 #define FADE_OUT			0
 #define FADE_IN				1
 
 //-----------------------------------------------------------
+// Vehicle Subtypes
 
 #define	VEHICLE_SUBTYPE_CAR				1
 #define	VEHICLE_SUBTYPE_BIKE			2
@@ -254,6 +286,7 @@ typedef struct _CAMERA_TYPE
 #define	VEHICLE_SUBTYPE_PLANE			5
 
 //-----------------------------------------------------------
+// Action Types
 
 #define ACTION_NORMAL 1
 #define ACTION_DRIVING_VEHICLE 50
@@ -262,6 +295,7 @@ typedef struct _CAMERA_TYPE
 #define ACTION_EXITING_VEHICLE 60
 
 //-----------------------------------------------------------
+// Weapon Model IDs
 
 #define WEAPON_MODEL_CELLPHONE			258
 #define WEAPON_MODEL_BRASSKNUCKLE		259
@@ -300,6 +334,10 @@ typedef struct _CAMERA_TYPE
 #define WEAPON_MODEL_CAMERA				292
 #define WEAPON_MODEL_FINGERS			293
 #define WEAPON_MODEL_MINIGUN2			294
+
+//-----------------------------------------------------------
+// Weapon IDs
+
 #define WEAPON_UNARMED					0
 #define WEAPON_BRASSKNUCKLE				1
 #define WEAPON_SCREWDRIVER				2
