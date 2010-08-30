@@ -207,13 +207,11 @@ void CLocalPlayer::SendOnFootFullSyncData()
 			// write a 1 bit to say the bit stream has aim sync data
 			bsPlayerSync.Write1();
 
-			// get the camera aim
-			CAMERA_AIM * pCameraAim = m_pPlayerPed->GetCurrentAim();
+			// get the camera pointer
+			CAMERA_TYPE * pCamera = pGame->GetCamera()->GetCamera();
 
 			// write the aim sync data
-			bsPlayerSync.Write((char *)&pCameraAim->vecA1, sizeof(Vector3));
-			bsPlayerSync.Write((char *)&pCameraAim->vecA2, sizeof(Vector3));
-			bsPlayerSync.Write((char *)&pCameraAim->vecAPos1, sizeof(Vector3));
+			bsPlayerSync.Write((char *)&pCamera->aim, sizeof(CAMERA_AIM));
 		}
 		else
 		{

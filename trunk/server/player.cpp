@@ -109,14 +109,14 @@ void CPlayer::BroadcastSyncData()
 		playerSyncData.byteArmour = m_byteArmour;
 		bsSync.Write((char *)&playerSyncData, sizeof(PLAYER_SYNC_DATA));
 
-		if(m_bHasAim) {
+		if(m_bHasAim)
+		{
 			bsSync.Write1();
-			bsSync.Write((char *)&m_Aiming.vecA1, sizeof(Vector3));
-			bsSync.Write((char *)&m_Aiming.vecA2, sizeof(Vector3));
-			bsSync.Write((char *)&m_Aiming.vecAPos1, sizeof(Vector3));
+			bsSync.Write((char *)&m_Aiming, sizeof(S_CAMERA_AIM));
 			m_bHasAim = false;
 		}
-		else {
+		else
+		{
 			bsSync.Write0();
 		}
 		

@@ -81,7 +81,7 @@ typedef struct _VEHICLE_SYNC_DATA
 } VEHICLE_SYNC_DATA;
 
 typedef struct _S_CAMERA_AIM
-{ // This is a MATRIX4X4?
+{
 	Vector3 vecA1; // float f1x,f1y,f1z
 	Vector3 vecAPos1; // float pos1x,pos1y,pos1z
 	Vector3 vecAPos2; // float pos2x,pos2y,pos2z
