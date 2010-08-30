@@ -119,14 +119,15 @@ void CRemotePlayer::Process()
 				if(m_pPlayerPed->GetCurrentWeapon() != m_byteCurrentWeapon) {
 					m_pPlayerPed->SetArmedWeapon(m_byteCurrentWeapon);
 
-					// double check that
+					// they don't have the new weapon, give it to them
 					if(m_pPlayerPed->GetCurrentWeapon() != m_byteCurrentWeapon) {
-						m_pPlayerPed->GiveWeapon(m_byteCurrentWeapon,9999);
+						m_pPlayerPed->GiveWeapon(m_byteCurrentWeapon, 9999);
 						m_pPlayerPed->SetArmedWeapon(m_byteCurrentWeapon);
 					}
 				}
 
 				m_pPlayerPed->SetShootingFlags(m_byteShootingFlags);
+
 				m_byteUpdateFromNetwork = UPDATE_TYPE_NONE;
 			}
 			else if(m_byteUpdateFromNetwork == UPDATE_TYPE_FULL_INCAR)
@@ -136,9 +137,7 @@ void CRemotePlayer::Process()
 				if(pVehicle) {
 					UpdateInCarMatrixAndSpeed(&m_matWorld, &m_vecMoveSpeed, &m_vecTurnSpeed);
 					pVehicle->SetHealth(m_fVehicleHealth);
-					pChatWindow->AddDebugMessage("Done with vehicle sync from player %d 1", m_bytePlayerID);
 				}
-				pChatWindow->AddDebugMessage("Done with vehicle sync from player %d", m_bytePlayerID);
 
 				m_byteUpdateFromNetwork = UPDATE_TYPE_NONE;
 			}

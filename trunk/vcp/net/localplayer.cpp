@@ -27,6 +27,13 @@
 #include "../main.h"
 #include "../game/util.h"
 
+// Sync send rates
+
+#define INCAR_SENDRATE_IDLE 200
+#define INCAR_SENDRATE_ACTIVE 66
+#define ONFOOT_SENDRATE_IDLE 60
+#define ONFOOT_SENDRATE_ACTIVE 30
+
 extern CGame		 *pGame;
 extern CChatWindow   *pChatWindow;
 extern CCmdWindow	 *pCmdWindow;
@@ -147,8 +154,8 @@ BOOL CLocalPlayer::Process()
 			(m_pPlayerPed->GetAction() != ACTION_WASTED))
 	{
 		m_bIsWasted = FALSE;
-		//pNetGame->GetGameLogic()->HandleClassSelection(this);
-		this->SpawnPlayer();
+		pNetGame->GetGameLogic()->HandleClassSelection(this);
+		//this->SpawnPlayer();
 		return TRUE;
 	}
 
@@ -320,29 +327,27 @@ int CLocalPlayer::GetOptimumInCarSendRate()
 {
 	CVehiclePool *pVehiclePool = pNetGame->GetVehiclePool();
 	CVehicle	 *pGameVehicle=NULL;
-	Vector3	 vecMoveSpeed;
+	Vector3		 vecMoveSpeed;
 	BYTE		 byteVehicleID=0;
 
-	if(m_pPlayerPed) {
-
+	if(m_pPlayerPed)
+	{
 		byteVehicleID = (BYTE)pVehiclePool->FindIDFromGtaPtr(m_pPlayerPed->GetGtaVehicle());
 		pGameVehicle = pVehiclePool->GetAt(byteVehicleID);
 
-		if(pGameVehicle) {
-
+		if(pGameVehicle)
+		{
 			pGameVehicle->GetMoveSpeed(&vecMoveSpeed);
 
-			if( (vecMoveSpeed.X == 0.0f) &&
-				(vecMoveSpeed.Y == 0.0f) ) {
-
-				return 200;
-			}
-			else {
-				return 66;
+			// is the vehicle moving?
+			if(!((vecMoveSpeed.X == 0.0f) && (vecMoveSpeed.Y == 0.0f)))
+			{
+				return INCAR_SENDRATE_ACTIVE;
 			}
 		}
 	}
-	return 200;
+
+	return INCAR_SENDRATE_IDLE;
 }
 
 //----------------------------------------------------------
@@ -351,21 +356,18 @@ int CLocalPlayer::GetOptimumOnFootSendRate()
 {	
 	Vector3	 vecMoveSpeed;
 
-	if(m_pPlayerPed) {
-
+	if(m_pPlayerPed)
+	{
 		m_pPlayerPed->GetMoveSpeed(&vecMoveSpeed);
 
-		if( (vecMoveSpeed.X == 0.0f) &&
-			(vecMoveSpeed.Y == 0.0f) ) {
-
-			return 60;
-		}
-		else {
-			return 30;
+		// is the player moving?
+		if(!((vecMoveSpeed.X == 0.0f) && (vecMoveSpeed.Y == 0.0f)))
+		{
+			return ONFOOT_SENDRATE_ACTIVE;
 		}
 	}
 
-	return 60;
+	return ONFOOT_SENDRATE_IDLE;
 }
 
 //----------------------------------------------------------
