@@ -784,6 +784,16 @@ void Script_togglePlayerBleeding(RakNet::BitStream *bitStream, Packet *packet)
 	pPlayer->SetActorBleeding(toggle);
 }
 
+void Script_popVehicleTrunk(RakNet::BitStream *bitStream, Packet *packet)
+{
+	BYTE vehicle;
+
+	bitStream->Read(vehicle);
+	
+	CVehicle *pVehicle = pNetGame->GetVehiclePool()->GetAt(vehicle);
+	pVehicle->popVehicleTrunk();
+}
+
 void RegisterRPCs()
 {
 	pNetGame->GetRPC4()->RegisterFunction("ServerJoin",ServerJoin);
@@ -835,6 +845,7 @@ void RegisterRPCs()
 	pNetGame->GetRPC4()->RegisterFunction("Script_forceClassSelection",Script_forceClassSelection);
 	pNetGame->GetRPC4()->RegisterFunction("Script_togglePlayerBleeding",Script_togglePlayerBleeding);
 	pNetGame->GetRPC4()->RegisterFunction("Script_FlashItem",Script_FlashItem);
+	pNetGame->GetRPC4()->RegisterFunction("Script_popVehicleTrunk", Script_popVehicleTrunk);
 
 }
 
@@ -886,6 +897,7 @@ void UnRegisterRPCs()
 	pNetGame->GetRPC4()->UnregisterFunction("Script_forceClassSelection");
 	pNetGame->GetRPC4()->UnregisterFunction("Script_togglePlayerBleeding");
 	pNetGame->GetRPC4()->UnregisterFunction("Script_FlashItem");
+	pNetGame->GetRPC4()->UnregisterFunction("Script_popVehicleTrunk");
 }
 
 //----------------------------------------------------

@@ -119,6 +119,10 @@ function onPlayerCommand(playerid, cmdtext)
 		setItemFlashing(playerid, cmd[1].tointeger());
 		sendPlayerMessage(playerid, 0xFFFF00FF, "Flashing item: " + cmd[1]);
 	}
+	if(cmd[0] == "/trunk")
+	{
+		popVehicleTrunk(getPlayerVehicleID(playerid));
+	}
 	if(cmd[0] == "/mypos")
 	{
 		local pos = getPlayerPosition(playerid);

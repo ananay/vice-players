@@ -66,7 +66,7 @@ public:
 	BYTE  GetMaxPassengers();
 
 	// Added by the VC-Players team.
-	void toggleVehicleSiren(int iToggle);
+	void popVehicleTrunk();
 
 
 	BYTE  GetEntityFlags();

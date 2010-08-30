@@ -230,6 +230,18 @@ void CVehicle::SetColor(int color1, int color2)
 	m_iColors[1] = color2;
 }
 
+void CVehicle::PopTrunk()
+{
+	RakNet::BitStream bsSend;
+	bsSend.Write(m_byteVehicleID);
+	CPlayerPool * pPlayerPool = pNetGame->GetPlayerPool();
+	for(BYTE i = 0; i < MAX_PLAYERS; i++) {
+		if(pPlayerPool->GetSlotState(i)) {
+			pNetGame->GetRPC4()->Call("Script_popVehicleTrunk",&bsSend,HIGH_PRIORITY,RELIABLE,0,pNetGame->GetRakPeer()->GetSystemAddressFromIndex(i),false);
+		}
+	}
+}
+
 //----------------------------------------------------------
 
 void CVehicle::GetPosition(Vector3 * vecPosition)
