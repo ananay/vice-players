@@ -784,6 +784,7 @@ void Script_togglePlayerBleeding(RakNet::BitStream *bitStream, Packet *packet)
 	pPlayer->SetActorBleeding(toggle);
 }
 
+// popVehicleTrunk
 void Script_popVehicleTrunk(RakNet::BitStream *bitStream, Packet *packet)
 {
 	BYTE vehicle;
@@ -793,6 +794,21 @@ void Script_popVehicleTrunk(RakNet::BitStream *bitStream, Packet *packet)
 	CVehicle *pVehicle = pNetGame->GetVehiclePool()->GetAt(vehicle);
 	pVehicle->popVehicleTrunk();
 }
+
+void Script_setSkyColor(RakNet::BitStream *bitStream, Packet *packet)
+{
+	int iColor, iFade;
+
+	CPlayerPed *pPlayer = pGame->FindPlayerPed();
+
+	bitStream->Read(iColor);
+	bitStream->Read(iFade);
+
+	pPlayer->SetSkyColor(iColor, iFade);
+}
+
+
+
 
 void RegisterRPCs()
 {
@@ -846,6 +862,7 @@ void RegisterRPCs()
 	pNetGame->GetRPC4()->RegisterFunction("Script_togglePlayerBleeding",Script_togglePlayerBleeding);
 	pNetGame->GetRPC4()->RegisterFunction("Script_FlashItem",Script_FlashItem);
 	pNetGame->GetRPC4()->RegisterFunction("Script_popVehicleTrunk", Script_popVehicleTrunk);
+	pNetGame->GetRPC4()->RegisterFunction("Script_setSkyColor", Script_setSkyColor);
 
 }
 
@@ -898,6 +915,7 @@ void UnRegisterRPCs()
 	pNetGame->GetRPC4()->UnregisterFunction("Script_togglePlayerBleeding");
 	pNetGame->GetRPC4()->UnregisterFunction("Script_FlashItem");
 	pNetGame->GetRPC4()->UnregisterFunction("Script_popVehicleTrunk");
+	pNetGame->GetRPC4()->UnregisterFunction("Script_setSkyColor");
 }
 
 //----------------------------------------------------

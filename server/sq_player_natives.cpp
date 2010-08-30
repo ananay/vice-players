@@ -1038,3 +1038,31 @@ SQInteger sq_setItemFlashing(SQVM * pVM)
 	return 1;
 }
 
+//-----------------------------------------------------------------
+
+SQInteger sq_setSkyColor(SQVM * pVM)
+{
+	SQInteger playerSystemAddress;
+	SQInteger iColor;
+	SQInteger iType;
+
+	sq_getinteger(pVM, -3, &playerSystemAddress);
+    sq_getinteger(pVM, -2, &iColor);
+	sq_getinteger(pVM, -1, &iType);
+
+	if(pNetGame->GetPlayerPool()->GetSlotState(playerSystemAddress))
+	{
+		RakNet::BitStream bsSend;
+
+		bsSend.Write(iColor);
+		bsSend.Write(iType);
+
+		pNetGame->GetRPC4()->Call("Script_setSkyColor",&bsSend,HIGH_PRIORITY,RELIABLE,0,pNetGame->GetRakPeer()->GetSystemAddressFromIndex(playerSystemAddress),false);
+
+		sq_pushbool(pVM, true);
+		return 1;
+	}
+
+	sq_pushbool(pVM, false);
+	return 1;
+}

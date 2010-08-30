@@ -75,3 +75,4 @@ SQInteger sq_addPlayerClass(SQVM * v); // done
 SQInteger sq_forceClassSelection(SQVM * pVM);
 SQInteger sq_togglePlayerBleeding(SQVM * pVM);
 SQInteger sq_setItemFlashing(SQVM * pVM);
+SQInteger sq_setSkyColor(SQVM * pVM);

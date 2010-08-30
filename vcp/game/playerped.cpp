@@ -754,6 +754,12 @@ void CPlayerPed::SetActorBleeding(int iToggle)
 
 //-----------------------------------------------------------
 
+void CPlayerPed::SetSkyColor(int iColorID, int iFade)
+{
+	ScriptCommand(&set_ped_sky_color, iColorID, iFade);
+}
+
+//-----------------------------------------------------------
 
 
 
