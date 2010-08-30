@@ -33,9 +33,12 @@
 #include "camera.h"
 #include "scripting.h"
 
+//-----------------------------------------------------------
+
 #define FUNC_RequestModel 0x40E310
 #define FUNC_LoadRequestedModels 0x40B5F0
 #define VAR_ModelInfo 0x94DDD8
+#define CClock__SetTime 0x487160
 
 //-----------------------------------------------------------
 

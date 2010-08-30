@@ -427,7 +427,7 @@ void KeyEvent(RakNet::BitStream *bitStream, Packet *packet)
 	bool state;
 
 	bitStream->Read(dwKey);
-	bitStream->Read(state);
+	state = bitStream->ReadBit();
 
 	pScripts->onKeyPress(byteSystemAddress, (char*)&dwKey, state);
 }
