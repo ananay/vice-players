@@ -121,14 +121,13 @@ typedef struct _PED_TYPE {
 	BYTE	      byteAction;      // 244-245
 	_pad(__pad3b, 0x10F);          // 245-354
 	float	      fHealth;         // 354-358
-	float		  gSpeed;
 	float	      fArmour;         // 358-35C
 	_pad(__pad4b, 0x18);           // 35C-374
 	float	      fRotation1;      // 374-378
 	float	      fRotation2;      // 378-37C
 	_pad(__pad5b, 0x28);           // 37C-3A4
 	// (3A0 seems to be some vehicle objective)
-	DWORD *       pLastVehicle;    // 3A4-4A8
+	DWORD *       pLastVehicle;    // 3A4-3A8
 	DWORD *       pVehicle;        // 3A8-3AC
 	BYTE	      byteIsInVehicle; // 3AC-3AD
 	_pad(__pad6b, 0x27);           // 3AD-3D4
