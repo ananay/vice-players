@@ -261,7 +261,7 @@ WORD CPlayerPed::GetKeys()
 	wKeys <<= 1;
 
 	// As ammo is not synced, don't send the fire key if they have no ammo
-	// they will be firing for remote players but not themselves
+	// or they will fire their weapon for remote players but not themselves
 	if(HasAmmoForCurrentWeapon() && pInternalKeys->wKeys1[KEY_ONFOOT_FIRE]) wKeys |= 1;
 	wKeys <<= 1;
 

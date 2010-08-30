@@ -97,8 +97,6 @@ BOOL CLocalPlayer::Process()
 				{
 					// DRIVING VEHICLE
 
-					pChatWindow->AddDebugMessage("In vehicle as driver");
-
 					// VEHICLE WORLD BOUNDS STUFF
 					pVehiclePool = pNetGame->GetVehiclePool();
 					byteVehicleID = (BYTE)pVehiclePool->FindIDFromGtaPtr(m_pPlayerPed->GetGtaVehicle());
