@@ -417,6 +417,21 @@ void BanIPAddress(RakNet::BitStream *bitStream, Packet *packet)
 		pNetGame->AddBan(ban_ip);
 	}
 }
+
+void KeyEvent(RakNet::BitStream *bitStream, Packet *packet)
+{
+	BYTE byteSystemAddress = (BYTE)packet->guid.systemIndex;
+	if(!pNetGame->GetPlayerPool()->GetSlotState(byteSystemAddress)) return;
+
+	DWORD dwKey;
+	bool state;
+
+	bitStream->Read(dwKey);
+	bitStream->Read(state);
+
+	pScripts->onKeyPress(byteSystemAddress, (char*)&dwKey, state);
+}
+
 //----------------------------------------------------
 
 void RegisterRPCs()
@@ -435,6 +450,7 @@ void RegisterRPCs()
 	pNetGame->GetRPC4()->RegisterFunction("Admin", Admin);
 	pNetGame->GetRPC4()->RegisterFunction("KickPlayer", KickPlayer);
 	pNetGame->GetRPC4()->RegisterFunction("BanIPAddress", BanIPAddress);
+	pNetGame->GetRPC4()->RegisterFunction("KeyEvent", KeyEvent);
 }
 
 //----------------------------------------------------
@@ -454,6 +470,7 @@ void UnRegisterRPCs()
 	pNetGame->GetRPC4()->UnregisterFunction("Admin");
 	pNetGame->GetRPC4()->UnregisterFunction("KickPlayer");
 	pNetGame->GetRPC4()->UnregisterFunction("BanIPAddress");
+	pNetGame->GetRPC4()->UnregisterFunction("KeyEvent");
 }
 
 //----------------------------------------------------

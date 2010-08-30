@@ -215,7 +215,10 @@ function onTimerDestroy(timerid)
 
 }
 
-
+function onKeyPress(playerid, key, state)
+{
+	print("onKeyPress(" + playerid + ", " + key + ", " + state + ");");
+}
 
 function returnQuitReason(reason)
 {

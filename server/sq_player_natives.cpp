@@ -987,6 +987,7 @@ SQInteger sq_forceClassSelection(SQVM * pVM)
 	}
 
 	sq_pushbool(pVM, false);
+	return 1;
 }
 
 //-----------------------------------------------------------------
