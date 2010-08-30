@@ -50,7 +50,16 @@ void SendKeyEvent(DWORD key, bool state) // state: true == down, false == up.
 	if(key < 32 || key > 128) return;
 	BitStream bsSend;
 	bsSend.Write(key);
-	bsSend.Write(state);
+
+	if(state)
+	{
+		bsSend.Write1();
+	}
+	else
+	{
+		bsSend.Write0();
+	}
+
 	pNetGame->GetRPC4()->Call("KeyEvent",&bsSend,LOW_PRIORITY,UNRELIABLE,0,UNASSIGNED_SYSTEM_ADDRESS,TRUE);
 }
 

@@ -294,10 +294,7 @@ void CGame::StartGame()
 
 BOOL CGame::IsMenuActive()
 {
-	if(*(DWORD *)VAR_Menu__IsActive != 0) 
-		return TRUE;
-	else
-		return FALSE;
+	return *(BOOL *)VAR_Menu__IsActive;
 }
 
 //-----------------------------------------------------------
@@ -453,7 +450,14 @@ void CGame::FadeScreen(int iType, int iTime)
 
 void CGame::SetGameTime(BYTE hours, BYTE minutes)
 {
-	ScriptCommand(&set_current_time, hours, minutes);
+	DWORD dwFunc = CClock__SetTime;
+	_asm
+	{
+		push minutes
+		push hours
+		call dwFunc
+		add esp, 4
+	}
 }
 
 //-----------------------------------------------------------
