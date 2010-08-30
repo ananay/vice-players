@@ -282,7 +282,6 @@ void CRemotePlayer::StoreInCarFullSyncData(VEHICLE_SYNC_DATA * pVehicleSyncData)
 	m_bIsInVehicle = TRUE;
 	m_bIsAPassenger = FALSE;
 	m_byteUpdateFromNetwork = UPDATE_TYPE_FULL_INCAR;
-	pChatWindow->AddDebugMessage("Stored vehicle sync data for player %d", m_bytePlayerID);
 }
 
 //----------------------------------------------------
