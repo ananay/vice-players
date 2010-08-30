@@ -217,11 +217,7 @@ void CNetGame::PlayerSync(Packet *p)
 		if(bHasAimSync)
 		{
 			// read the aim sync data
-			bsPlayerSync.Read((char *)&caAiming.vecA1, sizeof(Vector3));
-			bsPlayerSync.Read((char *)&caAiming.vecA2, sizeof(Vector3));
-			bsPlayerSync.Read((char *)&caAiming.vecAPos1, sizeof(Vector3));
-			// this needed?
-			memcpy(&caAiming.vecA2, &caAiming.vecA1, sizeof(Vector3));
+			bsPlayerSync.Read((char *)&caAiming, sizeof(CAMERA_AIM));
 		}
 
 		// store the player sync data
