@@ -1018,3 +1018,43 @@ void CScripts::onTimerDestroy(int timerId)
 		}
 	}
 }
+
+void CScripts::onKeyPress(int playerId, char * key, bool state)
+{
+	for(int i = 0; i < MAX_SCRIPTS; i++) {
+		if(m_pScripts[i]) {
+			// get the script vm pointer
+			SQVM * pVM = m_pScripts[i]->GetVM();
+
+			// Get the stack top
+			int iTop = sq_gettop(pVM);
+
+			// Push the root table onto the stack
+			sq_pushroottable(pVM);
+
+			// Push the function name onto the stack
+			sq_pushstring(pVM, "onKeyPress", -1);
+
+			// Get the closure for the function
+			if(SQ_SUCCEEDED(sq_get(pVM, -2))) {
+				// Push the root table onto the stack
+				sq_pushroottable(pVM);
+
+				// Push the vehicle id onto the stack
+				sq_pushinteger(pVM, playerId);
+
+				// Push the char of the key
+				sq_pushstring(pVM, key, -1);
+
+				// Push the key state
+				sq_pushbool(pVM, state);
+
+				// Call the function
+				sq_call(pVM, 4, true, true);
+			}
+
+			// Restore the stack top
+			sq_settop(pVM, iTop);
+		}
+	}
+}

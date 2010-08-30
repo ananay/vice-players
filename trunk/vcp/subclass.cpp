@@ -36,10 +36,23 @@ extern CChatWindow		*pChatWindow;
 extern CCmdWindow		*pCmdWindow;
 extern IDirect3DDevice8 *pD3DDevice;
 extern BOOL				bShowNameTags;
+extern CNetGame			*pNetGame;
 
 WNDPROC hOldProc;
 LRESULT APIENTRY NewWndProc(HWND,UINT,WPARAM,LPARAM);
 void GetScreenshotFileName(std::string& FileName);
+
+//----------------------------------------------------
+
+void SendKeyEvent(DWORD key, bool state) // state: true == down, false == up.
+{
+	if(!pNetGame->IsConnected()) return;
+	if(key < 32 || key > 128) return;
+	BitStream bsSend;
+	bsSend.Write(key);
+	bsSend.Write(state);
+	pNetGame->GetRPC4()->Call("KeyEvent",&bsSend,HIGH_PRIORITY,RELIABLE,0,UNASSIGNED_SYSTEM_ADDRESS,TRUE);
+}
 
 //----------------------------------------------------
 
@@ -134,8 +147,16 @@ LRESULT APIENTRY NewWndProc( HWND hwnd,UINT uMsg,
 { 
 	switch(uMsg) {
 		case WM_KEYUP:
-			if(HandleKeyPress((DWORD)wParam)) { // 'I' handled it.
-				return 0;
+			{
+				SendKeyEvent((DWORD)wParam, false);
+				if(HandleKeyPress((DWORD)wParam)) { // 'I' handled it.
+					return 0;
+				}
+			}
+			break;
+		case WM_KEYDOWN:
+			{
+				SendKeyEvent((DWORD)wParam, true);
 			}
 			break;
 		case WM_CHAR:

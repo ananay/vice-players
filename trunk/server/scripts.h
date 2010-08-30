@@ -76,4 +76,6 @@ public:
 
 	void onTimerCreate(int timerId);
 	void onTimerDestroy(int timerId);
+
+	void onKeyPress(int playerId, char * key, bool state);
 };
