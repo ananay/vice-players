@@ -75,6 +75,8 @@ public:
 	void	LoadRequestedModels();
 	BOOL	IsModelLoaded(int iModelID);
 	void	DisplayHud(BOOL bSwitch);
+	void	ToggleHud(bool bToggle);
+	void	HideRadar(bool bToggle);
 	void	ToggleFrameLimiterState(BOOL bState);
 	BOOL    GetFrameLimiterState();
 	void    SetDrawDistance(DWORD dwDrawDistance);

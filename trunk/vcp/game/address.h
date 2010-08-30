@@ -95,7 +95,6 @@
 #define ADDR_SET_MARKER_COLOR					0x4C3930
 #define ADDR_SHOW_ON_RADAR1						0x4C3840
 #define ADDR_RESTART_IF_WASTED_AT				0x443010
-#define ADDR_HUD_SWITCH							0xA10B45
 #define ADDR_IS_MODEL_LOADED_VAR				0x94DDD8
 #define ADDR_SET_OBJECTIVE_STORAGE				0x401175
 #define ADDR_IS_KEY_PRESSED						0x460C00
@@ -120,5 +119,8 @@
 #define FUNC_CPed__RemoveAllWeapons				0x4FF740
 #define FUNC_CPed__GiveWeapon					0x4FFA30
 #define FUNC_CCamera__SetPositionAndRotation	0x46BA72
+#define ADDR_HUD_SWITCH							0xA10B45
+#define VAR_Menu__HudMode						(VAR_Menu + 0xA)
+#define ADDR_Toggle_Radar						0xA10AB6
 
 //-----------------------------------------------------------

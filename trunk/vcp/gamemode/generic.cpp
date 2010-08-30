@@ -68,6 +68,8 @@ void CGameModeGeneric::ProcessLocalPlayer(CLocalPlayer *pLocalPlayer)
 			pGameCamera->Restore();
 			pLocalPlayer->SpawnPlayer();
 			pGame->DisplayHud(TRUE);
+			pGame->ToggleHud(TRUE);
+			pGame->HideRadar(FALSE);
 			pGameCamera->SetBehindPlayer();
 			pGamePlayer->GetPosition(&vPlayerPos);		
 			pGame->PlaySound(10, vPlayerPos);
@@ -76,6 +78,9 @@ void CGameModeGeneric::ProcessLocalPlayer(CLocalPlayer *pLocalPlayer)
 		}
 		else if(m_bClearedToSpawn) // WE ARE CLEARED TO SPAWN OR SELECT ANOTHER CLASS
 		{
+			pGame->ToggleHud(FALSE);
+			pGame->HideRadar(TRUE);
+
 			// SHOW INFO ABOUT THE SELECTED CLASS..
 			szMsg[0] = '\0';
 			strcat(szMsg, "> Use Left and Right arrow keys to select a class.\n");
@@ -111,7 +116,8 @@ void CGameModeGeneric::ProcessLocalPlayer(CLocalPlayer *pLocalPlayer)
 				pGame->PlaySound(13, vPlayerPos);
 				pLocalPlayer->RequestClass(m_iSelectedClass);
 				return;
-			}			
+			}	
+
 		}
 	}
 }
