@@ -356,8 +356,22 @@ void CGame::DisplayHud(BOOL bSwitch)
 {
 	if(bSwitch)
 		*(BYTE *)ADDR_HUD_SWITCH = 1;
-	else
+    else
 		*(BYTE *)ADDR_HUD_SWITCH = 0;
+}
+
+//-----------------------------------------------------------
+
+void CGame::ToggleHud(bool bToggle)
+{
+	*(bool *)VAR_Menu__HudMode = bToggle;
+}
+
+//-----------------------------------------------------------
+
+void CGame::HideRadar(bool bToggle)
+{
+	*(bool *)ADDR_Toggle_Radar = bToggle;
 }
 	
 //-----------------------------------------------------------

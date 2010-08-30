@@ -45,9 +45,11 @@ BYTE   *pbyteDriveByRight = (BYTE *)0x7E4819;
 
 void GameKeyStatesInit()
 {
-	memset(&GcsLocalPlayerKeys,0,sizeof(GTA_CONTROLSET));
-	for(int i = 0; i < MAX_PLAYERS; i++) {
-		memset(&GcsRemotePlayerKeys[i],0,sizeof(GTA_CONTROLSET));
+	memset(&GcsLocalPlayerKeys, 0, sizeof(GTA_CONTROLSET));
+
+	for(int i = 0; i < MAX_PLAYERS; i++)
+	{
+		memset(&GcsRemotePlayerKeys[i], 0, sizeof(GTA_CONTROLSET));
 	}
 }
 
@@ -55,9 +57,9 @@ void GameKeyStatesInit()
 
 void GameStoreLocalPlayerKeys()
 {	
-	memcpy(&GcsLocalPlayerKeys,pGcsInternalKeys,sizeof(GTA_CONTROLSET));
+	memcpy(&GcsLocalPlayerKeys, pGcsInternalKeys, sizeof(GTA_CONTROLSET));
 
-	// save current driveby state
+	// save current drive by state
 	byteSaveDriveByLeft = *pbyteDriveByLeft;
 	byteSaveDriveByRight = *pbyteDriveByRight;
 }
@@ -66,9 +68,9 @@ void GameStoreLocalPlayerKeys()
 
 void GameSetLocalPlayerKeys()
 {
-	memcpy(pGcsInternalKeys,&GcsLocalPlayerKeys,sizeof(GTA_CONTROLSET));
+	memcpy(pGcsInternalKeys, &GcsLocalPlayerKeys, sizeof(GTA_CONTROLSET));
 
-	// restore the driveby state also
+	// restore the drive by state also
 	*pbyteDriveByLeft = byteSaveDriveByLeft;
 	*pbyteDriveByRight = byteSaveDriveByRight;
 }
@@ -77,16 +79,14 @@ void GameSetLocalPlayerKeys()
 
 void GameStoreRemotePlayerKeys(int iPlayer, GTA_CONTROLSET * pGcsKeyStates)
 {
-	memcpy(&GcsRemotePlayerKeys[iPlayer],pGcsKeyStates,sizeof(GTA_CONTROLSET));
+	memcpy(&GcsRemotePlayerKeys[iPlayer], pGcsKeyStates, sizeof(GTA_CONTROLSET));
 }
 
 //-----------------------------------------------------------
 
 void GameSetRemotePlayerKeys(int iPlayer)
 {
-	// memcpy(&GcsRemotePlayerKeys[iPlayer],&GcsLocalPlayerKeys,sizeof(GTA_CONTROLSET));
-
-	memcpy(pGcsInternalKeys,&GcsRemotePlayerKeys[iPlayer],sizeof(GTA_CONTROLSET));
+	memcpy(pGcsInternalKeys, &GcsRemotePlayerKeys[iPlayer], sizeof(GTA_CONTROLSET));
 
 	if(GcsRemotePlayerKeys[iPlayer].wKeys1[KEY_INCAR_LOOKL]) {
 		*pbyteDriveByLeft = 1;
@@ -126,14 +126,14 @@ GTA_CONTROLSET * GameGetPlayerKeys(int iPlayer)
 
 void GameResetPlayerKeys(int iPlayer)
 {
-	memset(&GcsRemotePlayerKeys[iPlayer],0,sizeof(GTA_CONTROLSET));
+	memset(&GcsRemotePlayerKeys[iPlayer], 0, sizeof(GTA_CONTROLSET));
 }
 
 //-----------------------------------------------------------
 
 void GameResetLocalKeys()
 {
-	memset(pGcsInternalKeys,0,80);
+	memset(pGcsInternalKeys, 0, sizeof(GTA_CONTROLSET));
 }
 
 //-----------------------------------------------------------
