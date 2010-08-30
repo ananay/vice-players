@@ -105,6 +105,10 @@ function onPlayerCommand(playerid, cmdtext)
 	{
 		sendPlayerMessage(playerid, 0x00FF00FF, "Your Vehicle: " + getPlayerVehicleID(playerid));
 	}
+	if(cmd[0] == "/sky")
+	{
+		setSkyColor(playerid, cmd[1].tointeger(), cmd[2].tointeger());
+	}
 	if(cmd[0] == "/classselect")
 	{
 		forceClassSelection(playerid);

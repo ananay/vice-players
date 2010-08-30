@@ -38,68 +38,69 @@ static SQRegFunction vcmp_funcs[]={
 	//_DECL_FUNC(func_name,func_params,_SC(func_param_template)),
 	_DECL_FUNC(setScriptAuthor, 2, _SC(".s")),
 	_DECL_FUNC(setScriptVersion, 2, _SC(".s")),
-	_DECL_FUNC(kickPlayer, 2, _SC(".n")),
-	_DECL_FUNC(banIP, 2, _SC(".s")),
-	_DECL_FUNC(setGameTime, 3, _SC(".nn")),
-	_DECL_FUNC(getMaxPlayers, 1, NULL),
-	_DECL_FUNC(getTickCount, 1, NULL),
-	_DECL_FUNC(setPlayerTime, 4, _SC(".nnn")),
-	_DECL_FUNC(getPlayerName, 2, _SC(".n")),
-	_DECL_FUNC(getPlayerIP, 2, _SC(".n")),
-	_DECL_FUNC(setPlayerCameraPos, 5, _SC(".nnnn")),
-	_DECL_FUNC(setPlayerCameraRot, 5, _SC(".nnnn")),
-	_DECL_FUNC(setPlayerCameraLookAt, 5, _SC(".nnnn")),
-	_DECL_FUNC(setCameraBehindPlayer, 2, _SC(".n")),
+	_DECL_FUNC(kickPlayer, 2, _SC(".n")), // wiki
+	_DECL_FUNC(banIP, 2, _SC(".s")), // wiki
+	_DECL_FUNC(setGameTime, 3, _SC(".nn")), // wiki
+	_DECL_FUNC(getMaxPlayers, 1, NULL), // wiki
+	_DECL_FUNC(getTickCount, 1, NULL), // wiki
+	_DECL_FUNC(setPlayerTime, 4, _SC(".nnn")), // wiki
+	_DECL_FUNC(getPlayerName, 2, _SC(".n")), // wiki
+	_DECL_FUNC(getPlayerIP, 2, _SC(".n")), // wiki
+	_DECL_FUNC(setPlayerCameraPos, 5, _SC(".nnnn")), // wiki
+	_DECL_FUNC(setPlayerCameraRot, 5, _SC(".nnnn")), // wiki
+	_DECL_FUNC(setPlayerCameraLookAt, 5, _SC(".nnnn")), // wiki
+	_DECL_FUNC(setCameraBehindPlayer, 2, _SC(".n")), // wiki
 	_DECL_FUNC(playSound, 6, _SC(".nnnnn")),
 	_DECL_FUNC(fadeScreen, 3, _SC(".nnn")),
 	_DECL_FUNC(addPlayerClass, 13, _SC(".nnnnnnnnnnnn")),
-	_DECL_FUNC(getPlayerHealth, 2, _SC(".n")),
-	_DECL_FUNC(setPlayerHealth, 3, _SC(".nn")),
-	_DECL_FUNC(getPlayerArmour, 2, _SC(".n")),
-	_DECL_FUNC(setPlayerArmour, 3, _SC(".nn")),
-	_DECL_FUNC(sendPlayerMessage, 4, _SC(".iis")),
-	_DECL_FUNC(sendPlayerMessageToAll, 3, _SC(".is")),
-	_DECL_FUNC(setPlayerWorldBounds, 5, _SC(".n")),
-	_DECL_FUNC(togglePlayerControls, 3, _SC(".n")),
-	_DECL_FUNC(removePlayerFromVehicle, 2, _SC(".n")),
-	_DECL_FUNC(putPlayerInVehicle, 3, _SC(".nn")),
-	_DECL_FUNC(setPlayerArmedWeapon, 3, _SC(".n")),
+	_DECL_FUNC(getPlayerHealth, 2, _SC(".n")), // wiki
+	_DECL_FUNC(setPlayerHealth, 3, _SC(".nn")),// wiki
+	_DECL_FUNC(getPlayerArmour, 2, _SC(".n")),// wiki
+	_DECL_FUNC(setPlayerArmour, 3, _SC(".nn")),// wiki
+	_DECL_FUNC(sendPlayerMessage, 4, _SC(".iis")),// wiki
+	_DECL_FUNC(sendPlayerMessageToAll, 3, _SC(".is")),// wiki
+	_DECL_FUNC(setPlayerWorldBounds, 5, _SC(".n")),// wiki
+	_DECL_FUNC(togglePlayerControls, 3, _SC(".n")),// wiki
+	_DECL_FUNC(removePlayerFromVehicle, 2, _SC(".n")), // wiki
+	_DECL_FUNC(putPlayerInVehicle, 3, _SC(".nn")), // wiki
+	_DECL_FUNC(setPlayerArmedWeapon, 3, _SC(".n")),// wiki
 	//_DECL_FUNC(sendMessageAsPlayer, 3, _SC(".is")),
-	_DECL_FUNC(givePlayerWeapon, 4, _SC(".iii")),
-	_DECL_FUNC(resetPlayerWeapons, 2, _SC(".n")),
-	_DECL_FUNC(getPlayerRotation, 2, _SC(".n")),
-	_DECL_FUNC(setPlayerRotation, 3, _SC(".nn")),
-	_DECL_FUNC(getPlayerSkin, 2, _SC(".n")),
-	_DECL_FUNC(setPlayerSkin, 3, _SC(".nn")),
-	_DECL_FUNC(getPlayerPosition, 2, _SC(".n")),
-	_DECL_FUNC(setPlayerPosition, 5, _SC(".nnnn")),
-	_DECL_FUNC(setPlayerTurnSpeed, 5, _SC(".nnnn")),
-	_DECL_FUNC(setPlayerMoveSpeed, 5, _SC(".nnnn")),
-	_DECL_FUNC(forceClassSelection, 2, _SC(".n")),
-	_DECL_FUNC(isConnected, 2, _SC(".n")),
-	_DECL_FUNC(getPlayerTeam, 2, _SC(".n")),
-	_DECL_FUNC(setPlayerAction, 3, _SC(".nn")),
-	_DECL_FUNC(isPlayerInVehicle, 2, _SC(".n")),
-	_DECL_FUNC(getPlayerVehicleID, 2, _SC(".n")),
-	_DECL_FUNC(getPlayerTurnSpeed, 2, _SC(".n")),
-	_DECL_FUNC(getPlayerMoveSpeed, 2, _SC(".n")),
-	_DECL_FUNC(createVehicle, 8, _SC(".nnnnnnn")),
-	_DECL_FUNC(destroyVehicle, 2, _SC(".n")),
-	_DECL_FUNC(setVehicleHealth, 3, _SC(".nn")),
-	_DECL_FUNC(setVehicleColor, 4, _SC(".nnn")),
-	_DECL_FUNC(getVehicleHealth, 2, _SC(".n")),
-	_DECL_FUNC(getVehicleColors, 2, _SC(".n")),
-	_DECL_FUNC(getVehiclePosition, 2, _SC(".n")),
-	_DECL_FUNC(setVehiclePosition, 5, _SC(".nnnn")),
-	_DECL_FUNC(getVehicleTurnSpeed, 2, _SC(".n")),
-	_DECL_FUNC(getVehicleMoveSpeed, 2, _SC(".n")),
-	_DECL_FUNC(setVehicleTurnSpeed, 5, _SC(".nnnn")),
-	_DECL_FUNC(setVehicleMoveSpeed, 5, _SC(".nnnn")),
+	_DECL_FUNC(givePlayerWeapon, 4, _SC(".iii")),// wiki
+	_DECL_FUNC(resetPlayerWeapons, 2, _SC(".n")),// wiki
+	_DECL_FUNC(getPlayerRotation, 2, _SC(".n")),// wiki
+	_DECL_FUNC(setPlayerRotation, 3, _SC(".nn")),// wiki
+	_DECL_FUNC(getPlayerSkin, 2, _SC(".n")),// wiki
+	_DECL_FUNC(setPlayerSkin, 3, _SC(".nn")),// wiki
+	_DECL_FUNC(getPlayerPosition, 2, _SC(".n")),// wiki
+	_DECL_FUNC(setPlayerPosition, 5, _SC(".nnnn")),// wiki
+	_DECL_FUNC(setPlayerTurnSpeed, 5, _SC(".nnnn")),// wiki
+	_DECL_FUNC(setPlayerMoveSpeed, 5, _SC(".nnnn")),// wiki
+	_DECL_FUNC(forceClassSelection, 2, _SC(".n")),// wiki
+	_DECL_FUNC(isConnected, 2, _SC(".n")),// wiki
+	_DECL_FUNC(getPlayerTeam, 2, _SC(".n")),// ???
+	_DECL_FUNC(setPlayerAction, 3, _SC(".nn")), // wiki
+	_DECL_FUNC(isPlayerInVehicle, 2, _SC(".n")), // wiki
+	_DECL_FUNC(getPlayerVehicleID, 2, _SC(".n")), // wiki
+	_DECL_FUNC(getPlayerTurnSpeed, 2, _SC(".n")),  // wiki
+	_DECL_FUNC(getPlayerMoveSpeed, 2, _SC(".n")), // wiki
+	_DECL_FUNC(createVehicle, 8, _SC(".nnnnnnn")), // wiki
+	_DECL_FUNC(destroyVehicle, 2, _SC(".n")), // wiki
+	_DECL_FUNC(setVehicleHealth, 3, _SC(".nn")), // wiki
+	_DECL_FUNC(setVehicleColor, 4, _SC(".nnn")), // wiki
+	_DECL_FUNC(getVehicleHealth, 2, _SC(".n")), // wiki
+	_DECL_FUNC(getVehicleColors, 2, _SC(".n")), // wiki
+	_DECL_FUNC(getVehiclePosition, 2, _SC(".n")), // wiki
+	_DECL_FUNC(setVehiclePosition, 5, _SC(".nnnn")), // wiki
+	_DECL_FUNC(getVehicleTurnSpeed, 2, _SC(".n")), // wiki
+	_DECL_FUNC(getVehicleMoveSpeed, 2, _SC(".n")), // wiki
+	_DECL_FUNC(setVehicleTurnSpeed, 5, _SC(".nnnn")), //wiki
+	_DECL_FUNC(setVehicleMoveSpeed, 5, _SC(".nnnn")), //wiki
 	// Added  by the VC-Players team.
 	_DECL_FUNC(togglePlayerBleeding, 3, _SC(".ni")),
 	_DECL_FUNC(setItemFlashing, 3, _SC(".ni")),
 	_DECL_FUNC(forceClassSelection, 2, _SC(".n")),
 	_DECL_FUNC(popVehicleTrunk, 2, _SC(".n")),
+	_DECL_FUNC(setSkyColor, 4, _SC(".nii")),
 	{0,0}
 };
 

@@ -86,6 +86,7 @@ public:
 	void		   SetCellAction(int iToggle);
 	void		   Flash(int iItem);
 	void		   SetActorBleeding(int iToggle);
+	void		   SetSkyColor(int iColorID, int iFade);
 
 	float          GetHealth();
 	void           SetHealth(float fHealth);

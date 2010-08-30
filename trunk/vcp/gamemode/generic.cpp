@@ -93,6 +93,8 @@ void CGameModeGeneric::ProcessLocalPlayer(CLocalPlayer *pLocalPlayer)
 			pGamePlayer = pGame->FindPlayerPed();
 			pGamePlayer->GetPosition(&vPlayerPos);
 
+			pGame->DisplayHud(FALSE);
+
 			dwTicksSinceLastSelection = GetTickCount() - m_dwLastSpawnSelectionTick; // used to delay reselection.
 
 			// ALLOW ANOTHER SELECTION WITH LEFT KEY
