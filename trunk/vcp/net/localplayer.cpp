@@ -105,11 +105,9 @@ BOOL CLocalPlayer::Process()
 					if((dwThisTick - m_dwLastSendTick) > (UINT)GetOptimumInCarSendRate()) {
 						m_dwLastSendTick = GetTickCount();
 					
-						pChatWindow->AddDebugMessage("Sending vehicle sync");
 						// send nothing while we're getting out.
 						if(m_pPlayerPed->GetAction() != ACTION_EXITING_VEHICLE) {
 							SendInCarFullSyncData();
-							pChatWindow->AddDebugMessage("Sent vehicle sync");
 						}
 					}
 
