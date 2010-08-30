@@ -169,4 +169,5 @@ const SCRIPT_COMMAND water_deaths = { 0x04D8, "ii" };
 const SCRIPT_COMMAND cell_phone = { 0x052B, "ii" };
 const SCRIPT_COMMAND load_model = { 0x0247, "i" };
 const SCRIPT_COMMAND set_actor_bleeding = { 0x0332, "ii" };
-const SCRIPT_COMMAND set_vehicle_siren_state = { 0x0332, "ii" };
+const SCRIPT_COMMAND set_vehicle_siren_state = { 0x0397, "vi" }; // causes crashs :s
+const SCRIPT_COMMAND pop_vehicle_trunk = { 0x050B, "i" };

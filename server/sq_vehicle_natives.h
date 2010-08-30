@@ -41,3 +41,4 @@ SQInteger sq_setVehicleTurnSpeed(SQVM * pVM); // done
 SQInteger sq_setVehicleMoveSpeed(SQVM * pVM); // done
 
 // Added by VC-Players team.
+SQInteger sq_popVehicleTrunk(SQVM * pVM);// done

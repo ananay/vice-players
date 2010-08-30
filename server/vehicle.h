@@ -68,6 +68,8 @@ public:
 	void SetColor(int color1, int color2);
 	void GetColor(int * iColor1, int * iColor2) { *iColor1 = m_iColors[0]; *iColor2 = m_iColors[1]; }
 
+	void PopTrunk();
+
 	void GetPosition(Vector3 * vecPosition);
 	void GetMoveSpeed(Vector3 * vecMoveSpeed);
 	void GetTurnSpeed(Vector3 * vecTurnSpeed);

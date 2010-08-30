@@ -277,9 +277,16 @@ void cmdNewPlayer(PCHAR szCmd)
 
 //----------------------------------------------------
 
+void cmdIsVehicle(PCHAR szCmd)
+{
+	if(pGame->FindPlayerPed()->IsInVehicle()) pChatWindow->AddDebugMessage("You are in a vehicle.");
+	else pChatWindow->AddDebugMessage("You are NOT in a vehicle.");
+}
+
 void SetupCommands()
 {
 	pCmdWindow->AddDefaultCmdProc(cmdDefaultCmdProc);
+	pCmdWindow->AddCmdProc("isvehicle", cmdIsVehicle);
 	pCmdWindow->AddCmdProc("quit",cmdQuit);
 	pCmdWindow->AddCmdProc("q",cmdQuit);
 	pCmdWindow->AddCmdProc("admin",cmdAdmin);

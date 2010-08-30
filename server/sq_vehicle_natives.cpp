@@ -313,3 +313,20 @@ SQInteger sq_setVehicleMoveSpeed(SQVM * pVM)
 }
 
 // Added by VC-Players team.
+SQInteger sq_popVehicleTrunk(SQVM * pVM)
+{
+	SQInteger vehicle;
+
+	sq_getinteger(pVM, -1, &vehicle);
+
+	if(pNetGame->GetVehiclePool()->GetSlotState(vehicle))
+	{
+		pNetGame->GetVehiclePool()->GetAt(vehicle)->PopTrunk();
+
+		sq_pushbool(pVM, true);
+		return 1;
+	}
+
+	sq_pushbool(pVM, false);
+	return 1;
+}
