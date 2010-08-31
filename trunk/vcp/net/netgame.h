@@ -20,7 +20,7 @@
 // VC:MP Multiplayer Modification For GTA:VC
 // Copyright 2004-2005 SA:MP team
 //
-// File Author: kyeman
+// File Author(s): kyeman
 //
 //----------------------------------------------------
 
@@ -56,7 +56,7 @@ private:
 	CVehiclePool		*m_pVehiclePool;
 	RakPeerInterface	*m_pRakPeer;
 	static RPC4			*m_pRPC4;
-	CGameModeGeneric	*m_pGameLogic;
+	CSpawnSelection	*m_pGameLogic;
 
 	char                m_szHostOrIp[128];
 	int                 m_iPort;
@@ -92,7 +92,7 @@ public:
 	CVehiclePool * GetVehiclePool() { return m_pVehiclePool; };
 	RakPeerInterface * GetRakPeer() { return m_pRakPeer; };
 	RPC4 * GetRPC4() { return m_pRPC4; };
-	CGameModeGeneric * GetGameLogic() { return m_pGameLogic; };
+	CSpawnSelection * GetGameLogic() { return m_pGameLogic; };
 	BYTE GetFriendlyFire() { return m_byteFriendlyFire; };
 
 	void InitGameLogic();

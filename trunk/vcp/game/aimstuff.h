@@ -20,7 +20,7 @@
 // VC:MP Multiplayer Modification For GTA:VC
 // Copyright 2004-2005 SA:MP Team
 //
-// File Author: kyeman
+// File Author(s): kyeman
 //
 //----------------------------------------------------
 

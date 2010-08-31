@@ -203,59 +203,7 @@
 	</References>
 	<Files>
 		<Filter
-			Name="gamemode"
-			>
-			<File
-				RelativePath="gamemode\generic.cpp"
-				>
-				<FileConfiguration
-					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						PreprocessorDefinitions=""
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						PreprocessorDefinitions=""
-					/>
-				</FileConfiguration>
-			</File>
-			<File
-				RelativePath="gamemode\generic.h"
-				>
-			</File>
-			<File
-				RelativePath="gamemode\genericrpc.cpp"
-				>
-				<FileConfiguration
-					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						PreprocessorDefinitions=""
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						PreprocessorDefinitions=""
-					/>
-				</FileConfiguration>
-			</File>
-			<File
-				RelativePath="gamemode\genericrpc.h"
-				>
-			</File>
-		</Filter>
-		<Filter
-			Name="net"
+			Name="Net"
 			>
 			<File
 				RelativePath="netgame.cpp"
@@ -330,6 +278,30 @@
 				>
 			</File>
 			<File
+				RelativePath=".\gamemode\spawnselection.cpp"
+				>
+				<FileConfiguration
+					Name="Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath=".\gamemode\spawnselection.h"
+				>
+			</File>
+			<File
 				RelativePath="vehiclepool.cpp"
 				>
 				<FileConfiguration
@@ -355,7 +327,7 @@
 			</File>
 		</Filter>
 		<Filter
-			Name="general"
+			Name="General"
 			>
 			<File
 				RelativePath="config.cpp"
@@ -487,7 +459,7 @@
 			</File>
 		</Filter>
 		<Filter
-			Name="scripting"
+			Name="Scripting"
 			>
 			<File
 				RelativePath=".\script.cpp"

@@ -20,7 +20,7 @@
 // VC:MP Multiplayer Modification For GTA:VC
 // Copyright 2004-2005 SA:MP team
 //
-// File Author: kyeman
+// File Author(s): kyeman
 //
 //----------------------------------------------------
 
@@ -64,7 +64,7 @@ private:
 	CTimerPool					*m_pTimerPool;
 	RakPeerInterface			*m_pRakPeer;
 	static RPC4					*m_pRPC4;
-	CGameModeGeneric			*m_pGameLogic;
+	CSpawnSelection			*m_pGameLogic;
 	int							m_iGameState;
 	int							m_iMaxPlayers;
 
@@ -95,7 +95,7 @@ public:
 	CTimerPool * GetTimerPool() { return m_pTimerPool; };
 	RakPeerInterface * GetRakPeer() { return m_pRakPeer; };
 	RPC4 * GetRPC4() { return m_pRPC4; }
-	CGameModeGeneric * GetGameLogic() { return m_pGameLogic; };
+	CSpawnSelection * GetGameLogic() { return m_pGameLogic; };
 	int	GetMaxPlayers() { return m_iMaxPlayers; };
 	
 	void Process();

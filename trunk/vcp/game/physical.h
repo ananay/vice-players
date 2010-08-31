@@ -20,6 +20,9 @@
 // VC:MP Multiplayer Modification For GTA:VC
 // Copyright 2004-2005 SA:MP team
 //
+// File Author(s): kyeman
+//                 jenksta
+//
 //----------------------------------------------------------
 
 #pragma once
@@ -30,10 +33,10 @@
 class CPhysical : public CEntity
 {
 public:
-	PHYSICAL_TYPE *GetPhysical();
+	PHYSICAL_TYPE * GetPhysical();
 
-	void GetMoveSpeed(PVector3 Vector);
-	void SetMoveSpeed(Vector3 Vector);
-	void GetTurnSpeed(PVector3 Vector);
-	void SetTurnSpeed(Vector3 Vector);
+	void GetMoveSpeed(Vector3 * vecMoveSpeed);
+	void SetMoveSpeed(Vector3 vecMoveSpeed);
+	void GetTurnSpeed(Vector3 * vecMoveSpeed);
+	void SetTurnSpeed(Vector3 vecMoveSpeed);
 };

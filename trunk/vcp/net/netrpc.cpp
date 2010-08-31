@@ -20,7 +20,7 @@
 // VC:MP Multiplayer Modification For GTA:VC
 // Copyright 2004-2005 SA:MP team
 //
-// File Author: kyeman
+// File Author(s): kyeman
 //
 //----------------------------------------------------
 
@@ -163,7 +163,7 @@ void RequestClass(RakNet::BitStream *bitStream, Packet *packet)
 	int iRequestedClass;
 	PLAYER_SPAWN_INFO SpawnInfo;
 	CLocalPlayer * pPlayer = pNetGame->GetPlayerPool()->GetLocalPlayer();
-	CGameModeGeneric * pGameLogic = pNetGame->GetGameLogic();
+	CSpawnSelection * pGameLogic = pNetGame->GetGameLogic();
 
 	bitStream->Read(byteOutcome);
 	if(byteOutcome) {

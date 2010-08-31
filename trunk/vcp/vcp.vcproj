@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="Windows-1252"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="9,00"
+	Version="9.00"
 	Name="vcp"
 	ProjectGUID="{24F45D58-098D-42B1-973A-8A3F9C8EA41E}"
 	RootNamespace="vcp"
@@ -217,7 +217,7 @@
 	</References>
 	<Files>
 		<Filter
-			Name="game"
+			Name="Game"
 			>
 			<File
 				RelativePath="game\address.h"
@@ -465,7 +465,7 @@
 			</File>
 		</Filter>
 		<Filter
-			Name="general"
+			Name="General"
 			>
 			<File
 				RelativePath="anticheat.cpp"
@@ -1229,7 +1229,7 @@
 			</Filter>
 		</Filter>
 		<Filter
-			Name="net"
+			Name="Net"
 			>
 			<File
 				RelativePath="net\localplayer.cpp"
@@ -1352,6 +1352,30 @@
 				>
 			</File>
 			<File
+				RelativePath=".\gamemode\spawnselection.cpp"
+				>
+				<FileConfiguration
+					Name="Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath=".\gamemode\spawnselection.h"
+				>
+			</File>
+			<File
 				RelativePath="net\vehiclepool.cpp"
 				>
 				<FileConfiguration
@@ -1375,37 +1399,9 @@
 				RelativePath="net\vehiclepool.h"
 				>
 			</File>
-			<Filter
-				Name="gamemode"
-				>
-				<File
-					RelativePath="gamemode\generic.cpp"
-					>
-					<FileConfiguration
-						Name="Release|Win32"
-						>
-						<Tool
-							Name="VCCLCompilerTool"
-							PreprocessorDefinitions=""
-						/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Debug|Win32"
-						>
-						<Tool
-							Name="VCCLCompilerTool"
-							PreprocessorDefinitions=""
-						/>
-					</FileConfiguration>
-				</File>
-				<File
-					RelativePath="gamemode\generic.h"
-					>
-				</File>
-			</Filter>
 		</Filter>
 		<Filter
-			Name="scripting"
+			Name="Scripting"
 			>
 			<File
 				RelativePath=".\scripting\script.cpp"
