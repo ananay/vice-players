@@ -990,7 +990,7 @@ void UnRegisterRPCs()
 	pNetGame->GetRPC4()->UnregisterFunction("Script_popVehicleTrunk");
 	pNetGame->GetRPC4()->UnregisterFunction("Script_setSkyColor");
 	pNetGame->GetRPC4()->UnregisterFunction("Script_SetPlayerCash");
-	pNetGame->GetRPC4()->UnregisterFunction("Script_toggleDriveByState", Script_toggleDriveByState);
+	pNetGame->GetRPC4()->UnregisterFunction("Script_toggleDriveByState");
 }
 
 //----------------------------------------------------
