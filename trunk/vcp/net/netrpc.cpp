@@ -30,6 +30,7 @@ extern CGame		 *pGame;
 extern CChatWindow   *pChatWindow;
 extern CCmdWindow	 *pCmdWindow;
 extern CPlayerPed	 *pLocalPlayer;
+extern CScripts		 *pScripts;
 
 using namespace RakNet;
 extern CNetGame* pNetGame;
@@ -444,6 +445,46 @@ void SetCameraBehindPlayer(RakNet::BitStream *bitStream, Packet *packet)
 
 //----------------------------------------------------
 
+void UploadClientScript(RakNet::BitStream *bitStream, Packet *packet)
+{
+	long uiLengthName;
+	long uiLength;
+	long uiScriptLength;
+	char szScriptName[256];
+	std::string str = "vc-p/clientscripts/";
+
+	bitStream->Read(uiLengthName);
+	bitStream->Read(uiLength);
+	bitStream->Read(uiScriptLength);
+
+	char *szScript = new char[uiLength+1];
+	bitStream->Read(szScriptName, uiLengthName);
+	bitStream->Read(szScript, uiLength);
+
+	szScriptName[uiLengthName] = '\0';
+	szScript[uiLength] = '\0';
+	str.append(szScriptName);
+
+	FILE *f = fopen(str.c_str(), "wb");
+	if(f)
+	{
+		fprintf(f, "%s", szScript);
+		rewind(f);
+		fseek(f, 0, SEEK_END);
+		long length = ftell(f);
+		rewind(f);
+		fclose(f);
+		if(length >= uiScriptLength)
+		{
+		#pragma  message("(adamix) crashes there, idk why")
+			// int iSlot = pScripts->LoadScript(szScriptName);
+			//pScripts->onInit(iSlot);
+		}
+	}
+}
+
+//----------------------------------------------------
+
 // ============= Scripting RPC's ====================//
 
 // SetHealth
@@ -842,6 +883,7 @@ void RegisterRPCs()
 	pNetGame->GetRPC4()->RegisterFunction("SetCameraRotation",SetCameraRotation);
 	pNetGame->GetRPC4()->RegisterFunction("SetCameraLookAt",SetCameraLookAt);
 	pNetGame->GetRPC4()->RegisterFunction("SetCameraBehindPlayer",SetCameraBehindPlayer);
+	pNetGame->GetRPC4()->RegisterFunction("UploadClientScript",UploadClientScript);
 
 	pNetGame->GetRPC4()->RegisterFunction("Script_SetHealth",Script_SetHealth);
 	pNetGame->GetRPC4()->RegisterFunction("Script_SetArmour",Script_SetArmour);
@@ -900,6 +942,7 @@ void UnRegisterRPCs()
 	pNetGame->GetRPC4()->UnregisterFunction("SetCameraRotation");
 	pNetGame->GetRPC4()->UnregisterFunction("SetCameraLookAt");
 	pNetGame->GetRPC4()->UnregisterFunction("SetCameraBehindPlayer");
+	pNetGame->GetRPC4()->UnregisterFunction("UploadClientScript");
 
 	pNetGame->GetRPC4()->UnregisterFunction("Script_SetHealth");
 	pNetGame->GetRPC4()->UnregisterFunction("Script_SetArmour");

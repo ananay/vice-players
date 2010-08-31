@@ -20,12 +20,20 @@
 // VC:Players Multiplayer Modification For GTA:VC
 // Copyright 2010 GTA:Online team
 //
+// File Authors: Christopher, adamix
+//
 //-----------------------------------------------------
-#pragma once
 
-#include "main.h"
+#include "../main.h"
 #include "scripts.h"
+//#include "sq_player_natives.h"
+//#include "sq_vehicle_natives.h"
+#include "sq_client_natives.h"
+#include "sq_timer_natives.h"
+#include "sq_script_natives.h"
 
-SQInteger sq_setScriptAuthor(SQVM * pVM); // done
-SQInteger sq_setScriptVersion(SQVM * pVM); // done
-SQInteger sq_loadClientScript(SQVM * pVM); // done
+//			Functions
+//---------------------------------
+
+int sq_register_vcmp(SQVM * pVM);
+int sq_register_timer(SQVM * pVM);
