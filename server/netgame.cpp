@@ -274,12 +274,12 @@ void CNetGame::PassengerSync(Packet *p)
 	BitStream bsPassengerSync(p->data, p->length, FALSE);
 	BitStream bsPassengerSend;
 
-	BYTE		byteVehicleID=0;
+	BYTE		vehicleID=0;
 	UINT		uiPassengerSeat;
 	float		x,y,z;
 
 	bsPassengerSync.IgnoreBytes(sizeof(MessageID));
-	bsPassengerSync.Read(byteVehicleID);
+	bsPassengerSync.Read(vehicleID);
 	bsPassengerSync.Read(uiPassengerSeat);
 	bsPassengerSync.Read(x);
 	bsPassengerSync.Read(y);
@@ -289,7 +289,7 @@ void CNetGame::PassengerSync(Packet *p)
 
 	// Now broadcast it.
 	bsPassengerSend.Write((BYTE)p->systemAddress.systemIndex);
-	bsPassengerSend.Write(byteVehicleID);
+	bsPassengerSend.Write(vehicleID);
 	bsPassengerSend.Write(uiPassengerSeat);
 	m_pRPC4->Call("Passenger", &bsPassengerSend,HIGH_PRIORITY,RELIABLE,0,p->systemAddress,TRUE);
 

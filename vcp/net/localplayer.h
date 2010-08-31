@@ -49,7 +49,7 @@ typedef struct _PLAYER_SYNC_DATA
 
 typedef struct _VEHICLE_SYNC_DATA
 {
-	BYTE byteVehicleID;
+	EntityId vehicleID;
 	WORD wKeys;
 	Vector3 vecRoll;
 	Vector3 vecDirection;
@@ -123,8 +123,8 @@ public:
 
 	void Say(PCHAR szText);
 
-	void SendExitVehicleNotification(BYTE byteVehicleID);
-	void SendEnterVehicleNotification(BYTE byteVehicleID, BOOL bPassenger);
+	void SendExitVehicleNotification(EntityId vehicleID);
+	void SendEnterVehicleNotification(EntityId vehicleID, BOOL bPassenger);
 	
 	DWORD GetTeamColorAsRGBA();
 	DWORD GetTeamColorAsARGB();

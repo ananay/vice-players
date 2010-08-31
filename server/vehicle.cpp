@@ -58,14 +58,7 @@ CVehicle::CVehicle( BYTE byteModel, Vector3 *vecPos,
 
 CVehicle::~CVehicle()
 {
-	RakNet::BitStream bsSend;
-	bsSend.Write(m_byteVehicleID);
-	CPlayerPool * pPlayerPool = pNetGame->GetPlayerPool();
-	for(BYTE i = 0; i < MAX_PLAYERS; i++) {
-		if(pPlayerPool->GetSlotState(i)) {
-			pNetGame->GetRPC4()->Call("Script_DestroyVehicle",&bsSend,HIGH_PRIORITY,RELIABLE,0,pNetGame->GetRakPeer()->GetSystemAddressFromIndex(i),false);
-		}
-	}
+	DestroyForWorld();
 }
 
 //----------------------------------------------------
@@ -89,7 +82,7 @@ void CVehicle::Reset()
 	m_bIsActive = TRUE;
 	m_bIsWasted = FALSE;
 	m_bHasHadUpdate = FALSE;
-	m_byteDriverID = INVALID_ID;
+	m_driverID = INVALID_ID;
 	m_fHealth = 1000.0f;
 	m_bHasDriver = FALSE;
 	m_bHasBeenDriven = FALSE;
@@ -100,30 +93,30 @@ void CVehicle::Reset()
 // Updates our stored data structures for this
 // network vehicle.
 
-void CVehicle::Update(BYTE bytePlayerID, MATRIX4X4 * matWorld, Vector3 * vecMoveSpeed, Vector3 * vecTurnSpeed, float fHealth)
+void CVehicle::Update(EntityId playerID, MATRIX4X4 * matWorld, Vector3 * vecMoveSpeed, Vector3 * vecTurnSpeed, float fHealth)
 {
-	m_byteDriverID = bytePlayerID;
+	m_driverID = playerID;
 	memcpy(&m_matWorld, matWorld, sizeof(MATRIX4X4));
 	memcpy(&m_vecMoveSpeed,vecMoveSpeed, sizeof(Vector3));
 	memcpy(&m_vecTurnSpeed, vecTurnSpeed, sizeof(Vector3));
 
 	if(m_fHealth != fHealth)
 	{
-		pScripts->onVehicleDamage(m_byteVehicleID, m_fHealth, fHealth);
+		pScripts->onVehicleDamage(m_vehicleID, m_fHealth, fHealth);
 	}
 
 	m_fHealth = fHealth;
 	m_bHasHadUpdate = TRUE;
-	pScripts->onVehicleSync(m_byteVehicleID);
+	pScripts->onVehicleSync(m_vehicleID);
 }
 
 //----------------------------------------------------
 
-void CVehicle::SpawnForPlayer(BYTE byteForSystemAddress)
+void CVehicle::SpawnForPlayer(EntityId forPlayerID)
 {
 	RakNet::BitStream bsVehicleSpawn;
 
-	bsVehicleSpawn.Write(m_byteVehicleID);
+	bsVehicleSpawn.Write(m_vehicleID);
 	bsVehicleSpawn.Write(m_SpawnInfo.byteVehicleType);
 	bsVehicleSpawn.Write(m_matWorld.vPos.X);
 	bsVehicleSpawn.Write(m_matWorld.vPos.Y);
@@ -140,18 +133,18 @@ void CVehicle::SpawnForPlayer(BYTE byteForSystemAddress)
 	bsVehicleSpawn.Write(m_SpawnInfo.vecPos.Z);
 	bsVehicleSpawn.Write(m_SpawnInfo.fRotation);
 	
-	pNetGame->GetRPC4()->Call("VehicleSpawn", &bsVehicleSpawn,HIGH_PRIORITY,RELIABLE_ORDERED,0,pNetGame->GetRakPeer()->GetSystemAddressFromIndex(byteForSystemAddress),false);
+	pNetGame->GetRPC4()->Call("VehicleSpawn", &bsVehicleSpawn,HIGH_PRIORITY,RELIABLE_ORDERED,0,pNetGame->GetRakPeer()->GetSystemAddressFromIndex(forPlayerID),false);
 }
 
 //----------------------------------------------------------
 
-void CVehicle::DestroyForPlayer(BYTE byteForSystemAddress)
+void CVehicle::DestroyForPlayer(EntityId forPlayerID)
 {
 	RakNet::BitStream bsVehicleDestroy;
 
-	bsVehicleDestroy.Write(m_byteVehicleID);
+	bsVehicleDestroy.Write(m_vehicleID);
 
-	pNetGame->GetRPC4()->Call("VehicleDestroy", &bsVehicleDestroy,HIGH_PRIORITY,RELIABLE_ORDERED,0,pNetGame->GetRakPeer()->GetSystemAddressFromIndex(byteForSystemAddress),false);
+	pNetGame->GetRPC4()->Call("VehicleDestroy", &bsVehicleDestroy,HIGH_PRIORITY,RELIABLE_ORDERED,0,pNetGame->GetRakPeer()->GetSystemAddressFromIndex(forPlayerID),false);
 }
 
 //----------------------------------------------------------
@@ -159,7 +152,7 @@ void CVehicle::DestroyForPlayer(BYTE byteForSystemAddress)
 void CVehicle::SpawnForWorld()
 {
 	CPlayerPool * pPlayerPool = pNetGame->GetPlayerPool();
-	for(BYTE i = 0; i < MAX_PLAYERS; i++) {
+	for(EntityId i = 0; i < MAX_PLAYERS; i++) {
 		if(pPlayerPool->GetSlotState(i)) {
 			SpawnForPlayer(i);
 		}
@@ -171,7 +164,7 @@ void CVehicle::SpawnForWorld()
 void CVehicle::DestroyForWorld()
 {
 	CPlayerPool * pPlayerPool = pNetGame->GetPlayerPool();
-	for(BYTE i = 0; i < MAX_PLAYERS; i++) {
+	for(EntityId i = 0; i < MAX_PLAYERS; i++) {
 		if(pPlayerPool->GetSlotState(i)) {
 			DestroyForPlayer(i);
 		}
@@ -191,7 +184,7 @@ void CVehicle::Respawn()
 
 void CVehicle::UpdateLastDrivenTime()
 {
-	if(m_byteDriverID) {
+	if(m_driverID) {
 		m_bHasBeenDriven = TRUE;
 		m_dwTimeSinceLastDriven = GetTickCount();
 	}
@@ -202,14 +195,9 @@ void CVehicle::UpdateLastDrivenTime()
 void CVehicle::SetHealth(float newHealth)
 {
 	RakNet::BitStream bsSend;
-	bsSend.Write(m_byteVehicleID);
+	bsSend.Write(m_vehicleID);
 	bsSend.Write(newHealth);
-	CPlayerPool * pPlayerPool = pNetGame->GetPlayerPool();
-	for(BYTE i = 0; i < MAX_PLAYERS; i++) {
-		if(pPlayerPool->GetSlotState(i)) {
-			pNetGame->GetRPC4()->Call("Script_SetVehicleHealth",&bsSend,HIGH_PRIORITY,RELIABLE,0,pNetGame->GetRakPeer()->GetSystemAddressFromIndex(i),false);
-		}
-	}
+	pNetGame->GetRPC4()->Call("Script_SetVehicleHealth",&bsSend,HIGH_PRIORITY,RELIABLE,0,UNASSIGNED_SYSTEM_ADDRESS,true);
 }
 
 //----------------------------------------------------------
@@ -217,15 +205,10 @@ void CVehicle::SetHealth(float newHealth)
 void CVehicle::SetColor(int color1, int color2)
 {
 	RakNet::BitStream bsSend;
-	bsSend.Write(m_byteVehicleID);
+	bsSend.Write(m_vehicleID);
 	bsSend.Write(color1);
 	bsSend.Write(color2);
-	CPlayerPool * pPlayerPool = pNetGame->GetPlayerPool();
-	for(BYTE i = 0; i < MAX_PLAYERS; i++) {
-		if(pPlayerPool->GetSlotState(i)) {
-			pNetGame->GetRPC4()->Call("Script_SetVehicleColor",&bsSend,HIGH_PRIORITY,RELIABLE,0,pNetGame->GetRakPeer()->GetSystemAddressFromIndex(i),false);
-		}
-	}
+	pNetGame->GetRPC4()->Call("Script_SetVehicleColor",&bsSend,HIGH_PRIORITY,RELIABLE,0,UNASSIGNED_SYSTEM_ADDRESS,true);
 	m_iColors[0] = color1;
 	m_iColors[1] = color2;
 }
@@ -233,13 +216,8 @@ void CVehicle::SetColor(int color1, int color2)
 void CVehicle::PopTrunk()
 {
 	RakNet::BitStream bsSend;
-	bsSend.Write(m_byteVehicleID);
-	CPlayerPool * pPlayerPool = pNetGame->GetPlayerPool();
-	for(BYTE i = 0; i < MAX_PLAYERS; i++) {
-		if(pPlayerPool->GetSlotState(i)) {
-			pNetGame->GetRPC4()->Call("Script_popVehicleTrunk",&bsSend,HIGH_PRIORITY,RELIABLE,0,pNetGame->GetRakPeer()->GetSystemAddressFromIndex(i),false);
-		}
-	}
+	bsSend.Write(m_vehicleID);
+	pNetGame->GetRPC4()->Call("Script_popVehicleTrunk",&bsSend,HIGH_PRIORITY,RELIABLE,0,UNASSIGNED_SYSTEM_ADDRESS,true);
 }
 
 //----------------------------------------------------------

@@ -46,7 +46,7 @@ class CRemotePlayer
 private:
 	CPlayerPed			*m_pPlayerPed;
 
-	BYTE				m_bytePlayerID;
+	EntityId			m_playerID;
 	BYTE				m_byteUpdateFromNetwork;
 	BOOL				m_bIsActive;
 	BOOL				m_bIsWasted;
@@ -66,7 +66,7 @@ private:
 
 	BOOL				m_bIsInVehicle;
 	BOOL				m_bIsAPassenger;
-	BYTE				m_byteVehicleID;
+	BYTE				m_vehicleID;
 	UINT				m_uiPassengerSeat;
 	BYTE				m_byteShootingFlags;
 
@@ -89,8 +89,8 @@ public:
 	void HandleVehicleEntryExit();
 	void Say(PCHAR szText);
 
-	void SetID(BYTE byteSystemAddress) { m_bytePlayerID = byteSystemAddress; };
-	BYTE GetID() { return m_bytePlayerID; };
+	void SetID(EntityId playerID) { m_playerID = playerID; };
+	EntityId GetID() { return m_playerID; };
 	BYTE GetTeam() { return m_byteTeam; };	
 
 	CPlayerPed * GetPlayerPed() { return m_pPlayerPed; };
@@ -116,7 +116,7 @@ public:
 	
 	void StoreInCarFullSyncData(VEHICLE_SYNC_DATA * pVehicleSyncData);
 
-	void StorePassengerData(BYTE byteVehicleID, UINT uiSeat);
+	void StorePassengerData(EntityId vehicleID, UINT uiSeat);
 
 	BOOL DestroyPlayer();
 

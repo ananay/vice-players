@@ -34,73 +34,73 @@ class CPlayerPool
 {
 private:
 	
-	BOOL m_bPlayerSlotState[MAX_PLAYERS];
-	CLocalPlayer  *m_pLocalPlayer;
-	BYTE	m_byteLocalSystemAddress;
-	CRemotePlayer *m_pPlayers[MAX_PLAYERS];
-	CHAR	m_szLocalPlayerName[MAX_PLAYER_NAME+1];
-	CHAR	m_szPlayerNames[MAX_PLAYERS][MAX_PLAYER_NAME+1];
-	ULONG	m_ulIPAddress[MAX_PLAYERS]; // used by admin
+	BOOL			m_bPlayerSlotState[MAX_PLAYERS];
+	CLocalPlayer  *	m_pLocalPlayer;
+	EntityId		m_localPlayerID;
+	CRemotePlayer * m_pPlayers[MAX_PLAYERS];
+	char			m_szLocalPlayerName[MAX_PLAYER_NAME+1];
+	char			m_szPlayerNames[MAX_PLAYERS][MAX_PLAYER_NAME+1];
+	ULONG			m_ulIPAddress[MAX_PLAYERS]; // used by admin
 	
-	int		m_iLocalPlayerScore;
-	int		m_iLocalPlayerPing;
-	int		m_iScore[MAX_PLAYERS];
-	int		m_iPing[MAX_PLAYERS];
+	int				m_iLocalPlayerScore;
+	int				m_iLocalPlayerPing;
+	int				m_iScore[MAX_PLAYERS];
+	int				m_iPing[MAX_PLAYERS];
 
 public:
 	BOOL Process();
 
-	void SetLocalPlayerName(PCHAR szName) { strcpy(m_szLocalPlayerName,szName); };
-	PCHAR GetLocalPlayerName() { return m_szLocalPlayerName; };
-	PCHAR GetPlayerName(BYTE byteSystemAddress) { return m_szPlayerNames[byteSystemAddress]; };
+	void SetLocalPlayerName(char * szName) { strcpy(m_szLocalPlayerName,szName); };
+	char * GetLocalPlayerName() { return m_szLocalPlayerName; };
+	char * GetPlayerName(EntityId playerID) { return m_szPlayerNames[playerID]; };
 
 	CLocalPlayer * GetLocalPlayer() { return m_pLocalPlayer; };
-	BYTE FindRemoteSystemAddressFromGtaPtr(PED_TYPE * pActor);
+	EntityId FindPlayerIDFromGtaPtr(PED_TYPE * pActor);
 
-	BOOL New(BYTE byteSystemAddress, PCHAR szPlayerName);
-	BOOL Delete(BYTE byteSystemAddress, BYTE byteReason);
+	BOOL New(EntityId playerID, PCHAR szPlayerName);
+	BOOL Delete(EntityId playerID, BYTE byteReason);
 
-	CRemotePlayer* GetAt(BYTE byteSystemAddress) {
-		if(byteSystemAddress > MAX_PLAYERS) { return NULL; }
-		return m_pPlayers[byteSystemAddress];
+	CRemotePlayer* GetAt(EntityId playerID) {
+		if(playerID > MAX_PLAYERS) { return NULL; }
+		return m_pPlayers[playerID];
 	};
 
-	BOOL GetSlotState(BYTE byteSystemAddress) {
-		if(byteSystemAddress > MAX_PLAYERS) { return FALSE; }
-		return m_bPlayerSlotState[byteSystemAddress];
+	BOOL GetSlotState(EntityId playerID) {
+		if(playerID > MAX_PLAYERS) { return FALSE; }
+		return m_bPlayerSlotState[playerID];
 	};
 	
-	void SetLocalSystemAddress(BYTE byteID) {
-		strcpy(m_szPlayerNames[byteID],m_szLocalPlayerName);
-		m_byteLocalSystemAddress = byteID;
+	void SetLocalPlayerID(EntityId playerID) {
+		strcpy(m_szPlayerNames[playerID],m_szLocalPlayerName);
+		m_localPlayerID = playerID;
 	};
 
-	void UpdatePing(BYTE byteSystemAddress,int iPing) { 
-		if(byteSystemAddress == m_byteLocalSystemAddress) {
+	void UpdatePing(EntityId playerID, int iPing) { 
+		if(playerID == m_localPlayerID) {
 			m_iLocalPlayerPing = iPing;
 		} else {
-			m_iPing[byteSystemAddress] = iPing;
+			m_iPing[playerID] = iPing;
 		}
 	};
 
-	void UpdateScore(BYTE byteSystemAddress,int iScore) { 
-		if(byteSystemAddress == m_byteLocalSystemAddress) {
+	void UpdateScore(EntityId playerID, int iScore) { 
+		if(playerID == m_localPlayerID) {
 			m_iLocalPlayerScore = iScore;
 		} else {
-			m_iScore[byteSystemAddress] = iScore;
+			m_iScore[playerID] = iScore;
 		}
 	};
 
-	void UpdateIPAddress(BYTE byteSystemAddress, ULONG ip) {
-		m_ulIPAddress[byteSystemAddress] = ip;
+	void UpdateIPAddress(EntityId playerID, ULONG ip) {
+		m_ulIPAddress[playerID] = ip;
 	}
 
-	int GetPing(BYTE byteSystemAddress) { return m_iPing[byteSystemAddress]; };
-	int GetScore(BYTE byteSystemAddress) { return m_iScore[byteSystemAddress]; };
+	int GetPing(EntityId playerID) { return m_iPing[playerID]; };
+	int GetScore(EntityId playerID) { return m_iScore[playerID]; };
 	int GetLocalPlayerPing() { return m_iLocalPlayerPing; };
 	int GetLocalPlayerScore() { return m_iLocalPlayerScore; };
-	BYTE GetLocalSystemAddress() { return m_byteLocalSystemAddress; };
-	ULONG GetIPAddress(BYTE byteSystemAddress) { return m_ulIPAddress[byteSystemAddress]; };
+	EntityId GetLocalPlayerID() { return m_localPlayerID; };
+	ULONG GetIPAddress(EntityId playerID) { return m_ulIPAddress[playerID]; };
 
 	CPlayerPool();
 	~CPlayerPool();

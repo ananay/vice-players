@@ -78,23 +78,22 @@ BOOL WINAPI DllMain(HINSTANCE hinstDLL, DWORD fdwReason, LPVOID lpvReserved)
 		
 		InitSettings();
 
-		if(tSettings.bDebug || tSettings.bPlayOnline) {
-			// Check the GTA version
-			if(DetermineGTAVersion() != VICE_10) {
-				MessageBox(0,"Incorrect gta-vc.exe version detected.\nYou must use GTA:VC 1.0 to play Vice City: Players","Vice City: Players Error",MB_OK);
-				SetForegroundWindow(HWND_DESKTOP);
-				ExitProcess(1);
-			}
-
-			dwGameLoop = (DWORD)TheGameLoop;
-			dwRenderLoop = (DWORD)TheRenderLoop;
-
-			pGame = new CGame();
-
-			pScripts = new CScripts();
-
-			InstallD3D8Hook();
+		// Check the GTA version
+		if(DetermineGTAVersion() != VICE_10) {
+			MessageBox(0,"Incorrect gta-vc.exe version detected.\nYou must use GTA:VC 1.0 to play Vice City: Players","Vice City: Players Error",MB_OK);
+			SetForegroundWindow(HWND_DESKTOP);
+			ExitProcess(1);
 		}
+
+		dwGameLoop = (DWORD)TheGameLoop;
+		dwRenderLoop = (DWORD)TheRenderLoop;
+
+		pGame = new CGame();
+
+		pScripts = new CScripts();
+
+		InstallD3D8Hook();
+
 		// else they must want to play single
 		// player or they got the command line
 		// arguments wrong.
@@ -152,7 +151,7 @@ void TheSceneEnd()
 	if(bScriptInited) {
 		// If the game is not inited then do it now.
 		if(!bGameInited && FileCheckSum()) {
-			if(tSettings.bPlayOnline) {
+			if(!tSettings.bDebug) {
 				pNetGame = new CNetGame(tSettings.szConnectHost,atoi(tSettings.szConnectPort),
 					tSettings.szNickName,tSettings.szConnectPass);
 			}
@@ -205,12 +204,6 @@ void InitSettings()
 				case 'd':
 				case 'D':
 					tSettings.bDebug = TRUE;
-					tSettings.bPlayOnline = FALSE;
-					break;
-				case 'c':
-				case 'C':
-					tSettings.bPlayOnline = TRUE;
-					tSettings.bDebug = FALSE;
 					break;
 				case 'w':
 				case 'W':

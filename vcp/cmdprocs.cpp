@@ -232,18 +232,18 @@ void cmdGetIP(PCHAR szCmd)
 		return;
 	}
 
-	BYTE byteSystemAddress;
-	sscanf(szCmd,"%u",&byteSystemAddress);
+	EntityId playerID;
+	sscanf(szCmd,"%u",&playerID);
 	
 	if(pNetGame) {
 		CPlayerPool *pPlayerPool = pNetGame->GetPlayerPool();
-		if(pPlayerPool->GetSlotState(byteSystemAddress)) {
+		if(pPlayerPool->GetSlotState(playerID)) {
 
 			char ret[30];
-			DWORD ip = pPlayerPool->GetIPAddress(byteSystemAddress);
+			DWORD ip = pPlayerPool->GetIPAddress(playerID);
 			IP2String(ip,ret);
 			pChatWindow->AddDebugMessage("%s is: %s",
-				pPlayerPool->GetPlayerName(byteSystemAddress),ret);
+				pPlayerPool->GetPlayerName(playerID),ret);
 
 		} else {
 			pChatWindow->AddDebugMessage("That player doesn't appear to be active.");

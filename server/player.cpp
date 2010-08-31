@@ -51,7 +51,7 @@ CPlayer::CPlayer()
 	m_bytePlayerID = INVALID_PLAYER_ID;
 	m_bIsActive = FALSE;
 	m_bIsWasted = FALSE;
-	m_byteVehicleID = 0;
+	m_vehicleID = 0;
 	m_iMoney = 0;
 	m_bHasAim = false;
 }
@@ -128,7 +128,7 @@ void CPlayer::BroadcastSyncData()
 		VEHICLE_SYNC_DATA vehicleSyncData;
 		bsSync.Write((MessageID)ID_VEHICLE_SYNC);
 		bsSync.Write(m_bytePlayerID);
-		vehicleSyncData.byteVehicleID = m_byteVehicleID;
+		vehicleSyncData.vehicleID = m_vehicleID;
 		vehicleSyncData.wKeys = m_wKeys;
 		memcpy(&vehicleSyncData.vecRoll, &m_vecRoll, sizeof(Vector3));
 		memcpy(&vehicleSyncData.vecDirection, &m_vecDirection, sizeof(Vector3));
@@ -148,9 +148,9 @@ void CPlayer::BroadcastSyncData()
 
 void CPlayer::StoreOnFootFullSyncData(PLAYER_SYNC_DATA * pPlayerSyncData)
 {
-	if(m_byteVehicleID != 0) {
-		pNetGame->GetVehiclePool()->GetAt(m_byteVehicleID)->SetDriverId(INVALID_PLAYER_ID);
-		m_byteVehicleID = 0;
+	if(m_vehicleID != 0) {
+		pNetGame->GetVehiclePool()->GetAt(m_vehicleID)->SetDriverId(INVALID_PLAYER_ID);
+		m_vehicleID = 0;
 	}
 
 	// update player data
@@ -188,7 +188,7 @@ void CPlayer::StoreAimSyncData(S_CAMERA_AIM * pAim)
 void CPlayer::StoreInCarFullSyncData(VEHICLE_SYNC_DATA * pVehicleSyncData)
 {
 	// get the vehicle pointer
-	CVehicle * pVehicle = pNetGame->GetVehiclePool()->GetAt(pVehicleSyncData->byteVehicleID);
+	CVehicle * pVehicle = pNetGame->GetVehiclePool()->GetAt(pVehicleSyncData->vehicleID);
 
 	// make sure vehicle is valid
 	if(!pVehicle)
@@ -198,7 +198,7 @@ void CPlayer::StoreInCarFullSyncData(VEHICLE_SYNC_DATA * pVehicleSyncData)
 	}
 
 	// update player data
-	m_byteVehicleID = pVehicleSyncData->byteVehicleID;
+	m_vehicleID = pVehicleSyncData->vehicleID;
 	m_wKeys = pVehicleSyncData->wKeys;
 	memcpy(&m_vecRoll, &pVehicleSyncData->vecRoll, sizeof(Vector3));
 	memcpy(&m_vecDirection, &pVehicleSyncData->vecDirection, sizeof(Vector3));
@@ -308,7 +308,7 @@ void CPlayer::Spawn()
 		m_fRotation = 0.0f;
 		m_bIsInVehicle=FALSE;
 		m_bIsAPassenger=FALSE;
-		m_byteVehicleID=0;
+		m_vehicleID=0;
 				
 		SpawnForWorld(m_SpawnInfo.byteTeam,m_SpawnInfo.byteSkin,&m_SpawnInfo.vecPos,m_SpawnInfo.fRotation);
 	}
@@ -377,13 +377,13 @@ void CPlayer::SpawnForPlayer(BYTE byteForSystemAddress)
 
 //----------------------------------------------------
 
-void CPlayer::EnterVehicle(BYTE byteVehicleID, BYTE bytePassenger)
+void CPlayer::EnterVehicle(EntityId vehicleID, BYTE bytePassenger)
 {
 	RakNet::BitStream bsVehicle;
 	SystemAddress playerid = pNetGame->GetRakPeer()->GetSystemAddressFromIndex(m_bytePlayerID);
 
 	bsVehicle.Write(m_bytePlayerID);
-	bsVehicle.Write(byteVehicleID);
+	bsVehicle.Write(vehicleID);
 	bsVehicle.Write(bytePassenger);
 
 	pNetGame->GetRPC4()->Call("EnterVehicle", &bsVehicle,HIGH_PRIORITY,RELIABLE_ORDERED,0,playerid,true);
@@ -391,13 +391,13 @@ void CPlayer::EnterVehicle(BYTE byteVehicleID, BYTE bytePassenger)
 
 //----------------------------------------------------
 
-void CPlayer::ExitVehicle(BYTE byteVehicleID)
+void CPlayer::ExitVehicle(EntityId vehicleID)
 {
 	RakNet::BitStream bsVehicle;
 	SystemAddress playerid = pNetGame->GetRakPeer()->GetSystemAddressFromIndex(m_bytePlayerID);
 
 	bsVehicle.Write(m_bytePlayerID);
-	bsVehicle.Write(byteVehicleID);
+	bsVehicle.Write(vehicleID);
 
 	pNetGame->GetRPC4()->Call("ExitVehicle", &bsVehicle,HIGH_PRIORITY,RELIABLE_ORDERED,0,playerid,true);
 }
@@ -476,7 +476,7 @@ BOOL CPlayer::IsAPassenger()
 
 BYTE CPlayer::GetVehicleID()
 {
-	return m_byteVehicleID;
+	return m_vehicleID;
 }
 
 //----------------------------------------------------

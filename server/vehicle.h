@@ -42,9 +42,9 @@ class CVehicle
 {
 public:
 
-	BYTE					m_byteVehicleID;
-	BYTE					m_byteDriverID;
-	BYTE					m_bytePassengers[7];
+	EntityId				m_vehicleID;
+	EntityId				m_driverID;
+	EntityId				m_passengers[8];
 	BOOL					m_bIsActive;
 	BOOL					m_bIsWasted;
 	VEHICLE_SPAWN_INFO		m_SpawnInfo;
@@ -74,8 +74,8 @@ public:
 	void GetMoveSpeed(Vector3 * vecMoveSpeed);
 	void GetTurnSpeed(Vector3 * vecTurnSpeed);
 
-	void SetDriverId(BYTE byteDriverId) { m_byteDriverID = byteDriverId; };
-	BYTE GetDriverId() { return m_byteDriverID; };
+	void SetDriverId(EntityId driverId) { m_driverID = driverId; };
+	EntityId GetDriverId() { return m_driverID; };
 
 	BOOL IsActive() { return m_bIsActive; };
 
@@ -85,16 +85,16 @@ public:
 	DWORD GetTimeSinceLastDriven() { return m_dwTimeSinceLastDriven; };
 	BOOL HasBeenDriven() { return m_bHasBeenDriven; };
 
-	void SetID(BYTE byteVehicleID) { m_byteVehicleID = byteVehicleID; };
+	void SetID(EntityId vehicleID) { m_vehicleID = vehicleID; };
 	VEHICLE_SPAWN_INFO * GetSpawnInfo() { return &m_SpawnInfo; };
 
-	void SpawnForPlayer(BYTE byteForSystemAddress);
-	void DestroyForPlayer(BYTE byteForSystemAddress);
+	void SpawnForPlayer(EntityId forPlayerID);
+	void DestroyForPlayer(EntityId forPlayerID);
 	void SpawnForWorld();
 	void DestroyForWorld();
 	void Respawn();
 
 	void UpdateLastDrivenTime();
 
-	void Update(BYTE bytePlayerID, MATRIX4X4 * matWorld, Vector3 * vecMoveSpeed, Vector3 * vecTurnSpeed, float fHealth);
+	void Update(EntityId playerID, MATRIX4X4 * matWorld, Vector3 * vecMoveSpeed, Vector3 * vecTurnSpeed, float fHealth);
 };

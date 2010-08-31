@@ -42,23 +42,23 @@ public:
 	CVehiclePool();
 	~CVehiclePool();
 
-	BOOL New(BYTE byteVehicleID, BYTE byteVehicleType, Vector3 * vecPos, float fRotation, int iColor1, int iColor2);
+	BOOL New(EntityId vehicleID, BYTE byteVehicleType, Vector3 * vecPos, float fRotation, int iColor1, int iColor2);
 	BYTE New(BYTE byteVehicleType, Vector3 * vecPos, float fRotation, int iColor1, int iColor2);
-	BOOL Delete(BYTE byteVehicleID);	
+	BOOL Delete(EntityId vehicleID);	
 		
 	// Retrieve a vehicle by id
-	CVehicle* GetAt(BYTE byteVehicleID) {
-		if(byteVehicleID > MAX_VEHICLES) { return NULL; }
-		return m_pVehicles[byteVehicleID];
+	CVehicle* GetAt(EntityId vehicleID) {
+		if(vehicleID > MAX_VEHICLES) { return NULL; }
+		return m_pVehicles[vehicleID];
 	};
 
 	// Find out if the slot is inuse.
-	BOOL GetSlotState(BYTE byteVehicleID) {
-		if(byteVehicleID > MAX_VEHICLES) { return FALSE; }
-		return m_bVehicleSlotState[byteVehicleID];
+	BOOL GetSlotState(EntityId vehicleID) {
+		if(vehicleID > MAX_VEHICLES) { return FALSE; }
+		return m_bVehicleSlotState[vehicleID];
 	};
 
-	void FlagForRespawn(BYTE byteVehicleId);
+	void FlagForRespawn(EntityId vehicleID);
 	void Process();
 };
 

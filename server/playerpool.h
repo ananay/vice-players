@@ -50,33 +50,33 @@ public:
 
 	void Process();
 
-	BOOL New(BYTE byteSystemAddress, PCHAR szPlayerName);
-	BOOL Delete(BYTE byteSystemAddress, BYTE byteReason);
+	BOOL New(EntityId playerID, PCHAR szPlayerName);
+	BOOL Delete(EntityId playerID, BYTE byteReason);
 		
 	// Retrieve a player
-	CPlayer* GetAt(BYTE byteSystemAddress) {
-		if(byteSystemAddress > MAX_PLAYERS) { return NULL; }
-		return m_pPlayers[byteSystemAddress];
+	CPlayer* GetAt(EntityId playerID) {
+		if(playerID > MAX_PLAYERS) { return NULL; }
+		return m_pPlayers[playerID];
 	};
 
 	// Find out if the slot is inuse.
-	BOOL GetSlotState(BYTE byteSystemAddress) {
-		if(byteSystemAddress > MAX_PLAYERS) { return FALSE; }
-		return m_bPlayerSlotState[byteSystemAddress];
+	BOOL GetSlotState(EntityId playerID) {
+		if(playerID > MAX_PLAYERS) { return FALSE; }
+		return m_bPlayerSlotState[playerID];
 	};
 
-	PCHAR GetPlayerName(BYTE byteSystemAddress) { return m_szPlayerName[byteSystemAddress]; };
+	PCHAR GetPlayerName(EntityId playerID) { return m_szPlayerName[playerID]; };
 
 	BYTE AddResponsibleDeath(BYTE byteWhoKilled, BYTE byteWhoDied);
 	float GetDistanceFromPlayerToPlayer(BYTE bytePlayer1, BYTE bytePlayer2);
 
-	void SetAdmin(BYTE byteSystemAddress) { m_bIsAnAdmin[byteSystemAddress] = TRUE; };
-	BOOL IsAdmin(BYTE byteSystemAddress) { return m_bIsAnAdmin[byteSystemAddress]; };
+	void SetAdmin(EntityId playerID) { m_bIsAnAdmin[playerID] = TRUE; };
+	BOOL IsAdmin(EntityId playerID) { return m_bIsAnAdmin[playerID]; };
 
-	int GetScore(BYTE byteSystemAddress) { return m_iPlayerScore[byteSystemAddress]; };
+	int GetScore(EntityId playerID) { return m_iPlayerScore[playerID]; };
 
 	BOOL IsNickInUse(PCHAR szNick);
-	BOOL IsConnected(BYTE byteSystemAddress);
+	BOOL IsConnected(EntityId playerID);
 	void SetGameTime(BYTE hours, BYTE minutes);
 
 	int GetPlayerCount() {

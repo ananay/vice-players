@@ -38,7 +38,7 @@ private:
 public:
 
 	int AddPlayerClass(int team, int model, float x, float y, float z, float rot, int weapon1, int ammo1, int weapon2, int ammo2, int weapon3, int ammo3);
-	int HandleSpawnClassRequest(BYTE byteSystemAddress, int iSpawnType);
+	int HandleSpawnClassRequest(EntityId playerID, int iSpawnType);
 	
 	CGameModeGeneric();
 	~CGameModeGeneric();

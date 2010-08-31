@@ -462,21 +462,23 @@ void CGame::FadeScreen(int iType, int iTime)
 
 //-----------------------------------------------------------
 
-void CGame::SetGameTime(BYTE hours, BYTE minutes)
+void CGame::SetGameTime(int iHour, int iMinute)
 {
 	DWORD dwFunc = CClock__SetTime;
 	_asm
 	{
-		push minutes
-		push hours
+		push iMinute
+		push iHour
 		call dwFunc
 		add esp, 4
 	}
 }
 
+//-----------------------------------------------------------
+
 void CGame::SetCash(int Cash)
 {
- *( int *)ADDR_Set_Cash = Cash;
+	*(int *)ADDR_PlayerCash = Cash;
 }
 
 //-----------------------------------------------------------

@@ -35,9 +35,10 @@
 #define MAX_SETTINGS_STRING 128
 #define CLIENT_VERSION "(Alpha-2)"
 
+typedef unsigned char EntityId;
+
 typedef struct _GAME_SETTINGS {
 	BOOL bDebug;
-	BOOL bPlayOnline;
 	CHAR szConnectHost[MAX_SETTINGS_STRING+1];
 	CHAR szConnectPort[MAX_SETTINGS_STRING+1];
 	CHAR szConnectPass[MAX_SETTINGS_STRING+1];

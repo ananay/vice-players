@@ -35,7 +35,8 @@ extern CChatWindow *pChatWindow;
 
 CVehiclePool::CVehiclePool()
 {
-	for(BYTE i = 0; i < MAX_VEHICLES; i++) {
+	for(EntityId i = 0; i < MAX_VEHICLES; i++)
+	{
 		m_bVehicleSlotState[i] = FALSE;
 		m_pVehicles[i] = NULL;
 	}
@@ -45,8 +46,10 @@ CVehiclePool::CVehiclePool()
 
 CVehiclePool::~CVehiclePool()
 {	
-	for(BYTE i = 0; i < MAX_VEHICLES; i++) {
-		if(m_bVehicleSlotState[i]) {
+	for(EntityId i = 0; i < MAX_VEHICLES; i++)
+	{
+		if(m_bVehicleSlotState[i])
+		{
 			Delete(i);
 		}
 	}
@@ -54,63 +57,63 @@ CVehiclePool::~CVehiclePool()
 
 //----------------------------------------------------
 
-BOOL CVehiclePool::New( BYTE byteVehicleID, BYTE byteVehicleType,
+BOOL CVehiclePool::New( EntityId vehicleID, BYTE byteVehicleType,
 					    Vector3 * vecPos, float fRotation,
 					    int iColor1, int iColor2,
 					    Vector3 * vecSpawnPos, float fSpawnRotation )
 {
 
 	// Setup the spawninfo for the next respawn.
-	m_SpawnInfo[byteVehicleID].byteVehicleType = byteVehicleType;
-	m_SpawnInfo[byteVehicleID].vecPos.X = vecSpawnPos->X;
-	m_SpawnInfo[byteVehicleID].vecPos.Y = vecSpawnPos->Y;
-	m_SpawnInfo[byteVehicleID].vecPos.Z = vecSpawnPos->Z;
-	m_SpawnInfo[byteVehicleID].fRotation = fSpawnRotation;
-	m_SpawnInfo[byteVehicleID].iColor1 = iColor1;
-	m_SpawnInfo[byteVehicleID].iColor2 = iColor2;
+	m_SpawnInfo[vehicleID].byteVehicleType = byteVehicleType;
+	m_SpawnInfo[vehicleID].vecPos.X = vecSpawnPos->X;
+	m_SpawnInfo[vehicleID].vecPos.Y = vecSpawnPos->Y;
+	m_SpawnInfo[vehicleID].vecPos.Z = vecSpawnPos->Z;
+	m_SpawnInfo[vehicleID].fRotation = fSpawnRotation;
+	m_SpawnInfo[vehicleID].iColor1 = iColor1;
+	m_SpawnInfo[vehicleID].iColor2 = iColor2;
 
 	// Now go ahead and spawn it at the location we got passed.
-	return Spawn(byteVehicleID,byteVehicleType,vecPos,fRotation,iColor1,iColor2);
+	return Spawn(vehicleID,byteVehicleType,vecPos,fRotation,iColor1,iColor2);
 }
 
 //----------------------------------------------------
 
-BOOL CVehiclePool::Delete(BYTE byteVehicleID)
+BOOL CVehiclePool::Delete(EntityId vehicleID)
 {
-	if(!GetSlotState(byteVehicleID) || !m_pVehicles[byteVehicleID]) {
+	if(!GetSlotState(vehicleID) || !m_pVehicles[vehicleID]) {
 		return FALSE;
 	}
 
-	m_bVehicleSlotState[byteVehicleID] = FALSE;
-	delete m_pVehicles[byteVehicleID];
-	m_pVehicles[byteVehicleID] = NULL;
+	m_bVehicleSlotState[vehicleID] = FALSE;
+	delete m_pVehicles[vehicleID];
+	m_pVehicles[vehicleID] = NULL;
 
 	return TRUE;
 }
 
 //----------------------------------------------------
 
-BOOL CVehiclePool::Spawn( BYTE byteVehicleID, BYTE byteVehicleType,
+BOOL CVehiclePool::Spawn( EntityId vehicleID, BYTE byteVehicleType,
 					      Vector3 * vecPos, float fRotation,
 					      int iColor1, int iColor2 )
 {	
-	if(m_pVehicles[byteVehicleID] != NULL) {
-		Delete(byteVehicleID);
+	if(m_pVehicles[vehicleID] != NULL) {
+		Delete(vehicleID);
 	}
 
-	m_pVehicles[byteVehicleID] =  new CVehicle(byteVehicleType,
+	m_pVehicles[vehicleID] =  new CVehicle(byteVehicleType,
 		vecPos->X,vecPos->Y,vecPos->Z,fRotation);
 
-	if(m_pVehicles[byteVehicleID])
+	if(m_pVehicles[vehicleID])
 	{	
 		if(iColor1 != (-1)) {
-			m_pVehicles[byteVehicleID]->SetColor(iColor1,iColor2);
+			m_pVehicles[vehicleID]->SetColor(iColor1,iColor2);
 		}
 
-		m_bVehicleSlotState[byteVehicleID] = TRUE;
+		m_bVehicleSlotState[vehicleID] = TRUE;
 
-		m_bIsActive[byteVehicleID] = TRUE;
-		m_bIsWasted[byteVehicleID] = FALSE;
+		m_bIsActive[vehicleID] = TRUE;
+		m_bIsWasted[vehicleID] = FALSE;
 
 		return TRUE;
 	}
@@ -147,10 +150,10 @@ int CVehiclePool::FindGtaIDFromID(int iID)
 
 //----------------------------------------------------
 
-void CVehiclePool::SendVehicleDeath(BYTE byteVehicleId)
+void CVehiclePool::SendVehicleDeath(EntityId vehicleID)
 {
 	BitStream bsVehicleDeath;
-	bsVehicleDeath.Write(byteVehicleId);
+	bsVehicleDeath.Write(vehicleID);
 	pNetGame->GetRPC4()->Call("VehicleDeath", &bsVehicleDeath, HIGH_PRIORITY, RELIABLE_ORDERED, 0, 
 		UNASSIGNED_SYSTEM_ADDRESS, true);
 }
