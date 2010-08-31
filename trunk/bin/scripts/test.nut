@@ -11,7 +11,7 @@ function onServerInit()
 	addPlayerClass(2, 93, -673.2837, -1325.3040, 11.0715, 116.6886, 1, 1, 23, 80, 19, 23);
 	
 	// Some test vehicles
-	local v1 = createVehicle(149, -681.5270, -1329.4580, 10.8290, 292.6041, 5, 5);
+	//local v1 = createVehicle(149, -681.5270, -1329.4580, 10.8290, 292.6041, 5, 5);
 	local v2 = createVehicle(150, -683.3698, -1326.5831, 10.8105, 290.5928, 5, 5);
 	local v3 = createVehicle(151, -684.9037, -1323.8152, 10.9755, 292.5149, 5, 5);
 	local v4 = createVehicle(152, -687.1147, -1321.3459, 11.1368, 292.0442, 5, 5);
