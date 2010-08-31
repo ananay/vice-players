@@ -27,7 +27,9 @@
 
 #include "../raknet/WindowsIncludes.h"
 #include "netgame.h"
+#include "plugins.h"
 extern CNetGame *pNetGame;
+extern CPlugins *pPlugins;
 
 #include <stdio.h>
 #include "script.h"
@@ -111,6 +113,9 @@ CScript::CScript(const char *szScriptName)
 
 	// pop the root table from the stack
 	sq_pop(pVM, 1);
+
+	// call the plugins
+	pPlugins->OnScriptLoad(pVM);
 
 	// script loaded successfully
 	return;

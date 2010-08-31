@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="Windows-1252"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="9.00"
+	Version="9,00"
 	Name="server"
 	ProjectGUID="{CD712CB3-C5BE-4F94-8855-747444022678}"
 	RootNamespace="server"
@@ -445,6 +445,22 @@
 		<Filter
 			Name="Scripting"
 			>
+			<File
+				RelativePath=".\plugin.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\plugin.h"
+				>
+			</File>
+			<File
+				RelativePath=".\plugins.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\plugins.h"
+				>
+			</File>
 			<File
 				RelativePath=".\script.cpp"
 				>

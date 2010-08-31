@@ -39,6 +39,7 @@
 #include "netgame.h"
 #include "rcon.h"
 #include "scripts.h"
+#include "plugins.h"
 
 #include "../raknet/BitStream.h"
 #include "../raknet/RakPeerInterface.h"
@@ -49,6 +50,7 @@ CNetGame	*pNetGame;
 CRcon		*pRcon;
 CConfig		*pServerConfig;
 CScripts	*pScripts;
+CPlugins	*pPlugins;
 int			iLogState=1;
 char		*szAdminPass;
 
@@ -136,8 +138,13 @@ int main (int argc, char* argv[])
 	// create the NetGame.
 	pNetGame = new CNetGame(iMaxPlayers,iListenPort,0,szPass,0,byteFriendlyFire,byteShowOnRadarOption);
 
+	// create plugins
+	pPlugins = new CPlugins();
+	
 	// create the scripts
 	pScripts = new CScripts();
+
+	pPlugins->LoadFromConfig(pServerConfig);
 
 	// load the scripts from the config file
 	if(!pScripts->LoadFromConfig(pServerConfig)) {
