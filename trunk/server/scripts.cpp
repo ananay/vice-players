@@ -1021,7 +1021,7 @@ void CScripts::onTimerDestroy(int timerId)
 	}
 }
 
-void CScripts::onKeyPress(int playerId, char * key, bool state)
+void CScripts::onPlayerKeyEvent(int playerId, BYTE type, char * key)
 {
 	for(int i = 0; i < MAX_SCRIPTS; i++) {
 		if(m_pScripts[i]) {
@@ -1035,7 +1035,15 @@ void CScripts::onKeyPress(int playerId, char * key, bool state)
 			sq_pushroottable(pVM);
 
 			// Push the function name onto the stack
-			sq_pushstring(pVM, "onKeyPress", -1);
+			sq_pushstring(pVM, "onPlayerKeyEvent", -1);
+
+			std::string szType;
+			if(type == 0)
+				szType = "press";
+			else if(type == 1)
+				szType = "hold";
+			else if(type == 2)
+				szType = "release";
 
 			// Get the closure for the function
 			if(SQ_SUCCEEDED(sq_get(pVM, -2))) {
@@ -1045,11 +1053,11 @@ void CScripts::onKeyPress(int playerId, char * key, bool state)
 				// Push the vehicle id onto the stack
 				sq_pushinteger(pVM, playerId);
 
+				// push the event type
+				sq_pushstring(pVM, szType.c_str(), -1);
+
 				// Push the char of the key
 				sq_pushstring(pVM, key, -1);
-
-				// Push the key state
-				sq_pushbool(pVM, state);
 
 				// Call the function
 				sq_call(pVM, 4, true, true);
