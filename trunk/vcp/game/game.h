@@ -39,6 +39,7 @@
 #define FUNC_LoadRequestedModels 0x40B5F0
 #define VAR_ModelInfo 0x94DDD8
 #define CClock__SetTime 0x487160
+#define ADDR_Set_Cash	0x94ADC8
 
 //-----------------------------------------------------------
 
@@ -89,7 +90,8 @@ public:
 	void    PlaySound(int iSoundId, Vector3 vPosition);
 	void    FadeScreen(int iType, int iTime);
 	void	SetGameTime(BYTE hours, BYTE minutes);
-		
+	void	SetCash(int Cash);
+
 	DWORD	GetD3DDevice() { return *(DWORD *)ADDR_ID3D8DEVICE; };
 	void	SetD3DDevice(DWORD pD3DDevice) { *(DWORD *)ADDR_ID3D8DEVICE = pD3DDevice; };
 	DWORD	GetD3D() { return *(DWORD *)ADDR_ID3D8DEVICE; };

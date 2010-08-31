@@ -1068,3 +1068,38 @@ SQInteger sq_setPlayerSkyColor(SQVM * pVM)
 	sq_pushbool(pVM, false);
 	return 1;
 }
+
+SQInteger sq_setPlayerCash(SQVM * pVM)
+{
+SQInteger playerSystemAddr;
+SQInteger iCash;
+sq_getinteger(pVM, -2, &playerSystemAddr);
+sq_getinteger(pVM, -1, &iCash);
+
+if(pNetGame->GetPlayerPool()->GetSlotState(playerSystemAddr))
+{
+CPlayer * pPlayer = pNetGame->GetPlayerPool()->GetAt(playerSystemAddr);
+pPlayer->SetCash(iCash);
+sq_pushbool(pVM, true);
+return 1;
+}
+sq_pushbool(pVM, false);
+return 1;
+}
+
+// getPlayerCash
+SQInteger sq_getPlayerCash(SQVM * pVM)
+{
+	SQInteger playerSystemAddress;
+	sq_getinteger(pVM, -1, &playerSystemAddress);
+	if(pNetGame->GetPlayerPool()->GetSlotState(playerSystemAddress))
+	{
+		int cash = pNetGame->GetPlayerPool()->GetAt(playerSystemAddress)->GetCash();
+
+		sq_pushinteger(pVM, cash);
+		return 1;
+	}
+
+	sq_pushbool(pVM, false);
+	return 1;
+}

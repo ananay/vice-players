@@ -859,6 +859,13 @@ void Script_setSkyColor(RakNet::BitStream *bitStream, Packet *packet)
 	pPlayer->SetSkyColor(iColor, iFade);
 }
 
+// SetPlayerCash
+void Script_setPlayerCash(RakNet::BitStream *bitStream, Packet *packet)
+{
+	int Cash;
+	bitStream->Read(Cash);
+	pGame->SetCash(Cash);
+}
 
 
 
@@ -916,7 +923,7 @@ void RegisterRPCs()
 	pNetGame->GetRPC4()->RegisterFunction("Script_FlashItem",Script_FlashItem);
 	pNetGame->GetRPC4()->RegisterFunction("Script_popVehicleTrunk", Script_popVehicleTrunk);
 	pNetGame->GetRPC4()->RegisterFunction("Script_setSkyColor", Script_setSkyColor);
-
+	pNetGame->GetRPC4()->RegisterFunction("SetPlayerCash", Script_setPlayerCash);
 }
 
 //----------------------------------------------------
@@ -970,6 +977,7 @@ void UnRegisterRPCs()
 	pNetGame->GetRPC4()->UnregisterFunction("Script_FlashItem");
 	pNetGame->GetRPC4()->UnregisterFunction("Script_popVehicleTrunk");
 	pNetGame->GetRPC4()->UnregisterFunction("Script_setSkyColor");
+	pNetGame->GetRPC4()->UnregisterFunction("SetPlayerCash");
 }
 
 //----------------------------------------------------

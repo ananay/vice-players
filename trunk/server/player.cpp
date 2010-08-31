@@ -52,6 +52,7 @@ CPlayer::CPlayer()
 	m_bIsActive = FALSE;
 	m_bIsWasted = FALSE;
 	m_byteVehicleID = 0;
+	m_iMoney = 0;
 	m_bHasAim = false;
 }
 
@@ -543,3 +544,19 @@ void CPlayer::SetCameraBehindPlayer()
 }
 
 //----------------------------------------------------
+
+void CPlayer::SetCash(int Cash)
+{
+BitStream bsSend;
+bsSend.Write(Cash);
+SystemAddress playerid = pNetGame->GetRakPeer()->GetSystemAddressFromIndex(m_bytePlayerID);
+pNetGame->GetRPC4()->Call("SetPlayerCash",&bsSend,HIGH_PRIORITY,RELIABLE_ORDERED,0,playerid,false);
+m_iMoney = Cash;
+}
+
+//----------------------------------------------------
+
+int CPlayer::GetCash()
+{
+	return m_iMoney;
+}
