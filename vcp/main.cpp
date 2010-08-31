@@ -48,6 +48,7 @@ HANDLE					hInstance;
 CScoreBoard				*pScoreBoard;
 CNameTags				*pNameTags;
 CNetStats				*pNetStats;
+CScripts				*pScripts = NULL;
 
 extern BOOL             bScriptInited;
 
@@ -90,6 +91,8 @@ BOOL WINAPI DllMain(HINSTANCE hinstDLL, DWORD fdwReason, LPVOID lpvReserved)
 
 			pGame = new CGame();
 
+			pScripts = new CScripts();
+
 			InstallD3D8Hook();
 		}
 		// else they must want to play single
@@ -100,6 +103,7 @@ BOOL WINAPI DllMain(HINSTANCE hinstDLL, DWORD fdwReason, LPVOID lpvReserved)
 	{
 		UninstallD3D8Hook();
 		if(pNetGame) {
+			pScripts->onExit();
 			pNetGame->Shutdown();
 		}
 	}

@@ -34,6 +34,7 @@ using namespace RakNet;
 extern CGame		 *pGame;
 extern CChatWindow   *pChatWindow;
 extern CCmdWindow	 *pCmdWindow;
+extern CScripts		 *pScripts;
 RPC4				 *CNetGame::m_pRPC4;
 extern bool D3DInited;
 
@@ -120,6 +121,7 @@ void CNetGame::Process()
 	if(GetGameState() == GAMESTATE_CONNECTED) {
 		if(m_pPlayerPool) m_pPlayerPool->Process();
 		if(m_pVehiclePool) m_pVehiclePool->Process();
+		if(pScripts) pScripts->onPulse();
 	}
 
 	// For syncing rand()

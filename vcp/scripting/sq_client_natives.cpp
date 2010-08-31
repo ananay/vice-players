@@ -21,11 +21,19 @@
 // Copyright 2010 GTA:Online team
 //
 //-----------------------------------------------------
-#pragma once
 
-#include "main.h"
-#include "scripts.h"
+#include "sq_client_natives.h"
+#include "../main.h"
 
-SQInteger sq_setScriptAuthor(SQVM * pVM); // done
-SQInteger sq_setScriptVersion(SQVM * pVM); // done
-SQInteger sq_loadClientScript(SQVM * pVM); // done
+extern CNetGame *pNetGame;
+extern CChatWindow *pChatWindow;
+
+using namespace RakNet;
+
+SQInteger sq_addChatMessage(SQVM * pVM)
+{
+	const char * message;
+	sq_getstring(pVM, -1, &message);
+	pChatWindow->AddDebugMessage("%s", message);
+	return 1;
+}

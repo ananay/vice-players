@@ -23,9 +23,7 @@
 //-----------------------------------------------------
 #pragma once
 
-#include "main.h"
+#include "../main.h"
 #include "scripts.h"
 
-SQInteger sq_setScriptAuthor(SQVM * pVM); // done
-SQInteger sq_setScriptVersion(SQVM * pVM); // done
-SQInteger sq_loadClientScript(SQVM * pVM); // done
+SQInteger sq_addChatMessage(SQVM * pVM); // done
