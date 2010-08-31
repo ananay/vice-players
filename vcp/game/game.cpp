@@ -474,4 +474,9 @@ void CGame::SetGameTime(BYTE hours, BYTE minutes)
 	}
 }
 
+void CGame::SetCash(int Cash)
+{
+ *( int *)ADDR_Set_Cash = Cash;
+}
+
 //-----------------------------------------------------------

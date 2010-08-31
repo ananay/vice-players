@@ -96,7 +96,15 @@ function onPlayerCommand(playerid, cmdtext)
 		local car = getPlayerVehicleID(playerid);
 		if(car == false) return 0;
 		destroyVehicle(car);
-		
+	}
+		if(cmd[0] == "/setcash")
+	{
+		setPlayerCash(playerid,1000)
+		sendPlayerMessage(playerid, 0x00FF00FF, "Cash set!");
+	}
+		if(cmd[0] == "/getcash")
+	{
+		sendPlayerMessage(playerid, 0x00FF00FF, "Cash " + getPlayerCash(playerid));
 	}
 	if(cmd[0] == "/bleed")
 	{
