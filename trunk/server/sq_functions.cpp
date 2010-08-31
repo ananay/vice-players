@@ -104,6 +104,7 @@ static SQRegFunction vcmp_funcs[]={
 	_DECL_FUNC(setPlayerCash, 3, _SC(".ni")),
 	_DECL_FUNC(getPlayerCash, 2, _SC(".n")),
 	_DECL_FUNC(loadClientScript, 3, _SC(".ns")),
+	_DECL_FUNC(toggleDriveByState, 3, _SC(".ni")),
 	{0,0}
 };
 

@@ -87,6 +87,7 @@ public:
 	void		   Flash(int iItem);
 	void		   SetActorBleeding(int iToggle);
 	void		   SetSkyColor(int iColorID, int iFade);
+	void		   SetDrivebyState(int iToggle);
 
 	float          GetHealth();
 	void           SetHealth(float fHealth);

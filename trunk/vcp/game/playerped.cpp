@@ -761,6 +761,10 @@ void CPlayerPed::SetSkyColor(int iColorID, int iFade)
 
 //-----------------------------------------------------------
 
+void CPlayerPed::SetDrivebyState(int iToggle)
+{
+	ScriptCommand(&set_driveby_state, m_dwGTAId, iToggle);
+}
 
 
 

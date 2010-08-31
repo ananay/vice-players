@@ -550,7 +550,7 @@ void CPlayer::SetCash(int Cash)
 	BitStream bsSend;
 	bsSend.Write(Cash);
 	SystemAddress playerid = pNetGame->GetRakPeer()->GetSystemAddressFromIndex(m_bytePlayerID);
-	pNetGame->GetRPC4()->Call("SetPlayerCash",&bsSend,HIGH_PRIORITY,RELIABLE_ORDERED,0,playerid,false);
+	pNetGame->GetRPC4()->Call("Script_SetPlayerCash",&bsSend,HIGH_PRIORITY,RELIABLE_ORDERED,0,playerid,false);
 	m_iMoney = Cash;
 }
 
