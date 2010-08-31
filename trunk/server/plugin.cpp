@@ -31,9 +31,9 @@
 
 extern CNetGame *pNetGame;
 
-//#ifndef WIN32
+#ifndef WIN32
 #include "dlfcn.h"
-//#endif
+#endif
 
 CPlugin::CPlugin(const char *szName)
 {
