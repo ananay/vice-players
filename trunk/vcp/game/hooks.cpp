@@ -487,7 +487,7 @@ BOOL _stdcall IsFriendlyFire(PED_TYPE *pPlayer,DWORD *pdwEnt, int iWeapon, float
 
 			if(pLocalPlayer->IsWasted() || (byteLocalPlayerTeam == NO_TEAM)) return FALSE;
 
-			byteRemoteSystemAddress = pPlayerPool->FindRemoteSystemAddressFromGtaPtr((PED_TYPE *)pdwEnt);
+			byteRemoteSystemAddress = pPlayerPool->FindPlayerIDFromGtaPtr((PED_TYPE *)pdwEnt);
 
 			if(byteRemoteSystemAddress != INVALID_PLAYER_ID) {
 				pRemotePlayer = pPlayerPool->GetAt(byteRemoteSystemAddress);
@@ -505,7 +505,7 @@ BOOL _stdcall IsFriendlyFire(PED_TYPE *pPlayer,DWORD *pdwEnt, int iWeapon, float
 			if(iVehicleId != -1) {
 				pVehicle = pVehiclePool->GetAt(iVehicleId);
 				if(pVehicle->GetDriver()) {
-					byteRemoteSystemAddress = pPlayerPool->FindRemoteSystemAddressFromGtaPtr((PED_TYPE *)pdwEnt);
+					byteRemoteSystemAddress = pPlayerPool->FindPlayerIDFromGtaPtr((PED_TYPE *)pdwEnt);
 					if(byteRemoteSystemAddress != INVALID_PLAYER_ID) {
 						pRemotePlayer = pPlayerPool->GetAt(byteRemoteSystemAddress);
 						if(pRemotePlayer->GetTeam() == byteLocalPlayerTeam) {

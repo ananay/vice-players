@@ -65,7 +65,7 @@ typedef struct _PLAYER_SYNC_DATA
 
 typedef struct _VEHICLE_SYNC_DATA
 {
-	BYTE byteVehicleID;
+	EntityId vehicleID;
 	WORD wKeys;
 	Vector3 vecRoll;
 	Vector3 vecDirection;
@@ -123,7 +123,7 @@ public:
 
 	BOOL					m_bIsInVehicle;
 	BOOL					m_bIsAPassenger;
-	BYTE					m_byteVehicleID;
+	BYTE					m_vehicleID;
 
 	CPlayer();
 	~CPlayer() {};
@@ -136,7 +136,7 @@ public:
 	void BroadcastSyncData();	
 
 	void Say(PCHAR szText, BYTE byteTextLength);
-	void SetID(BYTE byteSystemAddress) { m_bytePlayerID = byteSystemAddress; };	
+	void SetID(EntityId playerID) { m_bytePlayerID = playerID; };	
 	
 	void StoreOnFootFullSyncData(PLAYER_SYNC_DATA * pPlayerSyncData);
 
@@ -173,8 +173,8 @@ public:
 	void SpawnForWorld(BYTE byteTeam,BYTE byteSkin,Vector3 * vecPos,float fRotation);
 	void SpawnForPlayer(BYTE byteForSystemAddress);
 
-	void EnterVehicle(BYTE byteVehicleID,BYTE bytePassenger);
-	void ExitVehicle(BYTE byteVehicleID);
+	void EnterVehicle(EntityId vehicleID,BYTE bytePassenger);
+	void ExitVehicle(EntityId vehicleID);
 
 	WORD GetKeys();
 	void GetPosition(Vector3 * vecPosition);

@@ -56,7 +56,7 @@ void ClientJoin(RakNet::BitStream *bitStream, Packet *packet)
 	CVehiclePool *pVehiclePool = pNetGame->GetVehiclePool();
 
 	CHAR szPlayerName[MAX_PLAYER_NAME];
-	BYTE byteSystemAddress;
+	EntityId playerID;
 	BYTE byteVersion;
 	BYTE byteNickLen;
 	BYTE byteRejectReason;
@@ -84,10 +84,10 @@ void ClientJoin(RakNet::BitStream *bitStream, Packet *packet)
 		return;
 	}
 
-	byteSystemAddress = (BYTE)packet->guid.systemIndex;
+	playerID = (BYTE)packet->guid.systemIndex;
 	
 	// Add this client to the player pool.
-	pPlayerPool->New(byteSystemAddress, szPlayerName);
+	pPlayerPool->New(playerID, szPlayerName);
 
 	// Send this client back an 'InitGame' RPC
 	RakNet::BitStream bsInitGame;
@@ -100,14 +100,14 @@ void ClientJoin(RakNet::BitStream *bitStream, Packet *packet)
 	bsInitGame.Write(pNetGame->m_WorldBounds[3]);
 	bsInitGame.Write(pNetGame->m_byteFriendlyFire);
 	bsInitGame.Write(pNetGame->m_byteShowOnRadar);
-	bsInitGame.Write(byteSystemAddress);
+	bsInitGame.Write(playerID);
 	pNetGame->GetRPC4()->Call("InitGame", &bsInitGame,HIGH_PRIORITY,RELIABLE_ORDERED,0,packet->guid,false);
 
 	// Send this client ServerJoins for every existing player
 	RakNet::BitStream pbsExistingClient;
 
 	for(BYTE x = 0; x < MAX_PLAYERS; x++) {
-		if((pPlayerPool->GetSlotState(x) == TRUE) && (x != byteSystemAddress)) {
+		if((pPlayerPool->GetSlotState(x) == TRUE) && (x != playerID)) {
 			pbsExistingClient.Reset();
 			pbsExistingClient.Write(x);
 			pbsExistingClient.Write(strlen(pPlayerPool->GetPlayerName(x)));
@@ -117,7 +117,7 @@ void ClientJoin(RakNet::BitStream *bitStream, Packet *packet)
 			// Now also spawn the player for them if they're active.
 			CPlayer *pSpawnPlayer = pPlayerPool->GetAt(x);
 			if(pSpawnPlayer->IsActive()) {
-				pSpawnPlayer->SpawnForPlayer(byteSystemAddress);
+				pSpawnPlayer->SpawnForPlayer(playerID);
 			}
 		}
 	}
@@ -128,7 +128,7 @@ void ClientJoin(RakNet::BitStream *bitStream, Packet *packet)
 	for(BYTE x = 0; x < MAX_VEHICLES; x++) {
 		if(pVehiclePool->GetSlotState(x) == TRUE) {
 			pVehicle = pVehiclePool->GetAt(x);
-			if(pVehicle->IsActive()) pVehicle->SpawnForPlayer(byteSystemAddress);
+			if(pVehicle->IsActive()) pVehicle->SpawnForPlayer(playerID);
 		}
 	}
 }
@@ -160,8 +160,8 @@ void Chat(RakNet::BitStream *bitStream, Packet *packet)
 
 	// Now pass it off to all the other clients.
 	RakNet::BitStream bsSend;
-	BYTE byteSystemAddress = (BYTE)packet->guid.systemIndex;
-	bsSend.Write(byteSystemAddress);
+	EntityId playerID = (BYTE)packet->guid.systemIndex;
+	bsSend.Write(playerID);
 	bsSend.Write(byteTextLen);
 	bsSend.Write(szText,byteTextLen);
 
@@ -177,7 +177,7 @@ void ChatCommand(RakNet::BitStream *bitStream, Packet *packet)
 	BYTE byteTextLen;
 	CPlayerPool *pPool = pNetGame->GetPlayerPool();
 
-	BYTE byteSystemAddress = (BYTE)packet->guid.systemIndex;
+	EntityId playerID = (BYTE)packet->guid.systemIndex;
 
 	bitStream->Read(byteTextLen);
 	bitStream->Read(szText,byteTextLen);
@@ -185,7 +185,7 @@ void ChatCommand(RakNet::BitStream *bitStream, Packet *packet)
 
 	if(!pPool->GetSlotState((BYTE)packet->guid.systemIndex)) return;
 
-	pScripts->onPlayerCommand(byteSystemAddress, szText);
+	pScripts->onPlayerCommand(playerID, szText);
 }
 
 
@@ -198,19 +198,19 @@ void RequestClass(RakNet::BitStream *bitStream, Packet *packet)
 	// TODO: Make this cancelable sometime
 	BYTE byteOutcome = 1;
 	int iRequestedClass;
-	BYTE byteSystemAddress = (BYTE)packet->guid.systemIndex;
+	EntityId playerID = (BYTE)packet->guid.systemIndex;
 	bitStream->Read(iRequestedClass);
 
-	if(!pNetGame->GetPlayerPool()->GetSlotState(byteSystemAddress)) return;
+	if(!pNetGame->GetPlayerPool()->GetSlotState(playerID)) return;
 	
-	iRequestedClass = pNetGame->GetGameLogic()->HandleSpawnClassRequest(byteSystemAddress, iRequestedClass);
+	iRequestedClass = pNetGame->GetGameLogic()->HandleSpawnClassRequest(playerID, iRequestedClass);
 
 	RakNet::BitStream bsSpawnRequestReply;
-	CPlayer * pPlayer = pNetGame->GetPlayerPool()->GetAt(byteSystemAddress);
+	CPlayer * pPlayer = pNetGame->GetPlayerPool()->GetAt(playerID);
 	PLAYER_SPAWN_INFO * SpawnInfo = pPlayer->GetSpawnInfo();
 
 	// TODO: This call should decide the outcome
-	pScripts->onPlayerRequestClass(byteSystemAddress, iRequestedClass);
+	pScripts->onPlayerRequestClass(playerID, iRequestedClass);
 
 	bsSpawnRequestReply.Write(byteOutcome);
 	if(byteOutcome) {
@@ -235,12 +235,12 @@ void RequestClass(RakNet::BitStream *bitStream, Packet *packet)
 
 void Spawn(RakNet::BitStream *bitStream, Packet *packet)
 {
-	BYTE byteSystemAddress = (BYTE)packet->guid.systemIndex;
-	if(!pNetGame->GetPlayerPool()->GetSlotState(byteSystemAddress)) return;
-	CPlayer	*pPlayer = pNetGame->GetPlayerPool()->GetAt(byteSystemAddress);
+	EntityId playerID = (BYTE)packet->guid.systemIndex;
+	if(!pNetGame->GetPlayerPool()->GetSlotState(playerID)) return;
+	CPlayer	*pPlayer = pNetGame->GetPlayerPool()->GetAt(playerID);
 	pPlayer->Spawn();
 
-	pScripts->onPlayerSpawn(byteSystemAddress);
+	pScripts->onPlayerSpawn(playerID);
 }
 
 //----------------------------------------------------
@@ -248,9 +248,9 @@ void Spawn(RakNet::BitStream *bitStream, Packet *packet)
 
 void Death(RakNet::BitStream *bitStream, Packet *packet)
 {
-	BYTE byteSystemAddress = (BYTE)packet->guid.systemIndex;
-	if(!pNetGame->GetPlayerPool()->GetSlotState(byteSystemAddress)) return;
-	CPlayer	*pPlayer = pNetGame->GetPlayerPool()->GetAt(byteSystemAddress);
+	EntityId playerID = (BYTE)packet->guid.systemIndex;
+	if(!pNetGame->GetPlayerPool()->GetSlotState(playerID)) return;
+	CPlayer	*pPlayer = pNetGame->GetPlayerPool()->GetAt(playerID);
 
 	BYTE byteDeathReason;
 	BYTE byteWhoWasResponsible;
@@ -260,7 +260,7 @@ void Death(RakNet::BitStream *bitStream, Packet *packet)
 
 	if(pPlayer) {
 		pPlayer->HandleDeath(byteDeathReason,byteWhoWasResponsible);
-		pScripts->onPlayerDeath(byteSystemAddress, byteWhoWasResponsible, byteDeathReason);
+		pScripts->onPlayerDeath(playerID, byteWhoWasResponsible, byteDeathReason);
 	}
 }
 
@@ -269,19 +269,19 @@ void Death(RakNet::BitStream *bitStream, Packet *packet)
 
 void VehicleDeath(RakNet::BitStream *bitStream, Packet *packet)
 {
-	BYTE byteSystemAddress = (BYTE)packet->guid.systemIndex;
-	if(!pNetGame->GetPlayerPool()->GetSlotState(byteSystemAddress)) return;
+	EntityId playerID = (BYTE)packet->guid.systemIndex;
+	if(!pNetGame->GetPlayerPool()->GetSlotState(playerID)) return;
 
-	BYTE byteVehicleId;
+	EntityId vehicleID;
 
-	bitStream->Read(byteVehicleId);
+	bitStream->Read(vehicleID);
 
 	CVehiclePool * pVehiclePool = pNetGame->GetVehiclePool();
-	CVehicle * pVehicle = pVehiclePool->GetAt(byteVehicleId);
+	CVehicle * pVehicle = pVehiclePool->GetAt(vehicleID);
 	if(pVehicle) {
-		pVehiclePool->FlagForRespawn(byteVehicleId);
+		pVehiclePool->FlagForRespawn(vehicleID);
 
-		pScripts->onVehicleDeath(byteVehicleId);
+		pScripts->onVehicleDeath(vehicleID);
 	}
 }
 
@@ -291,18 +291,18 @@ void VehicleDeath(RakNet::BitStream *bitStream, Packet *packet)
 
 void EnterVehicle(RakNet::BitStream *bitStream, Packet *packet)
 {
-	BYTE byteSystemAddress = (BYTE)packet->guid.systemIndex;
-	if(!pNetGame->GetPlayerPool()->GetSlotState(byteSystemAddress)) return;
-	CPlayer	*pPlayer = pNetGame->GetPlayerPool()->GetAt(byteSystemAddress);
-	BYTE byteVehicleID;
+	EntityId playerID = (BYTE)packet->guid.systemIndex;
+	if(!pNetGame->GetPlayerPool()->GetSlotState(playerID)) return;
+	CPlayer	*pPlayer = pNetGame->GetPlayerPool()->GetAt(playerID);
+	EntityId vehicleID;
 	BYTE bytePassenger;
 
-	bitStream->Read(byteVehicleID);
+	bitStream->Read(vehicleID);
 	bitStream->Read(bytePassenger);
-	pPlayer->EnterVehicle(byteVehicleID,bytePassenger);
+	pPlayer->EnterVehicle(vehicleID,bytePassenger);
 	
-	pScripts->onPlayerEnterVehicle(byteSystemAddress, byteVehicleID);
-	logprintf("%u enters vehicle %u",byteSystemAddress,byteVehicleID);
+	pScripts->onPlayerEnterVehicle(playerID, vehicleID);
+	logprintf("%u enters vehicle %u",playerID,vehicleID);
 }
 
 //----------------------------------------------------
@@ -311,16 +311,16 @@ void EnterVehicle(RakNet::BitStream *bitStream, Packet *packet)
 
 void ExitVehicle(RakNet::BitStream *bitStream, Packet *packet)
 {
-	BYTE byteSystemAddress = (BYTE)packet->guid.systemIndex;
-	if(!pNetGame->GetPlayerPool()->GetSlotState(byteSystemAddress)) return;
-	CPlayer	*pPlayer = pNetGame->GetPlayerPool()->GetAt(byteSystemAddress);
-	BYTE byteVehicleID;
+	EntityId playerID = (BYTE)packet->guid.systemIndex;
+	if(!pNetGame->GetPlayerPool()->GetSlotState(playerID)) return;
+	CPlayer	*pPlayer = pNetGame->GetPlayerPool()->GetAt(playerID);
+	EntityId vehicleID;
 
-	bitStream->Read(byteVehicleID);
-	pPlayer->ExitVehicle(byteVehicleID);
+	bitStream->Read(vehicleID);
+	pPlayer->ExitVehicle(vehicleID);
 
-	pScripts->onPlayerExitVehicle(byteSystemAddress, byteVehicleID);
-	//logprintf("%u exits vehicle %u",byteSystemAddress,byteVehicleID);
+	pScripts->onPlayerExitVehicle(playerID, vehicleID);
+	//logprintf("%u exits vehicle %u",playerID,vehicleID);
 }
 
 //----------------------------------------------------
@@ -329,8 +329,8 @@ void ExitVehicle(RakNet::BitStream *bitStream, Packet *packet)
 void UpdateScoreAndPing(RakNet::BitStream *bitStream, Packet *packet)
 {
 	RakNet::BitStream bsSend;
-	BYTE byteSystemAddress = (BYTE)packet->guid.systemIndex;
-	if(!pNetGame->GetPlayerPool()->GetSlotState(byteSystemAddress)) return;
+	EntityId playerID = (BYTE)packet->guid.systemIndex;
+	if(!pNetGame->GetPlayerPool()->GetSlotState(playerID)) return;
 
 	CPlayerPool *pPlayerPool = pNetGame->GetPlayerPool();
 
@@ -344,7 +344,7 @@ void UpdateScoreAndPing(RakNet::BitStream *bitStream, Packet *packet)
 			bsSend.Write(pPlayerPool->GetScore(i));
 			bsSend.Write(pRak->GetLastPing(pRak->GetSystemAddressFromIndex(i)));
 			
-			if(pPlayerPool->IsAdmin(byteSystemAddress)) {
+			if(pPlayerPool->IsAdmin(playerID)) {
 				systemAddress = pRak->GetSystemAddressFromIndex(i);
 				bsSend.Write(systemAddress.binaryAddress);
 			} else {
@@ -364,8 +364,8 @@ void UpdateScoreAndPing(RakNet::BitStream *bitStream, Packet *packet)
 void Admin(RakNet::BitStream *bitStream, Packet *packet)
 {
 	CPlayerPool *pPlayerPool = pNetGame->GetPlayerPool();
-	BYTE byteSystemAddress = (BYTE)packet->guid.systemIndex;
-	if(!pNetGame->GetPlayerPool()->GetSlotState(byteSystemAddress)) return;
+	EntityId playerID = (BYTE)packet->guid.systemIndex;
+	if(!pNetGame->GetPlayerPool()->GetSlotState(playerID)) return;
 
 	char szPassTest[65];
 	int iPassLen;
@@ -377,7 +377,7 @@ void Admin(RakNet::BitStream *bitStream, Packet *packet)
 	szPassTest[iPassLen] = '\0';
 	
 	if(!strcmp(szPassTest,szAdminPass)) {
-		pPlayerPool->SetAdmin(byteSystemAddress);
+		pPlayerPool->SetAdmin(playerID);
 	}
 }
 
@@ -386,12 +386,12 @@ void Admin(RakNet::BitStream *bitStream, Packet *packet)
 void KickPlayer(RakNet::BitStream *bitStream, Packet *packet)
 {
 	CPlayerPool *pPlayerPool = pNetGame->GetPlayerPool();
-	BYTE byteSystemAddress = (BYTE)packet->guid.systemIndex;
-	if(!pNetGame->GetPlayerPool()->GetSlotState(byteSystemAddress)) return;
+	EntityId playerID = (BYTE)packet->guid.systemIndex;
+	if(!pNetGame->GetPlayerPool()->GetSlotState(playerID)) return;
 
 	BYTE byteKickPlayer;
 
-	if(pPlayerPool->IsAdmin(byteSystemAddress)) {
+	if(pPlayerPool->IsAdmin(playerID)) {
 		bitStream->Read(byteKickPlayer);	
 		pNetGame->KickPlayer(byteKickPlayer);
 	}
@@ -401,15 +401,15 @@ void KickPlayer(RakNet::BitStream *bitStream, Packet *packet)
 
 void BanIPAddress(RakNet::BitStream *bitStream, Packet *packet)
 {
-	BYTE byteSystemAddress = (BYTE)packet->guid.systemIndex;
-	if(!pNetGame->GetPlayerPool()->GetSlotState(byteSystemAddress)) return;
+	EntityId playerID = (BYTE)packet->guid.systemIndex;
+	if(!pNetGame->GetPlayerPool()->GetSlotState(playerID)) return;
 
 	CPlayerPool *pPlayerPool = pNetGame->GetPlayerPool();
 
 	char ban_ip[256];
 	int iBanIpLen;
 
-	if(pPlayerPool->IsAdmin(byteSystemAddress)) {
+	if(pPlayerPool->IsAdmin(playerID)) {
 		bitStream->Read(iBanIpLen);
 		bitStream->Read(ban_ip,iBanIpLen);
 		ban_ip[iBanIpLen] = 0;
@@ -420,8 +420,8 @@ void BanIPAddress(RakNet::BitStream *bitStream, Packet *packet)
 
 void KeyEvent(RakNet::BitStream *bitStream, Packet *packet)
 {
-	BYTE byteSystemAddress = (BYTE)packet->guid.systemIndex;
-	if(!pNetGame->GetPlayerPool()->GetSlotState(byteSystemAddress)) return;
+	EntityId playerID = (BYTE)packet->guid.systemIndex;
+	if(!pNetGame->GetPlayerPool()->GetSlotState(playerID)) return;
 
 	DWORD dwKey;
 	bool state;
@@ -429,7 +429,7 @@ void KeyEvent(RakNet::BitStream *bitStream, Packet *packet)
 	bitStream->Read(dwKey);
 	state = bitStream->ReadBit();
 
-	pScripts->onKeyPress(byteSystemAddress, (char*)&dwKey, state);
+	pScripts->onKeyPress(playerID, (char*)&dwKey, state);
 }
 
 //----------------------------------------------------

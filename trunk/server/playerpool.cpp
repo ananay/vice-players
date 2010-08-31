@@ -44,11 +44,10 @@ using namespace RakNet;
 
 CPlayerPool::CPlayerPool()
 {
-	BYTE byteSystemAddress = 0;
-	while(byteSystemAddress != MAX_PLAYERS) {
-		m_bPlayerSlotState[byteSystemAddress] = FALSE;
-		m_pPlayers[byteSystemAddress] = NULL;
-		byteSystemAddress++;
+	for(EntityId i = 0; i < MAX_PLAYERS; i++)
+	{
+		m_bPlayerSlotState[i] = FALSE;
+		m_pPlayers[i] = NULL;
 	}
 }
 
@@ -56,40 +55,39 @@ CPlayerPool::CPlayerPool()
 
 CPlayerPool::~CPlayerPool()
 {	
-	BYTE byteSystemAddress = 0;
-	while(byteSystemAddress != MAX_PLAYERS) {
-		Delete(byteSystemAddress,0);
-		byteSystemAddress++;
+	for(EntityId i = 0; i < MAX_PLAYERS; i++)
+	{
+		Delete(i, 0);
 	}
 }
 
 //----------------------------------------------------
 
-BOOL CPlayerPool::New(BYTE byteSystemAddress, PCHAR szPlayerName)
+BOOL CPlayerPool::New(EntityId playerID, PCHAR szPlayerName)
 {
-	m_pPlayers[byteSystemAddress] = new CPlayer();
+	m_pPlayers[playerID] = new CPlayer();
 
-	if(m_pPlayers[byteSystemAddress])
+	if(m_pPlayers[playerID])
 	{
-		strcpy(m_szPlayerName[byteSystemAddress],szPlayerName);
-		m_pPlayers[byteSystemAddress]->SetID(byteSystemAddress);
-		m_bPlayerSlotState[byteSystemAddress] = TRUE;
-		m_iPlayerScore[byteSystemAddress] = 0;
-		m_bIsAnAdmin[byteSystemAddress] = FALSE;
+		strcpy(m_szPlayerName[playerID],szPlayerName);
+		m_pPlayers[playerID]->SetID(playerID);
+		m_bPlayerSlotState[playerID] = TRUE;
+		m_iPlayerScore[playerID] = 0;
+		m_bIsAnAdmin[playerID] = FALSE;
 
 		// Notify all the other players of a newcommer with
 		// a 'ServerJoin' join RPC 
 		RakNet::BitStream bsSend;
-		bsSend.Write(byteSystemAddress);
+		bsSend.Write(playerID);
 		bsSend.Write(strlen(szPlayerName));
 		bsSend.Write(szPlayerName,strlen(szPlayerName));
-		pNetGame->GetRPC4()->Call("ServerJoin", &bsSend,HIGH_PRIORITY,RELIABLE_ORDERED,0,pNetGame->GetRakPeer()->GetSystemAddressFromIndex(byteSystemAddress),true);
+		pNetGame->GetRPC4()->Call("ServerJoin", &bsSend,HIGH_PRIORITY,RELIABLE_ORDERED,0,pNetGame->GetRakPeer()->GetSystemAddressFromIndex(playerID),true);
 
-		pRcon->ConsolePrintf("[join] %u %s",byteSystemAddress,szPlayerName);
+		pRcon->ConsolePrintf("[join] %u %s",playerID,szPlayerName);
 
-		logprintf("[join] %u %s",byteSystemAddress,szPlayerName);
+		logprintf("[join] %u %s",playerID,szPlayerName);
 
-		pScripts->onPlayerConnect(byteSystemAddress);
+		pScripts->onPlayerConnect(playerID);
 
 		return TRUE;
 	}
@@ -101,28 +99,28 @@ BOOL CPlayerPool::New(BYTE byteSystemAddress, PCHAR szPlayerName)
 
 //----------------------------------------------------
 
-BOOL CPlayerPool::Delete(BYTE byteSystemAddress, BYTE byteReason)
+BOOL CPlayerPool::Delete(EntityId playerID, BYTE byteReason)
 {
-	if(!GetSlotState(byteSystemAddress) || !m_pPlayers[byteSystemAddress])
+	if(!GetSlotState(playerID) || !m_pPlayers[playerID])
 	{
 		return FALSE;
 	}
 
-	m_bPlayerSlotState[byteSystemAddress] = FALSE;
-	delete m_pPlayers[byteSystemAddress];
-	m_pPlayers[byteSystemAddress] = NULL;
+	m_bPlayerSlotState[playerID] = FALSE;
+	delete m_pPlayers[playerID];
+	m_pPlayers[playerID] = NULL;
 	
 	// Notify all the other players that this client is quiting.
 	RakNet::BitStream bsSend;
-	bsSend.Write(byteSystemAddress);
+	bsSend.Write(playerID);
 	bsSend.Write(byteReason);
-	pNetGame->GetRPC4()->Call("ServerQuit", &bsSend,HIGH_PRIORITY,RELIABLE_ORDERED,0,pNetGame->GetRakPeer()->GetSystemAddressFromIndex(byteSystemAddress),true);
+	pNetGame->GetRPC4()->Call("ServerQuit", &bsSend,HIGH_PRIORITY,RELIABLE_ORDERED,0,pNetGame->GetRakPeer()->GetSystemAddressFromIndex(playerID),true);
 
-	pRcon->ConsolePrintf("[part] %u %s %u",byteSystemAddress,m_szPlayerName[byteSystemAddress],byteReason);
+	pRcon->ConsolePrintf("[part] %u %s %u",playerID,m_szPlayerName[playerID],byteReason);
 
-	pScripts->onPlayerDisconnect(byteSystemAddress, byteReason);
+	pScripts->onPlayerDisconnect(playerID, byteReason);
 
-	logprintf("[part] %u %s %u",byteSystemAddress,m_szPlayerName[byteSystemAddress],byteReason);
+	logprintf("[part] %u %s %u",playerID,m_szPlayerName[playerID],byteReason);
 	
 	return TRUE;
 }
@@ -131,13 +129,13 @@ BOOL CPlayerPool::Delete(BYTE byteSystemAddress, BYTE byteReason)
 
 void CPlayerPool::Process()
 {
-	BYTE byteSystemAddress = 0;
+	EntityId playerID = 0;
 
-	while(byteSystemAddress != MAX_PLAYERS) {
-		if(TRUE == m_bPlayerSlotState[byteSystemAddress]) {
-			m_pPlayers[byteSystemAddress]->Process();
+	while(playerID != MAX_PLAYERS) {
+		if(TRUE == m_bPlayerSlotState[playerID]) {
+			m_pPlayers[playerID]->Process();
 		}
-		byteSystemAddress++;
+		playerID++;
 	}
 }
 
@@ -233,9 +231,9 @@ BOOL CPlayerPool::IsNickInUse(PCHAR szNick)
 
 //----------------------------------------------------
 
-BOOL CPlayerPool::IsConnected(BYTE byteSystemAddress)
+BOOL CPlayerPool::IsConnected(EntityId playerID)
 {
-	if(!GetSlotState(byteSystemAddress) || !m_pPlayers[byteSystemAddress])
+	if(!GetSlotState(playerID) || !m_pPlayers[playerID])
 	{
 		return FALSE;
 	}

@@ -1056,7 +1056,7 @@ BYTE CPlayerPed::FindDeathReasonAndResponsiblePlayer(BYTE * nPlayer)
 	PED_TYPE * pPed = (PED_TYPE *)GetEntity();
 	if(pPed) {
 		BYTE byteDeathReason;
-		BYTE byteSystemAddressWhoKilled;
+		EntityId playerIDWhoKilled;
 		CVehiclePool *pVehiclePool;
 		CPlayerPool *pPlayerPool;
 
@@ -1078,12 +1078,12 @@ BYTE CPlayerPed::FindDeathReasonAndResponsiblePlayer(BYTE * nPlayer)
 
 				if(pPed->pDamageEntity) { // check for a player pointer.
 					
-					byteSystemAddressWhoKilled = pPlayerPool->
-						FindRemoteSystemAddressFromGtaPtr((PED_TYPE *)pPed->pDamageEntity);
+					playerIDWhoKilled = pPlayerPool->
+						FindPlayerIDFromGtaPtr((PED_TYPE *)pPed->pDamageEntity);
 
-					if(byteSystemAddressWhoKilled != INVALID_PLAYER_ID) {
+					if(playerIDWhoKilled != INVALID_PLAYER_ID) {
 						// killed by another player with a weapon, this is all easy.
-						*nPlayer = byteSystemAddressWhoKilled;
+						*nPlayer = playerIDWhoKilled;
 						return byteDeathReason;
 					}
 				}
@@ -1106,11 +1106,11 @@ BYTE CPlayerPed::FindDeathReasonAndResponsiblePlayer(BYTE * nPlayer)
 					{
 						VEHICLE_TYPE *pGtaVehicle = (VEHICLE_TYPE *)pPed->pDamageEntity;
 
-						byteSystemAddressWhoKilled = pPlayerPool->
-							FindRemoteSystemAddressFromGtaPtr((PED_TYPE *)pGtaVehicle->pDriver);
+						playerIDWhoKilled = pPlayerPool->
+							FindPlayerIDFromGtaPtr((PED_TYPE *)pGtaVehicle->pDriver);
 												
-						if(byteSystemAddressWhoKilled != INVALID_PLAYER_ID) {
-							*nPlayer = byteSystemAddressWhoKilled;
+						if(playerIDWhoKilled != INVALID_PLAYER_ID) {
+							*nPlayer = playerIDWhoKilled;
 							return WEAPON_DRIVEBY;
 						}
 					}									
@@ -1123,11 +1123,11 @@ BYTE CPlayerPed::FindDeathReasonAndResponsiblePlayer(BYTE * nPlayer)
 					{
 						VEHICLE_TYPE *pGtaVehicle = (VEHICLE_TYPE *)pPed->pDamageEntity;
 											
-						byteSystemAddressWhoKilled = pPlayerPool->
-							FindRemoteSystemAddressFromGtaPtr((PED_TYPE *)pGtaVehicle->pDriver);
+						playerIDWhoKilled = pPlayerPool->
+							FindPlayerIDFromGtaPtr((PED_TYPE *)pGtaVehicle->pDriver);
 							
-						if(byteSystemAddressWhoKilled != INVALID_PLAYER_ID) {
-							*nPlayer = byteSystemAddressWhoKilled;
+						if(playerIDWhoKilled != INVALID_PLAYER_ID) {
+							*nPlayer = playerIDWhoKilled;
 							return WEAPON_COLLISION;
 						}
 					}									

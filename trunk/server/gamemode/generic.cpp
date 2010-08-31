@@ -73,10 +73,10 @@ int CGameModeGeneric::AddPlayerClass(int team, int model, float x, float y, floa
 
 //----------------------------------------------------
 
-int CGameModeGeneric::HandleSpawnClassRequest(BYTE byteSystemAddress, int iSpawnType)
+int CGameModeGeneric::HandleSpawnClassRequest(EntityId playerID, int iSpawnType)
 {
 	CPlayer *pPlayer;
-	pPlayer = pNetGame->GetPlayerPool()->GetAt(byteSystemAddress);
+	pPlayer = pNetGame->GetPlayerPool()->GetAt(playerID);
 
 	if(iSpawnType < 0) {
 		iSpawnType = (m_iAvailableSpawnCount - 1);

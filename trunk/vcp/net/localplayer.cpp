@@ -69,7 +69,7 @@ BOOL CLocalPlayer::Process()
 	CVehicle *pGameVehicle;
 	CVehiclePool *pVehiclePool;
 
-	BYTE byteVehicleID;
+	EntityId vehicleID;
 
 	DWORD dwThisTick;
 
@@ -99,9 +99,9 @@ BOOL CLocalPlayer::Process()
 
 					// VEHICLE WORLD BOUNDS STUFF
 					pVehiclePool = pNetGame->GetVehiclePool();
-					byteVehicleID = (BYTE)pVehiclePool->FindIDFromGtaPtr(m_pPlayerPed->GetGtaVehicle());
-					if(byteVehicleID != 255) {
-						pGameVehicle = pVehiclePool->GetAt(byteVehicleID);
+					vehicleID = (BYTE)pVehiclePool->FindIDFromGtaPtr(m_pPlayerPed->GetGtaVehicle());
+					if(vehicleID != 255) {
+						pGameVehicle = pVehiclePool->GetAt(vehicleID);
 						pGameVehicle->EnforceWorldBoundries(
 							pNetGame->m_WorldBounds[0],pNetGame->m_WorldBounds[1],
 							pNetGame->m_WorldBounds[2],pNetGame->m_WorldBounds[3]);
@@ -237,10 +237,10 @@ void CLocalPlayer::SendInCarFullSyncData()
 		// write packet id
 		bsVehicleSync.Write((MessageID)ID_VEHICLE_SYNC);
 
-		vehicleSyncData.byteVehicleID = (BYTE)pVehiclePool->FindIDFromGtaPtr(m_pPlayerPed->GetGtaVehicle());
+		vehicleSyncData.vehicleID = (BYTE)pVehiclePool->FindIDFromGtaPtr(m_pPlayerPed->GetGtaVehicle());
 
 		// make sure we have a valid vehicle
-		if(vehicleSyncData.byteVehicleID == 255)
+		if(vehicleSyncData.vehicleID == 255)
 		{
 			return;
 		}
@@ -249,7 +249,7 @@ void CLocalPlayer::SendInCarFullSyncData()
 		vehicleSyncData.wKeys = m_pPlayerPed->GetKeys();
 
 		// get the vehicle pointer
-		pGameVehicle = pVehiclePool->GetAt(vehicleSyncData.byteVehicleID);
+		pGameVehicle = pVehiclePool->GetAt(vehicleSyncData.vehicleID);
 
 		// make sure the vehicle pointer is valid
 		if(!pGameVehicle)
@@ -301,15 +301,15 @@ void CLocalPlayer::SendInCarPassengerData()
 	Vector3 vPos;
 	CVehiclePool *pVehiclePool = pNetGame->GetVehiclePool();
 
-	BYTE byteVehicleID = (BYTE)pVehiclePool->FindIDFromGtaPtr(m_pPlayerPed->GetGtaVehicle());
-	if(byteVehicleID == 255) return;
+	EntityId vehicleID = (BYTE)pVehiclePool->FindIDFromGtaPtr(m_pPlayerPed->GetGtaVehicle());
+	if(vehicleID == 255) return;
 
 	UINT uiPassengerSeat = m_pPlayerPed->GetPassengerSeat();
 	
 	m_pPlayerPed->GetPosition(&vPos);
 	
 	bsPassengerSync.Write((BYTE)ID_PASSENGER_SYNC);
-	bsPassengerSync.Write((BYTE)byteVehicleID);
+	bsPassengerSync.Write((BYTE)vehicleID);
 	bsPassengerSync.Write(uiPassengerSeat);
 	bsPassengerSync.Write(vPos.X);
 	bsPassengerSync.Write(vPos.Y);
@@ -324,12 +324,12 @@ int CLocalPlayer::GetOptimumInCarSendRate()
 	CVehiclePool *pVehiclePool = pNetGame->GetVehiclePool();
 	CVehicle	 *pGameVehicle=NULL;
 	Vector3		 vecMoveSpeed;
-	BYTE		 byteVehicleID=0;
+	BYTE		 vehicleID=0;
 
 	if(m_pPlayerPed)
 	{
-		byteVehicleID = (BYTE)pVehiclePool->FindIDFromGtaPtr(m_pPlayerPed->GetGtaVehicle());
-		pGameVehicle = pVehiclePool->GetAt(byteVehicleID);
+		vehicleID = (BYTE)pVehiclePool->FindIDFromGtaPtr(m_pPlayerPed->GetGtaVehicle());
+		pGameVehicle = pVehiclePool->GetAt(vehicleID);
 
 		if(pGameVehicle)
 		{
@@ -505,24 +505,24 @@ void CLocalPlayer::Say(PCHAR szText)
 
 //----------------------------------------------------------
 
-void CLocalPlayer::SendEnterVehicleNotification(BYTE byteVehicleID, BOOL bPassenger)
+void CLocalPlayer::SendEnterVehicleNotification(EntityId vehicleID, BOOL bPassenger)
 {
 	RakNet::BitStream bsSend;
 	BYTE bytePassenger=0;
 
 	if(bPassenger) bytePassenger=1;
 
-	bsSend.Write(byteVehicleID);
+	bsSend.Write(vehicleID);
 	bsSend.Write(bytePassenger);
 	pNetGame->GetRPC4()->Call("EnterVehicle",&bsSend,HIGH_PRIORITY,RELIABLE_SEQUENCED,0,UNASSIGNED_SYSTEM_ADDRESS,TRUE);
 }
 
 //----------------------------------------------------------
 
-void CLocalPlayer::SendExitVehicleNotification(BYTE byteVehicleID)
+void CLocalPlayer::SendExitVehicleNotification(EntityId vehicleID)
 {
 	RakNet::BitStream bsSend;
-	bsSend.Write(byteVehicleID);
+	bsSend.Write(vehicleID);
 	pNetGame->GetRPC4()->Call("ExitVehicle",&bsSend,HIGH_PRIORITY,RELIABLE_SEQUENCED,0,UNASSIGNED_SYSTEM_ADDRESS,TRUE);
 }
 

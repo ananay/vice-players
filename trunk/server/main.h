@@ -36,6 +36,8 @@
 #define MAX_PLAYERS			50
 #define MAX_VEHICLES		200
 
+typedef unsigned char EntityId;
+
 #include "../raknet/RakPeer.h"
 #include "../raknet/RPC4Plugin.h"
 #include "../raknet/BitStream.h"

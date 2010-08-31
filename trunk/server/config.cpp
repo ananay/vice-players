@@ -245,6 +245,7 @@ int CConfig::ReadFile(char * szFileName)
 
 int CConfig::StringCompI(const char *s1, const char *s2)
 {
+#pragma warning(disable:4996)
 	return stricmp(s1,s2);
 }
 

@@ -51,31 +51,31 @@ public:
 	CVehiclePool();
 	~CVehiclePool();
 
-	BOOL New(BYTE byteVehicleID, BYTE byteVehicleType,
+	BOOL New(EntityId vehicleID, BYTE byteVehicleType,
 			 Vector3 * vecPos, float fRotation,
 			 int iColor1, int iColor2,
 			 Vector3 * vecSpawnPos, float fSpawnRotation);
 
-	BOOL Delete(BYTE byteVehicleID);	
+	BOOL Delete(EntityId vehicleID);	
 
-	CVehicle* GetAt(BYTE byteVehicleID) {
-		if(byteVehicleID > MAX_VEHICLES) { return NULL; }
-		return m_pVehicles[byteVehicleID];
+	CVehicle* GetAt(EntityId vehicleID) {
+		if(vehicleID > MAX_VEHICLES) { return NULL; }
+		return m_pVehicles[vehicleID];
 	};
 
-	BOOL GetSlotState(BYTE byteVehicleID) {
-		if(byteVehicleID > MAX_VEHICLES) { return FALSE; }
-		return m_bVehicleSlotState[byteVehicleID];
+	BOOL GetSlotState(EntityId vehicleID) {
+		if(vehicleID > MAX_VEHICLES) { return FALSE; }
+		return m_bVehicleSlotState[vehicleID];
 	};
 
-	BOOL Spawn( BYTE byteVehicleID, BYTE byteVehicleType,
+	BOOL Spawn( EntityId vehicleID, BYTE byteVehicleType,
 				Vector3 * vecPos, float fRotation,
 				int iColor1, int iColor2 );
 
 	int FindIDFromGtaPtr(VEHICLE_TYPE * pGtaVehicle);
 	int FindGtaIDFromID(int iID);
 
-	void SendVehicleDeath(BYTE byteVehicleId);
+	void SendVehicleDeath(EntityId vehicleID);
 
 	void Process();
 };

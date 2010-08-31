@@ -39,7 +39,7 @@ extern CNetGame* pNetGame;
 CRemotePlayer::CRemotePlayer()
 {
 	m_byteUpdateFromNetwork = UPDATE_TYPE_NONE;
-	m_bytePlayerID = INVALID_PLAYER_ID;
+	m_playerID = INVALID_PLAYER_ID;
 	m_bIsActive = FALSE;
 	m_bIsWasted = FALSE;
 	m_pPlayerPed = NULL;
@@ -47,7 +47,7 @@ CRemotePlayer::CRemotePlayer()
 	m_byteUpdateFromNetwork = UPDATE_TYPE_NONE;
 	m_iJustSpawned = 0;
 	m_fRotation = 0.0f;
-	m_byteVehicleID = 0;
+	m_vehicleID = 0;
 	m_uiPassengerSeat = 0;
 	m_bHasAim = false;
 }
@@ -94,10 +94,10 @@ void CRemotePlayer::Process()
 				if(m_byteHealth == 0) {
 
 					//pChatWindow->AddDebugMessage("%s has 0 health so killing\n",
-						//pNetGame->GetPlayerPool()->GetAt(m_byteSystemAddress));
+						//pNetGame->GetPlayerPool()->GetAt(m_playerID));
 
 					m_wKeys = 0;
-					m_byteVehicleID = 0;
+					m_vehicleID = 0;
 					m_pPlayerPed->SetKeys(m_wKeys);
 					m_pPlayerPed->SetHealth(0.0f);
 					m_bIsWasted = TRUE;
@@ -132,7 +132,7 @@ void CRemotePlayer::Process()
 			}
 			else if(m_byteUpdateFromNetwork == UPDATE_TYPE_FULL_INCAR)
 			{
-				CVehicle *pVehicle = pVehiclePool->GetAt(m_byteVehicleID);
+				CVehicle *pVehicle = pVehiclePool->GetAt(m_vehicleID);
 				
 				if(pVehicle) {
 					UpdateInCarMatrixAndSpeed(&m_matWorld, &m_vecMoveSpeed, &m_vecTurnSpeed);
@@ -149,7 +149,7 @@ void CRemotePlayer::Process()
 		}
 	}
 	else {
-		m_byteVehicleID = 0; // make sure that's always reset.
+		m_vehicleID = 0; // make sure that's always reset.
 	}
 }
 
@@ -159,21 +159,21 @@ void CRemotePlayer::HandleVehicleEntryExit()
 {
 	CVehiclePool *pVehiclePool = pNetGame->GetVehiclePool();
 
-	if(m_byteVehicleID == 0 && m_pPlayerPed->IsInVehicle())
+	if(m_vehicleID == 0 && m_pPlayerPed->IsInVehicle())
 	{
 		m_pPlayerPed->RemoveFromVehicleAndPutAt(m_matWorld.vPos.X,
 			m_matWorld.vPos.Y,m_matWorld.vPos.Z);
 	}	
-	else if((m_byteVehicleID != 0) && !m_pPlayerPed->IsInVehicle())
+	else if((m_vehicleID != 0) && !m_pPlayerPed->IsInVehicle())
 	{
 		// must force in
-		CVehicle * pVehicle = pVehiclePool->GetAt(m_byteVehicleID);
+		CVehicle * pVehicle = pVehiclePool->GetAt(m_vehicleID);
 		
 		if(pVehicle && pVehicle->GetHealth() > 0.0f) {
 			if(!m_bIsAPassenger) {
-				m_pPlayerPed->PutDirectlyInVehicle(pVehiclePool->FindGtaIDFromID(m_byteVehicleID));
+				m_pPlayerPed->PutDirectlyInVehicle(pVehiclePool->FindGtaIDFromID(m_vehicleID));
 			} else {
-				m_pPlayerPed->ForceIntoPassengerSeat(pVehiclePool->FindGtaIDFromID(m_byteVehicleID),m_uiPassengerSeat);
+				m_pPlayerPed->ForceIntoPassengerSeat(pVehiclePool->FindGtaIDFromID(m_vehicleID),m_uiPassengerSeat);
 			}
 		}
 	}
@@ -190,7 +190,7 @@ void CRemotePlayer::UpdateOnFootPosition(Vector3 vPos)
 
 void CRemotePlayer::StoreOnFootFullSyncData(PLAYER_SYNC_DATA * pPlayerSyncData)
 {
-	m_byteVehicleID = 0;
+	m_vehicleID = 0;
 	m_wKeys = pPlayerSyncData->wKeys;
 	memcpy(&m_matWorld.vPos, &pPlayerSyncData->vecPos, sizeof(Vector3));
 	m_fRotation = pPlayerSyncData->fRotation;
@@ -214,7 +214,7 @@ void CRemotePlayer::StoreAimSyncData(CAMERA_AIM * pAim)
 void CRemotePlayer::UpdateInCarMatrixAndSpeed(MATRIX4X4 * matWorld, Vector3 * vecMoveSpeed, Vector3 * vecTurnSpeed)
 {
 	MATRIX4X4 matVehicle;
-	CVehicle * pVehicle = pNetGame->GetVehiclePool()->GetAt(m_byteVehicleID);
+	CVehicle * pVehicle = pNetGame->GetVehiclePool()->GetAt(m_vehicleID);
 	float fDif;
 
 	if(pVehicle) {
@@ -269,7 +269,7 @@ void CRemotePlayer::UpdateInCarMatrixAndSpeed(MATRIX4X4 * matWorld, Vector3 * ve
 
 void CRemotePlayer::StoreInCarFullSyncData(VEHICLE_SYNC_DATA * pVehicleSyncData)
 {
-	m_byteVehicleID = pVehicleSyncData->byteVehicleID;
+	m_vehicleID = pVehicleSyncData->vehicleID;
 	m_wKeys = pVehicleSyncData->wKeys;
 	memcpy(&m_matWorld.vLookRight, &pVehicleSyncData->vecRoll, sizeof(Vector3));
 	memcpy(&m_matWorld.vLookUp, &pVehicleSyncData->vecDirection, sizeof(Vector3));
@@ -286,11 +286,11 @@ void CRemotePlayer::StoreInCarFullSyncData(VEHICLE_SYNC_DATA * pVehicleSyncData)
 
 //----------------------------------------------------
 
-void CRemotePlayer::StorePassengerData(BYTE byteVehicleID, UINT uiSeat)
+void CRemotePlayer::StorePassengerData(EntityId vehicleID, UINT uiSeat)
 {
 	m_bIsInVehicle = TRUE;
 	m_bIsAPassenger = TRUE;
-	m_byteVehicleID = byteVehicleID;
+	m_vehicleID = vehicleID;
 	m_uiPassengerSeat = uiSeat;
 }
 
@@ -307,7 +307,7 @@ BOOL CRemotePlayer::SpawnPlayer( BYTE byteTeam, BYTE byteSkin,
 		delete m_pPlayerPed;
 	}
 
-	CPlayerPed *pGamePlayer = pGame->NewPlayer(m_bytePlayerID+2,byteSkin,vecPos->X,
+	CPlayerPed *pGamePlayer = pGame->NewPlayer(m_playerID+2,byteSkin,vecPos->X,
 		vecPos->Y,vecPos->Z,fRotation);
 	
 	if(pGamePlayer) 
@@ -319,7 +319,7 @@ BOOL CRemotePlayer::SpawnPlayer( BYTE byteTeam, BYTE byteSkin,
 		m_pPlayerPed = pGamePlayer;
 		m_bIsActive = TRUE;
 		m_iJustSpawned = 30;
-		m_byteVehicleID = 0;
+		m_vehicleID = 0;
 		m_fRotation = fRotation;
 		m_byteTeam = byteTeam;
 		m_byteHealth = 100;
@@ -344,7 +344,7 @@ BOOL CRemotePlayer::SpawnPlayer( BYTE byteTeam, BYTE byteSkin,
 void CRemotePlayer::HandleDeath(BYTE byteReason, BYTE byteWhoKilled, BYTE byteScoringModifier)
 {
 
-	char * szPlayerName = pNetGame->GetPlayerPool()->GetPlayerName(m_bytePlayerID);
+	char * szPlayerName = pNetGame->GetPlayerPool()->GetPlayerName(m_playerID);
 	char * szWhoKilledName;
 
 	if(byteWhoKilled != INVALID_PLAYER_ID) {
@@ -371,10 +371,10 @@ void CRemotePlayer::HandleDeath(BYTE byteReason, BYTE byteWhoKilled, BYTE byteSc
 			break;
 	}
 
-	if(m_byteVehicleID != 0) {
+	if(m_vehicleID != 0) {
 		m_bIsWasted = TRUE;
 		m_bIsActive = FALSE;
-		m_byteVehicleID = 0;
+		m_vehicleID = 0;
 	}
 }
 
@@ -382,7 +382,7 @@ void CRemotePlayer::HandleDeath(BYTE byteReason, BYTE byteWhoKilled, BYTE byteSc
 
 void CRemotePlayer::Say(char *szText)
 {
-	char * szPlayerName = pNetGame->GetPlayerPool()->GetPlayerName(m_bytePlayerID);
+	char * szPlayerName = pNetGame->GetPlayerPool()->GetPlayerName(m_playerID);
 	pChatWindow->AddChatMessage(szPlayerName,GetTeamColorAsARGB(),szText);
 }
 

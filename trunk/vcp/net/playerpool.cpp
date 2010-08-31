@@ -40,46 +40,42 @@ char szQuitReasons[][32] = {
 
 CPlayerPool::CPlayerPool()
 {
-	BYTE byteSystemAddress = 0;
-
 	m_pLocalPlayer = new CLocalPlayer();
 
-	while(byteSystemAddress < MAX_PLAYERS) {
-		m_bPlayerSlotState[byteSystemAddress] = FALSE;
-		m_pPlayers[byteSystemAddress] = NULL;
-		byteSystemAddress++;
+	for(EntityId i = 0; i < MAX_PLAYERS; i++)
+	{
+		m_bPlayerSlotState[i] = FALSE;
+		m_pPlayers[i] = NULL;
 	}
 }
 
 //----------------------------------------------------
 
 CPlayerPool::~CPlayerPool()
-{	
-	BYTE byteSystemAddress = 0;
-
+{
 	delete m_pLocalPlayer;
 
-	while(byteSystemAddress < MAX_PLAYERS) {
-		Delete(byteSystemAddress,0);
-		byteSystemAddress++;
+	for(EntityId i = 0; i < MAX_PLAYERS; i++)
+	{
+		Delete(i, 0);
 	}
 }
 
 //----------------------------------------------------
 
-BOOL CPlayerPool::New(BYTE byteSystemAddress, PCHAR szPlayerName)
+BOOL CPlayerPool::New(EntityId playerID, PCHAR szPlayerName)
 {
-	m_pPlayers[byteSystemAddress] = new CRemotePlayer();
+	m_pPlayers[playerID] = new CRemotePlayer();
 
-	if(m_pPlayers[byteSystemAddress])
+	if(m_pPlayers[playerID])
 	{
-		strcpy(m_szPlayerNames[byteSystemAddress],szPlayerName);
-		m_pPlayers[byteSystemAddress]->SetID(byteSystemAddress);
-		m_bPlayerSlotState[byteSystemAddress] = TRUE;
+		strcpy(m_szPlayerNames[playerID],szPlayerName);
+		m_pPlayers[playerID]->SetID(playerID);
+		m_bPlayerSlotState[playerID] = TRUE;
 
-		m_iScore[byteSystemAddress] = 0;
-		m_iPing[byteSystemAddress] = 0;
-		m_ulIPAddress[byteSystemAddress] = 0;
+		m_iScore[playerID] = 0;
+		m_iPing[playerID] = 0;
+		m_ulIPAddress[playerID] = 0;
 
 		return TRUE;
 	}
@@ -91,15 +87,15 @@ BOOL CPlayerPool::New(BYTE byteSystemAddress, PCHAR szPlayerName)
 
 //----------------------------------------------------
 
-BOOL CPlayerPool::Delete(BYTE byteSystemAddress, BYTE byteReason)
+BOOL CPlayerPool::Delete(EntityId playerID, BYTE byteReason)
 {
-	if(!GetSlotState(byteSystemAddress) || !m_pPlayers[byteSystemAddress]) {
+	if(!GetSlotState(playerID) || !m_pPlayers[playerID]) {
 		return FALSE;
 	}
 
-	m_bPlayerSlotState[byteSystemAddress] = FALSE;
-	delete m_pPlayers[byteSystemAddress];
-	m_pPlayers[byteSystemAddress] = NULL;
+	m_bPlayerSlotState[playerID] = FALSE;
+	delete m_pPlayers[playerID];
+	m_pPlayers[playerID] = NULL;
 
 
 	return TRUE;
@@ -122,28 +118,29 @@ BOOL CPlayerPool::Process()
 
 //----------------------------------------------------
 
-BYTE CPlayerPool::FindRemoteSystemAddressFromGtaPtr(PED_TYPE * pActor)
+EntityId CPlayerPool::FindPlayerIDFromGtaPtr(PED_TYPE * pActor)
 {
 	CPlayerPed *pPlayerPed;
 
-	BYTE byteSystemAddress = 0;
+	for(EntityId i = 0; i < MAX_PLAYERS; i++)
+	{
+		if(m_bPlayerSlotState[i])
+		{
+			pPlayerPed = m_pPlayers[i]->GetPlayerPed();
 
-	while(byteSystemAddress < MAX_PLAYERS)  {
+			if(pPlayerPed)
+			{
+				PED_TYPE * pTestActor = pPlayerPed->GetPed();
 
-		if(TRUE == m_bPlayerSlotState[byteSystemAddress]) {
-			pPlayerPed = m_pPlayers[byteSystemAddress]->GetPlayerPed();
-
-			if(pPlayerPed) {
-				PED_TYPE *pTestActor = pPlayerPed->GetPed();
 				if((pTestActor != NULL) && (pActor == pTestActor)) // found it
-					return (BYTE)m_pPlayers[byteSystemAddress]->GetID();
+				{
+					return m_pPlayers[i]->GetID();
+				}
 			}
 		}
-
-		byteSystemAddress++;
 	}
 
-	return INVALID_PLAYER_ID;	
+	return INVALID_PLAYER_ID;
 }
 	
 //----------------------------------------------------

@@ -32,7 +32,8 @@ extern CScripts	*pScripts;
 
 CVehiclePool::CVehiclePool()
 {
-	for(BYTE i = 0; i < MAX_VEHICLES; i++) {
+	for(EntityId i = 0; i < MAX_VEHICLES; i++)
+	{
 		m_bVehicleSlotState[i] = FALSE;
 		m_pVehicles[i] = NULL;
 	}
@@ -42,30 +43,29 @@ CVehiclePool::CVehiclePool()
 
 CVehiclePool::~CVehiclePool()
 {	
-	BYTE byteVehicleID = 0;
-	while(byteVehicleID != MAX_VEHICLES) {
-		Delete(byteVehicleID);
-		byteVehicleID++;
+	for(EntityId i = 0; i < MAX_VEHICLES; i++)
+	{
+		Delete(i);
 	}
 }
 
 //----------------------------------------------------
 
-BOOL CVehiclePool::New(BYTE byteVehicleID, BYTE byteVehicleType,
+BOOL CVehiclePool::New(EntityId vehicleID, BYTE byteVehicleType,
 					   Vector3 * vecPos, float fRotation,
 					   int iColor1, int iColor2)
 {
-	m_pVehicles[byteVehicleID] = new CVehicle(byteVehicleType,vecPos,fRotation,iColor1,iColor2);
+	m_pVehicles[vehicleID] = new CVehicle(byteVehicleType,vecPos,fRotation,iColor1,iColor2);
 
 	/*
 	logprintf("CVehiclePool::New(%u,%.2f,%.2f,%.2f,%.2f,%d,%d)",
 		byteVehicleType,vecPos->X,vecPos->Y,vecPos->Z,fRotation,iColor1,iColor2);*/
 
-	if(m_pVehicles[byteVehicleID])
+	if(m_pVehicles[vehicleID])
 	{
-		m_pVehicles[byteVehicleID]->SetID(byteVehicleID);
-		m_bVehicleSlotState[byteVehicleID] = TRUE;
-		pScripts->onVehicleCreate(byteVehicleID);
+		m_pVehicles[vehicleID]->SetID(vehicleID);
+		m_bVehicleSlotState[vehicleID] = TRUE;
+		pScripts->onVehicleCreate(vehicleID);
 		return TRUE;
 	}
 	else
@@ -89,28 +89,28 @@ BYTE CVehiclePool::New(BYTE byteVehicleType,
 
 //----------------------------------------------------
 
-BOOL CVehiclePool::Delete(BYTE byteVehicleID)
+BOOL CVehiclePool::Delete(EntityId vehicleID)
 {
-	if(!GetSlotState(byteVehicleID) || !m_pVehicles[byteVehicleID])
+	if(!GetSlotState(vehicleID) || !m_pVehicles[vehicleID])
 	{
 		return FALSE;
 	}
 
-	m_bVehicleSlotState[byteVehicleID] = FALSE;
-	delete m_pVehicles[byteVehicleID];
-	m_pVehicles[byteVehicleID] = NULL;
-	pScripts->onVehicleDestroy(byteVehicleID);
+	m_bVehicleSlotState[vehicleID] = FALSE;
+	delete m_pVehicles[vehicleID];
+	m_pVehicles[vehicleID] = NULL;
+	pScripts->onVehicleDestroy(vehicleID);
 
 	return TRUE;
 }
 
 //----------------------------------------------------
 
-void CVehiclePool::FlagForRespawn(BYTE byteVehicleId)
+void CVehiclePool::FlagForRespawn(EntityId vehicleID)
 {
-	if(GetSlotState(byteVehicleId)) {
-		m_pVehicles[byteVehicleId]->SetWasted(TRUE);
-		m_iRespawnDelay[byteVehicleId] = 150;
+	if(GetSlotState(vehicleID)) {
+		m_pVehicles[vehicleID]->SetWasted(TRUE);
+		m_iRespawnDelay[vehicleID] = 150;
 	}
 }
 

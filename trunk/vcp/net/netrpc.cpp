@@ -46,18 +46,18 @@ void ServerJoin(RakNet::BitStream *bitStream, Packet *packet)
 {
 	CPlayerPool *pPlayerPool = pNetGame->GetPlayerPool();
 	CHAR szPlayerName[MAX_PLAYER_NAME];
-	BYTE byteSystemAddress;
+	EntityId playerID;
 	UINT uiNameLength;
 
 	memset(szPlayerName,0,MAX_PLAYER_NAME);
 
-	bitStream->Read(byteSystemAddress);
+	bitStream->Read(playerID);
 	bitStream->Read(uiNameLength);
 	bitStream->Read(szPlayerName,uiNameLength);
 	szPlayerName[uiNameLength] = '\0';
 
 	// Add this client to the player pool.
-	pPlayerPool->New(byteSystemAddress, szPlayerName);
+	pPlayerPool->New(playerID, szPlayerName);
 }
 
 //----------------------------------------------------
@@ -67,14 +67,14 @@ void ServerJoin(RakNet::BitStream *bitStream, Packet *packet)
 void ServerQuit(RakNet::BitStream *bitStream, Packet *packet)
 {
 	CPlayerPool *pPlayerPool = pNetGame->GetPlayerPool();
-	BYTE byteSystemAddress;
+	EntityId playerID;
 	BYTE byteReason;
 
-	bitStream->Read(byteSystemAddress);
+	bitStream->Read(playerID);
 	bitStream->Read(byteReason);
 
 	// Delete this client from the player pool.
-	pPlayerPool->Delete(byteSystemAddress,byteReason);
+	pPlayerPool->Delete(playerID,byteReason);
 }
 
 
@@ -97,7 +97,7 @@ void InitGame(RakNet::BitStream *bitStream, Packet *packet)
 	bitStream->Read(showOnRadar);
 	bitStream->Read(byteMySystemAddress);
 
-	pPlayerPool->SetLocalSystemAddress(byteMySystemAddress);
+	pPlayerPool->SetLocalPlayerID(byteMySystemAddress);
 
 	pGame->FadeScreen(1, 0);
 	pNetGame->InitGameLogic();
@@ -109,24 +109,24 @@ void InitGame(RakNet::BitStream *bitStream, Packet *packet)
 
 void Chat(RakNet::BitStream *bitStream, Packet *packet)
 {
-	BYTE byteSystemAddress;
+	EntityId playerID;
 	BYTE byteTextLen;
 	CHAR szText[256];
 
-	bitStream->Read(byteSystemAddress);
+	bitStream->Read(playerID);
 	bitStream->Read(byteTextLen);
 	bitStream->Read(szText,byteTextLen);
 
 	szText[byteTextLen] = '\0';
 
 	CPlayerPool * pPlayerPool = pNetGame->GetPlayerPool();
-	if(byteSystemAddress == pPlayerPool->GetLocalSystemAddress()) {
+	if(playerID == pPlayerPool->GetLocalPlayerID()) {
 		pChatWindow->AddChatMessage(pNetGame->GetPlayerPool()->GetLocalPlayerName(),
 			pPlayerPool->GetLocalPlayer()->GetTeamColorAsARGB(),szText);
 	}
 	else
 	{
-		CRemotePlayer *pRemotePlayer = pNetGame->GetPlayerPool()->GetAt(byteSystemAddress);
+		CRemotePlayer *pRemotePlayer = pNetGame->GetPlayerPool()->GetAt(playerID);
 		if(pRemotePlayer) {
 			pRemotePlayer->Say(szText);	
 		}
@@ -139,18 +139,18 @@ void Chat(RakNet::BitStream *bitStream, Packet *packet)
 
 void Passenger(RakNet::BitStream *bitStream, Packet *packet)
 {
-	BYTE byteSystemAddress;
-	BYTE byteVehicleID;
+	EntityId playerID;
+	EntityId vehicleID;
 	UINT uiSeat;
 
-	bitStream->Read(byteSystemAddress);
-	bitStream->Read(byteVehicleID);
+	bitStream->Read(playerID);
+	bitStream->Read(vehicleID);
 	bitStream->Read(uiSeat);
 	
-	CRemotePlayer * pRemotePlayer = pNetGame->GetPlayerPool()->GetAt(byteSystemAddress);
+	CRemotePlayer * pRemotePlayer = pNetGame->GetPlayerPool()->GetAt(playerID);
 
 	if(pRemotePlayer) {
-		pRemotePlayer->StorePassengerData(byteVehicleID,uiSeat);
+		pRemotePlayer->StorePassengerData(vehicleID,uiSeat);
 	}	
 }
 
@@ -196,7 +196,7 @@ void Spawn(RakNet::BitStream *bitStream, Packet *packet)
 {
 	CRemotePlayer *pRemotePlayer;
 
-	BYTE byteSystemAddress=0;
+	EntityId playerID=0;
 	BYTE byteTeam=0;
 	BYTE byteSkin=0;
 	Vector3 vecPos;
@@ -205,7 +205,7 @@ void Spawn(RakNet::BitStream *bitStream, Packet *packet)
 	int iSpawnWeapons1,iSpawnWeapons2,iSpawnWeapons3;
 	int iSpawnWeaponsAmmo1,iSpawnWeaponsAmmo2,iSpawnWeaponsAmmo3;
 
-	bitStream->Read(byteSystemAddress);
+	bitStream->Read(playerID);
 	bitStream->Read(byteTeam);
 	bitStream->Read(byteSkin);
 	bitStream->Read(vecPos.X);
@@ -219,7 +219,7 @@ void Spawn(RakNet::BitStream *bitStream, Packet *packet)
 	bitStream->Read(iSpawnWeapons3);
 	bitStream->Read(iSpawnWeaponsAmmo3);
 
-	pRemotePlayer = pNetGame->GetPlayerPool()->GetAt(byteSystemAddress);
+	pRemotePlayer = pNetGame->GetPlayerPool()->GetAt(playerID);
 
 	if(pRemotePlayer) {
 		pRemotePlayer->SpawnPlayer(byteTeam,byteSkin,&vecPos,fRotation,
@@ -234,17 +234,17 @@ void Spawn(RakNet::BitStream *bitStream, Packet *packet)
 
 void Death(RakNet::BitStream *bitStream, Packet *packet)
 {
-	BYTE byteSystemAddress=0;
+	EntityId playerID=0;
 	BYTE byteReason;
 	BYTE byteWhoKilled;
 	BYTE byteScoringModifier;
 
-	bitStream->Read(byteSystemAddress);
+	bitStream->Read(playerID);
 	bitStream->Read(byteReason);
 	bitStream->Read(byteWhoKilled);
 	bitStream->Read(byteScoringModifier);
 
-	CRemotePlayer *pRemotePlayer = pNetGame->GetPlayerPool()->GetAt(byteSystemAddress);
+	CRemotePlayer *pRemotePlayer = pNetGame->GetPlayerPool()->GetAt(playerID);
 	if(pRemotePlayer) {
 		pRemotePlayer->HandleDeath(byteReason,byteWhoKilled,byteScoringModifier);
 	}
@@ -255,22 +255,22 @@ void Death(RakNet::BitStream *bitStream, Packet *packet)
 
 void EnterVehicle(RakNet::BitStream *bitStream, Packet *packet)
 {
-	BYTE byteSystemAddress=0;
-	BYTE byteVehicleID=0;
+	EntityId playerID=0;
+	EntityId vehicleID=0;
 	BYTE bytePassenger=0;
 
-	bitStream->Read(byteSystemAddress);
-	bitStream->Read(byteVehicleID);
+	bitStream->Read(playerID);
+	bitStream->Read(vehicleID);
 	bitStream->Read(bytePassenger);
 
-	CRemotePlayer *pRemotePlayer = pNetGame->GetPlayerPool()->GetAt(byteSystemAddress);
+	CRemotePlayer *pRemotePlayer = pNetGame->GetPlayerPool()->GetAt(playerID);
 	CVehiclePool *pVehiclePool = pNetGame->GetVehiclePool();
 
 	if(pRemotePlayer) {
 		if(!bytePassenger) {
-			pRemotePlayer->GetPlayerPed()->EnterVehicleAsDriver(pVehiclePool->FindGtaIDFromID(byteVehicleID));
+			pRemotePlayer->GetPlayerPed()->EnterVehicleAsDriver(pVehiclePool->FindGtaIDFromID(vehicleID));
 		} else {
-			pRemotePlayer->GetPlayerPed()->EnterVehicleAsPassenger(pVehiclePool->FindGtaIDFromID(byteVehicleID));
+			pRemotePlayer->GetPlayerPed()->EnterVehicleAsPassenger(pVehiclePool->FindGtaIDFromID(vehicleID));
 		}
 	}
 }
@@ -280,13 +280,13 @@ void EnterVehicle(RakNet::BitStream *bitStream, Packet *packet)
 
 void ExitVehicle(RakNet::BitStream *bitStream, Packet *packet)
 {
-	BYTE byteSystemAddress=0;
-	BYTE byteVehicleID=0;
+	EntityId playerID=0;
+	EntityId vehicleID=0;
 
-	bitStream->Read(byteSystemAddress);
-	bitStream->Read(byteVehicleID);
+	bitStream->Read(playerID);
+	bitStream->Read(vehicleID);
 
-	CRemotePlayer *pRemotePlayer = pNetGame->GetPlayerPool()->GetAt(byteSystemAddress);
+	CRemotePlayer *pRemotePlayer = pNetGame->GetPlayerPool()->GetAt(playerID);
 	CVehiclePool *pVehiclePool = pNetGame->GetVehiclePool();
 
 	if(pRemotePlayer) {
@@ -299,7 +299,7 @@ void ExitVehicle(RakNet::BitStream *bitStream, Packet *packet)
 void VehicleSpawn(RakNet::BitStream *bitStream, Packet *packet)
 {
 	CVehiclePool *pVehiclePool = pNetGame->GetVehiclePool();
-	BYTE byteVehicleID=0;
+	EntityId vehicleID=0;
 	BYTE byteVehicleType;
 	Vector3 vecPos;
 	Vector3 vecSpawnPos;
@@ -308,7 +308,7 @@ void VehicleSpawn(RakNet::BitStream *bitStream, Packet *packet)
 	float fHealth;
 	int iColor1, iColor2;
 
-	bitStream->Read(byteVehicleID);
+	bitStream->Read(vehicleID);
 	bitStream->Read(byteVehicleType);
 	bitStream->Read(vecPos.X);
 	bitStream->Read(vecPos.Y);
@@ -322,9 +322,9 @@ void VehicleSpawn(RakNet::BitStream *bitStream, Packet *packet)
 	bitStream->Read(vecSpawnPos.Z);
 	bitStream->Read(fSpawnRotation);
 
-	pVehiclePool->New(byteVehicleID,byteVehicleType,
+	pVehiclePool->New(vehicleID,byteVehicleType,
 		&vecPos,fRotation,iColor1,iColor2,&vecSpawnPos,fSpawnRotation);
-	//pVehiclePool->GetAt(byteVehicleID)->SetHealth(fHealth);
+	//pVehiclePool->GetAt(vehicleID)->SetHealth(fHealth);
 }
 
 //----------------------------------------------------
@@ -332,11 +332,11 @@ void VehicleSpawn(RakNet::BitStream *bitStream, Packet *packet)
 void VehicleDestroy(RakNet::BitStream *bitStream, Packet *packet)
 {
 	CVehiclePool *pVehiclePool = pNetGame->GetVehiclePool();
-	BYTE byteVehicleID=0;
+	EntityId vehicleID=0;
 
-	bitStream->Read(byteVehicleID);
+	bitStream->Read(vehicleID);
 
-	pVehiclePool->Delete(byteVehicleID);
+	pVehiclePool->Delete(vehicleID);
 }
 
 //----------------------------------------------------
@@ -347,21 +347,21 @@ void UpdateScoreAndPing(RakNet::BitStream *bitStream, Packet *packet)
 
 	int iPlayers = (packet->bitSize/8) / 9;
 
-	BYTE byteSystemAddress;
+	EntityId playerID;
 	int iPlayerScore;
 	int iPlayerPing;
 	ULONG ip;
 
 	for(BYTE i = 0; i < iPlayers; i++) {
-		bitStream->Read(byteSystemAddress);
+		bitStream->Read(playerID);
 		bitStream->Read(iPlayerScore);
 		bitStream->Read(iPlayerPing);
 		bitStream->Read(ip);
 
-		if(pPlayerPool->GetSlotState(byteSystemAddress) || byteSystemAddress == pPlayerPool->GetLocalSystemAddress()) {
-			pPlayerPool->UpdateScore(byteSystemAddress,iPlayerScore);
-			pPlayerPool->UpdatePing(byteSystemAddress,iPlayerPing);
-			pPlayerPool->UpdateIPAddress(byteSystemAddress,ip);
+		if(pPlayerPool->GetSlotState(playerID) || playerID == pPlayerPool->GetLocalPlayerID()) {
+			pPlayerPool->UpdateScore(playerID,iPlayerScore);
+			pPlayerPool->UpdatePing(playerID,iPlayerPing);
+			pPlayerPool->UpdateIPAddress(playerID,ip);
 		}
 	}
 }
@@ -820,14 +820,14 @@ void Script_togglePlayerBleeding(RakNet::BitStream *bitStream, Packet *packet)
 	bitStream->Read(player);
 	bitStream->Read(toggle);
 
-	if(player == pNetGame->GetPlayerPool()->GetLocalSystemAddress())
+	if(player == pNetGame->GetPlayerPool()->GetLocalPlayerID())
 	{
 		CLocalPlayer * pPlayer = pNetGame->GetPlayerPool()->GetLocalPlayer();
 		pPlayer->GetPlayerPed()->SetActorBleeding(toggle);
 	} 
 	else if(pNetGame->GetPlayerPool()->GetSlotState(player))
 	{
-		if(player != pNetGame->GetPlayerPool()->GetLocalSystemAddress())
+		if(player != pNetGame->GetPlayerPool()->GetLocalPlayerID())
 		{
 			CRemotePlayer * pPlayer = pNetGame->GetPlayerPool()->GetAt(player);
 			pPlayer->GetPlayerPed()->SetActorBleeding(toggle);
