@@ -31,6 +31,10 @@
 
 extern CNetGame *pNetGame;
 
+//#ifndef WIN32
+#include "dlfcn.h"
+//#endif
+
 CPlugin::CPlugin(const char *szName)
 {
 	m_pLibrary = NULL;
@@ -47,7 +51,7 @@ bool CPlugin::Load()
 		szPath += ".dll";
 		m_pLibrary = LoadLibrary(szPath.c_str());
 	#else
-		szPath += ".so"
+		szPath += ".so";
 		m_pLibrary = dlopen(szPath.c_str(), RTLD_LAZY);
 	#endif
 		if(!m_pLibrary)
