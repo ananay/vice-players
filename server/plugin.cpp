@@ -67,6 +67,11 @@ CPlugin::~CPlugin()
 {
 	if(m_pLibrary)
 	{
+		OnPluginUnload_t pfn = (OnPluginUnload_t) GetProcedureAddress("OnPluginUnload");
+
+		if(pfn)
+			pfn();
+
 #ifdef WIN32
 		FreeLibrary((HMODULE)m_pLibrary);
 #else

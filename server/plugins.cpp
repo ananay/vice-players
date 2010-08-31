@@ -137,12 +137,37 @@ void CPlugins::OnPluginLoad(const char * szName)
 	}
 }
 
+void CPlugins::OnPluginUnload(const char * szName)
+{
+	for(int i = 0; i < MAX_PLUGINS; i++) {
+		if(m_pPlugins[i]) {
+
+
+		}
+	}
+}
+
 void CPlugins::OnScriptLoad(SQVM *pVM)
 {
 	for(int i = 0; i < MAX_PLUGINS; i++) {
 		if(m_pPlugins[i]) {
 
 			OnScriptLoad_t pfn = (OnScriptLoad_t) m_pPlugins[i]->GetProcedureAddress("OnScriptLoad");
+
+			if(!pfn)
+				continue;
+			
+			pfn(pVM);
+		}
+	}
+}
+
+void CPlugins::OnScriptUnload(SQVM *pVM)
+{
+	for(int i = 0; i < MAX_PLUGINS; i++) {
+		if(m_pPlugins[i]) {
+
+			OnScriptUnload_t pfn = (OnScriptUnload_t) m_pPlugins[i]->GetProcedureAddress("OnScriptUnload");
 
 			if(!pfn)
 				continue;

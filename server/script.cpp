@@ -126,6 +126,9 @@ CScript::~CScript()
 	// kill all timers
 	pNetGame->GetTimerPool()->HandleScriptUnload(m_pVM);
 
+	// call the plugins
+	pPlugins->OnScriptUnload(m_pVM);
+
 	// close the script vm
 	sq_close(m_pVM);
 
