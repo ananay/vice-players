@@ -20,7 +20,7 @@
 // VC:MP Multiplayer Modification For GTA:VC
 // Copyright 2004-2005 SA:MP team
 //
-// File Author: kyeman
+// File Author(s): kyeman
 //
 //----------------------------------------------------------
 
@@ -65,7 +65,7 @@ BOOL CLocalPlayer::DestroyPlayer()
 
 BOOL CLocalPlayer::Process()
 {
-	CGameModeGeneric *pGameLogic;
+	CSpawnSelection *pGameLogic;
 	CVehicle *pGameVehicle;
 	CVehiclePool *pVehiclePool;
 
@@ -370,7 +370,7 @@ int CLocalPlayer::GetOptimumOnFootSendRate()
 
 void CLocalPlayer::SendWastedNotification()
 {
-	CGameModeGeneric *pGameLogic;
+	CSpawnSelection *pGameLogic;
 	RakNet::BitStream bsPlayerDeath;
 	BYTE byteDeathReason;
 	BYTE byteWhoWasResponsible;

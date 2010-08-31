@@ -20,63 +20,65 @@
 // VC:MP Multiplayer Modification For GTA:VC
 // Copyright 2004-2005 SA:MP team
 //
+// File Author(s): kyeman
+//                 jenksta
+//
 //----------------------------------------------------------
 
 #include "physical.h"
 
-
 //----------------------------------------------------------
 
-PHYSICAL_TYPE *CPhysical::GetPhysical()
+PHYSICAL_TYPE * CPhysical::GetPhysical()
 {
 	return (PHYSICAL_TYPE *)GetEntity();
 }
 
 //----------------------------------------------------------
 
-void CPhysical::GetMoveSpeed(PVector3 Vector)
+void CPhysical::GetMoveSpeed(Vector3 * vecMoveSpeed)
 {
 	PHYSICAL_TYPE * pPhysical = (PHYSICAL_TYPE *)GetEntity();
-	if(pPhysical) {
-		Vector->X = pPhysical->vecMoveSpeed.X;
-		Vector->Y = pPhysical->vecMoveSpeed.Y;
-		Vector->Z = pPhysical->vecMoveSpeed.Z;
+
+	if(pPhysical)
+	{
+		memcpy(vecMoveSpeed, &pPhysical->vecMoveSpeed, sizeof(Vector3));
 	}
 }
 
 //-----------------------------------------------------------
 
-void CPhysical::SetMoveSpeed(Vector3 Vector)
+void CPhysical::SetMoveSpeed(Vector3 vecMoveSpeed)
 {
 	PHYSICAL_TYPE * pPhysical = (PHYSICAL_TYPE *)GetEntity();
-	if(pPhysical) {
-		pPhysical->vecMoveSpeed.X = Vector.X;
-		pPhysical->vecMoveSpeed.Y = Vector.Y;
-		pPhysical->vecMoveSpeed.Z = Vector.Z;
+
+	if(pPhysical)
+	{
+		memcpy(&pPhysical->vecMoveSpeed, &vecMoveSpeed, sizeof(Vector3));
 	}
 }
 
 //-----------------------------------------------------------
 
-void CPhysical::GetTurnSpeed(PVector3 Vector)
+void CPhysical::GetTurnSpeed(Vector3 * vecTurnSpeed)
 {
 	PHYSICAL_TYPE * pPhysical = (PHYSICAL_TYPE *)GetEntity();
-	if(pPhysical) {
-		Vector->X = pPhysical->vecTurnSpeed.X;
-		Vector->Y = pPhysical->vecTurnSpeed.Y;
-		Vector->Z = pPhysical->vecTurnSpeed.Z;
+
+	if(pPhysical)
+	{
+		memcpy(vecTurnSpeed, &pPhysical->vecTurnSpeed, sizeof(Vector3));
 	}
 }
 
 //-----------------------------------------------------------
 
-void CPhysical::SetTurnSpeed(Vector3 Vector)
+void CPhysical::SetTurnSpeed(Vector3 vecTurnSpeed)
 {
 	PHYSICAL_TYPE * pPhysical = (PHYSICAL_TYPE *)GetEntity();
-	if(pPhysical) {
-		pPhysical->vecTurnSpeed.X = Vector.X;
-		pPhysical->vecTurnSpeed.Y = Vector.Y;
-		pPhysical->vecTurnSpeed.Z = Vector.Z;
+
+	if(pPhysical)
+	{
+		memcpy(&pPhysical->vecTurnSpeed, &vecTurnSpeed, sizeof(Vector3));
 	}
 }
 

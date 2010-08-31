@@ -20,7 +20,7 @@
 // VC:MP Multiplayer Modification For GTA:VC
 // Copyright 2004-2005 SA:MP team
 //
-// File Author: kyeman
+// File Author(s): kyeman
 //
 //----------------------------------------------------
 
@@ -109,7 +109,7 @@ CNetGame::~CNetGame()
 
 void CNetGame::InitGameLogic()
 {
-	m_pGameLogic = new CGameModeGeneric();
+	m_pGameLogic = new CSpawnSelection();
 }
 
 //----------------------------------------------------

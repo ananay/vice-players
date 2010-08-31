@@ -20,6 +20,9 @@
 // VC:MP Multiplayer Modification For GTA:VC
 // Copyright 2004-2005 SA:MP team
 //
+// File Author(s): kyeman
+//                 jenksta
+//
 //----------------------------------------------------------
 
 #pragma once
@@ -29,19 +32,19 @@
 class CEntity
 {
 private:
-	ENTITY_TYPE	*m_pEntity;
+	ENTITY_TYPE	* m_pEntity;
 
 public:
-	ENTITY_TYPE *GetEntity();
-	void		 SetEntity(ENTITY_TYPE *pEntity);
+	ENTITY_TYPE * GetEntity();
+	void		  SetEntity(ENTITY_TYPE * pEntity);
 
-	void		 GetMatrix(PMATRIX4X4 Matrix);
-	void		 SetMatrix(MATRIX4X4 Matrix);
-	void         GetPosition(PVector3 Vector);
-	void         SetPosition(Vector3 Vector);
-	void         SetHeading(float fHeading);
+	void		  GetMatrix(MATRIX4X4 * matMatrix);
+	void		  SetMatrix(MATRIX4X4 matMatrix);
+	void          GetPosition(Vector3 * vecPosition);
+	void          SetPosition(Vector3 vecPosition);
+	void          SetHeading(float fHeading);
 
-	WORD		 GetModelIndex();
+	WORD		  GetModelIndex();
 
-	BOOL         IsOnScreen();
+	BOOL          IsOnScreen();
 };

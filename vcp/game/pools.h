@@ -20,6 +20,8 @@
 // VC:MP Multiplayer Modification For GTA:VC
 // Copyright 2004-2005 SA:MP team
 //
+// File Author(s): jenksta
+//
 //----------------------------------------------------------
 
 #pragma once
