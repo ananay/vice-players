@@ -28,8 +28,6 @@
 
 //----------------------------------------------------
 
-#define IS_FIRING(x) (x & 0x200) // for checking the keystate firing bit
-
 #include "main.h"
 #include "player.h"
 #include "playerpool.h"
@@ -38,7 +36,7 @@
 #include "timerpool.h"
 #include "../raknet/MessageIdentifiers.h"
 #include "netrpc.h"
-#include "gamemode/generic.h"
+#include "spawnselection.h"
 
 //----------------------------------------------------
 

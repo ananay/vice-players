@@ -24,13 +24,13 @@
 //
 //----------------------------------------------------
 
-#include "../netgame.h"
+#include "netgame.h"
 
 extern CNetGame * pNetGame;
 
 //----------------------------------------------------
 
-CGameModeGeneric::CGameModeGeneric()
+CSpawnSelection::CSpawnSelection()
 { 
 	for(int i = 0; i < MAX_SPAWNS; i++) {
 		m_AvailableSpawns[i].loaded = false;
@@ -40,14 +40,14 @@ CGameModeGeneric::CGameModeGeneric()
 
 //----------------------------------------------------
 
-CGameModeGeneric::~CGameModeGeneric()
+CSpawnSelection::~CSpawnSelection()
 {
 
 }
 
 //----------------------------------------------------
 
-int CGameModeGeneric::AddPlayerClass(int team, int model, float x, float y, float z, float rot, int weapon1, int ammo1, int weapon2, int ammo2, int weapon3, int ammo3)
+int CSpawnSelection::AddPlayerClass(int team, int model, float x, float y, float z, float rot, int weapon1, int ammo1, int weapon2, int ammo2, int weapon3, int ammo3)
 {
 	for(int i = 0; i < MAX_SPAWNS; i++) {
 		if(!m_AvailableSpawns[i].loaded) {
@@ -73,7 +73,7 @@ int CGameModeGeneric::AddPlayerClass(int team, int model, float x, float y, floa
 
 //----------------------------------------------------
 
-int CGameModeGeneric::HandleSpawnClassRequest(EntityId playerID, int iSpawnType)
+int CSpawnSelection::HandleSpawnClassRequest(EntityId playerID, int iSpawnType)
 {
 	CPlayer *pPlayer;
 	pPlayer = pNetGame->GetPlayerPool()->GetAt(playerID);
