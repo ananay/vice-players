@@ -24,25 +24,12 @@
 //
 //-----------------------------------------------------
 
-#include <stdio.h>
-#include "main.h"
 #include "sq_functions.h"
+#include <stdio.h>
 
-void RegisterFunction(HSQUIRRELVM pVM, const char * szName, SQFUNCTION func)
+SQInteger sq_helloworld(HSQUIRRELVM pVM)
 {
-	sq_pushroottable(pVM);
-	sq_pushstring(pVM, szName, -1);
-	sq_newclosure(pVM, func, 0);
-	sq_createslot(pVM, -3);
-	sq_pop(pVM, 1);
-}
-
-EXPORT void OnPluginLoad(char * szName)
-{
-	printf("Hello world from %s plugin!\n", szName);
-}
-
-EXPORT void OnScriptLoad(SQVM * pVM)
-{
-	RegisterFunction(pVM, "HelloWorld", sq_helloworld);
+	printf("Hello world from example module!\n");
+	sq_pushbool(pVM, true);
+	return 1;
 }
