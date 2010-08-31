@@ -1040,7 +1040,7 @@ SQInteger sq_setItemFlashing(SQVM * pVM)
 
 //-----------------------------------------------------------------
 
-SQInteger sq_setSkyColor(SQVM * pVM)
+SQInteger sq_setPlayerSkyColor(SQVM * pVM)
 {
 	SQInteger playerSystemAddress;
 	SQInteger iColor;
