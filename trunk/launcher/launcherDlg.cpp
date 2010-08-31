@@ -189,7 +189,7 @@ BOOL CLauncherDlg::OnInitDialog()
 	HKEY hKey=0;
 	char szBuf[256];
 
-	RegOpenKeyEx(HKEY_LOCAL_MACHINE,"Software\\VCMP",0,KEY_READ,&hKey);
+	RegOpenKeyEx(HKEY_LOCAL_MACHINE,"Software\\VICEP",0,KEY_READ,&hKey);
 
 	if(hKey) {
 
@@ -235,13 +235,13 @@ BOOL CLauncherDlg::OnInitDialog()
 		SetDlgItemText(IDC_PORT,"5192");
 	}
 
-	SetDlgItemText(IDC_SERVER_CONFIG,"vcmp\\vanilla.ini");
+	SetDlgItemText(IDC_SERVER_CONFIG,"vcp\\server.ini");
 
 	m_windowedCheckBox.SetCheck(0);
 
 	if(strlen((char *)GetCommandLine())) {
 		CString csCmdLine((char *)GetCommandLine());
-		int vcmp_pos = csCmdLine.Find("vcmp://");
+		int vcmp_pos = csCmdLine.Find("vcp://");
 
 		if(vcmp_pos != (-1)) {
 			csCmdLine = csCmdLine.Right(csCmdLine.GetLength() - (vcmp_pos+7));
@@ -333,11 +333,11 @@ void CLauncherDlg::OnLaunch()
 
 	// Try to open the VCMP registry key
 	HKEY hKey = 0;
-	RegOpenKeyEx(HKEY_LOCAL_MACHINE,"Software\\VCMP",0,KEY_WRITE,&hKey);
+	RegOpenKeyEx(HKEY_LOCAL_MACHINE,"Software\\VICEP",0,KEY_WRITE,&hKey);
 
 	// If the key doesn't exist create it
 	if(!hKey) {
-		RegCreateKey(HKEY_LOCAL_MACHINE,"Software\\VCMP",&hKey);
+		RegCreateKey(HKEY_LOCAL_MACHINE,"Software\\VICEP",&hKey);
 	}
 	
 	if(hKey) {
