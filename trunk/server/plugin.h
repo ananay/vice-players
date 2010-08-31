@@ -24,6 +24,8 @@
 #include "../squirrel/squirrel.h"
 #include "config.h"
 
+typedef void                     (* OnPluginUnload_t)();
+
 class CPlugin {
 public:
 	CPlugin(const char * szName);

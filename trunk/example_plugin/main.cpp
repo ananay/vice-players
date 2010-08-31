@@ -42,7 +42,17 @@ EXPORT void OnPluginLoad(char * szName)
 	printf("Hello world from %s plugin!\n", szName);
 }
 
+EXPORT void OnPluginUnload()
+{
+	printf("Example plugin got unloaded.\n");
+}
+
 EXPORT void OnScriptLoad(SQVM * pVM)
 {
 	RegisterFunction(pVM, "HelloWorld", sq_helloworld);
+}
+
+EXPORT void OnScriptUnload(SQVM * pVM)
+{
+
 }

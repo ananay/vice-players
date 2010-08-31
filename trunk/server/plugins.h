@@ -31,6 +31,7 @@
 //
 typedef void                     (* OnPluginLoad_t)(const char * szName);
 typedef void                     (* OnScriptLoad_t)(SQVM * pVM);
+typedef void                     (* OnScriptUnload_t)(SQVM * pVM);
 //
 
 class CPlugins
@@ -49,7 +50,9 @@ public:
 	void LoadFromConfig(CConfig * pConfig);
 
 	void OnPluginLoad(const char * szName);
+	void OnPluginUnload(const char * szName);
 	void OnScriptLoad(SQVM * pVM);
+	void OnScriptUnload(SQVM *pVM);
 private:
 	CPlugin * m_pPlugins[MAX_PLUGINS];
 };
