@@ -37,6 +37,7 @@ SQInteger sq_setPlayerZAngle(SQVM * v); // done
 SQInteger sq_forceClassSelection(SQVM * v); // done
 SQInteger sq_getPlayerSkin(SQVM * v); // done
 SQInteger sq_setPlayerSkin(SQVM * v); //done
+SQInteger sq_toggleDriveByState(SQVM * pVM);
 SQInteger sq_setPlayerAction(SQVM * v); // done
 SQInteger sq_setPlayerRotation(SQVM * v); // done
 SQInteger sq_getPlayerRotation(SQVM * v); //done

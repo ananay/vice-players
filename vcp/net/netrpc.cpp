@@ -866,6 +866,18 @@ void Script_setPlayerCash(RakNet::BitStream *bitStream, Packet *packet)
 	pGame->SetCash(Cash);
 }
 
+// toggleDriveByState
+void Script_toggleDriveByState(RakNet::BitStream *bitStream, Packet *packet)
+{
+	int iToggle;
+
+	CPlayerPed *pPlayer = pGame->FindPlayerPed();
+
+	bitStream->Read(iToggle);
+
+	pPlayer->SetDrivebyState(iToggle);
+}
+
 
 
 void RegisterRPCs()
@@ -922,7 +934,8 @@ void RegisterRPCs()
 	pNetGame->GetRPC4()->RegisterFunction("Script_FlashItem",Script_FlashItem);
 	pNetGame->GetRPC4()->RegisterFunction("Script_popVehicleTrunk", Script_popVehicleTrunk);
 	pNetGame->GetRPC4()->RegisterFunction("Script_setSkyColor", Script_setSkyColor);
-	pNetGame->GetRPC4()->RegisterFunction("SetPlayerCash", Script_setPlayerCash);
+	pNetGame->GetRPC4()->RegisterFunction("Script_SetPlayerCash", Script_setPlayerCash);
+	pNetGame->GetRPC4()->RegisterFunction("Script_toggleDriveByState", Script_toggleDriveByState);
 }
 
 //----------------------------------------------------
@@ -976,7 +989,8 @@ void UnRegisterRPCs()
 	pNetGame->GetRPC4()->UnregisterFunction("Script_FlashItem");
 	pNetGame->GetRPC4()->UnregisterFunction("Script_popVehicleTrunk");
 	pNetGame->GetRPC4()->UnregisterFunction("Script_setSkyColor");
-	pNetGame->GetRPC4()->UnregisterFunction("SetPlayerCash");
+	pNetGame->GetRPC4()->UnregisterFunction("Script_SetPlayerCash");
+	pNetGame->GetRPC4()->UnregisterFunction("Script_toggleDriveByState", Script_toggleDriveByState);
 }
 
 //----------------------------------------------------

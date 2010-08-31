@@ -172,3 +172,4 @@ const SCRIPT_COMMAND set_actor_bleeding = { 0x0332, "ii" };
 const SCRIPT_COMMAND set_vehicle_siren_state = { 0x0397, "vi" }; // causes crashs :s
 const SCRIPT_COMMAND pop_vehicle_trunk = { 0x050B, "i" };
 const SCRIPT_COMMAND set_ped_sky_color = { 0x04F9, "ii" };
+const SCRIPT_COMMAND set_driveby_state = { 0x0501, "ii" };
