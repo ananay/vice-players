@@ -21,7 +21,8 @@
 // Copyright 2004-2005 SA:MP team
 //
 // File Author(s): kyeman
-// Portions by spookie and Kryptos
+//                 spookie
+//                 Kryptos
 //
 //----------------------------------------------------
 
@@ -79,7 +80,8 @@ BOOL WINAPI DllMain(HINSTANCE hinstDLL, DWORD fdwReason, LPVOID lpvReserved)
 		InitSettings();
 
 		// Check the GTA version
-		if(DetermineGTAVersion() != VICE_10) {
+		if(DetermineGTAVersion() != VICE_10)
+		{
 			MessageBox(0,"Incorrect gta-vc.exe version detected.\nYou must use GTA:VC 1.0 to play Vice City: Players","Vice City: Players Error",MB_OK);
 			SetForegroundWindow(HWND_DESKTOP);
 			ExitProcess(1);
@@ -101,6 +103,7 @@ BOOL WINAPI DllMain(HINSTANCE hinstDLL, DWORD fdwReason, LPVOID lpvReserved)
 	else if(fdwReason == DLL_PROCESS_DETACH)
 	{
 		UninstallD3D8Hook();
+
 		if(pNetGame) {
 			pScripts->onExit();
 			pNetGame->Shutdown();
@@ -148,17 +151,19 @@ void TheRenderLoop()
 
 void TheSceneEnd()
 {
-	if(bScriptInited) {
+	if(bScriptInited)
+	{
 		// If the game is not inited then do it now.
-		if(!bGameInited && FileCheckSum()) {
-			if(!tSettings.bDebug) {
+		if(!bGameInited && FileCheckSum())
+		{
+			if(!tSettings.bDebug)
+			{
 				pNetGame = new CNetGame(tSettings.szConnectHost,atoi(tSettings.szConnectPort),
 					tSettings.szNickName,tSettings.szConnectPass);
 			}
 
 			pGame->ToggleFrameLimiterState(TRUE);
 			bGameInited = TRUE;
-
 			return;
 		}
 
@@ -192,46 +197,55 @@ void TheSceneEnd()
 
 void InitSettings()
 {
-	PCHAR szCmdLine = GetCommandLine();
+	// Get the command line
+	char * szCmdLine = GetCommandLine();
 
-	memset(&tSettings,0,sizeof(GAME_SETTINGS));
+	// Reset the settings struct
+	memset(&tSettings, 0, sizeof(GAME_SETTINGS));
 
-	while(*szCmdLine) {
-
-		if(*szCmdLine == '-' || *szCmdLine == '/') {
+	while(*szCmdLine)
+	{
+		// Is the current char a '-' or a '/'?
+		if(*szCmdLine == '-' || *szCmdLine == '/')
+		{
+			// Skip the '-' or '/'
 			szCmdLine++;
-			switch(*szCmdLine) {
-				case 'd':
-				case 'D':
-					tSettings.bDebug = TRUE;
-					break;
-				case 'w':
-				case 'W':
-					bWindowedMode = TRUE;
-					break;
-				case 'h':
-				case 'H':
-					szCmdLine++;
-					SetStringFromCommandLine(szCmdLine,tSettings.szConnectHost);
-					break;
-				case 'p':
-				case 'P':
-					szCmdLine++;
-					SetStringFromCommandLine(szCmdLine,tSettings.szConnectPort);
-					break;
-				case 'n':
-				case 'N':
-					szCmdLine++;
-					SetStringFromCommandLine(szCmdLine,tSettings.szNickName);
-					break;
-				case 'z':
-				case 'Z':
-					szCmdLine++;
-					SetStringFromCommandLine(szCmdLine,tSettings.szConnectPass);
-					break;
+
+			// Check the current char for a valid option char
+			switch(*szCmdLine)
+			{
+			case 'd':
+			case 'D':
+				tSettings.bDebug = TRUE;
+				break;
+			case 'w':
+			case 'W':
+				bWindowedMode = TRUE;
+				break;
+			case 'h':
+			case 'H':
+				szCmdLine++;
+				SetStringFromCommandLine(szCmdLine,tSettings.szConnectHost);
+				break;
+			case 'p':
+			case 'P':
+				szCmdLine++;
+				SetStringFromCommandLine(szCmdLine,tSettings.szConnectPort);
+				break;
+			case 'n':
+			case 'N':
+				szCmdLine++;
+				SetStringFromCommandLine(szCmdLine,tSettings.szNickName);
+				break;
+			case 'z':
+			case 'Z':
+				szCmdLine++;
+				SetStringFromCommandLine(szCmdLine,tSettings.szConnectPass);
+				break;
 			}
 		}
 
+		// Increment the current char
 		szCmdLine++;
 	}
 }
@@ -240,15 +254,20 @@ void InitSettings()
 
 void SetStringFromCommandLine(char *szCmdLine, char *szString)
 {
-	while(*szCmdLine == ' ') szCmdLine++;
-	while(*szCmdLine &&
-		  *szCmdLine != ' ' &&
-		  *szCmdLine != '-' &&
-		  *szCmdLine != '/') 
+	// Skip any extra whitespace
+	while(*szCmdLine == ' ')
+	{
+		szCmdLine++;
+	}
+
+	// Loop through until we find whitespace or a '-' or a '/'
+	while(*szCmdLine && *szCmdLine != ' ' && *szCmdLine != '-' && *szCmdLine != '/')
 	{
 		*szString = *szCmdLine;
 		szString++; szCmdLine++;
 	}
+
+	// Null terminate the string
 	*szString = '\0';
 }
 

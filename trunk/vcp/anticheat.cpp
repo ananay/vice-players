@@ -35,28 +35,10 @@ BOOL MemoryModificationCheck()
 	return TRUE;
 }
 
-mdFile md5FileCheckList[] = 
-{
-	{ "data/default.ide", 0, 1981298251, 1376643526, 3101585329 },
-	{ "data/handling.cfg", 0, 3465663929, 1196138439, 3152470125 },
-	{ "data/weapon.dat", 0, 1559786538, 4059666828, 1862227152 },
-	{ "data/pedstats.dat", 0, 1903937073, 2707443107, 385086949 },
-	{ NULL }
-};
-
 BOOL FileCheckSum()
 {
 	if(bAntiCheat)
 	{
-		for(int i = 0; md5FileCheckList[i].szFileLocation != NULL; i++)
-		{
-			if(!CheckFile(&md5FileCheckList[i]))
-			{
-				bGameInited = TRUE;
-				return FALSE;
-			}
-		}
-
 		mdFile* mdCheckSumFile;
 
 		mdCheckSumFile = new mdFile;
