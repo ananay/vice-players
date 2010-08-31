@@ -15,35 +15,32 @@
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 //
-//---------------------------------------------------
+//----------------------------------------------------------
 //
 // VC:MP Multiplayer Modification For GTA:VC
-// Copyright 2004-2005 SA:MP Team
+// Copyright 2004-2005 SA:MP team
 //
-// File Author(s): kyeman
-//
-//----------------------------------------------------
+//----------------------------------------------------------
 
-#include "../main.h"
+#pragma once
 
-#define MAX_SPAWNS 100
 
-//----------------------------------------------------
-
-class CGameModeGeneric
+class CSpawnSelection
 {
 private:
-	PLAYER_SPAWN_INFO	m_AvailableSpawns[MAX_SPAWNS];
-	int					m_iAvailableSpawnCount;
-public:
+	BOOL m_bClearedToSpawn;
+	int m_iSelectedClass;
+	DWORD m_dwLastSpawnSelectionTick; // delays left and right selection
+	DWORD m_dwInitialSelectionTick; // delays initial selection
 
-	int AddPlayerClass(int team, int model, float x, float y, float z, float rot, int weapon1, int ammo1, int weapon2, int ammo2, int weapon3, int ammo3);
-	int HandleSpawnClassRequest(EntityId playerID, int iSpawnType);
-	
-	CGameModeGeneric();
-	~CGameModeGeneric();
+public:
+	CSpawnSelection();
+	~CSpawnSelection() {};
+
+	void ProcessLocalPlayer(CLocalPlayer *pLocalPlayer);
+	void HandleClassSelection(CLocalPlayer *pLocalPlayer);
+	void HandleClassSelectionOutcome(PLAYER_SPAWN_INFO *pSpawnInfo, BOOL bOutcome);
+	void SetSelectedClass(int iSelectedClass);
 };
 
-
-//----------------------------------------------------
-// EOF
+//----------------------------------------------------------

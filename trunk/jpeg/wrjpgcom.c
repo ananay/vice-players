@@ -489,6 +489,7 @@ main (int argc, char **argv)
   } else {
     /* default input file is stdin */
 #ifdef USE_SETMODE		/* need to hack file mode? */
+#pragma warning(disable:4996)
     setmode(fileno(stdin), O_BINARY);
 #endif
 #ifdef USE_FDOPEN		/* need to re-open in binary mode? */

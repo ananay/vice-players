@@ -62,7 +62,7 @@ typedef struct _GAME_SETTINGS {
 
 #include "net/localplayer.h"
 #include "net/remoteplayer.h"
-#include "gamemode/generic.h"
+#include "net/spawnselection.h"
 #include "net/netrpc.h"
 #include "net/playerpool.h"
 #include "net/vehiclepool.h"

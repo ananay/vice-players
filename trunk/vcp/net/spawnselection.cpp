@@ -36,7 +36,7 @@ extern CNetGame* pNetGame;
 
 //----------------------------------------------------------
 
-CGameModeGeneric::CGameModeGeneric()
+CSpawnSelection::CSpawnSelection()
 {
 	m_iSelectedClass = 0;
 	m_dwLastSpawnSelectionTick = GetTickCount();
@@ -45,7 +45,7 @@ CGameModeGeneric::CGameModeGeneric()
 
 //----------------------------------------------------------
 
-void CGameModeGeneric::ProcessLocalPlayer(CLocalPlayer *pLocalPlayer)
+void CSpawnSelection::ProcessLocalPlayer(CLocalPlayer *pLocalPlayer)
 {
 	CCamera *pGameCamera;
 	CPlayerPed *pGamePlayer;
@@ -126,7 +126,7 @@ void CGameModeGeneric::ProcessLocalPlayer(CLocalPlayer *pLocalPlayer)
 
 //----------------------------------------------------------
 
-void CGameModeGeneric::HandleClassSelection(CLocalPlayer *pLocalPlayer)
+void CSpawnSelection::HandleClassSelection(CLocalPlayer *pLocalPlayer)
 {
 	CCamera *pGameCamera = pGame->GetCamera();
 	CPlayerPed *pGamePlayer = pGame->FindPlayerPed();
@@ -146,7 +146,7 @@ void CGameModeGeneric::HandleClassSelection(CLocalPlayer *pLocalPlayer)
 
 //----------------------------------------------------------
 
-void CGameModeGeneric::HandleClassSelectionOutcome(PLAYER_SPAWN_INFO *pSpawnInfo, BOOL bOutcome)
+void CSpawnSelection::HandleClassSelectionOutcome(PLAYER_SPAWN_INFO *pSpawnInfo, BOOL bOutcome)
 {
 	CPlayerPed *pGamePlayer = pGame->FindPlayerPed();
 
@@ -168,7 +168,7 @@ void CGameModeGeneric::HandleClassSelectionOutcome(PLAYER_SPAWN_INFO *pSpawnInfo
 
 //----------------------------------------------------------
 
-void CGameModeGeneric::SetSelectedClass(int iSelectedClass)
+void CSpawnSelection::SetSelectedClass(int iSelectedClass)
 {
 	m_iSelectedClass = iSelectedClass;
 }

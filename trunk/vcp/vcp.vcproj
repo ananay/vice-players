@@ -1352,27 +1352,11 @@
 				>
 			</File>
 			<File
-				RelativePath=".\gamemode\spawnselection.cpp"
+				RelativePath=".\net\spawnselection.cpp"
 				>
-				<FileConfiguration
-					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						PreprocessorDefinitions=""
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						PreprocessorDefinitions=""
-					/>
-				</FileConfiguration>
 			</File>
 			<File
-				RelativePath=".\gamemode\spawnselection.h"
+				RelativePath=".\net\spawnselection.h"
 				>
 			</File>
 			<File
