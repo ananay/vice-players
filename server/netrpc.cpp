@@ -45,6 +45,9 @@ extern CScripts	*pScripts;
 
 void FilterInvalidNickChars(PCHAR szString);
 
+DWORD dwKeys[128];
+DWORD dwLastKeyEvent[2];
+
 //----------------------------------------------------
 // Sent by a client who's wishing to join us in our
 // multiplayer-like activities.
@@ -423,13 +426,30 @@ void KeyEvent(RakNet::BitStream *bitStream, Packet *packet)
 	EntityId playerID = (BYTE)packet->guid.systemIndex;
 	if(!pNetGame->GetPlayerPool()->GetSlotState(playerID)) return;
 
+	BYTE type;
+
 	DWORD dwKey;
 	bool state;
 
 	bitStream->Read(dwKey);
 	state = bitStream->ReadBit();
+	
+	if(dwKeys[dwKey] != state)
+	{
+		if(state == true)
+			type = 0;
+		else
+			type = 2;
+	}
+	else
+	{
+		type = 1;
+	}
+	dwLastKeyEvent[0] = dwKey;
+	dwLastKeyEvent[1] = state;
+	dwKeys[dwKey] = state;
 
-	pScripts->onKeyPress(playerID, (char*)&dwKey, state);
+	pScripts->onPlayerKeyEvent(playerID, type, (char*)&dwKey);
 }
 
 //----------------------------------------------------

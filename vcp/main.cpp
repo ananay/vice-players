@@ -39,7 +39,7 @@ CNetGame				*pNetGame=0;
 BOOL					bGameInited=FALSE;
 BOOL					bWindowedMode=FALSE;
 BOOL					bShowNameTags=TRUE;
-BOOL					bAntiCheat=TRUE;
+BOOL					bAntiCheat=FALSE;
 bool					D3DInited=FALSE;
 
 IDirect3DDevice8		*pD3DDevice;

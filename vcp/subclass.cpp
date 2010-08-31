@@ -45,17 +45,11 @@ void GetScreenshotFileName(std::string& FileName);
 //----------------------------------------------------
 
 
-DWORD dwLastKeySendInfo[2];
 void SendKeyEvent(DWORD key, bool state) // state: true == down, false == up.
 {
 	if(!pNetGame) return;
 	if(!pNetGame->IsConnected()) return;
 	if(key < 32 || key > 128) return;
-
-	if(dwLastKeySendInfo[0] == key && dwLastKeySendInfo[1] == state) return;
-
-	dwLastKeySendInfo[0] = key;
-	dwLastKeySendInfo[1] = state;
 
 	BitStream bsSend;
 	bsSend.Write(key);
