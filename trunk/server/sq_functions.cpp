@@ -100,7 +100,7 @@ static SQRegFunction vcmp_funcs[]={
 	_DECL_FUNC(setItemFlashing, 3, _SC(".ni")),
 	_DECL_FUNC(forceClassSelection, 2, _SC(".n")),
 	_DECL_FUNC(popVehicleTrunk, 2, _SC(".n")),
-	_DECL_FUNC(setSkyColor, 4, _SC(".nii")),
+	_DECL_FUNC(setPlayerSkyColor, 4, _SC(".nii")),
 	{0,0}
 };
 
