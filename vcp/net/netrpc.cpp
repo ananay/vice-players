@@ -775,13 +775,24 @@ void Script_forceClassSelection(RakNet::BitStream *bitStream, Packet *packet)
 // togglePlayerBleeding Native.
 void Script_togglePlayerBleeding(RakNet::BitStream *bitStream, Packet *packet)
 {
-	CPlayerPed *pPlayer = pGame->FindPlayerPed();
+	int player, toggle;
 
-	int toggle;
-
+	bitStream->Read(player);
 	bitStream->Read(toggle);
 
-	pPlayer->SetActorBleeding(toggle);
+	if(player == pNetGame->GetPlayerPool()->GetLocalSystemAddress())
+	{
+		CLocalPlayer * pPlayer = pNetGame->GetPlayerPool()->GetLocalPlayer();
+		pPlayer->GetPlayerPed()->SetActorBleeding(toggle);
+	} 
+	else if(pNetGame->GetPlayerPool()->GetSlotState(player))
+	{
+		if(player != pNetGame->GetPlayerPool()->GetLocalSystemAddress())
+		{
+			CRemotePlayer * pPlayer = pNetGame->GetPlayerPool()->GetAt(player);
+			pPlayer->GetPlayerPed()->SetActorBleeding(toggle);
+		}
+	}
 }
 
 // popVehicleTrunk

@@ -25,7 +25,7 @@ IDirect3D8Hook::IDirect3D8Hook(IDirect3D8 * pD3D)
 // Functions
 HRESULT __stdcall IDirect3D8Hook::CreateDevice(UINT Adapter, D3DDEVTYPE DeviceType, HWND hFocusWindow, DWORD BehaviorFlags, D3DPRESENT_PARAMETERS* pPresentationParameters, IDirect3DDevice8** ppReturnedDeviceInterface)
 {
-	/*if(bWindowedMode)
+	if (bWindowedMode)
 	{
 		pPresentationParameters->Windowed = 1;
 		pPresentationParameters->Flags = 0;
@@ -36,7 +36,7 @@ HRESULT __stdcall IDirect3D8Hook::CreateDevice(UINT Adapter, D3DDEVTYPE DeviceTy
 		pPresentationParameters->BackBufferFormat = D3DDisplayMode.Format;
 
 		SetWindowPos(pPresentationParameters->hDeviceWindow, HWND_NOTOPMOST, 0, 0, pPresentationParameters->BackBufferWidth, pPresentationParameters->BackBufferHeight, SWP_SHOWWINDOW);
-	}*/
+	}
 
 	SubclassGameWindow(hFocusWindow);
 
