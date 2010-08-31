@@ -98,7 +98,7 @@ BOOL CVehiclePool::Spawn( BYTE byteVehicleID, BYTE byteVehicleType,
 		Delete(byteVehicleID);
 	}
 
-	m_pVehicles[byteVehicleID] = pGame->NewVehicle(byteVehicleType,
+	m_pVehicles[byteVehicleID] =  new CVehicle(byteVehicleType,
 		vecPos->X,vecPos->Y,vecPos->Z,fRotation);
 
 	if(m_pVehicles[byteVehicleID])

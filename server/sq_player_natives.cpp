@@ -1071,20 +1071,22 @@ SQInteger sq_setPlayerSkyColor(SQVM * pVM)
 
 SQInteger sq_setPlayerCash(SQVM * pVM)
 {
-SQInteger playerSystemAddr;
-SQInteger iCash;
-sq_getinteger(pVM, -2, &playerSystemAddr);
-sq_getinteger(pVM, -1, &iCash);
+	SQInteger playerSystemAddr;
+	SQInteger iCash;
+	sq_getinteger(pVM, -2, &playerSystemAddr);
+	sq_getinteger(pVM, -1, &iCash);
 
-if(pNetGame->GetPlayerPool()->GetSlotState(playerSystemAddr))
-{
-CPlayer * pPlayer = pNetGame->GetPlayerPool()->GetAt(playerSystemAddr);
-pPlayer->SetCash(iCash);
-sq_pushbool(pVM, true);
-return 1;
-}
-sq_pushbool(pVM, false);
-return 1;
+	if(pNetGame->GetPlayerPool()->GetSlotState(playerSystemAddr))
+	{
+		CPlayer * pPlayer = pNetGame->GetPlayerPool()->GetAt(playerSystemAddr);
+		pPlayer->SetCash(iCash);
+
+		sq_pushbool(pVM, true);
+		return 1;
+	}
+
+	sq_pushbool(pVM, false);
+	return 1;
 }
 
 // getPlayerCash

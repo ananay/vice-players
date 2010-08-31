@@ -102,7 +102,8 @@ static SQRegFunction vcmp_funcs[]={
 	_DECL_FUNC(popVehicleTrunk, 2, _SC(".n")),
 	_DECL_FUNC(setPlayerSkyColor, 4, _SC(".nii")),
 	_DECL_FUNC(setPlayerCash, 3, _SC(".ni")),
-	_DECL_FUNC(getPlayerCash, 2, _SC(".ni")),
+	_DECL_FUNC(getPlayerCash, 2, _SC(".n")),
+	_DECL_FUNC(loadClientScript, 3, _SC(".ni")),
 	{0,0}
 };
 
