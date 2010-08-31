@@ -71,24 +71,30 @@ CNetGame::CNetGame(PCHAR szHostOrIp, int iPort,
 	m_pRPC4 = RPC4::GetInstance();
 
 	RegisterRPCs();
-	
+
 	m_pRakPeer->Startup(1,&SocketDescriptor(),1);
 	strcpy(m_szHostOrIp, szHostOrIp);
 	m_iPort = iPort;
 	strcpy(m_szPass, szPass);
 	m_pRakPeer->AttachPlugin(m_pRPC4);
-	
-	pChatWindow->AddDebugMessage("Vice City: Players started " CLIENT_VERSION ".");
+
+	if(pChatWindow)
+	{
+		pChatWindow->AddDebugMessage("Vice City: Players started " CLIENT_VERSION ".");
+	}
 
 	Connect();
-	if(pChatWindow) pChatWindow->AddDebugMessage("Connecting to %s:%d..",szHostOrIp,iPort);
+
+	if(pChatWindow)
+	{
+		pChatWindow->AddDebugMessage("Connecting to %s:%d..",szHostOrIp,iPort);
+	}
 
 	m_pGameLogic = NULL;
 	m_dwLastScoreUpdateTick = GetTickCount();
 	m_uiLastRandSeed = 0;
 
 	CPlayerPed *pPlayer = pGame->FindPlayerPed();
-
 	//pPlayer->SetGameSpeed(1000.00);
 }
 
