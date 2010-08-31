@@ -1000,17 +1000,19 @@ SQInteger sq_togglePlayerBleeding(SQVM * pVM)
 	sq_getinteger(pVM, -2, &playerSystemAddress);
     sq_getinteger(pVM, -1, &toggle);
 
-	if(pNetGame->GetPlayerPool()->GetSlotState(playerSystemAddress))
-	{
-		RakNet::BitStream bsSend;
-		bsSend.Write(toggle);
-		pNetGame->GetRPC4()->Call("Script_togglePlayerBleeding",&bsSend,HIGH_PRIORITY,RELIABLE,0,pNetGame->GetRakPeer()->GetSystemAddressFromIndex(playerSystemAddress),false);
+	RakNet::BitStream bsSend;
+	bsSend.Write(playerSystemAddress);
+	bsSend.Write(toggle);
 
-		sq_pushbool(pVM, true);
-		return 1;
+	for(BYTE i = 0; i < MAX_PLAYERS; i++)
+	{
+		if(pNetGame->GetPlayerPool()->GetSlotState(i))
+		{
+			pNetGame->GetRPC4()->Call("Script_togglePlayerBleeding",&bsSend,HIGH_PRIORITY,RELIABLE,0,pNetGame->GetRakPeer()->GetSystemAddressFromIndex(i),false);
+		}
 	}
 
-	sq_pushbool(pVM, false);
+	sq_pushbool(pVM, true);
 	return 1;
 }
 

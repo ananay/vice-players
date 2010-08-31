@@ -42,14 +42,18 @@ HRESULT __stdcall IDirect3DDevice8Hook::Present(CONST RECT* pSourceRect, CONST R
 
 HRESULT __stdcall IDirect3DDevice8Hook::Reset(D3DPRESENT_PARAMETERS* pPresentationParameters)
 {
-	if(bWindowedMode)
+	if (bWindowedMode)
 	{
 		pPresentationParameters->Windowed = 1;
 		pPresentationParameters->Flags = 0;
 		pPresentationParameters->FullScreen_RefreshRateInHz = 0;
 		pPresentationParameters->FullScreen_PresentationInterval = 0;
+
+		//pPresentationParameters->BackBufferFormat = D3DDisplayMode.Format;
+
 		SetWindowPos(pPresentationParameters->hDeviceWindow, HWND_NOTOPMOST, 0, 0, pPresentationParameters->BackBufferWidth, pPresentationParameters->BackBufferHeight, SWP_SHOWWINDOW);
 	}
+
 
 	if(bbfont) {
 		delete bbfont;
