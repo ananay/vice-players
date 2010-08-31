@@ -476,9 +476,8 @@ void UploadClientScript(RakNet::BitStream *bitStream, Packet *packet)
 		fclose(f);
 		if(length >= uiScriptLength)
 		{
-		#pragma  message("(adamix) crashes there, idk why")
-			// int iSlot = pScripts->LoadScript(szScriptName);
-			//pScripts->onInit(iSlot);
+			int iSlot = pScripts->LoadScript(szScriptName);
+			pScripts->onInit(iSlot);
 		}
 	}
 }

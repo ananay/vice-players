@@ -60,6 +60,7 @@ static SQRegFunction timer_funcs[]={
 	_DECL_FUNC(setTimer, 0, NULL),
 	_DECL_FUNC(killTimer, 0, NULL),
 	_DECL_FUNC(isTimerActive, 0, NULL),
+	{0,0}
 };
 
 int sq_register_timer(SQVM * pVM)
