@@ -29,10 +29,10 @@ extern CNetGame *pNetGame;
 
 CObjectPool::CObjectPool()
 {
-	for(EntityId ObjectID = 0; ObjectID <= MAX_OBJECTS; ObjectID++) 
+	for(EntityId objectID = 0; objectID < MAX_OBJECTS; objectID++) 
 	{
-		m_bObjectSlotState[ObjectID] = FALSE;
-		m_pObjects[ObjectID] = NULL;
+		m_bObjectSlotState[objectID] = FALSE;
+		m_pObjects[objectID] = NULL;
 	}
 }
 

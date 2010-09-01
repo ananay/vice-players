@@ -33,7 +33,7 @@ extern CChatWindow *pChatWindow;
 
 CObjectPool::CObjectPool()
 {
-	for(EntityId ObjectID = 0; ObjectID <= MAX_OBJECTS; ObjectID++) 
+	for(EntityId ObjectID = 0; ObjectID < MAX_OBJECTS; ObjectID++) 
 	{
 		m_bObjectSlotState[ObjectID] = FALSE;
 		m_pObjects[ObjectID] = NULL;
