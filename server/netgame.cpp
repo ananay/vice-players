@@ -71,6 +71,9 @@ CNetGame::CNetGame(int iMaxPlayers, int iPort, int iGameType,
 	m_pVehiclePool = new CVehiclePool();
 	//m_pVehiclePool->InitialiseFromConfig(pServerConfig);
 
+	// Setup object pool
+	m_pObjectPool = new CObjectPool();
+
 	// Setup timer pool
 	m_pTimerPool = new CTimerPool();
 

@@ -33,6 +33,8 @@
 #include "playerpool.h"
 #include "vehicle.h"
 #include "vehiclepool.h"
+#include "object.h"
+#include "objectpool.h"
 #include "timerpool.h"
 #include "../raknet/MessageIdentifiers.h"
 #include "netrpc.h"
@@ -60,6 +62,7 @@ private:
 	CPlayerPool					*m_pPlayerPool;
 	CVehiclePool				*m_pVehiclePool;
 	CTimerPool					*m_pTimerPool;
+	CObjectPool					*m_pObjectPool;
 	RakPeerInterface			*m_pRakPeer;
 	static RPC4					*m_pRPC4;
 	CSpawnSelection			*m_pGameLogic;
@@ -90,6 +93,7 @@ public:
 	int GetGameState() { return m_iGameState; };
 	CPlayerPool * GetPlayerPool() { return m_pPlayerPool; };
 	CVehiclePool * GetVehiclePool() { return m_pVehiclePool; };
+	CObjectPool * GetObjectPool() { return m_pObjectPool; };
 	CTimerPool * GetTimerPool() { return m_pTimerPool; };
 	RakPeerInterface * GetRakPeer() { return m_pRakPeer; };
 	RPC4 * GetRPC4() { return m_pRPC4; }
