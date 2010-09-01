@@ -149,6 +149,11 @@ function onPlayerCommand(playerid, cmdtext)
 		setPlayerSkin(playerid, skin);
 		sendPlayerMessage(playerid, 0x00FF00FF, "Skin: " + getPlayerSkin(playerid));
 	}
+	if(cmd[0] == "/object")
+	{
+		local pos = getPlayerPosition(playerid);
+		createObject(cmd[1].tointeger(), pos[0], pos[1]+10, pos[2], 0.0, 0.0, 0.0);
+	}
 }
 
 function onPlayerRequestClass(playerid, classid)
