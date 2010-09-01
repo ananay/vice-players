@@ -160,3 +160,69 @@ bool CCamera::IsInFreeMode()
 }
 
 //-----------------------------------------------------------
+
+void CCamera::SetDriveByLeft(BYTE byteDriveByLeft)
+{
+	if(m_pCamera)
+	{
+		m_pCamera->byteDriveByLeft = byteDriveByLeft;
+	}
+}
+
+//-----------------------------------------------------------
+
+BYTE CCamera::GetDriveByLeft()
+{
+	if(m_pCamera)
+	{
+		return m_pCamera->byteDriveByLeft;
+	}
+
+	return 0;
+}
+
+//-----------------------------------------------------------
+
+void CCamera::SetDriveByRight(BYTE byteDriveByRight)
+{
+	if(m_pCamera)
+	{
+		m_pCamera->byteDriveByRight = byteDriveByRight;
+	}
+}
+
+//-----------------------------------------------------------
+
+BYTE CCamera::GetDriveByRight()
+{
+	if(m_pCamera)
+	{
+		return m_pCamera->byteDriveByRight;
+	}
+
+	return 0;
+}
+
+//-----------------------------------------------------------
+
+void CCamera::SetAim(CAMERA_AIM * pAim)
+{
+	if(m_pCamera)
+	{
+		memcpy(&m_pCamera->aim, pAim, sizeof(CAMERA_AIM));
+	}
+}
+
+//-----------------------------------------------------------
+
+CAMERA_AIM * CCamera::GetAim()
+{
+	if(m_pCamera)
+	{
+		return &m_pCamera->aim;
+	}
+
+	return NULL;
+}
+
+//-----------------------------------------------------------

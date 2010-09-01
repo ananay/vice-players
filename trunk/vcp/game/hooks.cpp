@@ -31,9 +31,6 @@
 
 extern CNetGame*	pNetGame;
 extern CGame*       pGame;
-
-extern DWORD        dwGameLoop;
-extern DWORD        dwRenderLoop;
 BOOL                bScriptInited=FALSE;
 
 #define NUDE void _declspec(naked) 
@@ -147,9 +144,6 @@ NUDE PreGameProcessHook()
 {
 	_asm mov dwStackFrame, esp
 	_asm pushad
-
-	_asm mov edx, dwGameLoop ; upcalls our main game loop handler
-	_asm call edx
 	
 	DoCheatExitStoring();
 
@@ -219,7 +213,7 @@ void _stdcall DoOnFootWorldBoundsStuff()
 		}
 	}
 }
-	
+
 //-----------------------------------------------------------
 // A hook function that switches keys for
 // CPlayerPed::ProcessControl(void)

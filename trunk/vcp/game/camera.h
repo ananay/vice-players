@@ -49,6 +49,12 @@ public:
 	void          Restore();
 	void          SetInFreeMode(bool bFreeMode);
 	bool          IsInFreeMode();
+	void          SetDriveByLeft(BYTE byteDriveByLeft);
+	BYTE          GetDriveByLeft();
+	void          SetDriveByRight(BYTE byteDriveByRight);
+	BYTE          GetDriveByRight();
+	void          SetAim(CAMERA_AIM * pAim);
+	CAMERA_AIM *  GetAim();
 };
 
 //-----------------------------------------------------------

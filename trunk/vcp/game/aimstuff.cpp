@@ -28,8 +28,9 @@
 #include "../../raknet/WindowsIncludes.h"
 #include "common.h"
 #include "aimstuff.h"
-#include "address.h"
 #include "game.h"
+
+//-----------------------------------------------------------
 
 extern CGame * pGame;
 
@@ -48,9 +49,11 @@ void GameAimSyncInit()
 
 void GameStoreLocalPlayerAim()
 {
-	CAMERA_TYPE * pCamera = pGame->GetCamera()->GetCamera();
-	if(pCamera) {
-		memcpy(&caLocalPlayerAim,&pCamera->aim,sizeof(CAMERA_AIM));
+	CCamera * pCamera = pGame->GetCamera();
+
+	if(pCamera)
+	{
+		memcpy(&caLocalPlayerAim, pCamera->GetAim(), sizeof(CAMERA_AIM));
 	}
 }
 
@@ -58,40 +61,31 @@ void GameStoreLocalPlayerAim()
 
 void GameSetLocalPlayerAim()
 {
-	CAMERA_TYPE * pCamera = pGame->GetCamera()->GetCamera();
-	if(pCamera) {
-		memcpy(&pCamera->aim,&caLocalPlayerAim,sizeof(CAMERA_AIM));
-	}
-}
+	CCamera * pCamera = pGame->GetCamera();
 
-//----------------------------------------------------------
-
-CAMERA_AIM * GameGetInternalAim()
-{
-	CAMERA_TYPE * pCamera = pGame->GetCamera()->GetCamera();
-	if(pCamera) {
-		return &pCamera->aim;
+	if(pCamera)
+	{
+		pCamera->SetAim(&caLocalPlayerAim);
 	}
-	return NULL;
 }
 
 //----------------------------------------------------------
 
 void GameStoreRemotePlayerAim(int iPlayer, CAMERA_AIM * caAim)
 {
-	memcpy(&caRemotePlayerAim[iPlayer],caAim,sizeof(CAMERA_AIM));
+	memcpy(&caRemotePlayerAim[iPlayer], caAim, sizeof(CAMERA_AIM));
 }
 
 //----------------------------------------------------------
 
 void GameSetRemotePlayerAim(int iPlayer)
 {
-	CAMERA_TYPE * pCamera = pGame->GetCamera()->GetCamera();
-	if(pCamera) {
-		memcpy(&pCamera->aim,&caRemotePlayerAim[iPlayer],sizeof(CAMERA_AIM));
+	CCamera * pCamera = pGame->GetCamera();
+
+	if(pCamera)
+	{
+		pCamera->SetAim(&caRemotePlayerAim[iPlayer]);
 	}
 }
 
 //----------------------------------------------------------
-
-

@@ -29,17 +29,18 @@
 #include "common.h"
 #include "keystuff.h"
 #include "address.h"
+#include "game.h"
 
 //-----------------------------------------------------------
 
-GTA_CONTROLSET *pGcsInternalKeys = (GTA_CONTROLSET *)ADDR_KEYSTATES;
+extern CGame * pGame;
+
+GTA_CONTROLSET * pGcsInternalKeys = (GTA_CONTROLSET *)ADDR_KEYSTATES;
 GTA_CONTROLSET GcsLocalPlayerKeys;
 GTA_CONTROLSET GcsRemotePlayerKeys[MAX_PLAYERS];
 
-BYTE	byteSaveDriveByLeft;
-BYTE	byteSaveDriveByRight;
-BYTE   *pbyteDriveByLeft =  (BYTE *)0x7E4818;
-BYTE   *pbyteDriveByRight = (BYTE *)0x7E4819;
+BYTE byteSaveDriveByLeft = 0;
+BYTE byteSaveDriveByRight = 0;
 
 //-----------------------------------------------------------
 
@@ -59,9 +60,14 @@ void GameStoreLocalPlayerKeys()
 {	
 	memcpy(&GcsLocalPlayerKeys, pGcsInternalKeys, sizeof(GTA_CONTROLSET));
 
-	// save current drive by state
-	byteSaveDriveByLeft = *pbyteDriveByLeft;
-	byteSaveDriveByRight = *pbyteDriveByRight;
+	CCamera * pCamera = pGame->GetCamera();
+
+	if(pCamera)
+	{
+		// save current drive by state
+		byteSaveDriveByLeft = pCamera->GetDriveByLeft();
+		byteSaveDriveByRight = pCamera->GetDriveByRight();
+	}
 }
 
 //-----------------------------------------------------------
@@ -70,9 +76,14 @@ void GameSetLocalPlayerKeys()
 {
 	memcpy(pGcsInternalKeys, &GcsLocalPlayerKeys, sizeof(GTA_CONTROLSET));
 
-	// restore the drive by state also
-	*pbyteDriveByLeft = byteSaveDriveByLeft;
-	*pbyteDriveByRight = byteSaveDriveByRight;
+	CCamera * pCamera = pGame->GetCamera();
+
+	if(pCamera)
+	{
+		// restore the drive by state also
+		pCamera->SetDriveByLeft(byteSaveDriveByLeft);
+		pCamera->SetDriveByRight(byteSaveDriveByRight);
+	}
 }
 
 //-----------------------------------------------------------
@@ -88,16 +99,21 @@ void GameSetRemotePlayerKeys(int iPlayer)
 {
 	memcpy(pGcsInternalKeys, &GcsRemotePlayerKeys[iPlayer], sizeof(GTA_CONTROLSET));
 
-	if(GcsRemotePlayerKeys[iPlayer].wKeys1[KEY_INCAR_LOOKL]) {
-		*pbyteDriveByLeft = 1;
-	} else {
-		*pbyteDriveByLeft = 0;
-	}	
+	CCamera * pCamera = pGame->GetCamera();
 
-	if(GcsRemotePlayerKeys[iPlayer].wKeys1[KEY_INCAR_LOOKR]) {
-		*pbyteDriveByRight = 1;
-	} else {
-		*pbyteDriveByRight = 0;
+	if(pCamera)
+	{
+		if(GcsRemotePlayerKeys[iPlayer].wKeys1[KEY_INCAR_LOOKL]) {
+			pCamera->SetDriveByLeft(1);
+		} else {
+			pCamera->SetDriveByLeft(0);
+		}	
+
+		if(GcsRemotePlayerKeys[iPlayer].wKeys1[KEY_INCAR_LOOKR]) {
+			pCamera->SetDriveByRight(1);
+		} else {
+			pCamera->SetDriveByRight(0);
+		}
 	}
 }
 
