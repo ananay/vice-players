@@ -122,6 +122,21 @@ void CPlugins::LoadFromConfig(CConfig *pConfig)
 	}
 }
 
+void CPlugins::OnPulse()
+{
+	for(int i = 0; i < MAX_PLUGINS; i++) {
+		if(m_pPlugins[i]) {
+
+			OnPulse_t pfn = (OnPulse_t) m_pPlugins[i]->GetProcedureAddress("OnPulse");
+
+			if(!pfn)
+				continue;
+
+			pfn();
+		}
+	}
+}
+
 void CPlugins::OnPluginLoad(const char * szName)
 {
 	for(int i = 0; i < MAX_PLUGINS; i++) {
