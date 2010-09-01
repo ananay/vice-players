@@ -39,7 +39,7 @@ private:
 
 public:
 	// Constructor/Destructor.	
-	CObject(int iModel, float fX, float fY, float fZ);
+	CObject(int iModel, Vector3 * vecPos, Vector3 * vecRot);
 	~CObject();
 
 	void SetObjectTargetable( );

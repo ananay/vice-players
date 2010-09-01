@@ -40,14 +40,16 @@ extern CChatWindow   *pChatWindow;
 
 
 
-CObject::CObject(int iModel, float fX, float fY, float fZ)
+CObject::CObject(int iModel, Vector3 * vecPos, Vector3 * vecRot)
 {
 	DWORD dwReturnID     = 0;
 	m_dwGTAId            = 0;
 
-	ScriptCommand(&create_object, iModel, fX, fY, fZ, &dwReturnID);
+	ScriptCommand(&create_object, iModel, vecPos->X, vecPos->Y, vecPos->Z, &dwReturnID);
 
 	SetEntity((ENTITY_TYPE *)CPools::GetObjectFromIndex(dwReturnID));
+
+	//ScriptCommand(&set_object_rotation, dwReturnID, vecRot->X, vecRot->Y, vecRot->Z);
 
 	m_dwGTAId = dwReturnID;
 }

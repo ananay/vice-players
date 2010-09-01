@@ -134,6 +134,7 @@ void ClientJoin(RakNet::BitStream *bitStream, Packet *packet)
 			if(pVehicle->IsActive()) pVehicle->SpawnForPlayer(playerID);
 		}
 	}
+	pNetGame->GetObjectPool()->InitForPlayer(playerID);
 }
 
 //----------------------------------------------------
