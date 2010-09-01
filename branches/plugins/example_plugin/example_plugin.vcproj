@@ -58,7 +58,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				OutputFile="..\bin\plugins\example.dll"
+				OutputFile="..\..\..\trunk\bin\plugins\example.dll"
 				GenerateDebugInformation="true"
 				TargetMachine="1"
 			/>
@@ -128,7 +128,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				OutputFile="..\bin\plugins\example.dll"
+				OutputFile="..\..\..\trunk\bin\plugins\example.dll"
 				GenerateDebugInformation="true"
 				OptimizeReferences="2"
 				EnableCOMDATFolding="2"

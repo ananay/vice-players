@@ -59,7 +59,7 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalDependencies="ws2_32.lib"
-				OutputFile="..\bin\plugins\sockets.dll"
+				OutputFile="..\..\..\trunk\bin\plugins\sockets.dll"
 				GenerateDebugInformation="true"
 				TargetMachine="1"
 			/>
@@ -130,7 +130,7 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalDependencies="ws2_32.lib"
-				OutputFile="..\bin\plugins\sockets.dll"
+				OutputFile="..\..\..\trunk\bin\plugins\sockets.dll"
 				GenerateDebugInformation="true"
 				OptimizeReferences="2"
 				EnableCOMDATFolding="2"
