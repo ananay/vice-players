@@ -446,6 +446,7 @@ void KeyEvent(RakNet::BitStream *bitStream, Packet *packet)
 	{
 		type = 1;
 	}
+
 	dwLastKeyEvent[0] = dwKey;
 	dwLastKeyEvent[1] = state;
 	dwKeys[dwKey] = state;
@@ -457,7 +458,6 @@ void KeyEvent(RakNet::BitStream *bitStream, Packet *packet)
 
 void RegisterRPCs()
 {
-
 	pNetGame->GetRPC4()->RegisterFunction("ClientJoin", ClientJoin);
 	pNetGame->GetRPC4()->RegisterFunction("Chat", Chat);
 	pNetGame->GetRPC4()->RegisterFunction("ChatCommand", ChatCommand);

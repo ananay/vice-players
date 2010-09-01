@@ -21,6 +21,7 @@
 // Copyright 2004-2005 SA:MP Team
 //
 // File Author(s): kyeman
+//                 jenksta
 //
 //----------------------------------------------------
 
@@ -39,15 +40,15 @@ public:
 	CCamera();
 	~CCamera();
 
-	void         SetCamera(CAMERA_TYPE * pCamera);
+	void          SetCamera(CAMERA_TYPE * pCamera);
 	CAMERA_TYPE * GetCamera();
-	void         SetBehindPlayer();
-	void         SetPosition(Vector3 vecPosition);
-	void         SetRotation(Vector3 vecRotation);
-	void         LookAtPoint(Vector3 vecPoint, int iType);
-	void         Restore();
-	void         SetInFreeMode(BOOL bFreeMode);
-	BOOL         IsInFreeMode();
+	void          SetBehindPlayer();
+	void          SetPosition(Vector3 vecPosition);
+	void          SetRotation(Vector3 vecRotation);
+	void          LookAtPoint(Vector3 vecPoint, int iType);
+	void          Restore();
+	void          SetInFreeMode(bool bFreeMode);
+	bool          IsInFreeMode();
 };
 
 //-----------------------------------------------------------

@@ -21,6 +21,7 @@
 // Copyright 2004-2005 SA:MP Team
 //
 // File Author(s): kyeman
+//                 jenksta
 //
 //----------------------------------------------------
 
@@ -36,19 +37,6 @@ CCamera::CCamera()
 }
 
 //-----------------------------------------------------------
-
-void CCamera::SetBehindPlayer()
-{
-	CAMERA_TYPE * pCamera = m_pCamera;
-	if(pCamera) {
-		DWORD dwFunc = FUNC_CCamera__PutBehindPlayer;
-		_asm
-		{
-			mov ecx, pCamera
-			call dwFunc
-		}
-	}
-}
 
 CCamera::~CCamera()
 {
@@ -71,13 +59,29 @@ CAMERA_TYPE * CCamera::GetCamera()
 
 //-----------------------------------------------------------
 
+void CCamera::SetBehindPlayer()
+{
+	CAMERA_TYPE * pCamera = m_pCamera;
+
+	if(pCamera)
+	{
+		DWORD dwFunc = FUNC_CCamera__PutBehindPlayer;
+		_asm
+		{
+			mov ecx, pCamera
+				call dwFunc
+		}
+	}
+}
+
+//-----------------------------------------------------------
+
 void CCamera::SetPosition(Vector3 vecPosition)
 {
-	if(m_pCamera) {
-		m_pCamera->vecPosition.X = vecPosition.X;
-		m_pCamera->vecPosition.Y = vecPosition.Y;
-		m_pCamera->vecPosition.Z = vecPosition.Z;
-		SetInFreeMode(FALSE);
+	if(m_pCamera)
+	{
+		memcpy(&m_pCamera->vecPosition, &vecPosition, sizeof(Vector3));
+		SetInFreeMode(false);
 	}
 }
 
@@ -85,11 +89,10 @@ void CCamera::SetPosition(Vector3 vecPosition)
 
 void CCamera::SetRotation(Vector3 vecRotation)
 {
-	if(m_pCamera) {
-		m_pCamera->vecRotation.X = vecRotation.X;
-		m_pCamera->vecRotation.Y = vecRotation.Y;
-		m_pCamera->vecRotation.Z = vecRotation.Z;
-		SetInFreeMode(FALSE);
+	if(m_pCamera)
+	{
+		memcpy(&m_pCamera->vecRotation, &vecRotation, sizeof(Vector3));
+		SetInFreeMode(false);
 	}
 }
 
@@ -98,7 +101,9 @@ void CCamera::SetRotation(Vector3 vecRotation)
 void CCamera::LookAtPoint(Vector3 vecPoint, int iType)
 {
 	CAMERA_TYPE * pCamera = m_pCamera;
-	if(pCamera) {
+
+	if(pCamera)
+	{
 		/*if(fZ < -100.0) { // min ground point
 			fZ = FindGroundForZCoord
 		}*/
@@ -120,7 +125,9 @@ void CCamera::LookAtPoint(Vector3 vecPoint, int iType)
 void CCamera::Restore()
 {
 	CAMERA_TYPE * pCamera = m_pCamera;
-	if(pCamera) {
+
+	if(pCamera)
+	{
 		DWORD dwFunc = FUNC_CCamera__Restore;
 		_asm
 		{
@@ -132,29 +139,24 @@ void CCamera::Restore()
 
 //-----------------------------------------------------------
 
-void CCamera::SetInFreeMode(BOOL bFreeMode)
+void CCamera::SetInFreeMode(bool bFreeMode)
 {
-	if(m_pCamera) {
-		if(bFreeMode) {
-			m_pCamera->byteInFreeMode = 1;
-		} else {
-			m_pCamera->byteInFreeMode = 0;
-		}
+	if(m_pCamera)
+	{
+		m_pCamera->byteInFreeMode = bFreeMode;
 	}
 }
 
 //-----------------------------------------------------------
 
-BOOL CCamera::IsInFreeMode()
+bool CCamera::IsInFreeMode()
 {
-	if(m_pCamera) {
-		if(m_pCamera->byteInFreeMode) {
-			return TRUE;
-		} else {
-			return FALSE;
-		}
+	if(m_pCamera)
+	{
+		return (m_pCamera->byteInFreeMode != 0);
 	}
-	return FALSE;
+
+	return false;
 }
 
 //-----------------------------------------------------------
