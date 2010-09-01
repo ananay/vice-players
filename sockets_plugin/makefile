@@ -1,5 +1,5 @@
 GCC = g++
-OUTFILE = "../../../trunk/bin/plugins/example.so"
+OUTFILE = "../../../trunk/bin/plugins/sockets.so"
 
 COMPILE_FLAGS = -c -O2 -fno-strict-aliasing -w -DLINUX -I../squirrel/
 
