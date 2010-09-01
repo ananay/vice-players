@@ -8,6 +8,7 @@
 
 #include "CSocket.h"
 #include "../squirrel/squirrel.h"
+#include <string.h>
 
 extern SQVM * pVMS[128];
 extern int g_iSockets;

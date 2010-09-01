@@ -31,5 +31,10 @@
 #endif
 #include "../squirrel/squirrel.h"
 
+#include <list>
+#include <vector>
+
 #include "CSocket.h"
 #include "CSocketManager.h"
+
+using namespace std;

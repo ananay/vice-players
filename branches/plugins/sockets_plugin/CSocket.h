@@ -11,7 +11,7 @@
 
 #include "main.h"
 #include "SocketErrors.h"
-#include <string.h>
+#include <string>
 
 using namespace std;
 
