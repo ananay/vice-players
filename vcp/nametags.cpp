@@ -83,7 +83,7 @@ void CNameTags::Draw()
 {
 	if(!bbfont) 
 	{ 
-		bbfont = new CBBFont(m_pD3DDevice, "vcpfnt"); 
+		bbfont = new CBBFont(m_pD3DDevice, "vcpfnt");
 		bbfont->Initialise(); 
 	} 
 

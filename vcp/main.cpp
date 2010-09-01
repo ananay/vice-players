@@ -95,10 +95,6 @@ BOOL WINAPI DllMain(HINSTANCE hinstDLL, DWORD fdwReason, LPVOID lpvReserved)
 		pScripts = new CScripts();
 
 		InstallD3D8Hook();
-
-		// else they must want to play single
-		// player or they got the command line
-		// arguments wrong.
 	}
 	else if(fdwReason == DLL_PROCESS_DETACH)
 	{

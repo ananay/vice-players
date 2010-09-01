@@ -951,7 +951,9 @@ void CPlayerPed::ForceIntoPassengerSeat(UINT uiVehicleID, UINT uiSeat)
 void CPlayerPed::SetModel(int iModel)
 {
 	PED_TYPE * pPed = (PED_TYPE *)GetEntity();
-	if(pPed) {
+
+	if(pPed)
+	{
 		PCHAR szModelName=0;
 
 		if(iModel == 8) return; // invalid skin
@@ -990,7 +992,8 @@ void CPlayerPed::SetModel(int iModel)
 		}
 		else // default.ide number
 		{
-			if(!pGame->IsModelLoaded(iModel)) {
+			if(!pGame->IsModelLoaded(iModel))
+			{
 				pGame->RequestModel(iModel);
 				pGame->LoadRequestedModels();
 				while(!pGame->IsModelLoaded(iModel)) Sleep(1);
