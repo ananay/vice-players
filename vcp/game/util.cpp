@@ -32,17 +32,26 @@
 
 DWORD dwPlayerPedPtrs[MAX_PLAYERS];
 
-#define VCMP_SAFECALL __stdcall
-
 //-----------------------------------------------------------
 
-void VCMP_SAFECALL GameDisableCheatCodes()
+void VCMP_SAFECALL GameToggleCheatCodes(bool bToggle)
 {
-	DWORD p1,p2;
-    VirtualProtect((void*)0x602BDC, 16, PAGE_EXECUTE_READWRITE, &p1);
-	*(BYTE *)0x602BDC = 0x90;
-    memset((void*)0x602BE7, 0x90, 5);
-    VirtualProtect((void*)0x602BDC, 16, p1, &p2);
+	DWORD dwProt;
+	VirtualProtect((void*)0x602BDC, 16, PAGE_EXECUTE_READWRITE, &dwProt);
+
+	if(bToggle)
+	{
+		BYTE byteOriginalCode[5] = {  0xE8, 0x34, 0x91, 0xEA, 0xFF };
+		*(BYTE *)0x602BDC = 0x50;
+		memcpy((void *)0x602BE7, byteOriginalCode, sizeof(byteOriginalCode));
+	}
+	else
+	{
+		*(BYTE *)0x602BDC = 0x90;
+		memset((void *)0x602BE7, 0x90, 5);
+	}
+
+    VirtualProtect((void*)0x602BDC, 16, dwProt, &dwProt);
 }
 
 //-----------------------------------------------------------
@@ -171,23 +180,24 @@ int VCMP_SAFECALL GameGetWeaponModelFromWeapon(int iWeaponID)
 
 //-----------------------------------------------------------
 
-DWORD dwHudColors[] = {
-0x778899FF, // light slate grey
-0xFF8C13FF, // dark orange
-0xC715FFFF, // Medium violet red
-0x20B2AAFF, // sea green
-0xFFD720FF, // gold
-0xDC143CFF, // crimson
-0x6495EDFF, // cornflower blue
-0xFF1493FF, // deeppink
-0xF4A460FF, // sandy
-0xEE82EEFF, // violet
-0x8b4513FF, // chocolate
-0xf0e68cFF, // khaki
-0x148b8bFF, // dark cyan
-0x14ff7fFF, // spring green
-0x556b2fFF, // olive green
-0x191970FF // midnight blue
+DWORD dwHudColors[] = 
+{
+	0x778899FF, // light slate grey
+	0xFF8C13FF, // dark orange
+	0xC715FFFF, // Medium violet red
+	0x20B2AAFF, // sea green
+	0xFFD720FF, // gold
+	0xDC143CFF, // crimson
+	0x6495EDFF, // cornflower blue
+	0xFF1493FF, // deeppink
+	0xF4A460FF, // sandy
+	0xEE82EEFF, // violet
+	0x8B4513FF, // chocolate
+	0xF0E68CFF, // khaki
+	0x148B8BFF, // dark cyan
+	0x14FF7FFF, // spring green
+	0x556B2FFF, // olive green
+	0x191970FF // midnight blue
 };
 
 DWORD VCMP_SAFECALL TranslateColorCodeToRGBA(int iCode)

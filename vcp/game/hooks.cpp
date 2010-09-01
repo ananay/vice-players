@@ -48,8 +48,6 @@ BYTE		_byteUnk;
 DWORD	dwStackFrame;
 DWORD	dwCurPlayerActor=0;
 BYTE	byteCurPlayer=0;
-BYTE	byteInternalPlayer=0;
-DWORD	dwCameraMode=0;
 DWORD   dwRGBARadar=0;
 int		iRadarColor1=0;
 BYTE	byteSavedCameraMode;
@@ -142,38 +140,50 @@ void DoCheatExitStoring()
 
 NUDE PreGameProcessHook()
 {
-	_asm mov dwStackFrame, esp
-	_asm pushad
+	_asm
+	{
+		mov dwStackFrame, esp
+		pushad
+	}
 	
 	DoCheatExitStoring();
 
-	_asm popad
+	_asm
+	{
+		popad
 
-	_asm mov esp, dwStackFrame
-	_asm push ebx
-	_asm sub esp, 112
-	_asm push 0
-	_asm mov edx, ADDR_PRE_GAME_PROCESS ; back into the real proc
-	_asm add edx, 6
-	_asm jmp edx
+		mov esp, dwStackFrame
+		push ebx
+		sub esp, 112
+		push 0
+		mov edx, ADDR_PRE_GAME_PROCESS ; back into the real proc
+		add edx, 6
+		jmp edx
+	}
 }
 
 //-----------------------------------------------------------
 
 NUDE InTheGameHook()
 {
-	_asm pushad
+	_asm
+	{
+		pushad
+	}
 
 	DoCheatEntryChecking();
 
-	_asm popad
+	_asm
+	{
+		popad
 
-	_asm mov edx, 0x4A5D80
-	_asm call edx
-	_asm pop ecx
+		mov edx, 0x4A5D80
+		call edx
+		pop ecx
 
-	_asm mov edx, 0x4A5BE6
-	_asm jmp edx
+		mov edx, 0x4A5BE6
+		jmp edx
+	}
 }
 
 //-----------------------------------------------------------
@@ -215,77 +225,105 @@ void _stdcall DoOnFootWorldBoundsStuff()
 }
 
 //-----------------------------------------------------------
+
+void SwitchContext(DWORD dwPedPtr, bool bPrePost)
+{
+	if(dwPedPtr)
+	{
+		byteCurPlayer = FindPlayerNumFromPedPtr(dwCurPlayerActor);
+
+		// Is this player not the local player?
+		if(byteCurPlayer != 0)
+		{
+			// Is this before the ProcessControl call or after?
+			if(bPrePost)
+			{
+				// Key switching
+				GameStoreLocalPlayerKeys(); // Save local player's keys
+				GameSetRemotePlayerKeys(byteCurPlayer); // Set remote player's keys
+
+				// Camera mode switching
+				byteSavedCameraMode = *pbyteCameraMode; // Save the local player's camera mode
+				*pbyteCameraMode = 4; // Set the current camera mode to onfoot mouse looking mode
+
+				// Aim switching
+				GameStoreLocalPlayerAim(); // Save local player's aim
+				GameSetRemotePlayerAim(byteCurPlayer); // Set remote player's aim
+
+				// Current player index switching
+				*pbyteCurrentPlayer = byteCurPlayer; // Set the player index to the current player
+			}
+			else
+			{
+				// Current player index switching
+				*pbyteCurrentPlayer = 0; // Set the player index to the local player
+
+				// Aim switching
+				GameSetLocalPlayerAim(); // Restore the local player's aim
+
+				// Camera mode switching
+				*pbyteCameraMode = byteSavedCameraMode; // Restore the local player's camera mode
+					
+				// Key switching
+				GameSetLocalPlayerKeys(); // Restore the local player's keys
+			}
+		}
+		else
+		{
+			// Its the local player
+
+			/*
+			if(!bIsACheater) {
+				// Do world bounds checking
+				DoOnFootWorldBoundsStuff();
+			}
+			else {
+				// We have a cheater, fuck with them
+				if(!_pPlayer->byteIsInVehicle) {
+					pGcsInternalKeys->wKeys1[KEY_ONFOOT_JUMP] = 0xFF;
+					pGcsInternalKeys->wKeys2[KEY_ONFOOT_JUMP] = 0xFF;
+					_pPlayer = (PED_TYPE *)dwCurPlayerActor;
+					_pPlayer->physical.vecMoveSpeed.Z = fCheaterFlingSpeed;
+					fCheaterFlingSpeed += 0.025f;
+				} else {
+					_pPlayer->byteIsInVehicle = 0;
+				}
+			}
+			*/
+		}
+	}
+}
+
+//-----------------------------------------------------------
 // A hook function that switches keys for
 // CPlayerPed::ProcessControl(void)
 
 NUDE CPlayerPed_ProcessControl_Hook()
 {
-	_asm mov dwCurPlayerActor, ecx
-	_asm pushad
-
-	byteInternalPlayer = *pbyteCurrentPlayer;
-	byteCurPlayer = FindPlayerNumFromPedPtr(dwCurPlayerActor);
-
-	if( dwCurPlayerActor && 
-		byteCurPlayer != 0 &&
-		byteInternalPlayer == 0 )
-	{		
-		// key switching
-		GameStoreLocalPlayerKeys(); // remember local player's keys
-		GameSetRemotePlayerKeys(byteCurPlayer); // set remote player's keys
-
-		// save the internal cammode.
-		byteSavedCameraMode = *pbyteCameraMode;
-		*pbyteCameraMode = 4; // onfoot mouse looking mode.
-
-		// aim switching
-		GameStoreLocalPlayerAim();
-		GameSetRemotePlayerAim(byteCurPlayer);
-
-		*pbyteCurrentPlayer = byteCurPlayer; // Set the internal player to the passed actor
-
-		// call the internal CPlayerPed::ProcessControl
-		_asm popad
-		_asm mov edx, FUNC_CPlayerPed__ProcessControl
-		_asm call edx
-		_asm pushad
-
-		// restore the camera mode.
-		*pbyteCameraMode = byteSavedCameraMode;
-
-		// restore the local player's keys and the internal ID.
-		*pbyteCurrentPlayer = 0;
-		GameSetLocalPlayerKeys();
-		GameSetLocalPlayerAim();
-	}
-	else // it's the local player
+	_asm
 	{
-		if(!bIsACheater) {
-			// Do world bounds checking
-			DoOnFootWorldBoundsStuff();
-		}
-		else {
-			// We have a cheater, fuck with them
-			if(!_pPlayer->byteIsInVehicle) {
-				pGcsInternalKeys->wKeys1[KEY_ONFOOT_JUMP] = 0xFF;
-				pGcsInternalKeys->wKeys2[KEY_ONFOOT_JUMP] = 0xFF;
-				_pPlayer = (PED_TYPE *)dwCurPlayerActor;
-				_pPlayer->physical.vecMoveSpeed.Z = fCheaterFlingSpeed;
-				fCheaterFlingSpeed += 0.025f;
-			} else {
-				_pPlayer->byteIsInVehicle = 0;
-			}
-		}
-
-		// call the internal CPlayerPed::ProcessControl
-		_asm popad
-		_asm mov edx, FUNC_CPlayerPed__ProcessControl
-		_asm call edx
-		_asm pushad
+		mov dwCurPlayerActor, ecx
+		pushad
 	}
+
+	SwitchContext(dwCurPlayerActor, true);
+
+	// call the internal CPlayerPed::ProcessControl
+	_asm
+	{
+		popad
+		mov edx, FUNC_CPlayerPed__ProcessControl
+		call edx
+		pushad
+	}
+
+	SwitchContext(dwCurPlayerActor, false);
 	
-	_asm popad
-	_asm ret
+	_asm
+	{
+		popad
+		ret
+	}
 }
 
 //-----------------------------------------------------------
@@ -293,73 +331,59 @@ NUDE CPlayerPed_ProcessControl_Hook()
 
 NUDE Vehicle_ProcessControl_Hook()
 {
-	_asm mov eax, ecx
-	_asm mov _pVehicle, eax
-	_asm mov eax, [ecx]
-	_asm mov dwVFTable, eax
-	_asm pushad
+	_asm
+	{
+		mov eax, ecx
+		mov _pVehicle, eax
+		mov eax, [ecx]
+		mov dwVFTable, eax
+		pushad
+	}
 	
-	if(dwVFTable == VAR_CBike__VFTable) {
+	if(dwVFTable == VAR_CBike__VFTable)
+	{
 		dwFunc = FUNC_CBike__ProcessControl;
 	}
-	else if(dwVFTable == VAR_CBoat__VFTable) {
+	else if(dwVFTable == VAR_CBoat__VFTable)
+	{
 		dwFunc = FUNC_CBoat__ProcessControl;
 	}
-	else if(dwVFTable == VAR_CAutomobile__VFTable) {
-		dwFunc = FUNC_CAutomobile__ProcessControl;
-	}
-
-	byteInternalPlayer = *(BYTE *)0xA10AFB;
-
-	if((_pVehicle->pDriver) && 
-		(_pVehicle->pDriver != GamePool_FindPlayerPed()) && 
-		(byteInternalPlayer == 0)) // not player's vehicle
+	else if(dwVFTable == VAR_CAutomobile__VFTable)
 	{
-		// get the current driver's player number
-		byteCurPlayer = FindPlayerNumFromPedPtr((DWORD)_pVehicle->pDriver);
-
-		// key switching
-		GameStoreLocalPlayerKeys(); // save local player keys
-		GameSetRemotePlayerKeys(byteCurPlayer); // set remote player keys.
-
-		// save the internal cammode.
-		byteSavedCameraMode = *pbyteCameraMode; // save local player camera mode
-		*pbyteCameraMode = 4; // onfoot mouse looking mode.
-
-		// aim switching
-		GameStoreLocalPlayerAim(); // save local player aim
-		GameSetRemotePlayerAim(byteCurPlayer); // set remote player aim
-
-		// internal player ped number switching
-		*pbyteCurrentPlayer = byteCurPlayer; // set internal ID to this remote player
-
-		// call C*::ProcessControl
-		_asm popad
-		_asm call dwFunc
-		_asm pushad
-
-		// internal player ped number restoration
-		*pbyteCurrentPlayer = 0; // set internal ID to the local player
-
-		// aim restoration
-		GameSetLocalPlayerAim(); // set local player aim
-
-		// camera mode restoration
-		*pbyteCameraMode = byteSavedCameraMode;
-
-		// key restoration
-		GameSetLocalPlayerKeys(); // set local player keys
+		dwFunc = FUNC_CAutomobile__ProcessControl;
 	}
 	else
 	{
-		// call C*::ProcessControl
-		_asm popad
-		_asm call dwFunc
-		_asm pushad
+		_asm
+		{
+			popad
+			ret
+		}
 	}
 
-	_asm popad
-	_asm ret
+	if(_pVehicle)
+	{
+		SwitchContext((DWORD)_pVehicle->pDriver, true);
+	}
+
+	// call C*::ProcessControl
+	_asm
+	{
+		popad
+		call dwFunc
+		pushad
+	}
+
+	if(_pVehicle)
+	{
+		SwitchContext((DWORD)_pVehicle->pDriver, false);
+	}
+
+	_asm
+	{
+		popad
+		ret
+	}
 }
 
 //-----------------------------------------------------------
@@ -402,27 +426,39 @@ NUDE CPed_SetObjective_Hook()
 
 NUDE RadarTranslateColor()
 {
-	_asm mov eax, [esp+4]
-	_asm mov iRadarColor1, eax
+	_asm
+	{
+		mov eax, [esp+4]
+		mov iRadarColor1, eax
+	}
+
 	TranslateColorCodeToRGBA(iRadarColor1); // return will still be in eax.
-	_asm ret
+
+	_asm
+	{
+		ret
+	}
 }
 
 //-----------------------------------------------------------
 
 NUDE CantFindFuckingAnim()
 {
-	_asm mov eax, [esp+4]
-	_asm test eax, eax
-	_asm jnz its_ok
+	_asm
+	{
+		mov eax, [esp+4]
+		test eax, eax
+		jnz its_ok
 
-	_asm ret ; was 0, so foobarred
+		ret ; was 0, so foobarred
+	}
 
 its_ok:
-
-	_asm mov edx, 0x405AC0
-	_asm add edx, 4
-
+	_asm
+	{
+		mov edx, 0x405AC0
+		add edx, 4
+	}
 }
 
 //-----------------------------------------------------------
@@ -431,22 +467,31 @@ its_ok:
 
 NUDE EnterCarAnimCallback_Hook()
 {
-	_asm mov edx, [esp+4]
-    _asm mov eax, [esp+8]
+	_asm
+	{
+		mov edx, [esp+4]
+		mov eax, [esp+8]
 
-	_asm mov _pPlayer, eax
-	_asm pushad
-
-	if( _pPlayer->pVehicle == 0 &&
-	    _pPlayer != GamePool_FindPlayerPed()) {
-		_asm popad
-		_asm ret
+		mov _pPlayer, eax
+		pushad
 	}
 
-	_asm popad
-	_asm mov ebp, 0x5128E0
-	_asm add ebp, 8
-	_asm jmp ebp	
+	if(_pPlayer->pVehicle == 0 && _pPlayer != GamePool_FindPlayerPed())
+	{
+		_asm
+		{
+			popad
+			ret
+		}
+	}
+
+	_asm
+	{
+		popad
+		mov ebp, 0x5128E0
+		add ebp, 8
+		jmp ebp
+	}
 }
 
 //-----------------------------------------------------------
@@ -456,7 +501,11 @@ NUDE EnterCarAnimCallback_Hook()
 NUDE HookedRand_Hook()
 {
 	rand();
-	_asm ret
+
+	_asm
+	{
+		ret
+	}
 }
 
 //-----------------------------------------------------------
@@ -520,27 +569,34 @@ BOOL _stdcall IsFriendlyFire(PED_TYPE *pPlayer,DWORD *pdwEnt, int iWeapon, float
 
 NUDE CPed_InflictDamageHook()
 {
-	_asm mov dwStackFrame, esp
-	_asm mov _pPlayer, ecx
-	_asm mov eax, [esp+4]
-	_asm mov _pEntity, eax
-	_asm mov eax, [esp+8]
-	_asm mov _iWeapon, eax
-	_asm mov eax, [esp+12]
-	_asm mov _fUnk, eax
-	_asm mov eax, [esp+16]
-	_asm mov _iPedPieces, eax
-	_asm mov al, [esp+20]
-	_asm mov _byteUnk, al
-	_asm pushad
+	_asm
+	{
+		mov dwStackFrame, esp
+		mov _pPlayer, ecx
+		mov eax, [esp+4]
+		mov _pEntity, eax
+		mov eax, [esp+8]
+		mov _iWeapon, eax
+		mov eax, [esp+12]
+		mov _fUnk, eax
+		mov eax, [esp+16]
+		mov _iPedPieces, eax
+		mov al, [esp+20]
+		mov _byteUnk, al
+		pushad
+	}
 
-	if(pNetGame) {
-
-		if(IsFriendlyFire(_pPlayer,_pEntity,_iWeapon,_fUnk,_iPedPieces,_byteUnk)) {
-			_asm popad
-			_asm mov esp, dwStackFrame
-			_asm xor al, al
-			_asm retn 0x14
+	if(pNetGame)
+	{
+		if(IsFriendlyFire(_pPlayer,_pEntity,_iWeapon,_fUnk,_iPedPieces,_byteUnk))
+		{
+			_asm
+			{
+				popad
+				mov esp, dwStackFrame
+				xor al, al
+				retn 0x14
+			}
 		}
 
 		/*
@@ -551,19 +607,23 @@ NUDE CPed_InflictDamageHook()
 		}*/
 	}
 
-	_asm popad
-	_asm mov esp, dwStackFrame
-	_asm fld ds:[0x694170]
-	_asm mov edx, 0x525B20
-	_asm add edx, 6
-	_asm jmp edx
+	_asm
+	{
+		popad
+		mov esp, dwStackFrame
+		fld ds:[0x694170]
+		mov edx, 0x525B20
+		add edx, 6
+		jmp edx
+	}
 }
 
 //-----------------------------------------------------------
 
 void CRunningScript_Process()
 {
-	if(!bScriptInited) {
+	if(!bScriptInited)
+	{
 		// Code from VCMP.SCM (Minus the pickups and teleports)
 		DWORD PLAYER_ACTOR = 0;
 		DWORD PLAYER_CHAR = 0;
@@ -586,12 +646,18 @@ void CRunningScript_Process()
 
 NUDE CRunningScript_Process_Hook()
 {
-	_asm pushad
+	_asm
+	{
+		pushad
+	}
 
 	CRunningScript_Process();
 
-	_asm popad
-	_asm retn
+	_asm
+	{
+		popad
+		retn
+	}
 }
 
 //-----------------------------------------------------------
