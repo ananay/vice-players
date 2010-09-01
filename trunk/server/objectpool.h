@@ -15,46 +15,44 @@
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 //
-//----------------------------------------------------------
+//-----------------------------------------------------
 //
-// VC:MP Multiplayer Modification For GTA:VC
-// Copyright 2010 VC-Players Team
+// VC:Players Multiplayer Modification For GTA:VC
+// Copyright 2010 GTA:Online team
 //
 // File Author(s): adamix
 //
-//----------------------------------------------------------
+//-----------------------------------------------------
+#pragma once
 
-#include "../main.h"
-#include "../game/pools.h"
+#define MAX_OBJECTS 256
 
-extern CGame *pGame;
-extern CNetGame *pNetGame;
-extern CChatWindow *pChatWindow;
-
-CObjectPool::CObjectPool()
+class CObjectPool
 {
-	for(EntityId ObjectID = 0; ObjectID <= MAX_OBJECTS; ObjectID++) 
+public:
+	CObjectPool();
+	~CObjectPool();
+
+	EntityId New(int iModel, Vector3 * vecPos, Vector3 * vecRot);
+	BOOL Delete(EntityId ObjectID);
+
+	CObject* GetAt(EntityId ObjectID)
 	{
-		m_bObjectSlotState[ObjectID] = FALSE;
-		m_pObjects[ObjectID] = NULL;
-	}
-}
+		if(ObjectID > MAX_OBJECTS) { return NULL; }
+		return m_pObjects[ObjectID];
+	};
 
-CObjectPool::~CObjectPool()
-{
-
-}
-
-BOOL CObjectPool::New(EntityId ObjectID, int iModel, Vector3 vecPos, Vector3 vecRot)
-{
-	m_pObjects[ObjectID] = new CObject(iModel, vecPos.X, vecPos.Y, vecPos.Z);
-
-	if (m_pObjects[ObjectID])
+	BOOL GetSlotState(EntityId ObjectID)
 	{
-		m_bObjectSlotState[ObjectID] = TRUE;
+		if(ObjectID > MAX_OBJECTS) { return FALSE; }
+		return m_bObjectSlotState[ObjectID];
+	};
 
-		return TRUE;
-	}
+	void InitForPlayer(EntityId playerID);
 
-	return FALSE;
-}
+	EntityId GetFreeSlot();
+
+private:
+	BOOL m_bObjectSlotState[MAX_OBJECTS];
+	CObject * m_pObjects[MAX_OBJECTS];
+};

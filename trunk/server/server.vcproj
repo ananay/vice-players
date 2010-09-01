@@ -254,6 +254,14 @@
 				>
 			</File>
 			<File
+				RelativePath=".\objectpool.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\objectpool.h"
+				>
+			</File>
+			<File
 				RelativePath="playerpool.cpp"
 				>
 				<FileConfiguration
@@ -335,6 +343,14 @@
 			</File>
 			<File
 				RelativePath="config.h"
+				>
+			</File>
+			<File
+				RelativePath=".\object.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\object.h"
 				>
 			</File>
 			<File

@@ -15,26 +15,34 @@
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 //
-//----------------------------------------------------------
+//-----------------------------------------------------
 //
-// VC:MP Multiplayer Modification For GTA:VC
-// Copyright 2010 VC-Players Team
+// VC:Players Multiplayer Modification For GTA:VC
+// Copyright 2010 GTA:Online team
 //
 // File Author(s): adamix
 //
-//----------------------------------------------------------
+//-----------------------------------------------------
 #pragma once
 
-#define MAX_OBJECTS 256
-
-class CObjectPool
+class CObject 
 {
-public:
-	CObjectPool();
-	~CObjectPool();
-
-	BOOL New(EntityId ObjectID, int iModel, Vector3 vecPos, Vector3 vecRot);
 private:
-	BOOL m_bObjectSlotState[MAX_OBJECTS];
-	CObject * m_pObjects[MAX_OBJECTS];
+	EntityId m_ObjectID;
+	int m_iModel;
+	BOOL m_bIsActive;
+
+	Vector3 m_vecPos;
+	Vector3 m_vecRot;
+public:
+	CObject(int iModel, Vector3 * vecPos, Vector3 * vecRot);
+	~CObject();
+
+	void SetID(EntityId objectID) { m_ObjectID = objectID; };
+	BOOL IsActive() { return m_bIsActive; };
+	
+	void SpawnForPlayer(EntityId forPlayerID);
+	//void DestroyForPlayer(EntityId forPlayerID);
+	void SpawnForWorld();
+	//void DestroyForWorld();
 };

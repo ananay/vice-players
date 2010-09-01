@@ -482,6 +482,21 @@ void UploadClientScript(RakNet::BitStream *bitStream, Packet *packet)
 	}
 }
 
+void ObjectSpawn(RakNet::BitStream *bitStream, Packet *packet)
+{
+	CObjectPool *pObjectPool = pNetGame->GetObjectPool();
+	EntityId ObjectID=0;
+	int iModel;
+	Vector3 vecPos, vecRot;
+	bitStream->Read(ObjectID);
+	bitStream->Read(iModel);
+	bitStream->Read(vecPos);
+	bitStream->Read(vecRot);
+
+	pObjectPool->New(ObjectID, iModel, vecPos, vecRot);
+	//pVehiclePool->GetAt(vehicleID)->SetHealth(fHealth);
+}
+
 //----------------------------------------------------
 
 // ============= Scripting RPC's ====================//
@@ -901,6 +916,7 @@ void RegisterRPCs()
 	pNetGame->GetRPC4()->RegisterFunction("SetCameraLookAt",SetCameraLookAt);
 	pNetGame->GetRPC4()->RegisterFunction("SetCameraBehindPlayer",SetCameraBehindPlayer);
 	pNetGame->GetRPC4()->RegisterFunction("UploadClientScript",UploadClientScript);
+	pNetGame->GetRPC4()->RegisterFunction("ObjectSpawn", ObjectSpawn);
 
 	pNetGame->GetRPC4()->RegisterFunction("Script_SetHealth",Script_SetHealth);
 	pNetGame->GetRPC4()->RegisterFunction("Script_SetArmour",Script_SetArmour);
@@ -961,6 +977,7 @@ void UnRegisterRPCs()
 	pNetGame->GetRPC4()->UnregisterFunction("SetCameraLookAt");
 	pNetGame->GetRPC4()->UnregisterFunction("SetCameraBehindPlayer");
 	pNetGame->GetRPC4()->UnregisterFunction("UploadClientScript");
+	pNetGame->GetRPC4()->UnregisterFunction("ObjectSpawn");
 
 	pNetGame->GetRPC4()->UnregisterFunction("Script_SetHealth");
 	pNetGame->GetRPC4()->UnregisterFunction("Script_SetArmour");
