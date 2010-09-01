@@ -50,9 +50,9 @@ DWORD WINAPI ConsoleInputThread(void* pParam)
 int main (int argc, char** argv)
 {
 	// Print welcome message.
-	puts("\n VC:MP Command Line Remote Console Client");
+	puts("\n VC:P Command Line Remote Console Client");
 	puts(" ----------------------------------------");
-	puts(" v1.0, 26th Aug 2005\n");
+	puts(" v1.1, 1st Sep 2010\n");
 
 	// If there's not enough command line args, print usage.
 	if (argc < 3)
