@@ -32,6 +32,7 @@
 typedef void                     (* OnPluginLoad_t)(const char * szName);
 typedef void                     (* OnScriptLoad_t)(SQVM * pVM);
 typedef void                     (* OnScriptUnload_t)(SQVM * pVM);
+typedef void                     (* OnPulse_t)();
 //
 
 class CPlugins
@@ -49,6 +50,7 @@ public:
 	bool UnloadPlugin(const char * szName);
 	void LoadFromConfig(CConfig * pConfig);
 
+	void OnPulse();
 	void OnPluginLoad(const char * szName);
 	void OnPluginUnload(const char * szName);
 	void OnScriptLoad(SQVM * pVM);

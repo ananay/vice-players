@@ -179,6 +179,9 @@ int main (int argc, char* argv[])
 		if(pScripts)
 			pScripts->onServerPulse();
 
+		if(pPlugins)
+			pPlugins->OnPulse();
+
 		Sleep(5);
 
 	}

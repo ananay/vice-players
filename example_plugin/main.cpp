@@ -56,3 +56,8 @@ EXPORT void OnScriptUnload(SQVM * pVM)
 {
 
 }
+
+EXPORT void OnPulse()
+{
+
+}
