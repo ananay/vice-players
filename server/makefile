@@ -51,7 +51,7 @@ DEP_FILES += ../raknet/BitStream.d ../raknet/CCRakNetUDT.d ../raknet/CheckSum.d 
 clean.OBJ += $(Release.BIN) $(Release.OBJ)
 
 Release : Release.before $(Release.BIN) Release.after_always
-Release : CFLAGS += -O2 -Os
+Release : CFLAGS += -O2 -Os -g
 Release : INCLUDES += 
 Release : RCFLAGS += 
 Release : LDFLAGS +=   
