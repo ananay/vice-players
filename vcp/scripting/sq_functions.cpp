@@ -38,6 +38,7 @@ static SQRegFunction vcmp_funcs[]={
 	_DECL_FUNC(setScriptAuthor, 2, _SC(".s")),
 	_DECL_FUNC(setScriptVersion, 2, _SC(".s")),
 	_DECL_FUNC(addChatMessage, 2, _SC(".s")),
+	_DECL_FUNC(toggleCheatCodes, 2, _SC(".b")),
 	{0,0}
 };
 
