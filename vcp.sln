@@ -20,12 +20,6 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "vcp", "vcp\vcp.vcproj", "{2
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "raknet", "raknet\raknet.vcproj", "{6D20E5EA-DBFC-4681-B533-843E5ADE0205}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "example_plugin", "example_plugin\example_plugin.vcproj", "{5332C285-E157-4D3F-A6EB-781AE90BA18D}"
-EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "sockets_plugin", "sockets_plugin\sockets_plugin.vcproj", "{248D3138-A3A0-41C8-83B8-9A5AB3A1E200}"
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Plugins", "Plugins", "{3AB106A0-E375-4738-AF47-474304E63A60}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -52,20 +46,8 @@ Global
 		{6D20E5EA-DBFC-4681-B533-843E5ADE0205}.Debug|Win32.Build.0 = Debug|Win32
 		{6D20E5EA-DBFC-4681-B533-843E5ADE0205}.Release|Win32.ActiveCfg = Release|Win32
 		{6D20E5EA-DBFC-4681-B533-843E5ADE0205}.Release|Win32.Build.0 = Release|Win32
-		{5332C285-E157-4D3F-A6EB-781AE90BA18D}.Debug|Win32.ActiveCfg = Debug|Win32
-		{5332C285-E157-4D3F-A6EB-781AE90BA18D}.Debug|Win32.Build.0 = Debug|Win32
-		{5332C285-E157-4D3F-A6EB-781AE90BA18D}.Release|Win32.ActiveCfg = Release|Win32
-		{5332C285-E157-4D3F-A6EB-781AE90BA18D}.Release|Win32.Build.0 = Release|Win32
-		{248D3138-A3A0-41C8-83B8-9A5AB3A1E200}.Debug|Win32.ActiveCfg = Debug|Win32
-		{248D3138-A3A0-41C8-83B8-9A5AB3A1E200}.Debug|Win32.Build.0 = Debug|Win32
-		{248D3138-A3A0-41C8-83B8-9A5AB3A1E200}.Release|Win32.ActiveCfg = Release|Win32
-		{248D3138-A3A0-41C8-83B8-9A5AB3A1E200}.Release|Win32.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
-	EndGlobalSection
-	GlobalSection(NestedProjects) = preSolution
-		{248D3138-A3A0-41C8-83B8-9A5AB3A1E200} = {3AB106A0-E375-4738-AF47-474304E63A60}
-		{5332C285-E157-4D3F-A6EB-781AE90BA18D} = {3AB106A0-E375-4738-AF47-474304E63A60}
 	EndGlobalSection
 EndGlobal

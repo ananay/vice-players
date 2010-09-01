@@ -26,9 +26,9 @@
 
 #include "sq_misc_natives.h"
 #include "netgame.h"
-
+#include "plugins.h"
 extern CNetGame *pNetGame;
-
+extern CPlugins *pPlugins;
 using namespace RakNet;
 
 
@@ -71,5 +71,14 @@ SQInteger sq_createObject(SQVM * pVM)
 	EntityId object = pNetGame->GetObjectPool()->New(model, &vecPos, &vecRot);
 
 	sq_pushinteger(pVM, object);
+	return 1;
+}
+
+SQInteger sq_isPluginLoaded(SQVM * pVM)
+{
+	const char * szName;
+	sq_getstring(pVM, -1, &szName);
+
+	sq_pushinteger(pVM, pPlugins->IsPluginLoaded(szName));
 	return 1;
 }

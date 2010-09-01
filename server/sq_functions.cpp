@@ -107,6 +107,8 @@ static SQRegFunction vcmp_funcs[]={
 	_DECL_FUNC(toggleDriveByState, 3, _SC(".ni")),
 	// objects
 	_DECL_FUNC(createObject, 8, _SC(".nffffff")),
+	// plugins
+	_DECL_FUNC(isPluginLoaded, 2, _SC(".s")),
 	{0,0}
 };
 
