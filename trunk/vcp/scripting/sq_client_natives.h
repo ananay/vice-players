@@ -27,3 +27,4 @@
 #include "scripts.h"
 
 SQInteger sq_addChatMessage(SQVM * pVM); // done
+SQInteger sq_toggleCheatCodes(SQVM * pVM); // done
