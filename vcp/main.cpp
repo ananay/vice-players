@@ -30,8 +30,6 @@
 #include <process.h>
 
 CGame					*pGame=0;
-DWORD					dwGameLoop=0;
-DWORD					dwRenderLoop=0;
 GAME_SETTINGS			tSettings;
 CChatWindow				*pChatWindow=0;
 CCmdWindow				*pCmdWindow=0;
@@ -56,10 +54,6 @@ extern BOOL             bScriptInited;
 // forwards
 
 void SetupCommands();
-
-void TheGameLoop();
-void TheRenderLoop();
-
 void GameDebugDrawDebugScreens();
 LONG WINAPI exc_handler(_EXCEPTION_POINTERS* exc_inf);
 int DetermineGTAVersion();
@@ -87,11 +81,7 @@ BOOL WINAPI DllMain(HINSTANCE hinstDLL, DWORD fdwReason, LPVOID lpvReserved)
 			ExitProcess(1);
 		}
 
-		dwGameLoop = (DWORD)TheGameLoop;
-		dwRenderLoop = (DWORD)TheRenderLoop;
-
 		pGame = new CGame();
-
 		pScripts = new CScripts();
 
 		InstallD3D8Hook();
@@ -124,23 +114,6 @@ void InitD3DStuff()
 	SetupCommands();
 
 	D3DInited = true;
-}
-
-//----------------------------------------------------
-// Main loop which is called before game processing.
-// This is actually a result of a hook inside GTA's
-// main loop (TheGameLoop())
-
-void TheGameLoop()
-{
-	// moved to the d3d end scene callback
-}
-
-//----------------------------------------------------
-
-void TheRenderLoop()
-{
-	
 }
 
 //----------------------------------------------------

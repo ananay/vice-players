@@ -38,8 +38,6 @@ extern CGame *pGame;
 extern CNetGame *pNetGame;
 extern CChatWindow   *pChatWindow;
 
-
-
 CObject::CObject(int iModel, Vector3 * vecPos, Vector3 * vecRot)
 {
 	DWORD dwReturnID     = 0;
@@ -56,7 +54,6 @@ CObject::CObject(int iModel, Vector3 * vecPos, Vector3 * vecRot)
 
 CObject::~CObject()
 {
-	SetEntity((ENTITY_TYPE *)CPools::GetObjectFromIndex(m_dwGTAId));
 	ScriptCommand(&destroy_object, m_dwGTAId);
 }
 
@@ -67,9 +64,9 @@ void CObject::SetObjectTargetable( )
 
 int CObject::HasObjectBeenDamaged( )
 {
-	int iDamage;
+	int iDamage = 0;
 
-	ScriptCommand(&get_object_state, m_dwGTAId, iDamage);
+	ScriptCommand(&get_object_state, m_dwGTAId, &iDamage);
 
 	return iDamage;
 }

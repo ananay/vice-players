@@ -21,6 +21,7 @@
 // Copyright 2004-2005 SA:MP Team
 //
 // File Author(s): kyeman
+//                 jenksta
 //
 //-----------------------------------------------------------
 
@@ -226,14 +227,17 @@ typedef struct _CAMERA_AIM
 
 typedef struct _CAMERA_TYPE
 {
-	_pad(__pad0, 0x2F0); // 000-2F0
+	_pad(__pad0, 0x190); // 000-190
+	BYTE byteDriveByLeft; // 190-191
+	BYTE byteDriveByRight; // 191-192
+	_pad(__pad1, 0x15E); // 192-2F0
 	CAMERA_AIM aim;      // 2F0-320
-	_pad(__pad1, 0x41C); // 320-73C
+	_pad(__pad2, 0x41C); // 320-73C
 	Vector3 vecPosition;  // 73C-748
 	Vector3 vecRotation;  // 748-754
-	_pad(__pad2, 0x114); // 754-868
+	_pad(__pad3, 0x114); // 754-868
 	BYTE byteInFreeMode; // 868-869
-	_pad(__pad3, 0xEF);  // 869-958
+	_pad(__pad4, 0xEF);  // 869-958
 } CAMERA_TYPE;
 
 //-----------------------------------------------------------

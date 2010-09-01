@@ -69,7 +69,7 @@ public:
 	bool           IsFiring();
 
 	CAMERA_AIM *   GetCurrentAim();
-	void           SetCurrentAim(CAMERA_AIM *pAim);
+	void           SetCurrentAim(CAMERA_AIM * pAim);
 
 	void           Create(int iModel, float fX, float fY,float fZ,float fRotation);
 	void           Destroy();

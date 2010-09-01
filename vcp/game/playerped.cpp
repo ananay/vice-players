@@ -299,12 +299,19 @@ bool CPlayerPed::IsFiring()
 
 CAMERA_AIM * CPlayerPed::GetCurrentAim()
 {
-	return GameGetInternalAim();
+	CCamera * pCamera = pGame->GetCamera();
+	
+	if(pCamera)
+	{
+		return pCamera->GetAim();
+	}
+
+	return NULL;
 }
 
 //-----------------------------------------------------------
 
-void CPlayerPed::SetCurrentAim(CAMERA_AIM *pAim)
+void CPlayerPed::SetCurrentAim(CAMERA_AIM * pAim)
 {
 	GameStoreRemotePlayerAim(m_bytePlayerNumber, pAim);
 }
