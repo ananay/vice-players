@@ -28,12 +28,8 @@
 
 #define VCMP_SAFECALL __stdcall
 
-#define ENTITY_TYPE_UNKNOWN		0
-#define ENTITY_TYPE_PED			1
-#define ENTITY_TYPE_VEHICLE		2
-
 int VCMP_SAFECALL GameGetWeaponModelFromWeapon(int iWeaponID);
-void VCMP_SAFECALL GameDisableCheatCodes();
+void VCMP_SAFECALL GameToggleCheatCodes(bool bToggle);
 PED_TYPE * VCMP_SAFECALL GamePool_FindPlayerPed();
 DWORD VCMP_SAFECALL TranslateColorCodeToRGBA(int iCode);
 BOOL VCMP_SAFECALL GameIsEntityOnScreen(DWORD * pdwEnt);
@@ -42,4 +38,3 @@ void VCMP_SAFECALL SetPlayerPedPtrRecord(BYTE bytePlayer, DWORD dwPedPtr);
 BYTE VCMP_SAFECALL FindPlayerNumFromPedPtr(DWORD dwPedPtr);
 
 //-----------------------------------------------------------
-

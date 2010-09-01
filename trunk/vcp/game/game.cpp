@@ -284,7 +284,7 @@ void GameInstallPatches()
 
 void CGame::StartGame()
 {
-	GameDisableCheatCodes();
+	GameToggleCheatCodes(false);
 
 	*(DWORD *)VAR_Menu__IsActive = 0;
 	*(DWORD *)VAR_Menu__StartGame = 1;
