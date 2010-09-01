@@ -879,7 +879,6 @@ void Script_toggleDriveByState(RakNet::BitStream *bitStream, Packet *packet)
 }
 
 
-
 void RegisterRPCs()
 {
 	pNetGame->GetRPC4()->RegisterFunction("ServerJoin",ServerJoin);
