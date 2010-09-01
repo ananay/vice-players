@@ -34,6 +34,7 @@
 #define MAX_NETWORK_PLAYERS	50
 #define MAX_SETTINGS_STRING 128
 #define CLIENT_VERSION "(Alpha-2)"
+#define PROJECT_WEBSITE "www.vc-p.com"
 
 typedef unsigned char EntityId;
 

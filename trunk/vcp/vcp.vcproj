@@ -360,6 +360,14 @@
 				>
 			</File>
 			<File
+				RelativePath=".\game\playerobjects.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\game\playerobjects.h"
+				>
+			</File>
+			<File
 				RelativePath="game\playerped.cpp"
 				>
 				<FileConfiguration

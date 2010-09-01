@@ -81,6 +81,7 @@ CNetGame::CNetGame(PCHAR szHostOrIp, int iPort,
 	if(pChatWindow)
 	{
 		pChatWindow->AddDebugMessage("Vice City: Players started " CLIENT_VERSION ".");
+		pChatWindow->AddDebugMessage("You can visit the project website at " PROJECT_WEBSITE);
 	}
 
 	Connect();
@@ -95,7 +96,6 @@ CNetGame::CNetGame(PCHAR szHostOrIp, int iPort,
 	m_uiLastRandSeed = 0;
 
 	CPlayerPed *pPlayer = pGame->FindPlayerPed();
-	//pPlayer->SetGameSpeed(1000.00);
 }
 
 //----------------------------------------------------
