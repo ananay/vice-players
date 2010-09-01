@@ -25,7 +25,7 @@
 //-----------------------------------------------------
 #pragma once
 
-#define MAX_OBJECTS 256
+#define MAX_OBJECTS 100
 
 class CObjectPool
 {

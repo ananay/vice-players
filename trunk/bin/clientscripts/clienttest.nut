@@ -1,7 +1,7 @@
 function onInit()
 {
 	print("onInit()");
-	addChatMessage("onInit()");
+	addChatMessage("Client-Side script started.");
 }
 
 function onPulse()
