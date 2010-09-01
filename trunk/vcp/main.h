@@ -52,6 +52,7 @@ typedef struct _GAME_SETTINGS {
 #include "d3d8/include/DXUtil.h"
 
 #include "game/game.h"
+#include "game/object.h"
 
 #include "d3dhook/IDirect3D8Hook.h"
 #include "d3dhook/IDirect3DDevice8Hook.h"

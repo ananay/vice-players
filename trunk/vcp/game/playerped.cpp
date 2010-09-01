@@ -32,6 +32,7 @@
 #include "pools.h"
 #include "keystuff.h"
 #include "aimstuff.h"
+#include "physical.h"
 
 extern CGame *pGame;
 extern CNetGame *pNetGame;

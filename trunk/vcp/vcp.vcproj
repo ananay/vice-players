@@ -352,19 +352,19 @@
 				>
 			</File>
 			<File
+				RelativePath=".\game\object.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\game\object.h"
+				>
+			</File>
+			<File
 				RelativePath=".\game\physical.cpp"
 				>
 			</File>
 			<File
 				RelativePath=".\game\physical.h"
-				>
-			</File>
-			<File
-				RelativePath=".\game\playerobjects.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\game\playerobjects.h"
 				>
 			</File>
 			<File
