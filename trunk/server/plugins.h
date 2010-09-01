@@ -50,6 +50,8 @@ public:
 	bool UnloadPlugin(const char * szName);
 	void LoadFromConfig(CConfig * pConfig);
 
+	bool IsPluginLoaded(const char * szName);
+
 	void OnPulse();
 	void OnPluginLoad(const char * szName);
 	void OnPluginUnload(const char * szName);

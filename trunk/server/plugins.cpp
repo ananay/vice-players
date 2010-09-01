@@ -85,6 +85,17 @@ bool CPlugins::LoadPlugin(const char *szName)
 	return true;
 }
 
+bool CPlugins::IsPluginLoaded(const char *szName)
+{
+	for(int i = 0; i < MAX_PLUGINS; i++) {
+		if(!m_pPlugins[i]) continue;
+		if(!strcmp(m_pPlugins[i]->GetPluginName(), szName)) {
+			return true;
+		}
+	}
+	return false;
+}
+
 bool CPlugins::UnloadPlugin(const char *szName)
 {
 	// find the script slot
