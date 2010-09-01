@@ -93,3 +93,21 @@ int VCMP_SAFECALL CPools::GetIndexFromVehicle(VEHICLE_TYPE * pVehicle)
 
 	return iIndex;	
 }
+
+ENTITY_TYPE * VCMP_SAFECALL CPools::GetObjectFromIndex(int iIndex)
+{	
+	ENTITY_TYPE *pObject;
+
+	DWORD dwFunc = FUNC_CPool_CObject__AtHandle;
+
+	_asm
+	{
+		mov ebx, VAR_ObjectPool
+		mov ecx, [ebx]
+		push iIndex
+		call dwFunc
+		mov pObject, eax
+	}
+
+	return pObject;
+}

@@ -38,4 +38,5 @@ public:
 	static int            VCMP_SAFECALL GetIndexFromPed(PED_TYPE * pPed);
 	static VEHICLE_TYPE * VCMP_SAFECALL GetVehicleFromIndex(int iIndex);
 	static int            VCMP_SAFECALL GetIndexFromVehicle(VEHICLE_TYPE * pVehicle);
+	static ENTITY_TYPE  * VCMP_SAFECALL GetObjectFromIndex(int iIndex);
 };

@@ -20,54 +20,7 @@
 // VC:MP Multiplayer Modification For GTA:VC
 // Copyright 2010 VC-Players Team
 //
-// File Author(s): Christopher
+// File Author(s): adamix
 //
 //----------------------------------------------------------
-
-#include "../../raknet/WindowsIncludes.h"
-
-#include "../main.h"
-#include "game.h"
-#include "util.h"
-#include "pools.h"
-#include "keystuff.h"
-#include "aimstuff.h"
-#include "physical.h"
-
-extern CGame *pGame;
-extern CNetGame *pNetGame;
-extern CChatWindow   *pChatWindow;
-
-
-
-CObject::CObject(int iModel, float fX, float fY, float fZ)
-{
-	DWORD dwReturnID     = 0;
-	m_dwGTAId            = 0;
-
-	ScriptCommand(&create_object, iModel, fX, fY, fZ, &dwReturnID);
-
-	SetEntity((ENTITY_TYPE *)CPools::GetObjectFromIndex(dwReturnID));
-
-	m_dwGTAId = dwReturnID;
-}
-
-CObject::~CObject()
-{
-	SetEntity((ENTITY_TYPE *)CPools::GetObjectFromIndex(m_dwGTAId));
-	ScriptCommand(&destroy_object, m_dwGTAId);
-}
-
-void CObject::SetObjectTargetable( )
-{
-	ScriptCommand(&set_target_state, m_dwGTAId);
-}
-
-int CObject::HasObjectBeenDamaged( )
-{
-	int iDamage;
-
-	ScriptCommand(&get_object_state, m_dwGTAId, iDamage);
-
-	return iDamage;
-}
+#pragma once
