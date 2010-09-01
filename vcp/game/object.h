@@ -32,7 +32,7 @@
 
 //-----------------------------------------------------------
 
-class CObject
+class CObject : public CPhysical
 {
 private:
 	DWORD		m_dwGTAId;
