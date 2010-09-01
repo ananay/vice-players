@@ -149,7 +149,6 @@ const SCRIPT_COMMAND put_player_in_car			= { 0x0369, "ii" };
 const SCRIPT_COMMAND put_player_at_and_remove_from_car = { 0x012a, "ifff" };
 const SCRIPT_COMMAND set_actor_immunities		= { 0x02ab, "iiiiii" };
 const SCRIPT_COMMAND set_car_immunities			= { 0x02ac, "iiiiii" };
-const SCRIPT_COMMAND create_object				= { 0x0107, "ifffv" };
 const SCRIPT_COMMAND set_object_z_angle			= { 0x0177, "if" };
 const SCRIPT_COMMAND set_object_collision		= { 0x0382, "ii" }; 
 const SCRIPT_COMMAND play_sound					= { 0x018c, "fffi" };
@@ -173,3 +172,11 @@ const SCRIPT_COMMAND set_vehicle_siren_state = { 0x0397, "vi" }; // causes crash
 const SCRIPT_COMMAND pop_vehicle_trunk = { 0x050B, "i" };
 const SCRIPT_COMMAND set_ped_sky_color = { 0x04F9, "ii" };
 const SCRIPT_COMMAND set_driveby_state = { 0x0501, "ii" };
+
+// Objects
+const SCRIPT_COMMAND create_object = { 0x0107, "ifffv" };
+const SCRIPT_COMMAND destroy_object = { 0x0108, "v" };
+const SCRIPT_COMMAND set_target_state = { 0x035D, "v" };
+const SCRIPT_COMMAND get_object_state = { 0x0366, "v" };
+const SCRIPT_COMMAND set_object_rotation = { 0x0453, "vfff" };
+
