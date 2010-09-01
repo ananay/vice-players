@@ -48,7 +48,6 @@ function onPlayerConnect(playerid)
 	
 	sendPlayerMessageToAll(0xE60000FF, "[Join]: "  + getPlayerName(playerid) + " has joined Vice Maddness!.");
 	loadClientScript(playerid, "clienttest.nut");
-	
 }
 
 
@@ -64,6 +63,9 @@ function onPlayerSpawn(playerid)
 	print("Spawn: [ID: " + playerid + "]");
 	sendPlayerMessageToAll(0xE60000FF, "[Spawn]: " + getPlayerName(playerid) + " has spawned on Vice Maddness!");
 	setPlayerTime(playerid, 12, 12);
+
+	local pos = getPlayerPosition(playerid);
+	createObject(1226, pos[0], pos[1], pos[2], 0.0, 0.0, 0.0);
 }
 
 

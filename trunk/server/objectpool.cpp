@@ -46,7 +46,7 @@ EntityId CObjectPool::New(int iModel, Vector3 * vecPos, Vector3 * vecRot)
 {
 	EntityId ObjectID;
 
-	for(ObjectID=1; ObjectID != MAX_OBJECTS; ObjectID++)
+	for(ObjectID=1; ObjectID <= MAX_OBJECTS; ObjectID++)
 	{
 		if(m_bObjectSlotState[ObjectID] == FALSE) break;
 	}
@@ -73,4 +73,15 @@ EntityId CObjectPool::GetFreeSlot()
 			return id;
 	}
 	return false;
+}
+
+void CObjectPool::InitForPlayer(EntityId playerId)
+{
+	for(EntityId ObjectID = 0; ObjectID < MAX_OBJECTS; ObjectID++)
+	{
+		if(GetSlotState(ObjectID))
+		{
+			m_pObjects[ObjectID]->SpawnForPlayer(playerId);
+		}
+	}
 }

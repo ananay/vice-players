@@ -32,6 +32,8 @@ CObject::CObject(int iModel, Vector3 * vecPos, Vector3 * vecRot)
 	memcpy(&m_vecRot, vecRot, sizeof(Vector3));
 
 	m_iModel = iModel;
+
+	SpawnForWorld();
 }
 
 CObject::~CObject()
