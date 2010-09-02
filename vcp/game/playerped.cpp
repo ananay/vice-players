@@ -20,7 +20,7 @@
 // VC:MP Multiplayer Modification For GTA:VC
 // Copyright 2010 VC-Players Team
 //
-// File Author(s): Christopher
+// File Author(s): Kyeman, Christopher
 //
 //----------------------------------------------------------
 
@@ -486,17 +486,6 @@ void CPlayerPed::SetHealth(float fHealth)
 	}
 }	
 
-/*
-void CPlayerPed::SetGameSpeed(float gSpeed)
-{
-	PED_TYPE * pPed = (PED_TYPE *)GetEntity();
-	if(pPed) {
-		pPed->gSpeed = gSpeed;
-	}
-
-	ScriptCommand(&set_game_speed, gSpeed);
-}	
-*/
 //-----------------------------------------------------------
 
 float CPlayerPed::GetArmour()
@@ -717,67 +706,7 @@ void CPlayerPed::ClearAllWeapons()
 	}
 }
 
-
-
-
-
-// -- ADDED BY THE VC-Players Team -- //
-
-
-void CPlayerPed::SetWaterDeaths(int iToggle)
-{
-	PED_TYPE * pPed = (PED_TYPE *)GetEntity();
-	if(pPed) {
-		ScriptCommand(&water_deaths, m_dwGTAId, iToggle);
-	}
-}	
-
 //-----------------------------------------------------------
-
-void CPlayerPed::SetCellAction(int iToggle)
-{
-	PED_TYPE * pPed = (PED_TYPE *)GetEntity();
-	if(pPed) {
-		ScriptCommand(&load_model, 258);
-		ScriptCommand(&cell_phone, m_dwGTAId, iToggle);
-	}
-}	
-
-//-----------------------------------------------------------
-
-void CPlayerPed::Flash(int iItem)
-{
-	ScriptCommand(&flash_item, iItem);
-	pChatWindow->AddDebugMessage("Flashing called");
-}
-
-//-----------------------------------------------------------
-
-void CPlayerPed::SetActorBleeding(int iToggle)
-{
-	DWORD dwSystemAddress = m_bytePlayerNumber;
-
-	ScriptCommand(&set_actor_bleeding, m_dwGTAId, iToggle);	
-}
-
-//-----------------------------------------------------------
-
-void CPlayerPed::SetSkyColor(int iColorID, int iFade)
-{
-	ScriptCommand(&set_ped_sky_color, iColorID, iFade);
-}
-
-//-----------------------------------------------------------
-
-void CPlayerPed::SetDrivebyState(int iToggle)
-{
-	ScriptCommand(&set_driveby_state, m_dwGTAId, iToggle);
-}
-
-
-
-
-
 
 BOOL CPlayerPed::SetArmedWeapon(int iWeaponType)
 {
@@ -1173,6 +1102,67 @@ UINT CPlayerPed::GetPassengerSeat()
 		}
 	}
 	return 0;
+}
+
+//-----------------------------------------------------------
+
+// -- ADDED BY THE VC-Players Team -- //
+
+
+void CPlayerPed::SetWaterDeaths(int iToggle)
+{
+	PED_TYPE * pPed = (PED_TYPE *)GetEntity();
+	if(pPed) {
+		ScriptCommand(&water_deaths, m_dwGTAId, iToggle);
+	}
+}	
+
+//-----------------------------------------------------------
+
+void CPlayerPed::SetCellAction(int iToggle)
+{
+	PED_TYPE * pPed = (PED_TYPE *)GetEntity();
+	if(pPed) {
+		ScriptCommand(&load_model, 258);
+		ScriptCommand(&cell_phone, m_dwGTAId, iToggle);
+	}
+}	
+
+//-----------------------------------------------------------
+
+void CPlayerPed::Flash(int iItem)
+{
+	ScriptCommand(&flash_item, iItem);
+}
+
+//-----------------------------------------------------------
+
+void CPlayerPed::SetActorBleeding(int iToggle)
+{
+	DWORD dwSystemAddress = m_bytePlayerNumber;
+
+	ScriptCommand(&set_actor_bleeding, m_dwGTAId, iToggle);	
+}
+
+//-----------------------------------------------------------
+
+void CPlayerPed::SetSkyColor(int iColorID, int iFade)
+{
+	ScriptCommand(&set_ped_sky_color, iColorID, iFade);
+}
+
+//-----------------------------------------------------------
+
+void CPlayerPed::SetDrivebyState(int iToggle)
+{
+	ScriptCommand(&set_driveby_state, m_dwGTAId, iToggle);
+}
+
+//-----------------------------------------------------------
+
+void CPlayerPed::SetCameraShakeIntensity(int iIntensity)
+{
+	ScriptCommand(&shake_ped_camera, iIntensity);
 }
 
 //-----------------------------------------------------------

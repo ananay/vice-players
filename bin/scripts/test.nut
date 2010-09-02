@@ -134,6 +134,14 @@ function onPlayerCommand(playerid, cmdtext)
 		setItemFlashing(playerid, cmd[1].tointeger());
 		sendPlayerMessage(playerid, 0xFFFF00FF, "Flashing item: " + cmd[1]);
 	}
+	if(cmd[0] == "/cellphone")
+	{
+		toggleCellPhone(playerid, cmd[1].tointeger());
+	}
+	if(cmd[0] == "/camshake")
+	{
+		setCameraShakeIntensity(playerid, cmd[1].tointeger());
+	}
 	if(cmd[0] == "/trunk")
 	{
 		popVehicleTrunk(getPlayerVehicleID(playerid));
