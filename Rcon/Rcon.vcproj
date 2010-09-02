@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="Windows-1252"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="9,00"
-	Name="rcon"
+	Version="9.00"
+	Name="Rcon"
 	ProjectGUID="{FA5AD173-A683-4306-8A72-0601B63E9313}"
 	RootNamespace="rcon"
 	TargetFrameworkVersion="0"
