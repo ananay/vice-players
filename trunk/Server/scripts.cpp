@@ -109,6 +109,42 @@ bool CScripts::LoadFromConfig(CConfig * pConfig)
 	return (iScriptsLoaded > 0);
 }
 
+void CScripts::Call(const char * szFunc, int iArgCount, SQObjectPtr * pArguments)
+{
+	for(int i = 0; i < MAX_SCRIPTS; i++) {
+		if(m_pScripts[i]) {
+			// get the script vm pointer
+			SQVM * pVM = m_pScripts[i]->GetVM();
+
+			// Get the stack top
+			int iTop = sq_gettop(pVM);
+
+			// Push the root table onto the stack
+			sq_pushroottable(pVM);
+
+			// Push the function name onto the stack
+			sq_pushstring(pVM, szFunc, -1);
+
+			if(SQ_SUCCEEDED(sq_get(pVM, -2))) {
+				// Push the root table onto the stack
+				sq_pushroottable(pVM);
+
+				if(pArguments != NULL)
+				{
+					for(int j = 0; j < iArgCount; ++j)
+						sq_pushobject(pVM, pArguments[j]);
+						//pVM->Push(pArguments[j]);
+				}
+				sq_call(pVM, iArgCount + 1, true, true);
+
+			}
+
+			// Restore the stack top
+			sq_settop(pVM, iTop);
+		}
+	}
+}
+
 void CScripts::onServerInit()
 {
 	for(int i = 0; i < MAX_SCRIPTS; i++) {

@@ -10,6 +10,7 @@
 
 #pragma once
 #include "../squirrel/squirrel.h"
+#include "../squirrel/sqvm.h"
 #include "config.h"
 #include "script.h"
 
@@ -33,6 +34,8 @@ public:
 		if(!m_pScripts[scriptID]) return NULL;
 		return m_pScripts[scriptID]; 
 	};
+
+	void Call(const char * szFunc, int iArgCount, SQObjectPtr * pArguments);
 
 	void onServerInit();
 	void onServerExit();
