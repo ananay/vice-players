@@ -120,7 +120,7 @@ int main (int argc, char* argv[])
 	}
 
 	// create the NetGame.
-	pNetGame = new CNetGame(iMaxPlayers,iListenPort,0,szPass,0,byteFriendlyFire,byteShowOnRadarOption);
+	pNetGame = new CNetGame(iMaxPlayers,iListenPort,szPass,byteFriendlyFire,byteShowOnRadarOption);
 
 	// create plugins
 	pPlugins = new CPlugins();
