@@ -10,6 +10,7 @@
 
 #pragma once
 #include "../../squirrel/squirrel.h"
+#include "../../squirrel/sqvm.h"
 #include "script.h"
 #include "../timerpool.h"
 
@@ -36,6 +37,9 @@ public:
 		if(!m_pScripts[scriptID]) return NULL;
 		return m_pScripts[scriptID]; 
 	};
+
+	void Call(const char * szFunc, int iArgCount, SQObjectPtr * pArguments);
+	void Call(RakNet::BitStream * bitStream);
 
 	void onInit(int iScript);
 	void onExit();

@@ -10,6 +10,7 @@
 #include "sq_timer_natives.h"
 #include "scripts.h"
 #include "netgame.h"
+#include "../squirrel/sqstring.h"
 
 extern CNetGame *pNetGame;
 extern CScripts *pScripts;
@@ -124,5 +125,52 @@ SQInteger sq__call(SQVM * pVM)
 	}
 	
 	pScripts->Call(szFunc, iArgCount, pArguments);
+	return 1;
+}
+
+SQInteger sq_clientCall(SQVM * pVM)
+{
+	int iTop = sq_gettop(pVM) - 1;
+	int playerid;
+	const char * szFunc;
+	
+	sq_getinteger(pVM, -iTop, &playerid);
+	sq_getstring(pVM, -iTop + 1, &szFunc);
+
+	int iArgCount = iTop - 2;
+	SQObjectPtr * pArguments = NULL;
+	if(iArgCount > 0)
+	{
+		pArguments = new SQObjectPtr[iArgCount];
+		for (int i = 2; i < iTop; i++)
+			pArguments[i - 2] = stack_get(pVM, -iTop + i);
+	}
+	
+	BitStream bsSend;
+	bsSend.Write(strlen(szFunc));
+	bsSend.Write(iArgCount);
+	bsSend.Write(szFunc,strlen(szFunc));
+	printf("calling %s\n", szFunc);
+	for(int i = 0; i < iArgCount; i++)
+	{
+		SQObject t = pArguments[i];
+		SQObjectType type = t._type;
+		bsSend.Write((int)type);
+		if(type == OT_INTEGER)
+			bsSend.Write((int)_integer(t));
+		else if(type == OT_FLOAT)
+			bsSend.Write((float)_float(t));
+		else if(type == OT_BOOL)
+			bsSend.Write((bool)(_integer(t) != 0));
+		else if(type == OT_STRING)
+		{
+			std::string str = _stringval(t);
+			int len = str.size();
+			bsSend.Write(len);
+			bsSend.Write(str.c_str(), len);
+		}
+	}
+
+	pNetGame->GetRPC4()->Call("Script_ClientCall", &bsSend, LOW_PRIORITY, RELIABLE, 0, pNetGame->GetRakPeer()->GetSystemAddressFromIndex(playerid), false);
 	return 1;
 }

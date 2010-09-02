@@ -92,6 +92,117 @@ bool CScripts::UnloadScript(const char * szScriptName)
 	return false;
 }
 
+void CScripts::Call(const char * szFunc, int iArgCount, SQObjectPtr * pArguments)
+{
+	for(int i = 0; i < MAX_SCRIPTS; i++) {
+		if(m_pScripts[i]) {
+			// get the script vm pointer
+			SQVM * pVM = m_pScripts[i]->GetVM();
+
+			// Get the stack top
+			int iTop = sq_gettop(pVM);
+
+			// Push the root table onto the stack
+			sq_pushroottable(pVM);
+
+			// Push the function name onto the stack
+			sq_pushstring(pVM, szFunc, -1);
+
+			if(SQ_SUCCEEDED(sq_get(pVM, -2))) {
+				// Push the root table onto the stack
+				sq_pushroottable(pVM);
+
+				if(pArguments != NULL)
+				{
+					for(int j = 0; j < iArgCount; ++j)
+						sq_pushobject(pVM, pArguments[j]);
+						//pVM->Push(pArguments[j]);
+				}
+				sq_call(pVM, iArgCount + 1, true, true);
+
+			}
+
+			// Restore the stack top
+			sq_settop(pVM, iTop);
+		}
+	}
+}
+
+void CScripts::Call(RakNet::BitStream * bitStream)
+{
+	for(int i = 0; i < MAX_SCRIPTS; i++) {
+		if(m_pScripts[i]) {
+
+			int iArgCount = 0;
+			int funcLen = 0;
+			CHAR szFunc[256];
+			bitStream->Read(funcLen);
+			bitStream->Read(iArgCount);
+			bitStream->Read(szFunc, funcLen);
+			szFunc[funcLen] = '\0';
+
+			// get the script vm pointer
+			SQVM * pVM = m_pScripts[i]->GetVM();
+
+			// Get the stack top
+			int iTop = sq_gettop(pVM);
+
+			// Push the root table onto the stack
+			sq_pushroottable(pVM);
+
+			// Push the function name onto the stack
+			sq_pushstring(pVM, szFunc, -1);
+
+			if(SQ_SUCCEEDED(sq_get(pVM, -2)))
+			{
+				// Push the root table onto the stack
+				sq_pushroottable(pVM);
+
+				if(iArgCount > 0)
+				{
+					for(int j = 0; i < iArgCount; i++)
+					{
+						int type;
+						bitStream->Read(type);
+						if(type == OT_INTEGER)
+						{
+							int val;
+							bitStream->Read(val);
+							sq_pushinteger(pVM, val);
+						}
+						else if(type == OT_FLOAT)
+						{
+							float val;
+							bitStream->Read(val);
+							sq_pushfloat(pVM, val);
+						}
+						else if(type == OT_BOOL)
+						{
+							bool val;
+							bitStream->Read(val);
+							sq_pushbool(pVM, val);
+						}
+						else if(type == OT_STRING)
+						{
+							int len;
+							bitStream->Read(len);
+							CHAR szStr[256];
+							bitStream->Read(szStr, len);
+							szStr[len] = '\0';
+							std::string str = szStr;
+							sq_pushstring(pVM, str.c_str(), -1);
+						}
+					}
+				}
+				sq_call(pVM, iArgCount + 1, true, true);
+			}
+			// Restore the stack top
+			sq_settop(pVM, iTop);
+			bitStream->ResetReadPointer();
+		}
+	}
+}
+
 void CScripts::onInit(int iScript)
 {
 		if(m_pScripts[iScript]) {

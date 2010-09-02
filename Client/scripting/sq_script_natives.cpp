@@ -57,3 +57,24 @@ SQInteger sq_setScriptVersion(SQVM * pVM)
 	sq_pushbool(pVM, false);
 	return 1;
 }
+
+SQInteger sq__call(SQVM * pVM)
+{
+	int iTop = sq_gettop(pVM) - 1;
+
+	const char * szFunc;
+
+	sq_getstring(pVM, -iTop, &szFunc);
+
+	int iArgCount = iTop - 1;
+	SQObjectPtr * pArguments = NULL;
+	if(iArgCount > 0)
+	{
+		pArguments = new SQObjectPtr[iArgCount];
+		for (int i = 1; i < iTop; i++)
+			pArguments[i - 1] = stack_get(pVM, -iTop + i);
+	}
+	
+	pScripts->Call(szFunc, iArgCount, pArguments);
+	return 1;
+}

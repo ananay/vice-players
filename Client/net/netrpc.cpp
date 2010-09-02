@@ -878,11 +878,15 @@ void Script_toggleDriveByState(RakNet::BitStream *bitStream, Packet *packet)
 	pPlayer->SetDrivebyState(iToggle);
 }
 
+void Script_ClientCall(RakNet::BitStream *bitStream, Packet *packet)
+{
+	pScripts->Call(bitStream);
+}
+
 // toggleCellPhone
 void Script_toggleCellPhone(RakNet::BitStream *bitStream, Packet *packet)
 {
 	int iToggle;
-
 	CPlayerPed *pPlayer = pGame->FindPlayerPed();
 
 	bitStream->Read(iToggle);
@@ -951,6 +955,8 @@ void RegisterRPCs()
 	pNetGame->GetRPC4()->RegisterFunction("Script_PlaySound",Script_PlaySound);
 	pNetGame->GetRPC4()->RegisterFunction("Script_FadeScreen",Script_FadeScreen);
 
+	pNetGame->GetRPC4()->RegisterFunction("Script_ClientCall", Script_ClientCall);
+
 	// Added by VC-Players team.
 	pNetGame->GetRPC4()->RegisterFunction("Script_forceClassSelection",Script_forceClassSelection);
 	pNetGame->GetRPC4()->RegisterFunction("Script_togglePlayerBleeding",Script_togglePlayerBleeding);
@@ -1008,6 +1014,8 @@ void UnRegisterRPCs()
 	pNetGame->GetRPC4()->UnregisterFunction("Script_DestroyVehicle");
 	pNetGame->GetRPC4()->UnregisterFunction("Script_PlaySound");
 	pNetGame->GetRPC4()->UnregisterFunction("Script_FadeScreen");
+
+	pNetGame->GetRPC4()->UnregisterFunction("Script_ClientCall");
 
 	// Added by VC-Players team.
 	pNetGame->GetRPC4()->UnregisterFunction("Script_forceClassSelection");
