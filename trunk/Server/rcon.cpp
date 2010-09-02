@@ -33,7 +33,7 @@
 #include "rcon.h"
 #include "netgame.h"
 #include "scripts.h"
-#include "../raknet/MessageIdentifiers.h"
+#include "../RakNet/MessageIdentifiers.h"
 
 using namespace RakNet;
 
