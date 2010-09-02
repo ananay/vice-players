@@ -19,5 +19,4 @@
 //			Functions
 //---------------------------------
 
-int sq_register_vcmp(SQVM * pVM);
-int sq_register_timer(SQVM * pVM);
+int sq_register_natives(SQVM * pVM);

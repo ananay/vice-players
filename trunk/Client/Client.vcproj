@@ -1453,6 +1453,14 @@
 				>
 			</File>
 			<File
+				RelativePath=".\scripting\sq_utils.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\scripting\sq_utils.h"
+				>
+			</File>
+			<File
 				RelativePath=".\timerpool.cpp"
 				>
 			</File>

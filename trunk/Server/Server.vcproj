@@ -535,6 +535,14 @@
 				>
 			</File>
 			<File
+				RelativePath=".\sq_utils.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\sq_utils.h"
+				>
+			</File>
+			<File
 				RelativePath=".\sq_vehicle_natives.cpp"
 				>
 			</File>

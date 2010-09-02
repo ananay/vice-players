@@ -84,10 +84,7 @@ CScript::CScript(const char *szScriptName)
 	sqstd_register_systemlib(pVM);
 
 	// register the vcmp functions
-	sq_register_vcmp(pVM);
-
-	// register the timer functions
-	sq_register_timer(pVM);
+	sq_register_natives(pVM);
 
 	// load and compile the script
 	if(SQ_FAILED(sqstd_dofile(pVM, szScriptPath, SQFalse, SQTrue))) {
