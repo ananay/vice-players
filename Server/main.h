@@ -20,6 +20,7 @@
 #define MAX_PLAYERS			50
 #define MAX_VEHICLES		200
 
+// NOTE: Must ALWAYS be unsigned
 typedef unsigned char EntityId;
 
 #include "../RakNet/RakPeer.h"

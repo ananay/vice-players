@@ -1050,9 +1050,10 @@ void CPlayerPed::SetDead()
 
 //-----------------------------------------------------------
 
-BYTE CPlayerPed::FindDeathReasonAndResponsiblePlayer(BYTE * nPlayer)
+BYTE CPlayerPed::FindDeathReasonAndResponsiblePlayer(EntityId * nPlayer)
 {
 	PED_TYPE * pPed = (PED_TYPE *)GetEntity();
+
 	if(pPed) {
 		BYTE byteDeathReason;
 		EntityId playerIDWhoKilled;
@@ -1069,7 +1070,7 @@ BYTE CPlayerPed::FindDeathReasonAndResponsiblePlayer(BYTE * nPlayer)
 			return INVALID_PLAYER_ID;
 		}
 
-		if(pPed) 
+		if(pPed)
 		{
 			byteDeathReason = (BYTE)pPed->dwWeaponUsed;
 
@@ -1142,20 +1143,26 @@ BYTE CPlayerPed::FindDeathReasonAndResponsiblePlayer(BYTE * nPlayer)
 
 //-----------------------------------------------------------
 
-UINT CPlayerPed::GetPassengerSeat()
+BYTE CPlayerPed::GetPassengerSeat()
 {
 	PED_TYPE * pPed = (PED_TYPE *)GetEntity();
-	if(pPed) {
-		VEHICLE_TYPE *pVehicle = (VEHICLE_TYPE *)pPed->pVehicle;
 
-		if(pVehicle) {
-			for(BYTE i = 0; i < pVehicle->byteMaxPassengers; i++) {
-				if(pVehicle->pPassengers[i] == pPed) {
+	if(pPed)
+	{
+		VEHICLE_TYPE * pVehicle = (VEHICLE_TYPE *)pPed->pVehicle;
+
+		if(pVehicle)
+		{
+			for(BYTE i = 0; i < pVehicle->byteMaxPassengers; i++)
+			{
+				if(pVehicle->pPassengers[i] == pPed)
+				{
 					return (i + 1);
 				}
 			}
 		}
 	}
+
 	return 0;
 }
 

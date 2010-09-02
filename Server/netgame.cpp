@@ -24,9 +24,7 @@ extern CScripts *pScripts;
 
 //----------------------------------------------------
 
-CNetGame::CNetGame(int iMaxPlayers, int iPort, int iGameType, 
-				   char * szPassword, char * szGameFile,
-				   BYTE byteFriendlyFire, BYTE byteShowOnRadar)
+CNetGame::CNetGame(int iMaxPlayers, int iPort, char * szPassword, BYTE byteFriendlyFire, BYTE byteShowOnRadar)
 {
 	// Setup raknet
 	m_pRakPeer = RakPeerInterface::GetInstance();
@@ -147,36 +145,29 @@ void CNetGame::BroadcastData( BitStream *bitStream,
 							  PacketPriority priority,
 							  PacketReliability reliability,
 							  char orderingStream,
-							  BYTE byteExcludedPlayer )
+							  EntityId excludedPlayer )
 {
-	BYTE x=0;
-	float fDistance;
-	BOOL bShouldSend;
-	int r=0;
+	int r = 0;
 
-	while(x!=MAX_PLAYERS) {
-		if( (m_pPlayerPool->GetSlotState(x) == TRUE) && 
-			(x != byteExcludedPlayer) ) {
+	for(EntityId i = 0; i < MAX_PLAYERS; i++)
+	{
+		if(i != excludedPlayer && m_pPlayerPool->GetSlotState(i))
+		{
+			if(m_pPlayerPool->GetDistanceFromPlayerToPlayer(excludedPlayer, i) >= 250.0f)
+			{
+				// If not within said distance, broadcast
+				// randomly once in ten.
+				r = (int)(rand() % 10);
 
-			 bShouldSend = FALSE;
-			 fDistance = m_pPlayerPool->GetDistanceFromPlayerToPlayer(byteExcludedPlayer,x);
-			 
-			 if(fDistance < 250.0f) {
-				bShouldSend = TRUE;
-			 } else {
-				 // If not within said distance, broadcast
-				 // randomly once in ten.
-				 r = (int)(rand() % 10);
-				 if(!r) bShouldSend = TRUE;
-			 }
-			
-			 if(bShouldSend) {
-			 	 m_pRakPeer->Send(bitStream,priority,reliability,
-					orderingStream,m_pRakPeer->GetSystemAddressFromIndex(x),FALSE);
-			 }
+				if(r)
+				{
+					continue;
+				}
+			}
+
+			m_pRakPeer->Send(bitStream, priority, reliability, orderingStream, m_pRakPeer->GetSystemAddressFromIndex(i), false);
 		}
-		x++;
-	}			
+	}	
 }
 
 //----------------------------------------------------
@@ -184,7 +175,7 @@ void CNetGame::BroadcastData( BitStream *bitStream,
 void CNetGame::PlayerSync(Packet *p)
 {
 	// get the player pointer
-	CPlayer * pPlayer = GetPlayerPool()->GetAt((BYTE)p->systemAddress.systemIndex);
+	CPlayer * pPlayer = GetPlayerPool()->GetAt((EntityId)p->systemAddress.systemIndex);
 
 	// make sure player is in player pool
 	if(!pPlayer)
@@ -229,7 +220,7 @@ void CNetGame::PlayerSync(Packet *p)
 void CNetGame::VehicleSync(Packet *p)
 {
 	// get the player pointer
-	CPlayer * pPlayer = GetPlayerPool()->GetAt((BYTE)p->systemAddress.systemIndex);
+	CPlayer * pPlayer = GetPlayerPool()->GetAt((EntityId)p->systemAddress.systemIndex);
 
 	// make sure player is in player pool
 	if(!pPlayer)
@@ -257,30 +248,28 @@ void CNetGame::VehicleSync(Packet *p)
 
 void CNetGame::PassengerSync(Packet *p)
 {
-	CPlayer * pPlayer = GetPlayerPool()->GetAt((BYTE)p->systemAddress.systemIndex);
+	CPlayer * pPlayer = GetPlayerPool()->GetAt((EntityId)p->systemAddress.systemIndex);
 	BitStream bsPassengerSync(p->data, p->length, FALSE);
 	BitStream bsPassengerSend;
 
-	BYTE		vehicleID=0;
-	UINT		uiPassengerSeat;
-	float		x,y,z;
+	EntityId vehicleID = 0;
+	BYTE bytePassengerSeat;
+	Vector3 vecPos;
 
 	bsPassengerSync.IgnoreBytes(sizeof(MessageID));
 	bsPassengerSync.Read(vehicleID);
-	bsPassengerSync.Read(uiPassengerSeat);
-	bsPassengerSync.Read(x);
-	bsPassengerSync.Read(y);
-	bsPassengerSync.Read(z);
+	bsPassengerSync.Read(bytePassengerSeat);
+	bsPassengerSync.Read((char *)&vecPos, sizeof(Vector3));
 
-	pPlayer->UpdatePosition(x,y,z);
+	pPlayer->UpdatePosition(vecPos.X, vecPos.Y, vecPos.Z);
 
 	// Now broadcast it.
-	bsPassengerSend.Write((BYTE)p->systemAddress.systemIndex);
+	bsPassengerSend.Write((EntityId)p->systemAddress.systemIndex);
 	bsPassengerSend.Write(vehicleID);
-	bsPassengerSend.Write(uiPassengerSeat);
-	m_pRPC4->Call("Passenger", &bsPassengerSend,HIGH_PRIORITY,RELIABLE,0,p->systemAddress,TRUE);
+	bsPassengerSend.Write(bytePassengerSeat);
+	m_pRPC4->Call("Passenger", &bsPassengerSend, HIGH_PRIORITY, RELIABLE, 0, p->systemAddress, true);
 
-	pScripts->onPlayerSync((BYTE)p->systemAddress.systemIndex);
+	pScripts->onPlayerSync(p->systemAddress.systemIndex);
 
 }
 
@@ -325,14 +314,14 @@ void CNetGame::SetupInitPositions()
 
 //----------------------------------------------------
 
-void CNetGame::KickPlayer(BYTE byteKickPlayer)
+void CNetGame::KickPlayer(EntityId playerID)
 {
-	if (byteKickPlayer < MAX_PLAYERS)
+	if(playerID < MAX_PLAYERS)
 	{
-		if (m_pPlayerPool->GetSlotState(byteKickPlayer))
+		if (m_pPlayerPool->GetSlotState(playerID))
 		{
-			m_pPlayerPool->Delete(byteKickPlayer,2);
-			pScripts->onKick(byteKickPlayer);
+			m_pPlayerPool->Delete(playerID, 2);
+			pScripts->onKick(playerID);
 		}
 	}
 }
@@ -372,6 +361,3 @@ void CNetGame::LoadBanList()
 }
 
 //----------------------------------------------------
-
-
-

@@ -178,14 +178,14 @@ BYTE CPlayerPool::AddResponsibleDeath(BYTE byteWhoKilled, BYTE byteWhoDied)
 
 //----------------------------------------------------
 
-float CPlayerPool::GetDistanceFromPlayerToPlayer(BYTE bytePlayer1, BYTE bytePlayer2)
+float CPlayerPool::GetDistanceFromPlayerToPlayer(EntityId player1, EntityId player2)
 {
 	Vector3	*vecFromPlayer;
 	Vector3	*vecThisPlayer;
 	float	fSX,fSY;
 
-	CPlayer * pPlayer1 = GetAt(bytePlayer1);
-	CPlayer * pPlayer2 = GetAt(bytePlayer2);
+	CPlayer * pPlayer1 = GetAt(player1);
+	CPlayer * pPlayer2 = GetAt(player2);
 
 	vecFromPlayer = &pPlayer1->m_vecPos;
 	vecThisPlayer = &pPlayer2->m_vecPos;

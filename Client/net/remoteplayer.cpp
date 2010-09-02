@@ -32,7 +32,7 @@ CRemotePlayer::CRemotePlayer()
 	m_iJustSpawned = 0;
 	m_fRotation = 0.0f;
 	m_vehicleID = 0;
-	m_uiPassengerSeat = 0;
+	m_bytePassengerSeat = 0;
 	m_bHasAim = false;
 }
 
@@ -157,7 +157,7 @@ void CRemotePlayer::HandleVehicleEntryExit()
 			if(!m_bIsAPassenger) {
 				m_pPlayerPed->PutDirectlyInVehicle(pVehiclePool->FindGtaIDFromID(m_vehicleID));
 			} else {
-				m_pPlayerPed->ForceIntoPassengerSeat(pVehiclePool->FindGtaIDFromID(m_vehicleID),m_uiPassengerSeat);
+				m_pPlayerPed->ForceIntoPassengerSeat(pVehiclePool->FindGtaIDFromID(m_vehicleID),m_bytePassengerSeat);
 			}
 		}
 	}
@@ -270,12 +270,12 @@ void CRemotePlayer::StoreInCarFullSyncData(VEHICLE_SYNC_DATA * pVehicleSyncData)
 
 //----------------------------------------------------
 
-void CRemotePlayer::StorePassengerData(EntityId vehicleID, UINT uiSeat)
+void CRemotePlayer::StorePassengerData(EntityId vehicleID, BYTE byteSeat)
 {
 	m_bIsInVehicle = TRUE;
 	m_bIsAPassenger = TRUE;
 	m_vehicleID = vehicleID;
-	m_uiPassengerSeat = uiSeat;
+	m_bytePassengerSeat = byteSeat;
 }
 
 //----------------------------------------------------
