@@ -2,7 +2,7 @@
 <VisualStudioProject
 	ProjectType="Visual C++"
 	Version="9.00"
-	Name="launcher"
+	Name="Launcher"
 	ProjectGUID="{701B5071-EBE6-463C-A4DD-E34E84AB77DC}"
 	RootNamespace="launcher"
 	Keyword="MFCProj"

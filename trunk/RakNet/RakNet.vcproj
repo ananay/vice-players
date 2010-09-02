@@ -2,7 +2,7 @@
 <VisualStudioProject
 	ProjectType="Visual C++"
 	Version="9.00"
-	Name="raknet"
+	Name="RakNet"
 	ProjectGUID="{6D20E5EA-DBFC-4681-B533-843E5ADE0205}"
 	RootNamespace="raknet"
 	TargetFrameworkVersion="196613"
