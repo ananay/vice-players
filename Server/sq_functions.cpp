@@ -10,135 +10,95 @@
 //-----------------------------------------------------
 
 #include "sq_functions.h"
+#include "sq_utils.h"
 #include "netgame.h"
 
 extern CNetGame *pNetGame;
 
 using namespace RakNet;
 
-
-#define _DECL_FUNC(name,nparams,pmask) {_SC(#name),sq_##name,nparams,pmask}
-static SQRegFunction vcmp_funcs[]={
-	// put functions here
-	//_DECL_FUNC(func_name,func_params,_SC(func_param_template)),
-	_DECL_FUNC(setScriptAuthor, 2, _SC(".s")),
-	_DECL_FUNC(setScriptVersion, 2, _SC(".s")),
-	_DECL_FUNC(kickPlayer, 2, _SC(".n")), // wiki
-	_DECL_FUNC(banIP, 2, _SC(".s")), // wiki
-	_DECL_FUNC(setGameTime, 3, _SC(".nn")), // wiki
-	_DECL_FUNC(getMaxPlayers, 1, NULL), // wiki
-	_DECL_FUNC(getTickCount, 1, NULL), // wiki
-	_DECL_FUNC(setPlayerTime, 4, _SC(".nnn")), // wiki
-	_DECL_FUNC(getPlayerName, 2, _SC(".n")), // wiki
-	_DECL_FUNC(getPlayerIP, 2, _SC(".n")), // wiki
-	_DECL_FUNC(setPlayerCameraPos, 5, _SC(".nnnn")), // wiki
-	_DECL_FUNC(setPlayerCameraRot, 5, _SC(".nnnn")), // wiki
-	_DECL_FUNC(setPlayerCameraLookAt, 5, _SC(".nnnn")), // wiki
-	_DECL_FUNC(setCameraBehindPlayer, 2, _SC(".n")), // wiki
-	_DECL_FUNC(playSound, 6, _SC(".nnnnn")),
-	_DECL_FUNC(fadeScreen, 3, _SC(".nnn")),
-	_DECL_FUNC(addPlayerClass, 13, _SC(".nnnnnnnnnnnn")),
-	_DECL_FUNC(getPlayerHealth, 2, _SC(".n")), // wiki
-	_DECL_FUNC(setPlayerHealth, 3, _SC(".nn")),// wiki
-	_DECL_FUNC(getPlayerArmour, 2, _SC(".n")),// wiki
-	_DECL_FUNC(setPlayerArmour, 3, _SC(".nn")),// wiki
-	_DECL_FUNC(sendPlayerMessage, 4, _SC(".iis")),// wiki
-	_DECL_FUNC(sendPlayerMessageToAll, 3, _SC(".is")),// wiki
-	_DECL_FUNC(setPlayerWorldBounds, 5, _SC(".n")),// wiki
-	_DECL_FUNC(togglePlayerControls, 3, _SC(".n")),// wiki
-	_DECL_FUNC(removePlayerFromVehicle, 2, _SC(".n")), // wiki
-	_DECL_FUNC(putPlayerInVehicle, 3, _SC(".nn")), // wiki
-	_DECL_FUNC(setPlayerArmedWeapon, 3, _SC(".n")),// wiki
-	//_DECL_FUNC(sendMessageAsPlayer, 3, _SC(".is")),
-	_DECL_FUNC(givePlayerWeapon, 4, _SC(".iii")),// wiki
-	_DECL_FUNC(resetPlayerWeapons, 2, _SC(".n")),// wiki
-	_DECL_FUNC(getPlayerRotation, 2, _SC(".n")),// wiki
-	_DECL_FUNC(setPlayerRotation, 3, _SC(".nn")),// wiki
-	_DECL_FUNC(getPlayerSkin, 2, _SC(".n")),// wiki
-	_DECL_FUNC(setPlayerSkin, 3, _SC(".nn")),// wiki
-	_DECL_FUNC(getPlayerPosition, 2, _SC(".n")),// wiki
-	_DECL_FUNC(setPlayerPosition, 5, _SC(".nnnn")),// wiki
-	_DECL_FUNC(setPlayerTurnSpeed, 5, _SC(".nnnn")),// wiki
-	_DECL_FUNC(setPlayerMoveSpeed, 5, _SC(".nnnn")),// wiki
-	_DECL_FUNC(forceClassSelection, 2, _SC(".n")),// wiki
-	_DECL_FUNC(isConnected, 2, _SC(".n")),// wiki
-	_DECL_FUNC(getPlayerTeam, 2, _SC(".n")),// ???
-	_DECL_FUNC(setPlayerAction, 3, _SC(".nn")), // wiki
-	_DECL_FUNC(isPlayerInVehicle, 2, _SC(".n")), // wiki
-	_DECL_FUNC(getPlayerVehicleID, 2, _SC(".n")), // wiki
-	_DECL_FUNC(getPlayerTurnSpeed, 2, _SC(".n")),  // wiki
-	_DECL_FUNC(getPlayerMoveSpeed, 2, _SC(".n")), // wiki
-	_DECL_FUNC(createVehicle, 8, _SC(".nnnnnnn")), // wiki
-	_DECL_FUNC(destroyVehicle, 2, _SC(".n")), // wiki
-	_DECL_FUNC(setVehicleHealth, 3, _SC(".nn")), // wiki
-	_DECL_FUNC(setVehicleColor, 4, _SC(".nnn")), // wiki
-	_DECL_FUNC(getVehicleHealth, 2, _SC(".n")), // wiki
-	_DECL_FUNC(getVehicleColors, 2, _SC(".n")), // wiki
-	_DECL_FUNC(getVehiclePosition, 2, _SC(".n")), // wiki
-	_DECL_FUNC(setVehiclePosition, 5, _SC(".nnnn")), // wiki
-	_DECL_FUNC(getVehicleTurnSpeed, 2, _SC(".n")), // wiki
-	_DECL_FUNC(getVehicleMoveSpeed, 2, _SC(".n")), // wiki
-	_DECL_FUNC(setVehicleTurnSpeed, 5, _SC(".nnnn")), //wiki
-	_DECL_FUNC(setVehicleMoveSpeed, 5, _SC(".nnnn")), //wiki
-	// Added  by the VC-Players team.
-	_DECL_FUNC(togglePlayerBleeding, 3, _SC(".ni")),
-	_DECL_FUNC(setItemFlashing, 3, _SC(".ni")),
-	_DECL_FUNC(forceClassSelection, 2, _SC(".n")),
-	_DECL_FUNC(popVehicleTrunk, 2, _SC(".n")),
-	_DECL_FUNC(setPlayerSkyColor, 4, _SC(".nii")),
-	_DECL_FUNC(setPlayerCash, 3, _SC(".ni")),
-	_DECL_FUNC(getPlayerCash, 2, _SC(".n")),
-	_DECL_FUNC(loadClientScript, 3, _SC(".ns")),
-	_DECL_FUNC(toggleDriveByState, 3, _SC(".ni")),
-	_DECL_FUNC(toggleCellPhone, 3, _SC(".ni")),
-	_DECL_FUNC(setCameraShakeIntensity, 3, _SC(".ni")),
-	_DECL_FUNC(setPlayerGravity, 3, _SC(".ni")),
-	_DECL_FUNC(getPlayerGravity, 2, _SC(".n")),
-	// objects
-	_DECL_FUNC(createObject, 8, _SC(".nffffff")),
-	// plugins
-	_DECL_FUNC(isPluginLoaded, 2, _SC(".s")),
-	// scripts
-	_DECL_FUNC(_call, -1, NULL),
-	_DECL_FUNC(clientCall, -1, NULL),
-	{0,0}
-};
-
-int sq_register_vcmp(SQVM * pVM)
+int sq_register_natives(SQVM * pVM)
 {
-	SQInteger i=0;
-	while(vcmp_funcs[i].name!=0)
-	{
-		sq_pushstring(pVM,vcmp_funcs[i].name,-1);
-		sq_newclosure(pVM,vcmp_funcs[i].f,0);
+	RegisterFunction(pVM, "setScriptAuthor", sq_setScriptAuthor, 2, ".s");
+	RegisterFunction(pVM, "setScriptVersion", sq_setScriptVersion, 2, ".s");
+	RegisterFunction(pVM, "kickPlayer", sq_kickPlayer, 2, ".n");
+	RegisterFunction(pVM, "banIP", sq_banIP, 2, ".s");
+	RegisterFunction(pVM, "setGameTime", sq_setGameTime, 3, ".nn");
+	RegisterFunction(pVM, "getMaxPlayers", sq_getMaxPlayers, 1, NULL);
+	RegisterFunction(pVM, "getTickCount", sq_getTickCount, 1, NULL);
+	RegisterFunction(pVM, "setPlayerTime", sq_setPlayerTime, 4, ".nnn");
+	RegisterFunction(pVM, "getPlayerName", sq_getPlayerName, 2, ".n");
+	RegisterFunction(pVM, "getPlayerIP", sq_getPlayerIP, 2, ".n");
+	RegisterFunction(pVM, "setPlayerCameraPos", sq_setPlayerCameraPos, 5, ".nnnn");
+	RegisterFunction(pVM, "setPlayerCameraRot", sq_setPlayerCameraRot, 5, ".nnnn");
+	RegisterFunction(pVM, "setPlayerCameraLookAt", sq_setPlayerCameraLookAt, 5, ".nnnn");
+	RegisterFunction(pVM, "setCameraBehindPlayer", sq_setCameraBehindPlayer, 2, ".n");
+	RegisterFunction(pVM, "playSound", sq_playSound, 6, ".nnnnn");
+	RegisterFunction(pVM, "fadeScreen", sq_fadeScreen, 3, ".nnn");
+	RegisterFunction(pVM, "addPlayerClass", sq_addPlayerClass, 13, ".nnnnnnnnnnnn");
+	RegisterFunction(pVM, "getPlayerHealth", sq_getPlayerHealth, 2, ".n");
+	RegisterFunction(pVM, "setPlayerHealth", sq_setPlayerHealth, 3, ".nn");
+	RegisterFunction(pVM, "getPlayerArmour", sq_getPlayerArmour, 2, ".n");
+	RegisterFunction(pVM, "setPlayerArmour", sq_setPlayerArmour, 3, ".nn");
+	RegisterFunction(pVM, "sendPlayerMessage", sq_sendPlayerMessage, 4, ".iis");
+	RegisterFunction(pVM, "sendPlayerMessageToAll", sq_sendPlayerMessageToAll, 3, ".is");
+	RegisterFunction(pVM, "setPlayerWorldBounds", sq_setPlayerWorldBounds, 5, ".n");
+	RegisterFunction(pVM, "togglePlayerControls", sq_togglePlayerControls, 3, ".n");
+	RegisterFunction(pVM, "removePlayerFromVehicle", sq_removePlayerFromVehicle, 2, ".n");
+	RegisterFunction(pVM, "putPlayerInVehicle", sq_putPlayerInVehicle, 3, ".nn");
+	RegisterFunction(pVM, "setPlayerArmedWeapon", sq_setPlayerArmedWeapon, 3, ".n");
+	RegisterFunction(pVM, "givePlayerWeapon", sq_givePlayerWeapon, 4, ".iii");
+	RegisterFunction(pVM, "resetPlayerWeapons", sq_resetPlayerWeapons, 2, ".n");
+	RegisterFunction(pVM, "getPlayerRotation", sq_getPlayerRotation, 2, ".n");
+	RegisterFunction(pVM, "setPlayerRotation", sq_setPlayerRotation, 3, ".nn");
+	RegisterFunction(pVM, "getPlayerSkin", sq_getPlayerSkin, 2, ".n");
+	RegisterFunction(pVM, "setPlayerSkin", sq_setPlayerSkin, 3, ".nn");
+	RegisterFunction(pVM, "getPlayerPosition", sq_getPlayerPosition, 2, ".n");
+	RegisterFunction(pVM, "setPlayerPosition", sq_setPlayerPosition, 5, ".nnnn");
+	RegisterFunction(pVM, "setPlayerTurnSpeed", sq_setPlayerTurnSpeed, 5, ".nnnn");
+	RegisterFunction(pVM, "setPlayerMoveSpeed", sq_setPlayerMoveSpeed, 5, ".nnnn");
+	RegisterFunction(pVM, "forceClassSelection", sq_forceClassSelection, 2, ".n");
+	RegisterFunction(pVM, "isConnected", sq_isConnected, 2, ".n");
+	RegisterFunction(pVM, "getPlayerTeam", sq_getPlayerTeam, 2, ".n");
+	RegisterFunction(pVM, "setPlayerAction", sq_setPlayerAction, 3, ".nn");
+	RegisterFunction(pVM, "isPlayerInVehicle", sq_isPlayerInVehicle, 2, ".n");
+	RegisterFunction(pVM, "getPlayerVehicleID", sq_getPlayerVehicleID, 2, ".n");
+	RegisterFunction(pVM, "getPlayerTurnSpeed", sq_getPlayerTurnSpeed, 2, ".n");
+	RegisterFunction(pVM, "getPlayerMoveSpeed", sq_getPlayerMoveSpeed, 2, ".n");
+	RegisterFunction(pVM, "createVehicle", sq_createVehicle, 8, ".nnnnnnn");
+	RegisterFunction(pVM, "destroyVehicle", sq_destroyVehicle, 2, ".n");
+	RegisterFunction(pVM, "setVehicleHealth", sq_setVehicleHealth, 3, ".nn");
+	RegisterFunction(pVM, "setVehicleColor", sq_setVehicleColor, 4, ".nnn");
+	RegisterFunction(pVM, "getVehicleHealth", sq_getVehicleHealth, 2, ".n");
+	RegisterFunction(pVM, "getVehicleColors", sq_getVehicleColors, 2, ".n");
+	RegisterFunction(pVM, "getVehiclePosition", sq_getVehiclePosition, 2, ".n");
+	RegisterFunction(pVM, "setVehiclePosition", sq_setVehiclePosition, 5, ".nnnn");
+	RegisterFunction(pVM, "getVehicleTurnSpeed", sq_getVehicleTurnSpeed, 2, ".n");
+	RegisterFunction(pVM, "getVehicleMoveSpeed", sq_getVehicleMoveSpeed, 2, ".n");
+	RegisterFunction(pVM, "setVehicleTurnSpeed", sq_setVehicleTurnSpeed, 5, ".nnnn");
+	RegisterFunction(pVM, "setVehicleMoveSpeed", sq_setVehicleMoveSpeed, 5, ".nnnn");
+	RegisterFunction(pVM, "togglePlayerBleeding", sq_togglePlayerBleeding, 3, ".ni");
+	RegisterFunction(pVM, "setItemFlashing", sq_setItemFlashing, 3, ".ni");
+	RegisterFunction(pVM, "forceClassSelection", sq_forceClassSelection, 2, ".n");
+	RegisterFunction(pVM, "popVehicleTrunk", sq_popVehicleTrunk, 2, ".n");
+	RegisterFunction(pVM, "setPlayerSkyColor", sq_setPlayerSkyColor, 4, ".nii");
+	RegisterFunction(pVM, "setPlayerCash", sq_setPlayerCash, 3, ".ni");
+	RegisterFunction(pVM, "getPlayerCash", sq_getPlayerCash, 2, ".n");
+	RegisterFunction(pVM, "loadClientScript", sq_loadClientScript, 3, ".ns");
+	RegisterFunction(pVM, "toggleDriveByState", sq_toggleDriveByState, 3, ".ni");
+	RegisterFunction(pVM, "toggleCellPhone", sq_toggleCellPhone, 3, ".ni");
+	RegisterFunction(pVM, "setCameraShakeIntensity", sq_setCameraShakeIntensity, 3, ".ni");
+	RegisterFunction(pVM, "createObject", sq_createObject, 8, ".nffffff");
+	RegisterFunction(pVM, "isPluginLoaded", sq_isPluginLoaded, 2, ".s");
+	RegisterFunction(pVM, "_call", sq__call, -1, NULL);
+	RegisterFunction(pVM, "clientCall", sq_clientCall, -1, NULL);
+	RegisterFunction(pVM, "setPlayerGravity", sq_setPlayerGravity, 3, ".ni");
+	RegisterFunction(pVM, "getPlayerGravity", sq_getPlayerGravity, 2, ".n");
 
-		if(vcmp_funcs[i].nparamscheck != -1)
-			sq_setparamscheck(pVM,vcmp_funcs[i].nparamscheck,vcmp_funcs[i].typemask);
-
-		sq_setnativeclosurename(pVM,-1,vcmp_funcs[i].name);
-		sq_createslot(pVM,-3);
-		i++;
-	}
+	// Timers
+	RegisterFunction(pVM, "setTimer", sq_setTimer, -1, NULL);
+	RegisterFunction(pVM, "killTimer", sq_killTimer, -1, NULL);
+	RegisterFunction(pVM, "isTimerActive", sq_isTimerActive, -1, NULL);
 	return 1;
 }
 
-static SQRegFunction timer_funcs[]={
-	_DECL_FUNC(setTimer, 0, NULL),
-	_DECL_FUNC(killTimer, 0, NULL),
-	_DECL_FUNC(isTimerActive, 0, NULL),
-	{0,0}
-};
-
-int sq_register_timer(SQVM * pVM)
-{
-	SQInteger i=0;
-	while(timer_funcs[i].name!=0)
-	{
-		sq_pushstring(pVM,timer_funcs[i].name,-1);
-		sq_newclosure(pVM,timer_funcs[i].f,0);
-		sq_setnativeclosurename(pVM,-1,timer_funcs[i].name);
-		sq_createslot(pVM,-3);
-		i++;
-	}
-	return 1;
-}
