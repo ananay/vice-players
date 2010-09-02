@@ -29,7 +29,7 @@
 #include <time.h>
 
 #include "netgame.h"
-#include "../raknet/RPC4Plugin.h"
+#include "../RakNet/RPC4Plugin.h"
 #include "scripts.h"
 
 using namespace RakNet;

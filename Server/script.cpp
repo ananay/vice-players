@@ -25,7 +25,7 @@
 //
 //-----------------------------------------------------
 
-#include "../raknet/WindowsIncludes.h"
+#include "../RakNet/WindowsIncludes.h"
 #include "netgame.h"
 #include "plugins.h"
 extern CNetGame *pNetGame;

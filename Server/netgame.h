@@ -36,7 +36,7 @@
 #include "object.h"
 #include "objectpool.h"
 #include "timerpool.h"
-#include "../raknet/MessageIdentifiers.h"
+#include "../RakNet/MessageIdentifiers.h"
 #include "netrpc.h"
 #include "spawnselection.h"
 

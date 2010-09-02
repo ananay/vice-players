@@ -38,9 +38,9 @@
 
 typedef unsigned char EntityId;
 
-#include "../raknet/RakPeer.h"
-#include "../raknet/RPC4Plugin.h"
-#include "../raknet/BitStream.h"
+#include "../RakNet/RakPeer.h"
+#include "../RakNet/RPC4Plugin.h"
+#include "../RakNet/BitStream.h"
 
 #include "system.h"
 #include "config.h"

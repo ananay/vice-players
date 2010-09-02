@@ -26,7 +26,7 @@
 
 #ifdef WIN32
 #include <stdio.h>
-#include "../raknet/WindowsIncludes.h"
+#include "../RakNet/WindowsIncludes.h"
 #else
 #include <dlfcn.h>
 #include <stdlib.h>
@@ -41,8 +41,8 @@
 #include "scripts.h"
 #include "plugins.h"
 
-#include "../raknet/BitStream.h"
-#include "../raknet/RakPeerInterface.h"
+#include "../RakNet/BitStream.h"
+#include "../RakNet/RakPeerInterface.h"
 
 void fatal_exit(char * szError);
 
