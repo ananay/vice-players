@@ -9,6 +9,7 @@
 //
 //----------------------------------------------------
 
+#include "../main.h"
 #include "game.h"
 #include "util.h"
 #include "address.h"

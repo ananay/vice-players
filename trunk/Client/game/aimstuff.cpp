@@ -10,6 +10,7 @@
 
 #include <stdio.h>
 #include "../../raknet/WindowsIncludes.h"
+#include "../main.h"
 #include "common.h"
 #include "aimstuff.h"
 #include "game.h"
