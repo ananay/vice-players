@@ -3,7 +3,7 @@
 // VC:MP Multiplayer Modification For GTA:VC
 // Copyright 2010 VC-Players Team
 //
-// File Author(s): Christopher
+// File Author(s): kyeman
 // License: See LICENSE in root directory
 //
 //----------------------------------------------------------
@@ -758,10 +758,14 @@ void CPlayerPed::SetDrivebyState(int iToggle)
 	ScriptCommand(&set_driveby_state, m_dwGTAId, iToggle);
 }
 
+//-----------------------------------------------------------
 
+void CPlayerPed::SetCameraShakeIntensity(int iIntensity)
+{
+		ScriptCommand(&shake_ped_camera, iIntensity);
+}
 
-
-
+//-----------------------------------------------------------
 
 BOOL CPlayerPed::SetArmedWeapon(int iWeaponType)
 {

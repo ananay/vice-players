@@ -72,6 +72,7 @@ public:
 	void		   SetActorBleeding(int iToggle);
 	void		   SetSkyColor(int iColorID, int iFade);
 	void		   SetDrivebyState(int iToggle);
+	void		   SetCameraShakeIntensity(int iIntensity);
 
 	float          GetHealth();
 	void           SetHealth(float fHealth);

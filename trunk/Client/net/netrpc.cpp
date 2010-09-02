@@ -845,6 +845,7 @@ void Script_popVehicleTrunk(RakNet::BitStream *bitStream, Packet *packet)
 	pVehicle->popVehicleTrunk();
 }
 
+// setSkyColor
 void Script_setSkyColor(RakNet::BitStream *bitStream, Packet *packet)
 {
 	int iColor, iFade;
@@ -877,6 +878,29 @@ void Script_toggleDriveByState(RakNet::BitStream *bitStream, Packet *packet)
 	pPlayer->SetDrivebyState(iToggle);
 }
 
+// toggleCellPhone
+void Script_toggleCellPhone(RakNet::BitStream *bitStream, Packet *packet)
+{
+	int iToggle;
+
+	CPlayerPed *pPlayer = pGame->FindPlayerPed();
+
+	bitStream->Read(iToggle);
+
+	pPlayer->SetCellAction(iToggle);
+}
+
+// SetCameraShakeIntensity
+void Script_SetCameraShakeIntensity(RakNet::BitStream *bitStream, Packet *packet)
+{
+	int iIntensity;
+
+	CPlayerPed *pPlayer = pGame->FindPlayerPed();
+
+	bitStream->Read(iIntensity);
+
+	pPlayer->SetCameraShakeIntensity(iIntensity);
+}
 
 void RegisterRPCs()
 {
@@ -935,6 +959,8 @@ void RegisterRPCs()
 	pNetGame->GetRPC4()->RegisterFunction("Script_setSkyColor", Script_setSkyColor);
 	pNetGame->GetRPC4()->RegisterFunction("Script_SetPlayerCash", Script_setPlayerCash);
 	pNetGame->GetRPC4()->RegisterFunction("Script_toggleDriveByState", Script_toggleDriveByState);
+	pNetGame->GetRPC4()->RegisterFunction("Script_toggleCellPhone", Script_toggleCellPhone);
+	pNetGame->GetRPC4()->RegisterFunction("Script_SetCameraShakeIntensity", Script_SetCameraShakeIntensity);
 }
 
 //----------------------------------------------------
@@ -991,6 +1017,8 @@ void UnRegisterRPCs()
 	pNetGame->GetRPC4()->UnregisterFunction("Script_setSkyColor");
 	pNetGame->GetRPC4()->UnregisterFunction("Script_SetPlayerCash");
 	pNetGame->GetRPC4()->UnregisterFunction("Script_toggleDriveByState");
+	pNetGame->GetRPC4()->UnregisterFunction("Script_toggleCellPhone");
+	pNetGame->GetRPC4()->UnregisterFunction("Script_SetCameraShakeIntensity");
 }
 
 //----------------------------------------------------
