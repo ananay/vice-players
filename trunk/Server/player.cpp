@@ -37,6 +37,7 @@ CPlayer::CPlayer()
 	m_bIsWasted = FALSE;
 	m_vehicleID = 0;
 	m_iMoney = 0;
+	float m_iGravity = 0.008f;
 	m_bHasAim = false;
 }
 
@@ -543,4 +544,20 @@ void CPlayer::SetCash(int Cash)
 int CPlayer::GetCash()
 {
 	return m_iMoney;
+}
+
+float CPlayer::GetGravity()
+{
+	return m_iGravity;
+}
+
+//----------------------------------------------------
+
+void CPlayer::SetGravity(float amount)
+{
+	BitStream bsSend;
+	bsSend.Write(amount);
+	SystemAddress playerid = pNetGame->GetRakPeer()->GetSystemAddressFromIndex(m_bytePlayerID);
+	m_iGravity = amount;
+	pNetGame->GetRPC4()->Call("Script_SetPlayerGravity",&bsSend,HIGH_PRIORITY,RELIABLE_ORDERED,0,playerid,false);
 }

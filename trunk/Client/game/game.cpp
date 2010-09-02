@@ -471,4 +471,9 @@ void CGame::SetCash(int Cash)
 	*(int *)ADDR_PlayerCash = Cash;
 }
 
+void CGame::SetGravity(float amount)
+{
+	*(float *)ADDR_PlayerGravity = amount;
+}
+
 //-----------------------------------------------------------

@@ -1176,3 +1176,42 @@ SQInteger sq_setCameraShakeIntensity(SQVM * pVM)
 	sq_pushbool(pVM, false);
 	return 1;
 }
+
+//-----------------------------------------------------------------
+
+SQInteger sq_setPlayerGravity(SQVM * pVM)
+{
+	SQInteger playerSystemAddr;
+	
+	float iGrav;
+	sq_getinteger(pVM, -2, &playerSystemAddr);
+	sq_getfloat(pVM, -1, &iGrav);
+
+	if(pNetGame->GetPlayerPool()->GetSlotState(playerSystemAddr))
+	{
+		CPlayer * pPlayer = pNetGame->GetPlayerPool()->GetAt(playerSystemAddr);
+		pPlayer->SetGravity(iGrav);
+
+		sq_pushbool(pVM, true);
+		return 1;
+	}
+
+	sq_pushbool(pVM, false);
+	return 1;
+}
+
+SQInteger sq_getPlayerGravity(SQVM * pVM)
+{
+	SQInteger playerSystemAddress;
+	sq_getinteger(pVM, -1, &playerSystemAddress);
+	if(pNetGame->GetPlayerPool()->GetSlotState(playerSystemAddress))
+	{
+		float amount = pNetGame->GetPlayerPool()->GetAt(playerSystemAddress)->GetGravity();
+
+		sq_pushinteger(pVM, amount);
+		return 1;
+	}
+
+	sq_pushbool(pVM, false);
+	return 1;
+}

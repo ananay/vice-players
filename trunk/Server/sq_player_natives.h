@@ -66,3 +66,5 @@ SQInteger sq_setPlayerCash(SQVM * pVM);
 SQInteger sq_getPlayerCash(SQVM * pVM);
 SQInteger sq_setCameraShakeIntensity(SQVM * pVM);
 SQInteger sq_toggleCellPhone(SQVM * pVM);
+SQInteger sq_setPlayerGravity(SQVM * pVM);
+SQInteger sq_getPlayerGravity(SQVM * pVM);

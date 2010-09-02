@@ -134,6 +134,16 @@ function onPlayerCommand(playerid, cmdtext)
 		setItemFlashing(playerid, cmd[1].tointeger());
 		sendPlayerMessage(playerid, 0xFFFF00FF, "Flashing item: " + cmd[1]);
 	}
+		if(cmd[0] == "/setgrav")
+	{
+		local amount = cmd[1].tofloat();
+		sendPlayerMessage(playerid, 0xFFFF00FF, "gravity set to " + amount);
+		setPlayerGravity(playerid,amount)
+	}
+		if(cmd[0] == "/getgrav")
+	{
+		sendPlayerMessage(playerid, 0xFFFF00FF, "Gravity: " + getPlayerGravity(playerid));
+	}
 	if(cmd[0] == "/cellphone")
  	{
  		toggleCellPhone(playerid, cmd[1].tointeger());
