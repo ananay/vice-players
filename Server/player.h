@@ -83,7 +83,8 @@ private:
 	BYTE					m_byteUpdateFromNetwork;
 	PLAYER_SPAWN_INFO		m_SpawnInfo;
 	BOOL					m_bHasSpawnInfo;
-	int m_iMoney;
+	int						m_iMoney;
+	float					m_iGravity;
 
 public:
 
@@ -168,6 +169,7 @@ public:
 	BYTE GetHealth();
 	BYTE GetArmour();
 	int GetCash();
+	float GetGravity();
 	BYTE GetCurrentWeapon();
 	BYTE GetAction();
 	BOOL IsAPassenger();
@@ -183,6 +185,7 @@ public:
 	void SetCameraLookAt(Vector3 vPoint);
 	void SetCameraBehindPlayer();
 	void SetCash(int Cash);
+	void SetGravity(float amount);
 	
 };
 

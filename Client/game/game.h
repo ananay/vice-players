@@ -76,6 +76,8 @@ public:
 	void    FadeScreen(int iType, int iTime);
 	void	SetGameTime(int iHour, int iMinute);
 	void	SetCash(int Cash);
+	void	SetGravity(float amount);
+	void	GetGravity(float amount);
 
 	DWORD	GetD3DDevice() { return *(DWORD *)ADDR_ID3D8DEVICE; };
 	void	SetD3DDevice(DWORD pD3DDevice) { *(DWORD *)ADDR_ID3D8DEVICE = pD3DDevice; };

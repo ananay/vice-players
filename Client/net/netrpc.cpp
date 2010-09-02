@@ -906,6 +906,14 @@ void Script_SetCameraShakeIntensity(RakNet::BitStream *bitStream, Packet *packet
 	pPlayer->SetCameraShakeIntensity(iIntensity);
 }
 
+// SetPlayerGravity
+void Script_setPlayerGravity(RakNet::BitStream *bitStream, Packet *packet)
+{
+	float amount;
+	bitStream->Read(amount);
+	pGame->SetGravity(amount);
+}
+
 void RegisterRPCs()
 {
 	pNetGame->GetRPC4()->RegisterFunction("ServerJoin",ServerJoin);
@@ -967,6 +975,7 @@ void RegisterRPCs()
 	pNetGame->GetRPC4()->RegisterFunction("Script_toggleDriveByState", Script_toggleDriveByState);
 	pNetGame->GetRPC4()->RegisterFunction("Script_toggleCellPhone", Script_toggleCellPhone);
 	pNetGame->GetRPC4()->RegisterFunction("Script_SetCameraShakeIntensity", Script_SetCameraShakeIntensity);
+	pNetGame->GetRPC4()->RegisterFunction("Script_SetPlayerGravity", Script_setPlayerGravity);
 }
 
 //----------------------------------------------------
@@ -1027,6 +1036,7 @@ void UnRegisterRPCs()
 	pNetGame->GetRPC4()->UnregisterFunction("Script_toggleDriveByState");
 	pNetGame->GetRPC4()->UnregisterFunction("Script_toggleCellPhone");
 	pNetGame->GetRPC4()->UnregisterFunction("Script_SetCameraShakeIntensity");
+	pNetGame->GetRPC4()->UnregisterFunction("Script_SetPlayerGravity");
 }
 
 //----------------------------------------------------
