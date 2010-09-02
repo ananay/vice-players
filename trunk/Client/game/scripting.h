@@ -1,7 +1,12 @@
-// PUBLIC DOMAIN
+//----------------------------------------------------------
 //
-//	Taken from spookie's speedo mod.
+// VC:MP Multiplayer Modification For GTA:VC
+// Copyright 2004-2005 SA:MP team
 //
+// File Author(s): spookie
+// License: Public Domain (Taken from spookie's speedo mod)
+//
+//----------------------------------------------------------
 
 #pragma once
 
