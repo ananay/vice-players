@@ -134,6 +134,15 @@ function onPlayerCommand(playerid, cmdtext)
 		setItemFlashing(playerid, cmd[1].tointeger());
 		sendPlayerMessage(playerid, 0xFFFF00FF, "Flashing item: " + cmd[1]);
 	}
+	if(cmd[0] == "/cellphone")
+ 	{
+ 		toggleCellPhone(playerid, cmd[1].tointeger());
+ 	}
+ 	if(cmd[0] == "/camshake")
+ 
+ 	{
+ 		setCameraShakeIntensity(playerid, cmd[1].tointeger());
+ 	}
 	if(cmd[0] == "/trunk")
 	{
 		popVehicleTrunk(getPlayerVehicleID(playerid));
@@ -148,6 +157,11 @@ function onPlayerCommand(playerid, cmdtext)
 		local skin = cmd[1].tointeger();
 		setPlayerSkin(playerid, skin);
 		sendPlayerMessage(playerid, 0x00FF00FF, "Skin: " + getPlayerSkin(playerid));
+	}
+	if(cmd[0] == "/object")
+	{
+		local pos = getPlayerPosition(playerid);
+		createObject(cmd[1].tointeger(), pos[0], pos[1]+10, pos[2], 0.0, 0.0, 0.0);
 	}
 }
 

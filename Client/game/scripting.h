@@ -173,10 +173,11 @@ const SCRIPT_COMMAND water_deaths = { 0x04D8, "ii" };
 const SCRIPT_COMMAND cell_phone = { 0x052B, "ii" };
 const SCRIPT_COMMAND load_model = { 0x0247, "i" };
 const SCRIPT_COMMAND set_actor_bleeding = { 0x0332, "ii" };
-const SCRIPT_COMMAND set_vehicle_siren_state = { 0x0397, "vi" }; // causes crashs :s
+const SCRIPT_COMMAND set_vehicle_siren_state = { 0x0397, "ii" };
 const SCRIPT_COMMAND pop_vehicle_trunk = { 0x050B, "i" };
 const SCRIPT_COMMAND set_ped_sky_color = { 0x04F9, "ii" };
 const SCRIPT_COMMAND set_driveby_state = { 0x0501, "ii" };
+const SCRIPT_COMMAND shake_ped_camera = { 0x0003, "i" };
 
 // Objects
 const SCRIPT_COMMAND create_object = { 0x0107, "ifffv" };

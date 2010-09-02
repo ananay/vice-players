@@ -90,6 +90,8 @@ static SQRegFunction vcmp_funcs[]={
 	_DECL_FUNC(getPlayerCash, 2, _SC(".n")),
 	_DECL_FUNC(loadClientScript, 3, _SC(".ns")),
 	_DECL_FUNC(toggleDriveByState, 3, _SC(".ni")),
+	_DECL_FUNC(toggleCellPhone, 3, _SC(".ni")),
+	_DECL_FUNC(setCameraShakeIntensity, 3, _SC(".ni")),
 	// objects
 	_DECL_FUNC(createObject, 8, _SC(".nffffff")),
 	// plugins

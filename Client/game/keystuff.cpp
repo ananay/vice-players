@@ -21,37 +21,37 @@
 extern CGame * pGame;
 
 GTA_CONTROLSET * pGcsInternalKeys = (GTA_CONTROLSET *)ADDR_KEYSTATES;
-GTA_CONTROLSET GcsLocalPlayerKeys;
-GTA_CONTROLSET GcsRemotePlayerKeys[MAX_PLAYERS];
 
-BYTE byteSaveDriveByLeft = 0;
-BYTE byteSaveDriveByRight = 0;
+struct 
+{
+	GTA_CONTROLSET gcsControlState;
+	BYTE byteDriveByLeft;
+	BYTE byteDriveByRight;
+} SavedKeys;
+
+GTA_CONTROLSET gcsRemotePlayerKeys[MAX_PLAYERS];
 
 //-----------------------------------------------------------
 
 void GameKeyStatesInit()
 {
-	memset(&GcsLocalPlayerKeys, 0, sizeof(GTA_CONTROLSET));
-
-	for(int i = 0; i < MAX_PLAYERS; i++)
-	{
-		memset(&GcsRemotePlayerKeys[i], 0, sizeof(GTA_CONTROLSET));
-	}
+	memset(&SavedKeys, 0, sizeof(SavedKeys));
+	memset(&gcsRemotePlayerKeys, 0, sizeof(gcsRemotePlayerKeys));
 }
 
 //-----------------------------------------------------------
 
 void GameStoreLocalPlayerKeys()
-{	
-	memcpy(&GcsLocalPlayerKeys, pGcsInternalKeys, sizeof(GTA_CONTROLSET));
+{
+	memcpy(&SavedKeys.gcsControlState, pGcsInternalKeys, sizeof(GTA_CONTROLSET));
 
 	CCamera * pCamera = pGame->GetCamera();
 
 	if(pCamera)
 	{
 		// save current drive by state
-		byteSaveDriveByLeft = pCamera->GetDriveByLeft();
-		byteSaveDriveByRight = pCamera->GetDriveByRight();
+		SavedKeys.byteDriveByLeft = pCamera->GetDriveByLeft();
+		SavedKeys.byteDriveByRight = pCamera->GetDriveByRight();
 	}
 }
 
@@ -59,15 +59,15 @@ void GameStoreLocalPlayerKeys()
 
 void GameSetLocalPlayerKeys()
 {
-	memcpy(pGcsInternalKeys, &GcsLocalPlayerKeys, sizeof(GTA_CONTROLSET));
+	memcpy(pGcsInternalKeys, &SavedKeys.gcsControlState, sizeof(GTA_CONTROLSET));
 
 	CCamera * pCamera = pGame->GetCamera();
 
 	if(pCamera)
 	{
 		// restore the drive by state also
-		pCamera->SetDriveByLeft(byteSaveDriveByLeft);
-		pCamera->SetDriveByRight(byteSaveDriveByRight);
+		pCamera->SetDriveByLeft(SavedKeys.byteDriveByLeft);
+		pCamera->SetDriveByRight(SavedKeys.byteDriveByRight);
 	}
 }
 
@@ -75,26 +75,26 @@ void GameSetLocalPlayerKeys()
 
 void GameStoreRemotePlayerKeys(int iPlayer, GTA_CONTROLSET * pGcsKeyStates)
 {
-	memcpy(&GcsRemotePlayerKeys[iPlayer], pGcsKeyStates, sizeof(GTA_CONTROLSET));
+	memcpy(&gcsRemotePlayerKeys[iPlayer], pGcsKeyStates, sizeof(GTA_CONTROLSET));
 }
 
 //-----------------------------------------------------------
 
 void GameSetRemotePlayerKeys(int iPlayer)
 {
-	memcpy(pGcsInternalKeys, &GcsRemotePlayerKeys[iPlayer], sizeof(GTA_CONTROLSET));
+	memcpy(pGcsInternalKeys, &gcsRemotePlayerKeys[iPlayer], sizeof(GTA_CONTROLSET));
 
 	CCamera * pCamera = pGame->GetCamera();
 
 	if(pCamera)
 	{
-		if(GcsRemotePlayerKeys[iPlayer].wKeys1[KEY_INCAR_LOOKL]) {
+		if(gcsRemotePlayerKeys[iPlayer].wKeys1[KEY_INCAR_LOOKL]) {
 			pCamera->SetDriveByLeft(1);
 		} else {
 			pCamera->SetDriveByLeft(0);
 		}	
 
-		if(GcsRemotePlayerKeys[iPlayer].wKeys1[KEY_INCAR_LOOKR]) {
+		if(gcsRemotePlayerKeys[iPlayer].wKeys1[KEY_INCAR_LOOKR]) {
 			pCamera->SetDriveByRight(1);
 		} else {
 			pCamera->SetDriveByRight(0);
@@ -113,21 +113,21 @@ GTA_CONTROLSET * GameGetInternalKeys()
 
 GTA_CONTROLSET * GameGetLocalPlayerKeys()
 {
-	return &GcsLocalPlayerKeys;
+	return &SavedKeys.gcsControlState;
 }
 
 //-----------------------------------------------------------
 
 GTA_CONTROLSET * GameGetPlayerKeys(int iPlayer)
 {
-	return &GcsRemotePlayerKeys[iPlayer];
+	return &gcsRemotePlayerKeys[iPlayer];
 }
 
 //-----------------------------------------------------------
 
 void GameResetPlayerKeys(int iPlayer)
 {
-	memset(&GcsRemotePlayerKeys[iPlayer], 0, sizeof(GTA_CONTROLSET));
+	memset(&gcsRemotePlayerKeys[iPlayer], 0, sizeof(GTA_CONTROLSET));
 }
 
 //-----------------------------------------------------------

@@ -16,6 +16,8 @@
 #include <stdarg.h>
 #include <string>
 
+#define SAFE_DELETE(mem) if(mem) { delete mem; mem = NULL; }
+
 #define MAX_PLAYER_NAME		24
 #define MAX_PLAYERS			50
 #define MAX_VEHICLES		200

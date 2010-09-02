@@ -57,16 +57,19 @@ int main (int argc, char* argv[])
 	int iRconPort = 0;
 	int iRconMaxUsers = 0;
 
+	// Create the config instance
 	pServerConfig = new CConfig();
 
 	if(argc > 1) {
-		strcpy(szConfigFile,argv[1]);
+		strcpy(szConfigFile, argv[1]);
 	} else {
-		strcpy(szConfigFile,DEFAULT_CONFIG_FILE);
+		strcpy(szConfigFile, DEFAULT_CONFIG_FILE);
 	}
 
-	// try and read the config file.
-	if(pServerConfig->ReadFile(szConfigFile) != CCONF_ERR_SUCCESS) {
+	// Try and read the config file.
+	if(pServerConfig->ReadFile(szConfigFile) != CCONF_ERR_SUCCESS)
+	{
+		// Read failed, exit
 		sprintf(szError,"Can't read the config file %s\n%s\n- Server Shutting Down. -",
 			DEFAULT_CONFIG_FILE,pServerConfig->m_szErrorString);
 		fatal_exit(szError);
@@ -74,67 +77,70 @@ int main (int argc, char* argv[])
 
 	//logprintf("Using config file: %s",szConfigFile);
 
-	// get the max players setting
+	// Get the max players setting
 	if((iMaxPlayers=pServerConfig->GetConfigEntryAsInt("MaxPlayers"))==(-1)) {
 		iMaxPlayers = DEFAULT_MAX_PLAYERS;
 	}
 
-	// cap the max players setting if needed
+	// Cap the max players setting if needed
 	if(iMaxPlayers > MAX_PLAYERS)
 	{
 		iMaxPlayers = MAX_PLAYERS;
 	}
 
-	// get the listen port setting
+	// Get the listen port setting
 	if((iListenPort=pServerConfig->GetConfigEntryAsInt("ListenPort"))==(-1)) {
 		iListenPort = DEFAULT_LISTEN_PORT;
 	}
 
+	// Print the startup string
 	logprintf("------------------------------------------");
 	logprintf("	GTA:Online - Vice City");
 	logprintf("	(c) 2010 GTA:Online Team");
-	logprintf("    Server started. Build: %s", __DATE__);
+	logprintf("    Server started. Build: " __DATE__);
 	logprintf("    Server Port: %d. Max Players: %d", iListenPort, iMaxPlayers);
 	logprintf("------------------------------------------");
 
 
-	// set the server pass if one is required.
+	// Set the server password if one is required.
 	if(pServerConfig->GetConfigEntryAsBool("NeedPassword")==1) {
-		szPass=pServerConfig->GetConfigEntryAsString("Password");
+		szPass = pServerConfig->GetConfigEntryAsString("Password");
 	}
 
-	// get the admin pass
+	// Get the admin password
 	szAdminPass = pServerConfig->GetConfigEntryAsString("AdminPassword");
 	if(!szAdminPass || !strlen(szAdminPass) || !strcmp(szAdminPass,"invalid")) {
 		fatal_exit("I need an AdminPassword in the .ini before I can start the server.\n");
 	}
 
-	// get the ff option from config (default is OFF)
+	// Get the friendly fire option from config (default is OFF)
 	iFriendlyFireOption = pServerConfig->GetConfigEntryAsBool("FriendlyFire");
 	if(iFriendlyFireOption == 1) byteFriendlyFire = 1;
 
-	// get the show on radar option (default is ON)
+	// Get the show on radar option (default is ON)
 	iShowOnRadarOption = pServerConfig->GetConfigEntryAsBool("ShowOnRadar");
 	if(iShowOnRadarOption == -1 || iShowOnRadarOption == 0)	{
 		byteShowOnRadarOption = 0;
 	}
 
-	// create the NetGame.
-	pNetGame = new CNetGame(iMaxPlayers,iListenPort,szPass,byteFriendlyFire,byteShowOnRadarOption);
+	// Create the net game instance
+	pNetGame = new CNetGame(iMaxPlayers, iListenPort, szPass, byteFriendlyFire, byteShowOnRadarOption);
 
-	// create plugins
+	// Create the plugins instance
 	pPlugins = new CPlugins();
 	
-	// create the scripts
+	// Create the scripts instance
 	pScripts = new CScripts();
 
+	// Load the plugins from the config file
 	pPlugins->LoadFromConfig(pServerConfig);
 
-	// load the scripts from the config file
+	// Load the scripts from the config file
 	if(!pScripts->LoadFromConfig(pServerConfig)) {
 		fatal_exit("I need at least one script loaded before I can start the server.\n");
 	}
 
+	// Call the scripts onServerInit function
 	pScripts->onServerInit();
 
 	// Get the remote console port.
@@ -151,30 +157,48 @@ int main (int argc, char* argv[])
 		iRconMaxUsers = pServerConfig->GetConfigEntryAsInt("RconMaxUsers");
 	}
 
-	// create rcon
+	// Create the rcon instance
 	pRcon = new CRcon(iRconPort, szAdminPass, iRconMaxUsers);
 
-	// Process the network game.
+	// Loop until the game state is no longer set to running
 	while(pNetGame->GetGameState() == GAMESTATE_RUNNING)
 	{
-		pNetGame->Process();
-		pRcon->Process();
+		// Process the net game instance
+		if(pNetGame)
+			pNetGame->Process();
 
+		// Process the rcon instance
+		if(pRcon)
+			pRcon->Process();
+
+		// Call the scripts onServerPulse function
 		if(pScripts)
 			pScripts->onServerPulse();
 
+		// Call the plugins OnPulse function
 		if(pPlugins)
 			pPlugins->OnPulse();
 
 		Sleep(5);
-
 	}
 
+	// Call the scripts onServerExit function
 	pScripts->onServerExit();
 
-	delete pScripts;
-	delete pRcon;
-	delete pNetGame;
+	// Delete the rcon instance
+	SAFE_DELETE(pRcon);
+
+	// Delete the scripts instance
+	SAFE_DELETE(pScripts);
+
+	// Delete the plugins instance
+	SAFE_DELETE(pPlugins);
+
+	// Delete the net game instance
+	SAFE_DELETE(pNetGame);
+
+	// Delete the config instance
+	SAFE_DELETE(pServerConfig);
 
 	return 0;
 }
@@ -183,30 +207,46 @@ int main (int argc, char* argv[])
 
 void fatal_exit(char * szError)
 {
-	#ifdef WIN32
-		printf("%s\n\n",szError);
-		printf("Press any key to close.");
-		getc(stdin);
-	#else
-        printf("%s\n\n",szError);
-    #endif
-		exit(1);
+	// Print the error string
+	printf("%s\n\n", szError);
+
+#ifdef WIN32
+	// Wait for user input
+	printf("Press any key to close.");
+	getc(stdin);
+#endif
+
+	// Exit
+	exit(1);
 }
 
 //----------------------------------------------------
 
-void logprintf(char * format, ...)
+void logprintf(char * szFormat, ...)
 {
-	char tmp_buf[512];
-	if(iLogState) {
+	if(iLogState)
+	{
+		// Collect the function arguments
 		va_list args;
-		va_start(args, format);
-		vsprintf(tmp_buf, format, args);
+		char szLogString[512];
+		va_start(args, szFormat);
+		vsprintf(szLogString, szFormat, args);
 		va_end(args);
-		puts(tmp_buf);
-		FILE* log = fopen("server.log", "a");
-		fprintf(log, "%s\n", tmp_buf);
-		fclose(log);
+
+		// Print the log string to the console
+		puts(szLogString);
+
+		// Open the log file
+		FILE * fLog = fopen("server.log", "a");
+
+		if(fLog)
+		{
+			// Print the log string to the log file
+			fprintf(fLog, "%s\n", szLogString);
+
+			// Close the log file
+			fclose(fLog);
+		}
 	}
 }
 
@@ -214,10 +254,13 @@ void logprintf(char * format, ...)
 
 void FilterInvalidNickChars(PCHAR szString)
 {
-	while(*szString) {
-		if(*szString < ' ' || *szString > 'z') {
+	while(*szString)
+	{
+		if(*szString < ' ' || *szString > 'z')
+		{
 			*szString = '_';
 		}
+
 		szString++;
 	}
 }
@@ -228,10 +271,11 @@ void FilterInvalidNickChars(PCHAR szString)
 long GetTickCount()
 {
         struct timeval tv;
+
         if(gettimeofday(&tv, NULL) != 0)
                 return 0;
 
-        return (tv.tv_sec * 1000) + (tv.tv_usec / 1000);
+        return ((tv.tv_sec * 1000) + (tv.tv_usec / 1000));
 }
 #endif
 
