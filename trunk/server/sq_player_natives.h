@@ -79,3 +79,5 @@ SQInteger sq_setItemFlashing(SQVM * pVM);
 SQInteger sq_setPlayerSkyColor(SQVM * pVM);
 SQInteger sq_setPlayerCash(SQVM * pVM);
 SQInteger sq_getPlayerCash(SQVM * pVM);
+SQInteger sq_setCameraShakeIntensity(SQVM * pVM);
+SQInteger sq_toggleCellPhone(SQVM * pVM);

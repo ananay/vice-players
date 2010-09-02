@@ -1095,6 +1095,8 @@ SQInteger sq_setPlayerSkyColor(SQVM * pVM)
 	return 1;
 }
 
+//-------------------------------------------------------------------
+
 SQInteger sq_setPlayerCash(SQVM * pVM)
 {
 	SQInteger playerSystemAddr;
@@ -1115,7 +1117,8 @@ SQInteger sq_setPlayerCash(SQVM * pVM)
 	return 1;
 }
 
-// getPlayerCash
+//-------------------------------------------------------------------
+
 SQInteger sq_getPlayerCash(SQVM * pVM)
 {
 	SQInteger playerSystemAddress;
@@ -1125,6 +1128,58 @@ SQInteger sq_getPlayerCash(SQVM * pVM)
 		int cash = pNetGame->GetPlayerPool()->GetAt(playerSystemAddress)->GetCash();
 
 		sq_pushinteger(pVM, cash);
+		return 1;
+	}
+
+	sq_pushbool(pVM, false);
+	return 1;
+}
+
+//-------------------------------------------------------------------
+
+SQInteger sq_toggleCellPhone(SQVM * pVM)
+{
+	SQInteger playerSystemAddress;
+	SQInteger toggle;
+
+	sq_getinteger(pVM, -2, &playerSystemAddress);
+    sq_getinteger(pVM, -1, &toggle);
+
+	RakNet::BitStream bsSend;
+	bsSend.Write(playerSystemAddress);
+	bsSend.Write(toggle);
+
+	for(BYTE i = 0; i < MAX_PLAYERS; i++)
+	{
+		if(pNetGame->GetPlayerPool()->GetSlotState(i))
+		{
+			pNetGame->GetRPC4()->Call("Script_toggleCellPhone",&bsSend,HIGH_PRIORITY,RELIABLE,0,pNetGame->GetRakPeer()->GetSystemAddressFromIndex(i),false);
+		}
+	}
+
+	sq_pushbool(pVM, true);
+	return 1;
+}
+
+//-------------------------------------------------------------------
+
+SQInteger sq_setCameraShakeIntensity(SQVM * pVM)
+{
+	SQInteger playerSystemAddress;
+	SQInteger iIntensity;
+
+	sq_getinteger(pVM, -3, &playerSystemAddress);
+    sq_getinteger(pVM, -2, &iIntensity);
+
+	if(pNetGame->GetPlayerPool()->GetSlotState(playerSystemAddress))
+	{
+		RakNet::BitStream bsSend;
+
+		bsSend.Write(iIntensity);
+
+		pNetGame->GetRPC4()->Call("Script_SetCameraShakeIntensity",&bsSend,HIGH_PRIORITY,RELIABLE,0,pNetGame->GetRakPeer()->GetSystemAddressFromIndex(playerSystemAddress),false);
+
+		sq_pushbool(pVM, true);
 		return 1;
 	}
 
