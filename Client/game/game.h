@@ -10,6 +10,7 @@
 
 #pragma once
 
+#include "../main.h"
 #include "address.h"
 #include "common.h"
 #include "vehicle.h"

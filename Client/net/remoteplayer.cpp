@@ -152,7 +152,7 @@ void CRemotePlayer::HandleVehicleEntryExit()
 	{
 		// must force in
 		CVehicle * pVehicle = pVehiclePool->GetAt(m_vehicleID);
-		
+
 		if(pVehicle && pVehicle->GetHealth() > 0.0f) {
 			if(!m_bIsAPassenger) {
 				m_pPlayerPed->PutDirectlyInVehicle(pVehiclePool->FindGtaIDFromID(m_vehicleID));
@@ -204,13 +204,8 @@ void CRemotePlayer::UpdateInCarMatrixAndSpeed(MATRIX4X4 * matWorld, Vector3 * ve
 	if(pVehicle) {
 		pVehicle->GetMatrix(&matVehicle);
 
-		matVehicle.vLookRight.X = matWorld->vLookRight.X;
-		matVehicle.vLookRight.Y = matWorld->vLookRight.Y;
-		matVehicle.vLookRight.Z = matWorld->vLookRight.Z;
-
-		matVehicle.vLookUp.X = matWorld->vLookUp.X;
-		matVehicle.vLookUp.Y = matWorld->vLookUp.Y;
-		matVehicle.vLookUp.Z = matWorld->vLookUp.Z;
+		memcpy(&matVehicle.vLookRight, &matWorld->vLookRight, sizeof(Vector3));
+		memcpy(&matVehicle.vLookUp, &matWorld->vLookUp, sizeof(Vector3));
 
 		if(matWorld->vPos.X >= matVehicle.vPos.X) {
 			fDif = matWorld->vPos.X - matVehicle.vPos.X;
@@ -243,7 +238,6 @@ void CRemotePlayer::UpdateInCarMatrixAndSpeed(MATRIX4X4 * matWorld, Vector3 * ve
 		}
 
 		pVehicle->SetMatrix(matVehicle);
-
 		pVehicle->SetMoveSpeed(*vecMoveSpeed);
 		pVehicle->SetTurnSpeed(*vecTurnSpeed);
 	}

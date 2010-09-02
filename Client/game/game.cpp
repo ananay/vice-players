@@ -8,6 +8,7 @@
 //
 //----------------------------------------------------------
 
+#include "../main.h"
 #include "game.h"
 #include "util.h"
 #include "keystuff.h"

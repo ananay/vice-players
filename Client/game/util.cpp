@@ -10,8 +10,8 @@
 
 #include "../../raknet/WindowsIncludes.h"
 #include <stdio.h>
-#include "game.h"
 #include "../main.h"
+#include "game.h"
 #include "pools.h"
 
 DWORD dwPlayerPedPtrs[MAX_PLAYERS];
@@ -25,7 +25,7 @@ void VCMP_SAFECALL GameToggleCheatCodes(bool bToggle)
 
 	if(bToggle)
 	{
-		BYTE byteOriginalCode[5] = {  0xE8, 0x34, 0x91, 0xEA, 0xFF };
+		BYTE byteOriginalCode[5] = { 0xE8, 0x34, 0x91, 0xEA, 0xFF };
 		*(BYTE *)0x602BDC = 0x50;
 		memcpy((void *)0x602BE7, byteOriginalCode, sizeof(byteOriginalCode));
 	}
