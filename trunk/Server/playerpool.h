@@ -52,7 +52,7 @@ public:
 	PCHAR GetPlayerName(EntityId playerID) { return m_szPlayerName[playerID]; };
 
 	BYTE AddResponsibleDeath(BYTE byteWhoKilled, BYTE byteWhoDied);
-	float GetDistanceFromPlayerToPlayer(BYTE bytePlayer1, BYTE bytePlayer2);
+	float GetDistanceFromPlayerToPlayer(EntityId player1, EntityId player2);
 
 	void SetAdmin(EntityId playerID) { m_bIsAnAdmin[playerID] = TRUE; };
 	BOOL IsAdmin(EntityId playerID) { return m_bIsAnAdmin[playerID]; };

@@ -288,17 +288,15 @@ void CLocalPlayer::SendInCarPassengerData()
 	EntityId vehicleID = (BYTE)pVehiclePool->FindIDFromGtaPtr(m_pPlayerPed->GetGtaVehicle());
 	if(vehicleID == 255) return;
 
-	UINT uiPassengerSeat = m_pPlayerPed->GetPassengerSeat();
+	BYTE bytePassengerSeat = m_pPlayerPed->GetPassengerSeat();
 	
 	m_pPlayerPed->GetPosition(&vPos);
 	
-	bsPassengerSync.Write((BYTE)ID_PASSENGER_SYNC);
-	bsPassengerSync.Write((BYTE)vehicleID);
-	bsPassengerSync.Write(uiPassengerSeat);
-	bsPassengerSync.Write(vPos.X);
-	bsPassengerSync.Write(vPos.Y);
-	bsPassengerSync.Write(vPos.Z);
-	pNetGame->GetRakPeer()->Send(&bsPassengerSync,HIGH_PRIORITY,UNRELIABLE_SEQUENCED,0,UNASSIGNED_SYSTEM_ADDRESS,TRUE);
+	bsPassengerSync.Write((MessageID)ID_PASSENGER_SYNC);
+	bsPassengerSync.Write(vehicleID);
+	bsPassengerSync.Write(bytePassengerSeat);
+	bsPassengerSync.Write((char *)&vPos, sizeof(Vector3));
+	pNetGame->GetRakPeer()->Send(&bsPassengerSync, HIGH_PRIORITY, UNRELIABLE_SEQUENCED, 0, UNASSIGNED_SYSTEM_ADDRESS, true);
 }
 
 //----------------------------------------------------------

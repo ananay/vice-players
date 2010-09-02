@@ -49,7 +49,7 @@ private:
 	CObjectPool					*m_pObjectPool;
 	RakPeerInterface			*m_pRakPeer;
 	static RPC4					*m_pRPC4;
-	CSpawnSelection			*m_pGameLogic;
+	CSpawnSelection				*m_pGameLogic;
 	int							m_iGameState;
 	int							m_iMaxPlayers;
 
@@ -68,10 +68,7 @@ private:
 
 public:
 
-	CNetGame(int iMaxPlayers,int iPort,int iGameType,
-		char *szPassword,char *szGameFile,
-		BYTE byteFriendlyFire,BYTE byteShowOnRadar);
-
+	CNetGame(int iMaxPlayers, int iPort, char *szPassword, BYTE byteFriendlyFire, BYTE byteShowOnRadar);
 	~CNetGame();
 
 	int GetGameState() { return m_iGameState; };
@@ -88,12 +85,12 @@ public:
 	void BroadcastData( BitStream *bitStream, PacketPriority priority,
 						PacketReliability reliability,
 						char orderingStream,
-						BYTE byteExcludedPlayer );
+						EntityId excludedPlayer );
 
 	void PlayerSync(Packet *p);
 	void VehicleSync(Packet *p);
 	void PassengerSync(Packet *p);
-	void KickPlayer(BYTE byteKickPlayer);
+	void KickPlayer(EntityId playerID);
 	void AddBan(char * ip_mask);
 	void LoadBanList();
 };

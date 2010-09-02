@@ -51,7 +51,7 @@ private:
 	BOOL				m_bIsInVehicle;
 	BOOL				m_bIsAPassenger;
 	BYTE				m_vehicleID;
-	UINT				m_uiPassengerSeat;
+	BYTE				m_bytePassengerSeat;
 	BYTE				m_byteShootingFlags;
 
 	CHAR				m_szPlayerName[MAX_PLAYER_NAME];
@@ -100,7 +100,7 @@ public:
 	
 	void StoreInCarFullSyncData(VEHICLE_SYNC_DATA * pVehicleSyncData);
 
-	void StorePassengerData(EntityId vehicleID, UINT uiSeat);
+	void StorePassengerData(EntityId vehicleID, BYTE byteSeat);
 
 	BOOL DestroyPlayer();
 

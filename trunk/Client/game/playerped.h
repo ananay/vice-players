@@ -119,9 +119,9 @@ public:
 
 	void           RemoveFromVehicleAndPutAt(float fX, float fY, float fZ);
 	void           TogglePlayerControllable(int iControllable);
-	BYTE           FindDeathReasonAndResponsiblePlayer(BYTE * nPlayer);
+	BYTE           FindDeathReasonAndResponsiblePlayer(EntityId * nPlayer);
 	void           RestartIfWastedAt(Vector3 *vecRestart, float fRotation);
-	UINT           GetPassengerSeat();
+	BYTE           GetPassengerSeat();
 };
 
 //-----------------------------------------------------------

@@ -125,16 +125,16 @@ void Passenger(RakNet::BitStream *bitStream, Packet *packet)
 {
 	EntityId playerID;
 	EntityId vehicleID;
-	UINT uiSeat;
+	BYTE byteSeat;
 
 	bitStream->Read(playerID);
 	bitStream->Read(vehicleID);
-	bitStream->Read(uiSeat);
+	bitStream->Read(byteSeat);
 	
 	CRemotePlayer * pRemotePlayer = pNetGame->GetPlayerPool()->GetAt(playerID);
 
 	if(pRemotePlayer) {
-		pRemotePlayer->StorePassengerData(vehicleID,uiSeat);
+		pRemotePlayer->StorePassengerData(vehicleID, byteSeat);
 	}	
 }
 
