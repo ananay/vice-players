@@ -263,6 +263,11 @@ void GameInstallPatches()
 	VirtualProtect((PVOID)0x40DFF4, 0x38, PAGE_EXECUTE_READWRITE, &dwVP);
 	memset((PVOID)0x40DFF4, 0x90, 0x38); // nop * 56
 	VirtualProtect((PVOID)0x40DFF4, 0x38, dwVP, &dwVP2);
+
+	// Disable taxi cash
+	VirtualProtect((PVOID)0x5B8AB6, 1, PAGE_EXECUTE_READWRITE, &dwVP);
+	*(BYTE*)0x5B8AB6 = 0;
+	VirtualProtect((PVOID)0x5B8AB6, 1, dwVP, &dwVP2);
 }
 
 //-----------------------------------------------------------
