@@ -23,6 +23,7 @@ static SQRegFunction vcmp_funcs[]={
 	_DECL_FUNC(setScriptAuthor, 2, _SC(".s")),
 	_DECL_FUNC(setScriptVersion, 2, _SC(".s")),
 	_DECL_FUNC(addChatMessage, 2, _SC(".s")),
+	_DECL_FUNC(_call, -1, NULL),
 	_DECL_FUNC(toggleCheatCodes, 2, _SC(".b")),
 	{0,0}
 };
@@ -34,7 +35,10 @@ int sq_register_vcmp(SQVM * pVM)
 	{
 		sq_pushstring(pVM,vcmp_funcs[i].name,-1);
 		sq_newclosure(pVM,vcmp_funcs[i].f,0);
-		sq_setparamscheck(pVM,vcmp_funcs[i].nparamscheck,vcmp_funcs[i].typemask);
+
+		if(vcmp_funcs[i].nparamscheck != -1)
+			sq_setparamscheck(pVM,vcmp_funcs[i].nparamscheck,vcmp_funcs[i].typemask);
+
 		sq_setnativeclosurename(pVM,-1,vcmp_funcs[i].name);
 		sq_createslot(pVM,-3);
 		i++;

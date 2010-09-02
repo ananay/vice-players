@@ -98,6 +98,7 @@ static SQRegFunction vcmp_funcs[]={
 	_DECL_FUNC(isPluginLoaded, 2, _SC(".s")),
 	// scripts
 	_DECL_FUNC(_call, -1, NULL),
+	_DECL_FUNC(clientCall, -1, NULL),
 	{0,0}
 };
 
