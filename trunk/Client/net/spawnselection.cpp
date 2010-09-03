@@ -78,7 +78,7 @@ void CSpawnSelection::ProcessLocalPlayer(CLocalPlayer *pLocalPlayer)
 			pGamePlayer->GetPosition(&vPlayerPos);
 
 			pGame->DisplayHud(FALSE);
-
+			pGamePlayer->ClearAllWeapons();
 			dwTicksSinceLastSelection = GetTickCount() - m_dwLastSpawnSelectionTick; // used to delay reselection.
 
 			// ALLOW ANOTHER SELECTION WITH LEFT KEY
