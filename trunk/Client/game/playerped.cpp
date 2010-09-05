@@ -767,15 +767,6 @@ void CPlayerPed::SetCameraShakeIntensity(int iIntensity)
 
 //-----------------------------------------------------------
 
-void CPlayerPed::SetDecaptitation(int bToggle)
-{
-	DWORD dwSystemAddress = m_bytePlayerNumber;
-
-	ScriptCommand(&toggle_decaptitation, m_dwGTAId, bToggle);
-}
-
-//-----------------------------------------------------------
-
 BOOL CPlayerPed::SetArmedWeapon(int iWeaponType)
 {
 	PED_TYPE * pPed = (PED_TYPE *)GetEntity();

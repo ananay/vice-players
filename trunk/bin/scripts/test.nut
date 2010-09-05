@@ -158,11 +158,6 @@ function onPlayerCommand(playerid, cmdtext)
 {
 	print("onPlayerCommand(" + playerid + ", " + cmdtext + ");");
 	local cmd = split(cmdtext, " ");
-	if(cmd[0] == "/head")
-	{
-		toggleDecaptitation(playerid, cmd[1].tointeger());
-		sendPlayerMessage(playerid, 0x00FF00FF, "Set!");
-	}
 	if(cmd[0] == "/createcar")
 	{
 		print("Processing command");

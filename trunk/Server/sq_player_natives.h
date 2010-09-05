@@ -68,4 +68,3 @@ SQInteger sq_setCameraShakeIntensity(SQVM * pVM);
 SQInteger sq_toggleCellPhone(SQVM * pVM);
 SQInteger sq_setPlayerGravity(SQVM * pVM);
 SQInteger sq_getPlayerGravity(SQVM * pVM);
-SQInteger sq_toggleDecaptitation(SQVM * pVM);
