@@ -834,6 +834,29 @@ void Script_togglePlayerBleeding(RakNet::BitStream *bitStream, Packet *packet)
 	}
 }
 
+// toggleDecaptitation
+void Script_toggleDecaptitation(RakNet::BitStream *bitStream, Packet *packet)
+{
+	int player, toggle;
+
+	bitStream->Read(player);
+	bitStream->Read(toggle);
+
+	if(player == pNetGame->GetPlayerPool()->GetLocalPlayerID())
+	{
+		CLocalPlayer * pPlayer = pNetGame->GetPlayerPool()->GetLocalPlayer();
+		pPlayer->GetPlayerPed()->SetDecaptitation(toggle);
+	} 
+	else if(pNetGame->GetPlayerPool()->GetSlotState(player))
+	{
+		if(player != pNetGame->GetPlayerPool()->GetLocalPlayerID())
+		{
+			CRemotePlayer * pPlayer = pNetGame->GetPlayerPool()->GetAt(player);
+			pPlayer->GetPlayerPed()->SetDecaptitation(toggle);
+		}
+	}
+}
+
 // popVehicleTrunk
 void Script_popVehicleTrunk(RakNet::BitStream *bitStream, Packet *packet)
 {
@@ -976,6 +999,7 @@ void RegisterRPCs()
 	pNetGame->GetRPC4()->RegisterFunction("Script_toggleCellPhone", Script_toggleCellPhone);
 	pNetGame->GetRPC4()->RegisterFunction("Script_SetCameraShakeIntensity", Script_SetCameraShakeIntensity);
 	pNetGame->GetRPC4()->RegisterFunction("Script_SetPlayerGravity", Script_setPlayerGravity);
+	pNetGame->GetRPC4()->RegisterFunction("Script_toggleDecaptitation", Script_toggleDecaptitation);
 }
 
 //----------------------------------------------------
@@ -1037,6 +1061,7 @@ void UnRegisterRPCs()
 	pNetGame->GetRPC4()->UnregisterFunction("Script_toggleCellPhone");
 	pNetGame->GetRPC4()->UnregisterFunction("Script_SetCameraShakeIntensity");
 	pNetGame->GetRPC4()->UnregisterFunction("Script_SetPlayerGravity");
+	pNetGame->GetRPC4()->UnregisterFunction("Script_toggleDecaptitation");
 }
 
 //----------------------------------------------------

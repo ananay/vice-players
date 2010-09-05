@@ -8,7 +8,7 @@ function onServerInit()
 	// Player classes
 	addPlayerClass(0, 1, -673.2837, -1325.3040, 11.0715, 116.6886, 4, 1, 3, 35, 19, 15);
 	addPlayerClass(1, 87, -673.2837, -1325.3040, 11.0715, 116.6886, 9, 1, 22, 70, 21, 13);
-	addPlayerClass(2, 93, -673.2837, -1325.3040, 11.0715, 116.6886, 1, 1, 23, 80, 19, 23);
+	addPlayerClass(2, 93, -673.2837, -1325.3040, 11.0715, 116.6886, 10, 1, 23, 80, 19, 23);
 	
 	// Some test vehicles
 	//local v1 = createVehicle(149, -681.5270, -1329.4580, 10.8290, 292.6041, 5, 5);
@@ -158,6 +158,11 @@ function onPlayerCommand(playerid, cmdtext)
 {
 	print("onPlayerCommand(" + playerid + ", " + cmdtext + ");");
 	local cmd = split(cmdtext, " ");
+	if(cmd[0] == "/head")
+	{
+		toggleDecaptitation(playerid, cmd[1].tointeger());
+		sendPlayerMessage(playerid, 0x00FF00FF, "Set!");
+	}
 	if(cmd[0] == "/createcar")
 	{
 		print("Processing command");
