@@ -90,6 +90,10 @@ BOOL CPlayerPool::Delete(EntityId playerID, BYTE byteReason)
 		return FALSE;
 	}
 
+	pScripts->onPlayerDisconnect(playerID, byteReason);
+
+	logprintf("[part] %u %s %u",playerID,m_szPlayerName[playerID],byteReason);
+
 	m_bPlayerSlotState[playerID] = FALSE;
 	delete m_pPlayers[playerID];
 	m_pPlayers[playerID] = NULL;
@@ -101,10 +105,6 @@ BOOL CPlayerPool::Delete(EntityId playerID, BYTE byteReason)
 	pNetGame->GetRPC4()->Call("ServerQuit", &bsSend,HIGH_PRIORITY,RELIABLE_ORDERED,0,pNetGame->GetRakPeer()->GetSystemAddressFromIndex(playerID),true);
 
 	pRcon->ConsolePrintf("[part] %u %s %u",playerID,m_szPlayerName[playerID],byteReason);
-
-	pScripts->onPlayerDisconnect(playerID, byteReason);
-
-	logprintf("[part] %u %s %u",playerID,m_szPlayerName[playerID],byteReason);
 	
 	return TRUE;
 }
