@@ -95,8 +95,6 @@ int sq_register_natives(SQVM * pVM)
 	RegisterFunction(pVM, "clientCall", sq_clientCall, -1, NULL);
 	RegisterFunction(pVM, "setPlayerGravity", sq_setPlayerGravity, 3, ".ni");
 	RegisterFunction(pVM, "getPlayerGravity", sq_getPlayerGravity, 2, ".n");
-	RegisterFunction(pVM, "toggleDecaptitation", sq_toggleDecaptitation, 3, ".ni");
-	//RegisterFunction(pVM, "toggleRhinoCollisionExplosion", sq_toggleRhinoCollisionExplosion, 3, ".ni");
 
 	// Timers
 	RegisterFunction(pVM, "setTimer", sq_setTimer, -1, NULL);

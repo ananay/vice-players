@@ -73,7 +73,6 @@ public:
 	void		   SetSkyColor(int iColorID, int iFade);
 	void		   SetDrivebyState(int iToggle);
 	void		   SetCameraShakeIntensity(int iIntensity);
-	void		   SetDecaptitation(int bToggle);
 
 	float          GetHealth();
 	void           SetHealth(float fHealth);
