@@ -65,6 +65,31 @@ BOOL WINAPI DllMain(HINSTANCE hinstDLL, DWORD fdwReason, LPVOID lpvReserved)
 			ExitProcess(1);
 		}
 
+		FILE* CheckPNG = fopen("vcpfnt.png", "r");
+		FILE* CheckDAT = fopen("vcpfnt.dat", "r");
+
+		if(CheckPNG) 
+		{
+			fclose(CheckPNG);
+		}
+		else
+		{
+			MessageBox(0,"You are missing the vcpfnt.png file from your games directory.","Vice City: Players Error",MB_OK);
+			SetForegroundWindow(HWND_DESKTOP);
+			ExitProcess(1);
+		}
+		
+		if(CheckDAT) 
+		{
+			fclose(CheckDAT);
+		}
+		else
+		{
+			MessageBox(0,"You are missing the vcpfnt.dat file from your games directory.","Vice City: Players Error",MB_OK);
+			SetForegroundWindow(HWND_DESKTOP);
+			ExitProcess(1);
+		}
+
 		pGame = new CGame();
 		pScripts = new CScripts();
 
