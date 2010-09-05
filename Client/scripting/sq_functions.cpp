@@ -5,6 +5,7 @@
 //
 // File Authors: Christopher
 //               adamix
+//				 bpeterson	
 // License: See LICENSE in root directory
 //
 //-----------------------------------------------------
@@ -28,5 +29,6 @@ int sq_register_natives(SQVM * pVM)
 	RegisterFunction(pVM, "setTimer", sq_setTimer, -1, NULL);
 	RegisterFunction(pVM, "killTimer", sq_killTimer, -1, NULL);
 	RegisterFunction(pVM, "isTimerActive", sq_isTimerActive, -1, NULL);
+
 	return 1;
 }

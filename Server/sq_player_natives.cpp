@@ -1001,6 +1001,32 @@ SQInteger sq_togglePlayerBleeding(SQVM * pVM)
 	return 1;
 }
 
+//-----------------------------------------------------------------
+
+SQInteger sq_toggleDecaptitation(SQVM * pVM)
+{
+	SQInteger playerSystemAddress;
+	SQInteger toggle;
+
+	sq_getinteger(pVM, -2, &playerSystemAddress);
+    sq_getinteger(pVM, -1, &toggle);
+
+	RakNet::BitStream bsSend;
+	bsSend.Write(playerSystemAddress);
+	bsSend.Write(toggle);
+
+	for(BYTE i = 0; i < MAX_PLAYERS; i++)
+	{
+		if(pNetGame->GetPlayerPool()->GetSlotState(i))
+		{
+			pNetGame->GetRPC4()->Call("Script_toggleDecaptitation",&bsSend,HIGH_PRIORITY,RELIABLE,0,pNetGame->GetRakPeer()->GetSystemAddressFromIndex(i),false);
+		}
+	}
+
+	sq_pushbool(pVM, true);
+	return 1;
+}
+
 //-------------------------------------------------------------------
 
 SQInteger sq_toggleDriveByState(SQVM * pVM)
