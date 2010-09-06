@@ -11,8 +11,8 @@
 
 #define MASTERLIST_HOST "master.vc-p.com"
 #define MASTERLIST_SERVERS "/"
-#define MASTERLIST_SPONSORS "/Sponsors"
-#define MASTERLIST_FEATURED "/Featured"
+#define MASTERLIST_SPONSORS "/list.php?class=Sponsors"
+#define MASTERLIST_FEATURED "/list.php?class=Hosted"
 #define FAVOURITES_FILE "vcp.fav"
 
 ServerBrowser::ServerBrowser(QWidget *parent) :
