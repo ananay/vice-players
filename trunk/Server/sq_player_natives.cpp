@@ -1208,7 +1208,7 @@ SQInteger sq_getPlayerGravity(SQVM * pVM)
 	{
 		float amount = pNetGame->GetPlayerPool()->GetAt(playerSystemAddress)->GetGravity();
 
-		sq_pushinteger(pVM, amount);
+		sq_pushfloat(pVM, amount);
 		return 1;
 	}
 
