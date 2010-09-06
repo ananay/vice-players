@@ -207,6 +207,14 @@
 			Name="Net"
 			>
 			<File
+				RelativePath=".\masterlist.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\masterlist.h"
+				>
+			</File>
+			<File
 				RelativePath="netgame.cpp"
 				>
 				<FileConfiguration

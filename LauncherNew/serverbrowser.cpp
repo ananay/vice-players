@@ -6,11 +6,14 @@
 #include <QtGui>
 #include <tlhelp32.h>
 #include <stdlib.h>
+#include "addfav.h"
+#include "ui_addfav.h"
 
-#define MASTERLIST_HOST "xdevel.ru"
-#define MASTERLIST_SERVERS "/masterlist/"
-#define MASTERLIST_SPONSORS "/masterlist/list/Sponsors"
-#define MASTERLIST_FEATURED "/masterlist/list/Featured"
+#define MASTERLIST_HOST "master.vc-p.com"
+#define MASTERLIST_SERVERS "/"
+#define MASTERLIST_SPONSORS "/Sponsors"
+#define MASTERLIST_FEATURED "/Featured"
+#define FAVOURITES_FILE "vcp.fav"
 
 ServerBrowser::ServerBrowser(QWidget *parent) :
     QMainWindow(parent),
@@ -27,6 +30,7 @@ ServerBrowser::ServerBrowser(QWidget *parent) :
     ui->twServers->setParent(ui->wServers);
     ui->btnConnect2->setParent(ui->wServers);
     ui->btnRefresh->setParent(ui->wServers);
+    ui->btnAddFav->setParent(ui->wServers);
 
     m_Socket = NULL;
     MasterListStartup();
@@ -43,6 +47,8 @@ ServerBrowser::ServerBrowser(QWidget *parent) :
     connect(ui->twServers, SIGNAL(itemDoubleClicked(QTreeWidgetItem*,int)), this, SLOT(onDoubleClick(QTreeWidgetItem*,int)) );
     connect(ui->btnRefresh, SIGNAL(released()), this, SLOT(Refresh()));
     connect(ui->btnConnect, SIGNAL(released()), this, SLOT(onConnect()));
+
+    connect(ui->btnAddFav, SIGNAL(clicked()), this, SLOT(AddFavourite()));
     Refresh();
 }
 
@@ -157,27 +163,86 @@ void ServerBrowser::Refresh()
     ui->twServers->clear();
     if(selected == 1)
         http->get(MASTERLIST_SERVERS);
-    if(selected == 2)
+    else if(selected == 2)
         http->get(MASTERLIST_FEATURED);
-    if(selected == 3)
+    else if(selected == 3)
         http->get(MASTERLIST_SPONSORS);
+    else if(selected == 4)
+    {
+        LoadFavourites();
+    }
+
 }
 
-void ServerBrowser::httpDone()
+void ServerBrowser::LoadFavourites()
 {
-    QString data = http->readAll();
-    //QMessageBox::information(this, "", data);
-    if(data.size() < 5) return;
+    QFile file(FAVOURITES_FILE);
+    if(!file.open(QIODevice::ReadOnly | QIODevice::Text))
+        return;
 
-    QStringList servers = data.split("\n");
+    m_szFav = file.readAll();
+
+    QStringList servers = m_szFav.split("\n");
     for(int i = 0; i < servers.size(); i++)
     {
         QString server = servers.at(i);
+        if(server.size() < 7) continue;
         //QMessageBox::information(this, "", server);
         QStringList s = server.split(":");
         QString ip = s.at(0);
         QString port = s.at(1);
         Query(ip.toAscii(), port.toInt(), 'i');
+    }
+}
+
+void ServerBrowser::SaveFavourites()
+{
+    QFile file(FAVOURITES_FILE);
+    if(!file.open(QIODevice::WriteOnly | QIODevice::Text))
+        return;
+
+    file.write(m_szFav.toAscii());
+}
+
+void ServerBrowser::AddFavourite()
+{
+    addfav dialog;
+    dialog.show();
+    dialog.exec();
+    if(dialog.address != "")
+    {
+        m_szFav += dialog.address;
+        m_szFav += "\n";
+        SaveFavourites();
+    }
+}
+
+void ServerBrowser::DeleteFavourite(QString address)
+{
+    address += "\n";
+    m_szFav.replace(address, "");
+    SaveFavourites();
+}
+
+void ServerBrowser::httpDone()
+{
+    if(selected != 4 || selected != 0)
+    {
+        QString data = http->readAll();
+        //QMessageBox::information(this, "", data);
+        if(data.size() < 5) return;
+
+        QStringList servers = data.split("\n");
+        for(int i = 0; i < servers.size(); i++)
+        {
+            QString server = servers.at(i);
+            if(server.size() < 7) continue;
+            //QMessageBox::information(this, "", server);
+            QStringList s = server.split(":");
+            QString ip = s.at(0);
+            QString port = s.at(1);
+            Query(ip.toAscii(), port.toInt(), 'i');
+        }
     }
 }
 
@@ -188,8 +253,9 @@ ServerBrowser::~ServerBrowser()
 
 void ServerBrowser::on_tabWidget_currentChanged(QWidget* wdg )
 {
-    if(wdg == ui->tabServers || wdg == ui->tabFeatured || wdg == ui->tabSponsors)
+    if(wdg == ui->tabServers || wdg == ui->tabFeatured || wdg == ui->tabSponsors || wdg == ui->tabFavourites)
     {
+        ui->btnAddFav->hide();
         setFixedSize(800, 600);
         ui->centralWidget->setFixedSize(800, 600);
         ui->tabWidget->setFixedSize(782, 583);
@@ -211,13 +277,20 @@ void ServerBrowser::on_tabWidget_currentChanged(QWidget* wdg )
             ui->wServers->show();
             selected = 1;
         }
+        else if(wdg == ui->tabFavourites)
+        {
+            ui->wServers->setParent(ui->tabFavourites);
+            ui->wServers->show();
+            ui->btnAddFav->show();
+            selected = 4;
+        }
         Refresh();
     }
     else if(wdg == ui->tabConnect)
     {
-        setFixedSize(353, 190);
-        ui->centralWidget->setFixedSize(353, 190);
-        ui->tabWidget->setFixedSize(331, 171);
+        setFixedSize(373, 190);
+        ui->centralWidget->setFixedSize(373, 190);
+        ui->tabWidget->setFixedSize(351, 171);
     }
 }
 
