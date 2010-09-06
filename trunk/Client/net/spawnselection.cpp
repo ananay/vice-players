@@ -58,12 +58,14 @@ void CSpawnSelection::ProcessLocalPlayer(CLocalPlayer *pLocalPlayer)
 			pGamePlayer->GetPosition(&vPlayerPos);		
 			pGame->PlaySound(10, vPlayerPos);
 			pGame->ToggleKeyInputsDisabled(FALSE);
+			pGamePlayer->TogglePlayerControllable(TRUE);
 			return;
 		}
 		else if(m_bClearedToSpawn) // WE ARE CLEARED TO SPAWN OR SELECT ANOTHER CLASS
 		{
 			pGame->ToggleHud(FALSE);
 			pGame->HideRadar(TRUE);
+			pGame->ToggleKeyInputsDisabled(TRUE);
 
 			// SHOW INFO ABOUT THE SELECTED CLASS..
 			szMsg[0] = '\0';
@@ -79,6 +81,7 @@ void CSpawnSelection::ProcessLocalPlayer(CLocalPlayer *pLocalPlayer)
 
 			pGame->DisplayHud(FALSE);
 			pGamePlayer->ClearAllWeapons();
+			pGamePlayer->TogglePlayerControllable(FALSE);
 			dwTicksSinceLastSelection = GetTickCount() - m_dwLastSpawnSelectionTick; // used to delay reselection.
 
 			// ALLOW ANOTHER SELECTION WITH LEFT KEY
