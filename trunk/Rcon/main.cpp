@@ -1,5 +1,10 @@
 #include "main.h"
 
+bool ProcessServerQuery(unsigned int,struct RakNet::SystemAddress,char *,int)
+{
+	return false;
+}
+
 void logprintf(char* format, ...)
 {
 	va_list ap;

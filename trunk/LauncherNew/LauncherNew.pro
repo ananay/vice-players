@@ -11,8 +11,11 @@ TEMPLATE = app
 
 
 SOURCES += main.cpp\
-        serverbrowser.cpp
+        serverbrowser.cpp \
+    addfav.cpp
 
-HEADERS  += serverbrowser.h
+HEADERS  += serverbrowser.h \
+    addfav.h
 
-FORMS    += serverbrowser.ui
+FORMS    += serverbrowser.ui \
+    addfav.ui

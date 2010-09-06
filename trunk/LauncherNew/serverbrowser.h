@@ -33,8 +33,13 @@ private:
     SOCKET m_Socket;
     QHttp * http;
     int selected;
+    QString m_szFav;
 
 private slots:
+    void LoadFavourites();
+    void SaveFavourites();
+    void AddFavourite();
+    void DeleteFavourite(QString address);
     void ListenThreadProc();
     void httpDone();
     void Refresh();

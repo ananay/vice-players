@@ -82,7 +82,7 @@ CNetGame::CNetGame(int iMaxPlayers, int iPort, char * szPassword, char * szHostn
 
 	srand((unsigned int)time(NULL));
 
-	pMasterList = new CMasterList("boylett.com", "/masterlist", iPort);
+	pMasterList = new CMasterList("master.vc-p.com", "", iPort);
 }
 
 //----------------------------------------------------
