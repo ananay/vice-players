@@ -47,11 +47,11 @@ HRESULT __stdcall IDirect3DDevice8Hook::Reset(D3DPRESENT_PARAMETERS* pPresentati
 		pPresentationParameters->Windowed = 1;
 		pPresentationParameters->Flags = 0;
 		pPresentationParameters->FullScreen_RefreshRateInHz = 0;
-		pPresentationParameters->FullScreen_PresentationInterval = 0;
-
-		//pPresentationParameters->BackBufferFormat = D3DDisplayMode.Format;
-
-		SetWindowPos(pPresentationParameters->hDeviceWindow, HWND_NOTOPMOST, 0, 0, pPresentationParameters->BackBufferWidth, pPresentationParameters->BackBufferHeight, SWP_SHOWWINDOW);
+		LONG_PTR style = GetWindowLongPtr(pPresentationParameters->hDeviceWindow, GWL_STYLE);
+		SetWindowLongPtr(pPresentationParameters->hDeviceWindow, GWL_STYLE, style | WS_POPUPWINDOW | WS_CAPTION | WS_MINIMIZEBOX | WS_MAXIMIZEBOX | WS_THICKFRAME);
+		//D3DDISPLAYMODE displayMode;
+		//m_pD3DDevice->GetDisplayMode(0, &displayMode);
+		SetWindowPos(pPresentationParameters->hDeviceWindow, HWND_NOTOPMOST, 0, 0, pPresentationParameters->BackBufferWidth, pPresentationParameters->BackBufferHeight/*displayMode.Width, displayMode.Height*/, SWP_SHOWWINDOW);
 	}
 
 
