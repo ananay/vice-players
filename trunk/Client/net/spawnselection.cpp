@@ -65,7 +65,6 @@ void CSpawnSelection::ProcessLocalPlayer(CLocalPlayer *pLocalPlayer)
 		{
 			pGame->ToggleHud(FALSE);
 			pGame->HideRadar(TRUE);
-			pGame->ToggleKeyInputsDisabled(TRUE);
 
 			// SHOW INFO ABOUT THE SELECTED CLASS..
 			szMsg[0] = '\0';
