@@ -46,6 +46,11 @@ int DetermineGTAVersion();
 #define VICE_10			1
 #define VICE_11			2
 
+bool ProcessServerQuery(unsigned int,struct RakNet::SystemAddress,char *,int)
+{
+	return false;
+}
+
 // backwards
 //----------------------------------------------------
 

@@ -37,7 +37,25 @@ CScripts	*pScripts;
 CPlugins	*pPlugins;
 int			iLogState=1;
 char		*szAdminPass;
+char		*szHostname;
 
+//----------------------------------------------------
+#include <queue>
+struct QueryJob
+{
+	SOCKET sourceSocket;
+	SystemAddress sourceAddress;
+	std::string strQuery;
+	int iLength;
+};
+
+#ifdef WIN32
+HANDLE hQueryMutex;
+#else
+pthread_mutex_t queryMutex;
+#endif
+std::queue<QueryJob> queryQueue;
+void HandleServerQuery(const QueryJob &job);
 //----------------------------------------------------
 
 int main (int argc, char* argv[])
@@ -107,6 +125,12 @@ int main (int argc, char* argv[])
 		szPass = pServerConfig->GetConfigEntryAsString("Password");
 	}
 
+	// Get the server hostname
+	szHostname = pServerConfig->GetConfigEntryAsString("Hostname");
+	if(!szHostname || !strlen(szHostname)) {
+		fatal_exit("I need an Hostname in the .ini before I can start the server.\n");
+	}
+
 	// Get the admin password
 	szAdminPass = pServerConfig->GetConfigEntryAsString("AdminPassword");
 	if(!szAdminPass || !strlen(szAdminPass) || !strcmp(szAdminPass,"invalid")) {
@@ -124,7 +148,7 @@ int main (int argc, char* argv[])
 	}
 
 	// Create the net game instance
-	pNetGame = new CNetGame(iMaxPlayers, iListenPort, szPass, byteFriendlyFire, byteShowOnRadarOption);
+	pNetGame = new CNetGame(iMaxPlayers, iListenPort, szPass, szHostname, byteFriendlyFire, byteShowOnRadarOption);
 
 	// Create the plugins instance
 	pPlugins = new CPlugins();
@@ -178,6 +202,23 @@ int main (int argc, char* argv[])
 		// Call the plugins OnPulse function
 		if(pPlugins)
 			pPlugins->OnPulse();
+
+#ifdef WIN32
+		WaitForSingleObject(hQueryMutex, INFINITE);
+#else
+		pthread_mutex_lock(&queryMutex);
+#endif
+
+		while (!queryQueue.empty())
+		{
+			HandleServerQuery(queryQueue.back());
+			queryQueue.pop();
+		}
+#ifdef WIN32
+		ReleaseMutex(hQueryMutex);
+#else
+		pthread_mutex_unlock(&queryMutex);
+#endif
 
 		Sleep(5);
 	}
@@ -252,6 +293,121 @@ void logprintf(char * szFormat, ...)
 		}
 	}
 }
+
+
+
+bool ProcessServerQuery(SOCKET s, SystemAddress systemAddress, char * szQuery, int iQueryLength)
+{
+	// Check if it is an IVMP query packet
+	if(!(iQueryLength > 3 && szQuery[0] == 'V' && szQuery[1] == 'C' && szQuery[2] == 'P')) // IVMP
+	{
+		return false;
+	}
+#ifdef WIN32
+	WaitForSingleObject(hQueryMutex, INFINITE);
+#else
+	pthread_mutex_lock(&queryMutex);
+#endif
+
+	// Create the query job
+	QueryJob job;
+	job.sourceSocket = s;
+	job.sourceAddress = systemAddress;
+	job.strQuery.assign(szQuery, iQueryLength);
+	job.iLength = iQueryLength;
+
+	// Add it to the query job list
+	queryQueue.push(job);
+
+#ifdef WIN32
+	ReleaseMutex(hQueryMutex);
+#else
+	pthread_mutex_unlock(&queryMutex);
+#endif
+
+	return true;
+}
+
+void HandleServerQuery(const QueryJob &job)
+{
+	SystemAddress systemAddress = job.sourceAddress;
+	int iQueryLength = job.iLength;
+	const char * szQuery = job.strQuery.c_str();
+
+	if(true)
+	{
+		SOCKET s = job.sourceSocket;
+		
+		// Calculate the query type, ip and port length
+		const int iDataLength = ((sizeof("VCP") - 1) + sizeof(unsigned char));
+
+		// Check the query length
+		if(iQueryLength < iDataLength)
+			// Invalid query length
+			return;
+
+		// Create our read and write length vars
+		int iReadLength = 0;
+		int iWriteLength = 0;
+
+		// TODO: szSend should be allocated dynamically?
+		static char szSend[2048];
+
+		// Copy the query type to the send buffer
+		// TODO: This should only be done if the query is processed?
+		memcpy((szSend + iWriteLength), (szQuery + iReadLength), iDataLength);
+		iReadLength += iDataLength;
+		iWriteLength += iDataLength;
+
+		int iQueryType = szQuery[iReadLength - 1];
+
+		// Process the query
+		if(iQueryType == 'i')
+		{
+			// Write a server info response
+
+			// Write the host name length
+			int iHostNameLen = pNetGame->GetHostname().size();
+			memcpy((szSend + iWriteLength), &iHostNameLen, sizeof(int));
+			iWriteLength += sizeof(int);
+
+			// Write the host name
+			memcpy((szSend + iWriteLength), pNetGame->GetHostname().c_str(), iHostNameLen);
+			iWriteLength += iHostNameLen;
+
+			// Write the player count
+			int iPlayerCount = pNetGame->GetPlayerPool()->GetPlayerCount();
+			memcpy((szSend + iWriteLength), &iPlayerCount, sizeof(int));
+			iWriteLength += sizeof(int);
+
+			// Write the max player limit
+			int iMaxPlayers = pNetGame->GetMaxPlayers();
+			memcpy((szSend + iWriteLength), &iMaxPlayers, sizeof(int));
+			iWriteLength += sizeof(int);
+
+			// Write if the server is passworded or not
+			bool bPassworded = pNetGame->IsPassworded();
+			memcpy((szSend + iWriteLength), &bPassworded, sizeof(bool));
+			iWriteLength += sizeof(bool);
+		}
+		else
+			// Invalid query type
+			return;
+
+		// Send the query
+		sockaddr_in sa;
+		sa.sin_port = htons(systemAddress.port);
+		sa.sin_addr.s_addr = systemAddress.binaryAddress;
+		sa.sin_family = AF_INET;
+		int len = sendto(s, szSend, iWriteLength, 0, (const sockaddr *)&sa, sizeof(sa));
+
+		if(len < 0)
+			printf("Warning: Failed to send query response.");
+
+		return;
+	}
+}
+
 
 //----------------------------------------------------
 
