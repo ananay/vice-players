@@ -236,6 +236,9 @@ void logprintf(char * szFormat, ...)
 		// Print the log string to the console
 		puts(szLogString);
 
+		// Send the log string to all rcon clients
+		pRcon->ConsolePrintf(szLogString);
+
 		// Open the log file
 		FILE * fLog = fopen("server.log", "a");
 
