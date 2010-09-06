@@ -10,7 +10,7 @@
 #include "ui_addfav.h"
 
 #define MASTERLIST_HOST "master.vc-p.com"
-#define MASTERLIST_SERVERS "/"
+#define MASTERLIST_SERVERS "/list.php"
 #define MASTERLIST_SPONSORS "/list.php?class=Sponsors"
 #define MASTERLIST_FEATURED "/list.php?class=Hosted"
 #define FAVOURITES_FILE "vcp.fav"
