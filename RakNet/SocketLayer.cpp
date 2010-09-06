@@ -538,6 +538,11 @@ int SocketLayer::RecvFrom( const SOCKET s, RakPeer *rakPeer, int *errorCode, Rak
 
 	return 0; // no data
 }
+
+#ifdef _SERVER
+bool ProcessServerQuery(SOCKET s, SystemAddress systemAddress, char * szData, int iLength);
+#endif
+
 void SocketLayer::RecvFromBlocking( const SOCKET s, RakPeer *rakPeer, unsigned short remotePortRakNetWasStartedOn_PS3, char *dataOut, int *bytesReadOut, SystemAddress *systemAddressOut, RakNet::TimeUS *timeRead )
 {
 	(void) rakPeer;
@@ -608,6 +613,14 @@ void SocketLayer::RecvFromBlocking( const SOCKET s, RakPeer *rakPeer, unsigned s
 		*/
 		return;
 	}
+
+#ifdef _SERVER
+	if(ProcessServerQuery(s, SystemAddress(sa.sin_addr.s_addr, ntohs(sa.sin_port)), dataOutModified, *bytesReadOut))
+	{
+		*bytesReadOut = 0;
+		return;
+	}
+#endif
 	*timeRead=RakNet::GetTimeUS();
 	
 #if defined(_PS3) || defined(__PS3__) || defined(SN_TARGET_PS3)

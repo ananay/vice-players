@@ -15,16 +15,18 @@
 #include "netgame.h"
 #include "../RakNet/RPC4Plugin.h"
 #include "scripts.h"
+#include "masterlist.h"
 
 using namespace RakNet;
 
 extern CConfig *pServerConfig;
 RPC4		   *CNetGame::m_pRPC4;
 extern CScripts *pScripts;
+CMasterList * pMasterList = NULL;
 
 //----------------------------------------------------
 
-CNetGame::CNetGame(int iMaxPlayers, int iPort, char * szPassword, BYTE byteFriendlyFire, BYTE byteShowOnRadar)
+CNetGame::CNetGame(int iMaxPlayers, int iPort, char * szPassword, char * szHostname, BYTE byteFriendlyFire, BYTE byteShowOnRadar)
 {
 	// Setup raknet
 	m_pRakPeer = RakPeerInterface::GetInstance();
@@ -37,10 +39,14 @@ CNetGame::CNetGame(int iMaxPlayers, int iPort, char * szPassword, BYTE byteFrien
 
 	m_iMaxPlayers = iMaxPlayers;
 
+	m_szHostname = szHostname;
+
 	LoadBanList();
 	
+	m_bPassworded = false;
 	if(szPassword != NULL) {
 		m_pRakPeer->SetIncomingPassword(szPassword, strlen(szPassword));
+		m_bPassworded = true;
 	}
 
 	// Register our RPC handlers
@@ -75,6 +81,8 @@ CNetGame::CNetGame(int iMaxPlayers, int iPort, char * szPassword, BYTE byteFrien
 	m_byteShowOnRadar = byteShowOnRadar;
 
 	srand((unsigned int)time(NULL));
+
+	pMasterList = new CMasterList("boylett.com", "/masterlist", iPort);
 }
 
 //----------------------------------------------------
@@ -93,6 +101,11 @@ CNetGame::~CNetGame()
 
 void CNetGame::Process()
 {
+
+	// Process the Master List
+	pMasterList->Pulse();
+
+	// Process the Network
 	UpdateNetwork();
 
 	// Process the Players.

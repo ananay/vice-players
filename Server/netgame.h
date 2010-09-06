@@ -52,6 +52,8 @@ private:
 	CSpawnSelection				*m_pGameLogic;
 	int							m_iGameState;
 	int							m_iMaxPlayers;
+	std::string					m_szHostname;
+	bool						m_bPassworded;
 
 	// TODO: Make private
 public:
@@ -68,7 +70,7 @@ private:
 
 public:
 
-	CNetGame(int iMaxPlayers, int iPort, char *szPassword, BYTE byteFriendlyFire, BYTE byteShowOnRadar);
+	CNetGame(int iMaxPlayers, int iPort, char * szPassword, char * szHostname, BYTE byteFriendlyFire, BYTE byteShowOnRadar);
 	~CNetGame();
 
 	int GetGameState() { return m_iGameState; };
@@ -80,6 +82,8 @@ public:
 	RPC4 * GetRPC4() { return m_pRPC4; }
 	CSpawnSelection * GetGameLogic() { return m_pGameLogic; };
 	int	GetMaxPlayers() { return m_iMaxPlayers; };
+	std::string GetHostname() { return m_szHostname; };
+	bool IsPassworded() { return m_bPassworded; };
 	
 	void Process();
 	void BroadcastData( BitStream *bitStream, PacketPriority priority,
