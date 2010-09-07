@@ -11,7 +11,6 @@
 #include "../RakNet/TCPInterface.h"
 #include "../RakNet/HTTPConnection.h"
 #include <string>
-#include "system.h"
 class CMasterList
 {
 private:

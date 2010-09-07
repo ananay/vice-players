@@ -9,12 +9,12 @@
 //-----------------------------------------------------
 
 #include "masterlist.h"
-#include "main.h"
+
 CMasterList::CMasterList(char * szAddress, char * szPath, int iServerPort)
 {
 	m_dwLastPulse = 0;
 	char port[5];
-	sprintf(port, "%d", iServerPort);
+	itoa(iServerPort, port, 10);
 	m_sPostPath = szPath;
 	m_sPostPath += "/add.php?port=";
 	m_sPostPath += port;

@@ -26,6 +26,7 @@ BOOL					bAntiCheat=FALSE;
 bool					D3DInited=FALSE;
 
 IDirect3DDevice8		*pD3DDevice;
+IDirectInput8			*pDirectInput;
 
 HANDLE					hInstance;
 CScoreBoard				*pScoreBoard;
