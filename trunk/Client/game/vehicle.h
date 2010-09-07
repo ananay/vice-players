@@ -49,7 +49,6 @@ public:
 	void  SetHandbrakeState(BOOL bState);
 	BYTE  GetMaxPassengers();
 
-	// Added by the VC-Players team.
 	void popVehicleTrunk();
 	void toggleRhinoInstantExplosionUponContact(int iToggle);
 

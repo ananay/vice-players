@@ -20,5 +20,6 @@ BOOL VCMP_SAFECALL GameIsEntityOnScreen(DWORD * pdwEnt);
 void VCMP_SAFECALL InitPlayerPedPtrRecords();
 void VCMP_SAFECALL SetPlayerPedPtrRecord(BYTE bytePlayer, DWORD dwPedPtr);
 BYTE VCMP_SAFECALL FindPlayerNumFromPedPtr(DWORD dwPedPtr);
+void Unprotect(DWORD dwAddress, size_t sSize);
 
 //-----------------------------------------------------------

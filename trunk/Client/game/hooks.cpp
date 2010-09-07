@@ -656,11 +656,8 @@ void StartGame()
 
 void InstallMethodHook(DWORD dwInstallAddress,DWORD dwHookFunction)
 {
-	DWORD dwVP, dwVP2;
-
-	VirtualProtect((PVOID)dwInstallAddress, 4, PAGE_EXECUTE_READWRITE, &dwVP);
+	Unprotect(dwInstallAddress, 4);
 	*(DWORD *)dwInstallAddress = (DWORD)dwHookFunction;
-	VirtualProtect((PVOID)dwInstallAddress, 4, dwVP, &dwVP2);
 }
 
 //-----------------------------------------------------------
@@ -671,29 +668,22 @@ void InstallHook( DWORD dwInstallAddress,
 				  BYTE * pbyteJmpCode,
 				  int iJmpCodeSize )
 {
-	DWORD dwVP, dwVP2;
-
 	// Install the pointer to procaddr.
-	VirtualProtect((PVOID)dwHookStorage,4,PAGE_EXECUTE_READWRITE,&dwVP);
+	Unprotect(dwHookStorage, 4);
 	*(PDWORD)dwHookStorage = (DWORD)dwHookFunction;
-	VirtualProtect((PVOID)dwHookStorage,4,dwVP,&dwVP2);
 
 	// Install the Jmp code.
-	VirtualProtect((PVOID)dwInstallAddress,iJmpCodeSize,PAGE_EXECUTE_READWRITE,&dwVP);
+	Unprotect(dwInstallAddress, iJmpCodeSize);
 	memcpy((PVOID)dwInstallAddress,pbyteJmpCode,iJmpCodeSize);
-	VirtualProtect((PVOID)dwInstallAddress,iJmpCodeSize,dwVP,&dwVP2);
 }
 
 //-----------------------------------------------------------
 
 void InstallCallHook(DWORD dwInstallAddress, DWORD dwHookFunction)
 {
-	DWORD dwOldProt;
-
-	VirtualProtect((void *)dwInstallAddress, 5, PAGE_EXECUTE_READWRITE, &dwOldProt);
+	Unprotect(dwInstallAddress, 5);
 	*(BYTE *)dwInstallAddress = 0xE8;
 	*(DWORD *)(dwInstallAddress + 1) = (dwHookFunction - (dwInstallAddress + 5));
-	VirtualProtect((void *)dwInstallAddress, 5, dwOldProt, &dwOldProt);
 }
 
 //-----------------------------------------------------------

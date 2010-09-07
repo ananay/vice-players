@@ -701,13 +701,6 @@ void CPlayerPed::ClearAllWeapons()
 	}
 }
 
-
-
-
-
-// -- ADDED BY THE VC-Players Team -- //
-
-
 void CPlayerPed::SetWaterDeaths(int iToggle)
 {
 	PED_TYPE * pPed = (PED_TYPE *)GetEntity();
