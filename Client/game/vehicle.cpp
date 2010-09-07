@@ -50,6 +50,8 @@ CVehicle::CVehicle(int iType, float fPosX, float fPosY,
 	//m_pEntity->byteLockedFlags = 1;
 	
 	SetInvulnerable(TRUE);
+	toggleRhinoInstantExplosionUponContact(FALSE);
+
 
 	m_bDead = FALSE;
 }
@@ -372,4 +374,9 @@ BOOL CVehicle::IsDead()
 void CVehicle::popVehicleTrunk()
 {
 	ScriptCommand(&pop_vehicle_trunk, m_dwGTAId);
+}
+
+void CVehicle::toggleRhinoInstantExplosionUponContact(int iToggle)
+{
+	ScriptCommand(&toggle_rhino_instant_explosion_upon_contact, m_dwGTAId, iToggle);
 }
