@@ -12,8 +12,10 @@
 #include "../detours/detours.h"
 
 typedef IDirect3D8 * (WINAPI * Direct3DCreate8_t)(UINT SDKVersion);
+typedef HRESULT	(WINAPI * DirectInput8Create_t)(HINSTANCE, DWORD, REFIID, LPVOID *, LPUNKNOWN);
 
 Direct3DCreate8_t  m_pfnDirect3DCreate8 = NULL;
+DirectInput8Create_t m_pfnDirectInput8Create = NULL;
 
 IDirect3D8 * WINAPI Direct3DCreate8(UINT SDKVersion)
 {
@@ -21,10 +23,21 @@ IDirect3D8 * WINAPI Direct3DCreate8(UINT SDKVersion)
 	return pDevice ? new IDirect3D8Hook(pDevice) : NULL;
 }
 
+HRESULT WINAPI DirectInput8Create(HINSTANCE hinst, DWORD dwVersion, REFIID riidltf, LPVOID *ppvOut, LPUNKNOWN punkOuter)
+{
+	HRESULT hr = m_pfnDirectInput8Create(hinst, dwVersion, riidltf, ppvOut, punkOuter);
+	IDirectInput8 * pDInput = (IDirectInput8 *)*ppvOut;
+	*ppvOut = new IDirectInput8Hook(pDInput);
+	return hr;
+}
+
 void InstallD3D8Hook()
 {
 	if(!m_pfnDirect3DCreate8) {
 		m_pfnDirect3DCreate8 = (Direct3DCreate8_t)DetourFunction(DetourFindFunction("d3d8.dll", "Direct3DCreate8"), (PBYTE)Direct3DCreate8);
+	}
+	if(!m_pfnDirectInput8Create) {
+		m_pfnDirectInput8Create = (DirectInput8Create_t)DetourFunction(DetourFindFunction("dinput8.dll", "DirectInput8Create"), (PBYTE)DirectInput8Create);
 	}
 }
 
@@ -32,5 +45,9 @@ void UninstallD3D8Hook()
 {
 	if(m_pfnDirect3DCreate8) {
 		DetourRemove((PBYTE)m_pfnDirect3DCreate8, (PBYTE)Direct3DCreate8);
+	}
+	if(m_pfnDirectInput8Create)
+	{
+		DetourRemove((PBYTE)m_pfnDirectInput8Create, (PBYTE)DirectInput8Create);
 	}
 }

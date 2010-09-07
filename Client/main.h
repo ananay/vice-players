@@ -40,6 +40,7 @@ typedef struct _GAME_SETTINGS {
 
 #include "d3dhook/IDirect3D8Hook.h"
 #include "d3dhook/IDirect3DDevice8Hook.h"
+#include "d3dhook/IDirectInput8Hook.h"
 
 #include "../raknet/RakPeer.h"
 #include "../raknet/RPC4Plugin.h"

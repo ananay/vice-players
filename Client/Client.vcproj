@@ -1235,6 +1235,22 @@
 					RelativePath="d3dhook\IDirect3DDevice8Hook.h"
 					>
 				</File>
+				<File
+					RelativePath=".\d3dhook\IDirectInput8Hook.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\d3dhook\IDirectInput8Hook.h"
+					>
+				</File>
+				<File
+					RelativePath=".\d3dhook\IDirectInputDevice8Hook.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\d3dhook\IDirectInputDevice8Hook.h"
+					>
+				</File>
 			</Filter>
 		</Filter>
 		<Filter
