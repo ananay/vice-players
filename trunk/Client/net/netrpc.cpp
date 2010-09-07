@@ -152,23 +152,10 @@ void RequestClass(RakNet::BitStream *bitStream, Packet *packet)
 	bitStream->Read(byteOutcome);
 	if(byteOutcome) {
 		bitStream->Read(iRequestedClass);
-		bitStream->Read(SpawnInfo.byteTeam);
-		bitStream->Read(SpawnInfo.byteSkin);
-		bitStream->Read((char *)&SpawnInfo.vecPos, sizeof(Vector3));
-		bitStream->Read(SpawnInfo.fRotation);
-		bitStream->Read(SpawnInfo.iSpawnWeapons[0]);
-		bitStream->Read(SpawnInfo.iSpawnWeaponsAmmo[0]);
-		bitStream->Read(SpawnInfo.iSpawnWeapons[1]);
-		bitStream->Read(SpawnInfo.iSpawnWeaponsAmmo[1]);
-		bitStream->Read(SpawnInfo.iSpawnWeapons[2]);
-		bitStream->Read(SpawnInfo.iSpawnWeaponsAmmo[2]);
+		bitStream->Read((char *)&SpawnInfo, sizeof(PLAYER_SPAWN_INFO));
 
 		pGameLogic->SetSelectedClass(iRequestedClass);
-		pPlayer->SetSpawnInfo(SpawnInfo.byteTeam,SpawnInfo.byteSkin,&SpawnInfo.vecPos,
-			SpawnInfo.fRotation,
-			SpawnInfo.iSpawnWeapons[0],SpawnInfo.iSpawnWeaponsAmmo[0],
-			SpawnInfo.iSpawnWeapons[1],SpawnInfo.iSpawnWeaponsAmmo[1],
-			SpawnInfo.iSpawnWeapons[2],SpawnInfo.iSpawnWeaponsAmmo[2]);
+		pPlayer->SetSpawnInfo(&SpawnInfo);
 		pGameLogic->HandleClassSelectionOutcome(&SpawnInfo, byteOutcome);
 	}
 }
