@@ -9,11 +9,10 @@
 
 #include "IDirectInputDevice8Hook.h"
 
-IDirectInputDevice8Hook::IDirectInputDevice8Hook(IDirectInput8 * dinput, IDirectInputDevice8 * dinputdevice, eDIDeviceType DeviceType)
+IDirectInputDevice8Hook::IDirectInputDevice8Hook(IDirectInput8 * dinput, IDirectInputDevice8 * dinputdevice)
 {
 	m_pDI = dinput;
 	m_pDIDevice = dinputdevice;
-	m_DeviceType = DeviceType;
 }
 
 /*** IUnknown methods ***/

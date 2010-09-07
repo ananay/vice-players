@@ -13,22 +13,14 @@
 
 #include <dinput.h>
 
-enum eDIDeviceType
-{
-	DIDEVICE_TYPE_MOUSE,
-	DIDEVICE_TYPE_KEYBOARD,
-	DIDEVICE_TYPE_JOYSTICK
-};
-
 class IDirectInputDevice8Hook : public IDirectInputDevice8
 {
 private:
 	IDirectInput8 * m_pDI;
 	IDirectInputDevice8 * m_pDIDevice;
-	eDIDeviceType m_DeviceType;
 
 public:
-	IDirectInputDevice8Hook(IDirectInput8 * dinput, IDirectInputDevice8 * dinputdevice, eDIDeviceType DeviceType);
+	IDirectInputDevice8Hook(IDirectInput8 * dinput, IDirectInputDevice8 * dinputdevice);
 
 	/*** IUnknown methods ***/
 	HRESULT STDMETHODCALLTYPE QueryInterface(REFIID riid, LPVOID * ppvObj);

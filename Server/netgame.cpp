@@ -11,6 +11,7 @@
 #include <stdlib.h>
 #include <math.h>
 #include <time.h>
+#include <process.h>
 
 #include "netgame.h"
 #include "../RakNet/RPC4Plugin.h"
@@ -23,6 +24,23 @@ extern CConfig *pServerConfig;
 RPC4		   *CNetGame::m_pRPC4;
 extern CScripts *pScripts;
 CMasterList * pMasterList = NULL;
+
+//----------------------------------------------------
+// Master list gets processed in a seperate thread
+// to avoid halting the main thread when connecting
+// or posting
+// NOTE: If your going to delete the master list
+// instance you will need to end this thread first
+
+void MasterlistThread(void * pParams)
+{
+	while(true)
+	{
+		CMasterList * pMasterList = (CMasterList *)pParams;
+		pMasterList->Process();
+		Sleep(10);
+	}
+}
 
 //----------------------------------------------------
 
@@ -83,6 +101,13 @@ CNetGame::CNetGame(int iMaxPlayers, int iPort, char * szPassword, char * szHostn
 	srand((unsigned int)time(NULL));
 
 	pMasterList = new CMasterList("master.vc-p.com", "", iPort);
+
+#ifdef WIN32
+	CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)MasterlistThread, pMasterList, 0, NULL);
+#else
+	pthread_t handle;
+	pthread_create(&handle, NULL, MasterlistThread, pMasterList)
+#endif
 }
 
 //----------------------------------------------------
@@ -101,10 +126,6 @@ CNetGame::~CNetGame()
 
 void CNetGame::Process()
 {
-
-	// Process the Master List
-	pMasterList->Pulse();
-
 	// Process the Network
 	UpdateNetwork();
 
