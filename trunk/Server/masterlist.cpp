@@ -17,7 +17,7 @@ CMasterList::CMasterList(char * szAddress, char * szPath, int iServerPort)
 	m_strAddress = szAddress;	
 	char port[5];
 #pragma warning(disable:4996)
-	sprintf(port, "%d", iServerPort);
+	itoa(iServerPort, port, 10);
 	m_strPostPath = szPath;
 	m_strPostPath += "/add.php?port=";
 	m_strPostPath += port;
