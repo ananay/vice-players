@@ -11,7 +11,7 @@
 
 #define DIRECTINPUT_VERSION 0x0800
 
-#include <dinput.h>
+#include "../d3d8/dinput.h"
 
 class IDirectInputDevice8Hook : public IDirectInputDevice8
 {

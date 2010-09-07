@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="Windows-1252"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="9.00"
+	Version="9,00"
 	Name="Client"
 	ProjectGUID="{24F45D58-098D-42B1-973A-8A3F9C8EA41E}"
 	RootNamespace="vcp"
@@ -76,7 +76,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="ws2_32.lib d3d8/d3dx8.lib winmm.lib"
+				AdditionalDependencies="ws2_32.lib d3d8/d3dx8.lib winmm.lib d3d8/dinput8.lib"
 				OutputFile="..\bin\vcp.dll"
 				LinkIncremental="1"
 				SuppressStartupBanner="true"
