@@ -68,18 +68,18 @@ void ServerQuit(RakNet::BitStream *bitStream, Packet *packet)
 void InitGame(RakNet::BitStream *bitStream, Packet *packet)
 {
 	CPlayerPool *pPlayerPool = pNetGame->GetPlayerPool();
-	BYTE byteMySystemAddress;
+	EntityId myPlayerID;
 
-	bitStream->Read((char*)&pNetGame->m_vecInitPlayerPos, sizeof(Vector3));
-	bitStream->Read((char*)&pNetGame->m_vecInitCameraPos, sizeof(Vector3));
-	bitStream->Read((char*)&pNetGame->m_vecInitCameraLook, sizeof(Vector3));
+	bitStream->Read((char *)&pNetGame->m_vecInitPlayerPos, sizeof(Vector3));
+	bitStream->Read((char *)&pNetGame->m_vecInitCameraPos, sizeof(Vector3));
+	bitStream->Read((char *)&pNetGame->m_vecInitCameraLook, sizeof(Vector3));
 	bitStream->Read(pNetGame->m_WorldBounds[0]);
 	bitStream->Read(pNetGame->m_WorldBounds[1]);
 	bitStream->Read(pNetGame->m_WorldBounds[2]);
 	bitStream->Read(pNetGame->m_WorldBounds[3]);
 	bitStream->Read(pNetGame->m_byteFriendlyFire);
 	bitStream->Read(pNetGame->m_byteShowOnRadar);
-	bitStream->Read(byteMySystemAddress);
+	bitStream->Read(myPlayerID);
 
 	pPlayerPool->SetLocalPlayerID(byteMySystemAddress);
 
