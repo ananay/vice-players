@@ -137,7 +137,6 @@ BOOL CLocalPlayer::Process()
 	{
 		m_bIsWasted = FALSE;
 		pNetGame->GetGameLogic()->HandleClassSelection(this);
-		//this->SpawnPlayer();
 		return TRUE;
 	}
 
