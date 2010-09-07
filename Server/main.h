@@ -45,6 +45,7 @@ void logprintf(char * format, ...);
 #ifndef _WIN32
 #include <sys/time.h>
 long GetTickCount();
+char* itoa(int value, char* result, int base);
 #endif
 
 //----------------------------------------------------
