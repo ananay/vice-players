@@ -51,7 +51,7 @@ public:
 
 	// Added by the VC-Players team.
 	void popVehicleTrunk();
-
+	void toggleRhinoInstantExplosionUponContact(int iToggle);
 
 	BYTE  GetEntityFlags();
 	void  SetEnitityFlags(BYTE byteEntityFlags);

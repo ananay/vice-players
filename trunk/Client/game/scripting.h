@@ -178,6 +178,7 @@ const SCRIPT_COMMAND pop_vehicle_trunk = { 0x050B, "i" };
 const SCRIPT_COMMAND set_ped_sky_color = { 0x04F9, "ii" };
 const SCRIPT_COMMAND set_driveby_state = { 0x0501, "ii" };
 const SCRIPT_COMMAND shake_ped_camera = { 0x0003, "i" };
+const SCRIPT_COMMAND toggle_rhino_instant_explosion_upon_contact = { 0x0493, "ii" };
 
 // Objects
 const SCRIPT_COMMAND create_object = { 0x0107, "ifffv" };
