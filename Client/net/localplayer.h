@@ -93,13 +93,9 @@ public:
 	
 	void RequestClass(int iClass);
 
-	void SetSpawnInfo(BYTE byteTeam, BYTE byteSkin, Vector3 * vecPos, float fRotation,
-		int iSpawnWeapon1, int iSpawnWeapon1Ammo, int iSpawnWeapon2, int iSpawnWeapon2Ammo,
-		int iSpawnWeapon3, int iSpawnWeapon3Ammo);
+	void SetSpawnInfo(PLAYER_SPAWN_INFO * pSpawnInfo);
 
-	BOOL SpawnPlayer( BYTE byteTeam,BYTE byteSkin,Vector3 * vecPos,float fRotation,
-		int iSpawnWeapon1,int iSpawnWeapon1Ammo,int iSpawnWeapon2,int iSpawnWeapon2Ammo,
-		int iSpawnWeapon3,int iSpawnWeapon3Ammo);
+	BOOL SpawnPlayer(PLAYER_SPAWN_INFO * pSpawnInfo);
 
 	BOOL SpawnPlayer();
 

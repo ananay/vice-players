@@ -376,22 +376,9 @@ void CLocalPlayer::RequestClass(int iClass)
 
 //----------------------------------------------------------
 
-void CLocalPlayer::SetSpawnInfo(BYTE byteTeam, BYTE byteSkin, Vector3 * vecPos, float fRotation,
-		int iSpawnWeapon1, int iSpawnWeapon1Ammo, int iSpawnWeapon2, int iSpawnWeapon2Ammo,
-		int iSpawnWeapon3, int iSpawnWeapon3Ammo)
+void CLocalPlayer::SetSpawnInfo(PLAYER_SPAWN_INFO * pSpawnInfo)
 {
-	m_SpawnInfo.byteTeam = byteTeam;
-	m_SpawnInfo.byteSkin = byteSkin;
-	m_SpawnInfo.vecPos.X = vecPos->X;
-	m_SpawnInfo.vecPos.Y = vecPos->Y;
-	m_SpawnInfo.vecPos.Z = vecPos->Z;
-	m_SpawnInfo.fRotation = fRotation;
-	m_SpawnInfo.iSpawnWeapons[0] = iSpawnWeapon1;
-	m_SpawnInfo.iSpawnWeapons[1] = iSpawnWeapon2;
-	m_SpawnInfo.iSpawnWeapons[2] = iSpawnWeapon3;
-	m_SpawnInfo.iSpawnWeaponsAmmo[0] = iSpawnWeapon1Ammo;
-	m_SpawnInfo.iSpawnWeaponsAmmo[1] = iSpawnWeapon2Ammo;
-	m_SpawnInfo.iSpawnWeaponsAmmo[2] = iSpawnWeapon3Ammo;
+	memcpy(&m_SpawnInfo, pSpawnInfo, sizeof(PLAYER_SPAWN_INFO));
 	m_bHasSpawnInfo = TRUE;
 }
 
@@ -399,25 +386,12 @@ void CLocalPlayer::SetSpawnInfo(BYTE byteTeam, BYTE byteSkin, Vector3 * vecPos, 
 
 BOOL CLocalPlayer::SpawnPlayer()
 {
-	return SpawnPlayer(m_SpawnInfo.byteTeam,m_SpawnInfo.byteSkin,
-		&m_SpawnInfo.vecPos,m_SpawnInfo.fRotation,
-		m_SpawnInfo.iSpawnWeapons[0],
-		m_SpawnInfo.iSpawnWeaponsAmmo[0],
-		m_SpawnInfo.iSpawnWeapons[1],
-		m_SpawnInfo.iSpawnWeaponsAmmo[1],
-		m_SpawnInfo.iSpawnWeapons[2],
-		m_SpawnInfo.iSpawnWeaponsAmmo[2]);
+	return SpawnPlayer(&m_SpawnInfo);
 }
 
 //----------------------------------------------------------
 
-BOOL CLocalPlayer::SpawnPlayer( BYTE byteTeam,
-							    BYTE byteSkin, 
-							    Vector3 * vecPos,
-							    float fRotation,int iSpawnWeapon1,
-								int iSpawnWeapon1Ammo, int iSpawnWeapon2, 
-								int iSpawnWeapon2Ammo, int iSpawnWeapon3,
-								int iSpawnWeapon3Ammo )
+BOOL CLocalPlayer::SpawnPlayer(PLAYER_SPAWN_INFO * pSpawnInfo)
 {
 	CPlayerPed *pGamePlayer = pGame->FindPlayerPed();
 
@@ -425,34 +399,34 @@ BOOL CLocalPlayer::SpawnPlayer( BYTE byteTeam,
 
 	if(pGamePlayer)
 	{
-		pGamePlayer->RestartIfWastedAt(vecPos, fRotation);
+		pGamePlayer->RestartIfWastedAt(&pSpawnInfo->vecPos, pSpawnInfo->fRotation);
 
 		m_pPlayerPed = pGamePlayer;
 
 		// Set skin stuff.. logic is because of temperament
-		if(pGamePlayer->GetModelIndex() != byteSkin && (byteSkin < 107)) {
-			if(!pGame->IsModelLoaded(byteSkin)) {
-				pGame->RequestModel(byteSkin);
+		if(pGamePlayer->GetModelIndex() != pSpawnInfo->byteSkin && (pSpawnInfo->byteSkin < 107)) {
+			if(!pGame->IsModelLoaded(pSpawnInfo->byteSkin)) {
+				pGame->RequestModel(pSpawnInfo->byteSkin);
 				pGame->LoadRequestedModels();
-				while(!pGame->IsModelLoaded(byteSkin)) { Sleep(1); }
+				while(!pGame->IsModelLoaded(pSpawnInfo->byteSkin)) { Sleep(1); }
 			}
-			pGamePlayer->SetModel(byteSkin);
+			pGamePlayer->SetModel(pSpawnInfo->byteSkin);
 		}
 
 		pGamePlayer->ClearAllWeapons();
 
-		if(iSpawnWeapon3 != (-1)) {
-			pGamePlayer->GiveWeapon(iSpawnWeapon3,iSpawnWeapon3Ammo);
+		if(pSpawnInfo->iSpawnWeapons[3] != -1) {
+			pGamePlayer->GiveWeapon(pSpawnInfo->iSpawnWeapons[3], pSpawnInfo->iSpawnWeaponsAmmo[3]);
 		}
-		if(iSpawnWeapon2 != (-1)) {
-			pGamePlayer->GiveWeapon(iSpawnWeapon2,iSpawnWeapon2Ammo);
+		if(pSpawnInfo->iSpawnWeapons[2] != -1) {
+			pGamePlayer->GiveWeapon(pSpawnInfo->iSpawnWeapons[2], pSpawnInfo->iSpawnWeaponsAmmo[2]);
 		}		
-		if(iSpawnWeapon1 != (-1)) {
-			pGamePlayer->GiveWeapon(iSpawnWeapon1,iSpawnWeapon1Ammo);
+		if(pSpawnInfo->iSpawnWeapons[1] != -1) {
+			pGamePlayer->GiveWeapon(pSpawnInfo->iSpawnWeapons[1], pSpawnInfo->iSpawnWeaponsAmmo[1]);
 		}
 
-		pGamePlayer->Teleport(vecPos->X,vecPos->Y,vecPos->Z);
-		pGamePlayer->SetRotation(fRotation);
+		pGamePlayer->Teleport(pSpawnInfo->vecPos.X, pSpawnInfo->vecPos.Y, pSpawnInfo->vecPos.Z);
+		pGamePlayer->SetRotation(pSpawnInfo->fRotation);
 		pGamePlayer->SetInitialState();
 
 		m_bIsWasted = FALSE;
