@@ -33,19 +33,24 @@ HRESULT WINAPI DirectInput8Create(HINSTANCE hinst, DWORD dwVersion, REFIID riidl
 
 void InstallD3D8Hook()
 {
-	if(!m_pfnDirect3DCreate8) {
+	if(!m_pfnDirect3DCreate8)
+	{
 		m_pfnDirect3DCreate8 = (Direct3DCreate8_t)DetourFunction(DetourFindFunction("d3d8.dll", "Direct3DCreate8"), (PBYTE)Direct3DCreate8);
 	}
-	if(!m_pfnDirectInput8Create) {
+
+	if(!m_pfnDirectInput8Create)
+	{
 		m_pfnDirectInput8Create = (DirectInput8Create_t)DetourFunction(DetourFindFunction("dinput8.dll", "DirectInput8Create"), (PBYTE)DirectInput8Create);
 	}
 }
 
 void UninstallD3D8Hook()
 {
-	if(m_pfnDirect3DCreate8) {
+	if(m_pfnDirect3DCreate8)
+	{
 		DetourRemove((PBYTE)m_pfnDirect3DCreate8, (PBYTE)Direct3DCreate8);
 	}
+
 	if(m_pfnDirectInput8Create)
 	{
 		DetourRemove((PBYTE)m_pfnDirectInput8Create, (PBYTE)DirectInput8Create);

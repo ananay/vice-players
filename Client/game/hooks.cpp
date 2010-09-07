@@ -662,11 +662,7 @@ void InstallMethodHook(DWORD dwInstallAddress,DWORD dwHookFunction)
 
 //-----------------------------------------------------------
 
-void InstallHook( DWORD dwInstallAddress,
-				  DWORD dwHookFunction,
-				  DWORD dwHookStorage,
-				  BYTE * pbyteJmpCode,
-				  int iJmpCodeSize )
+void InstallHook(DWORD dwInstallAddress, DWORD dwHookFunction, DWORD dwHookStorage, BYTE * pbyteJmpCode, int iJmpCodeSize)
 {
 	// Install the pointer to procaddr.
 	Unprotect(dwHookStorage, 4);

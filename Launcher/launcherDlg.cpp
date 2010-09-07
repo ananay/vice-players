@@ -13,9 +13,9 @@
 #define new DEBUG_NEW
 #undef THIS_FILE
 static char THIS_FILE[] = __FILE__;
-#define CLIENT_DLL "vcp_d.dll"
+#define CLIENT_DLL "Client_d.dll"
 #else
-#define CLIENT_DLL "vcp.dll"
+#define CLIENT_DLL "Client.dll"
 #endif
 
 /////////////////////////////////////////////////////////////////////////////
@@ -57,18 +57,9 @@ bool GetProcessIdFromProcessName(char * szProcessName, DWORD * dwProcessId)
 
 /////////////////////////////////////////////////////////////////////////////
 
-bool InjectLibraryIntoProcess(DWORD dwProcessId, char * szLibraryPath)
+bool InjectLibraryIntoProcess(HANDLE hProcess, char * szLibraryPath)
 {
 	bool bReturn = true;
-
-	// Open our target process
-	HANDLE hProcess = OpenProcess(PROCESS_CREATE_THREAD | PROCESS_QUERY_INFORMATION | PROCESS_VM_OPERATION | PROCESS_VM_WRITE | PROCESS_VM_READ, FALSE, dwProcessId);
-
-	if(!hProcess) {
-		// Failed to open the process
-		MessageBoxA(NULL, "Failed to open the remote process.", NULL, NULL);
-		return false;
-	}
 
 	// Get the length of the library path
 	size_t sLibraryPathLen = (strlen(szLibraryPath) + 1);
@@ -97,16 +88,6 @@ bool InjectLibraryIntoProcess(DWORD dwProcessId, char * szLibraryPath)
 			// Wait for the created thread to end
 			WaitForSingleObject(hThread, INFINITE);
 
-			// Get the remote thread exit code
-			/*DWORD dwExitCode;
-			GetExitCodeThread(hThread, &dwExitCode);
-			
-			if(dwExitCode != 0)
-			{
-				IVMessageBox("Failed to inject library into remote process. Cannot launch IV:MP.");
-				bReturn = false;
-			}*/
-
 			// Close our thread handle
 			CloseHandle(hThread);
 		} else {
@@ -118,13 +99,6 @@ bool InjectLibraryIntoProcess(DWORD dwProcessId, char * szLibraryPath)
 
 	// Free the allocated block of memory inside the target process
 	VirtualFreeEx(hProcess, pRemoteLibraryPath, sizeof(pRemoteLibraryPath), MEM_RELEASE);
-
-	// If the injection failed terminate the target process
-	if(!bReturn)
-		TerminateProcess(hProcess, 0);
-
-	// Close our target process
-	CloseHandle(hProcess);
 
 	return bReturn;
 }
@@ -384,7 +358,7 @@ void CLauncherDlg::OnLaunch()
 	char szLibraryPath[1024];
 	sprintf(szLibraryPath, "%s" CLIENT_DLL, GetAppPath());
 
-	// Check if vcmp.dll exists
+	// Check if Client(_d).dll exists
 	WIN32_FIND_DATA fdFileInfo;
 	if(FindFirstFile(szLibraryPath, &fdFileInfo) == INVALID_HANDLE_VALUE) {
 		MessageBox("Couldn't find " CLIENT_DLL ".");
@@ -408,7 +382,7 @@ void CLauncherDlg::OnLaunch()
 	}
 
 	// Inject our code into LaunchGTAIV.exe
-	if(!InjectLibraryIntoProcess(piProcessInfo.dwProcessId, szLibraryPath)) {
+	if(!InjectLibraryIntoProcess(piProcessInfo.hProcess, szLibraryPath)) {
 		TerminateProcess(piProcessInfo.hProcess, 0);
 		MessageBox("Couldn't inject " CLIENT_DLL ".");
 		return;
