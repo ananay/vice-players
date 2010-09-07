@@ -9,9 +9,6 @@
 
 #include "IDirectInput8Hook.h"
 
-// Current device type (In the order the game creates them)
-eDIDeviceType m_CurrentDeviceType = DIDEVICE_TYPE_MOUSE;
-
 IDirectInput8Hook::IDirectInput8Hook(IDirectInput8 * dinput)
 {
 	m_dinput = dinput;
@@ -45,12 +42,7 @@ HRESULT STDMETHODCALLTYPE IDirectInput8Hook::CreateDevice(REFGUID rguid, LPDIREC
 
 	if(SUCCEEDED(hr))
 		// Create the proxy device
-		*lplpDirectInputDevice = new IDirectInputDevice8Hook(this, *lplpDirectInputDevice, m_CurrentDeviceType);
-
-	if(m_CurrentDeviceType == DIDEVICE_TYPE_MOUSE)
-		m_CurrentDeviceType = DIDEVICE_TYPE_KEYBOARD;
-	else if(m_CurrentDeviceType == DIDEVICE_TYPE_KEYBOARD)
-		m_CurrentDeviceType = DIDEVICE_TYPE_JOYSTICK;
+		*lplpDirectInputDevice = new IDirectInputDevice8Hook(this, *lplpDirectInputDevice);
 
 	return hr;
 }

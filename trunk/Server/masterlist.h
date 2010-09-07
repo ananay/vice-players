@@ -8,20 +8,19 @@
 //
 //-----------------------------------------------------
 
-#include "../RakNet/TCPInterface.h"
-#include "../RakNet/HTTPConnection.h"
 #include <string>
+#include "CHttpClient.h"
+
 class CMasterList
 {
 private:
-	RakNet::TCPInterface * m_pTcpInterface;
-	RakNet::HTTPConnection * m_pHttpConnection;
+	std::string m_strAddress;
+	std::string m_strPostPath;
 	DWORD m_dwLastPulse;
-	std::string m_sPostPath;
 
 public:
 	CMasterList(char * szAddress, char * szPath, int iServerPort);
 	~CMasterList();
 	
-	void Pulse();
+	void Process();
 };
