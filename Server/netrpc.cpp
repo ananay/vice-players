@@ -93,31 +93,48 @@ void ClientJoin(RakNet::BitStream *bitStream, Packet *packet)
 	// Send this client ServerJoins for every existing player
 	RakNet::BitStream pbsExistingClient;
 
-	for(BYTE x = 0; x < MAX_PLAYERS; x++) {
-		if((pPlayerPool->GetSlotState(x) == TRUE) && (x != playerID)) {
+	for(EntityId x = 0; x < MAX_PLAYERS; x++)
+	{
+		if(x != playerID && pPlayerPool->GetSlotState(x))
+		{
 			pbsExistingClient.Reset();
 			pbsExistingClient.Write(x);
-			pbsExistingClient.Write(strlen(pPlayerPool->GetPlayerName(x)));
-			pbsExistingClient.Write(pPlayerPool->GetPlayerName(x),strlen(pPlayerPool->GetPlayerName(x)));
-			pNetGame->GetRPC4()->Call("ServerJoin", &pbsExistingClient,HIGH_PRIORITY,RELIABLE_ORDERED,0,packet->guid,false);
+			size_t sNameLength = strlen(pPlayerPool->GetPlayerName(x));
+			pbsExistingClient.Write(sNameLength);
+			pbsExistingClient.Write(pPlayerPool->GetPlayerName(x), sNameLength);
+			pNetGame->GetRPC4()->Call("ServerJoin", &pbsExistingClient, HIGH_PRIORITY, RELIABLE_ORDERED, 0, packet->guid, false);
 
 			// Now also spawn the player for them if they're active.
-			CPlayer *pSpawnPlayer = pPlayerPool->GetAt(x);
-			if(pSpawnPlayer->IsActive()) {
+			CPlayer * pSpawnPlayer = pPlayerPool->GetAt(x);
+
+			// Is this player spawned?
+			if(pSpawnPlayer->IsActive())
+			{
+				// Spawn this player for the new player
 				pSpawnPlayer->SpawnForPlayer(playerID);
 			}
 		}
 	}
 
 	// Spawn all existing vehicles for player.
-	CVehicle *pVehicle;
+	CVehicle * pVehicle;
 
-	for(BYTE x = 0; x < MAX_VEHICLES; x++) {
-		if(pVehiclePool->GetSlotState(x) == TRUE) {
+	for(EntityId x = 0; x < MAX_VEHICLES; x++)
+	{
+		if(pVehiclePool->GetSlotState(x))
+		{
 			pVehicle = pVehiclePool->GetAt(x);
-			if(pVehicle->IsActive()) pVehicle->SpawnForPlayer(playerID);
+
+			// Is this vehicle spawned?
+			if(pVehicle->IsActive())
+			{
+				// Spawn this for the new player
+				pVehicle->SpawnForPlayer(playerID);
+			}
 		}
 	}
+
+	// Spawn all objects for the player
 	pNetGame->GetObjectPool()->InitForPlayer(playerID);
 }
 
