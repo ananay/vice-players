@@ -214,7 +214,7 @@ void SwitchContext(DWORD dwPedPtr, bool bPrePost)
 {
 	if(dwPedPtr)
 	{
-		byteCurPlayer = FindPlayerNumFromPedPtr(dwCurPlayerActor);
+		byteCurPlayer = FindPlayerNumFromPedPtr(dwPedPtr);
 
 		// Is this player not the local player?
 		if(byteCurPlayer != 0)
