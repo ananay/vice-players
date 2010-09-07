@@ -81,7 +81,7 @@ void InitGame(RakNet::BitStream *bitStream, Packet *packet)
 	bitStream->Read(pNetGame->m_byteShowOnRadar);
 	bitStream->Read(myPlayerID);
 
-	pPlayerPool->SetLocalPlayerID(byteMySystemAddress);
+	pPlayerPool->SetLocalPlayerID(myPlayerID);
 
 	pGame->FadeScreen(1, 0);
 	pNetGame->InitGameLogic();
