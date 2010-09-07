@@ -790,8 +790,6 @@ void Script_FadeScreen(RakNet::BitStream *bitStream, Packet *packet)
 	pGame->FadeScreen(type, time);
 }
 
-// Added by the VC-Players team. (Custom functions)
-
 // setItemFlashing Native.
 void Script_FlashItem(RakNet::BitStream *bitStream, Packet *packet)
 {

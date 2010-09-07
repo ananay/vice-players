@@ -13,6 +13,7 @@
 #include "../main.h"
 #include "game.h"
 #include "pools.h"
+#include "util.h"
 
 DWORD dwPlayerPedPtrs[MAX_PLAYERS];
 
@@ -20,8 +21,7 @@ DWORD dwPlayerPedPtrs[MAX_PLAYERS];
 
 void VCMP_SAFECALL GameToggleCheatCodes(bool bToggle)
 {
-	DWORD dwProt;
-	VirtualProtect((void*)0x602BDC, 16, PAGE_EXECUTE_READWRITE, &dwProt);
+	Unprotect(0x602BDC, 16);
 
 	if(bToggle)
 	{
@@ -34,8 +34,6 @@ void VCMP_SAFECALL GameToggleCheatCodes(bool bToggle)
 		*(BYTE *)0x602BDC = 0x90;
 		memset((void *)0x602BE7, 0x90, 5);
 	}
-
-    VirtualProtect((void*)0x602BDC, 16, dwProt, &dwProt);
 }
 
 //-----------------------------------------------------------
@@ -188,9 +186,9 @@ DWORD VCMP_SAFECALL TranslateColorCodeToRGBA(int iCode)
 {
 	if(iCode < sizeof(dwHudColors)) {
 		return dwHudColors[iCode];
-	} else {
-		return 0xFFFFFFFF;
 	}
+
+	return 0xFFFFFFFF;
 }
 
 //-----------------------------------------------------------
@@ -207,9 +205,7 @@ BOOL VCMP_SAFECALL GameIsEntityOnScreen(DWORD * pdwEnt)
 		mov byteRet, al
 	}
 
-	if(byteRet) return TRUE;
-
-	return FALSE;
+	return byteRet ? TRUE : FALSE;
 }
 
 //-----------------------------------------------------------
@@ -230,10 +226,20 @@ void VCMP_SAFECALL SetPlayerPedPtrRecord(BYTE bytePlayer, DWORD dwPedPtr)
 
 BYTE VCMP_SAFECALL FindPlayerNumFromPedPtr(DWORD dwPedPtr)
 {
-	for(BYTE x = 0; x < MAX_PLAYER_NAME; x++) {
+	for(BYTE x = 0; x < MAX_PLAYER_NAME; x++)
+	{
 		if(dwPlayerPedPtrs[x] == dwPedPtr) return x;
 	}
+
 	return 0;
+}
+
+//-----------------------------------------------------------
+
+void Unprotect(DWORD dwAddress, size_t sSize)
+{
+	DWORD dwOldProt;
+	VirtualProtect((LPVOID)dwAddress, sSize, PAGE_EXECUTE_READWRITE, &dwOldProt);
 }
 
 //-----------------------------------------------------------

@@ -8,13 +8,6 @@
 //
 //----------------------------------------------------------
 
-/*
-	file:
-		scripting.cpp
-	desc:
-		This file contains the Vice City scripting engine stuff.
-*/
-
 #include "../main.h"
 
 // Globals
@@ -76,7 +69,7 @@ int __declspec(naked) ExecuteScriptBuf()
 //			You must also pass parameters matching the parameter string in the
 //			"Params" member of the passed SCRIPT_COMMAND structure. See ReadMe.
 //
-int ScriptCommand(const SCRIPT_COMMAND* ScriptCommand, ...)
+int ScriptCommand(const SCRIPT_COMMAND * ScriptCommand, ...)
 {
 	va_list ap;
 	const char* p = ScriptCommand->Params;			// Get parameter string.

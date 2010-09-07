@@ -13,6 +13,8 @@
 #include "util.h"
 #include "keystuff.h"
 
+//-----------------------------------------------------------
+
 void GameInstallPatches();
 void GameInstallHooks();
 
@@ -25,22 +27,24 @@ CGame::CGame()
 	m_pInternalCamera = new CCamera();
 	m_pInternalPlayer = NULL;
 
-	DWORD dwVP, dwVP2;
-
 	// Skip the logo and title screens
-	VirtualProtect((PVOID)0x5FFFAB, 1, PAGE_EXECUTE_READWRITE, &dwVP);
+	Unprotect(0x5FFFAB, 1);
 	*(BYTE *)0x5FFFAB = 0x5;
-	VirtualProtect((PVOID)0x5FFFAB, 1, dwVP, &dwVP2);
 
 	// Nop for the menu process game state hook
-	VirtualProtect((PVOID)0x6003B3, 0xA, PAGE_EXECUTE_READWRITE, &dwVP);
+	Unprotect(0x6003B3, 0xA);
 	memset((PVOID)0x6003B3, 0x90, 0xA); // nop * 10
-	VirtualProtect((PVOID)0x6003B3, 0xA, dwVP, &dwVP2);
 
+	// Reset all player ped pointer records
 	InitPlayerPedPtrRecords();
+
+	// Reset all players keys
 	GameKeyStatesInit();
+
+	// Reset all players aim
 	GameAimSyncInit();
 
+	// Set the unhandled exception filter
 	SetUnhandledExceptionFilter(exc_handler);
 	
 	// Install all patches
@@ -83,8 +87,7 @@ BYTE byteEnableInput[] = { 0x8B, 0x4C, 0x24, 0x04, 0x8B, 0x54 };
 
 void CGame::ToggleKeyInputsDisabled(BOOL bDisable)
 {
-	DWORD dwOldProt;
-	VirtualProtect((PVOID)0x602510, 6, PAGE_EXECUTE_READWRITE, &dwOldProt);
+	Unprotect(0x602510, 6);
 
 	if(bDisable)
 	{
@@ -94,82 +97,57 @@ void CGame::ToggleKeyInputsDisabled(BOOL bDisable)
 	{
 		memcpy((PVOID)0x602510, byteEnableInput, 6);
 	}
-
-	VirtualProtect((PVOID)0x602510, 6, dwOldProt, &dwOldProt);
 }
 
 //-----------------------------------------------------------
 
 void GameInstallPatches()
 {
-	DWORD dwVP, dwVP2;
-
 	// Patch to prevent game stopping during a pause
 	// (Credits to Luke)
-	VirtualProtect((PVOID)0x4A3DF7, 5, PAGE_EXECUTE_READWRITE, &dwVP);
+	Unprotect(0x4A3DF7, 5);
 	memset((PVOID)0x4A3DF7, 0x90, 5); // nop * 5
-	VirtualProtect((PVOID)0x4A3DF7, 5, dwVP, &dwVP2);
 
 	// Patch for GetPlayerTableFromPlayerActor()
-	VirtualProtect((PVOID)0x531D40,8,PAGE_EXECUTE_READWRITE,&dwVP);
-	memset((PVOID)0x531D40,0x90,8); // nop * 8
-	VirtualProtect((PVOID)0x531D40,8,dwVP,&dwVP2);
+	Unprotect(0x531D40, 8);
+	memset((PVOID)0x531D40, 0x90, 8); // nop * 8
 
 	// Patch for SetCurrentWeapon fixes fucking FindPlayerPed shit.4FF970
-	VirtualProtect((PVOID)0x4FF970,1,PAGE_EXECUTE_READWRITE,&dwVP);
+	Unprotect(0x4FF970, 1);
 	*(BYTE *)0x4FF970 = 0x9D; // turns mov [eax+.. to mov [ebp+..
-	VirtualProtect((PVOID)0x4FF970,1,dwVP,&dwVP2);
 
 	// Player weapon pickups.
-	VirtualProtect((PVOID)0x4F6538,1,PAGE_EXECUTE_READWRITE,&dwVP);
+	Unprotect(0x4F6538, 1);
 	*(BYTE *)0x4F6538 = 0x75;
-	VirtualProtect((PVOID)0x4F6538,1,dwVP,&dwVP2);
 
 	// Patch CUserDisplay::Process() to not call CPlacename::Process()
-	VirtualProtect((PVOID)0x4D1405,5,PAGE_EXECUTE_READWRITE,&dwVP);
-	memset((PVOID)0x4D1405,0x90,5); // nop * 5
-	VirtualProtect((PVOID)0x4D1405,5,dwVP,&dwVP2);
+	Unprotect(0x4D1405, 5);
+	memset((PVOID)0x4D1405, 0x90, 5); // nop * 5
 
 	// Patch CPed::RefreshSkin() so that it doesn't try to set any
 	// animations 50D96A
-	VirtualProtect((PVOID)0x50D96A,5,PAGE_EXECUTE_READWRITE,&dwVP);
-	memset((PVOID)0x50D96A,0x90,5); // nop * 5
-	VirtualProtect((PVOID)0x50D96A,5,dwVP,&dwVP2);
+	Unprotect(0x50D96A, 5);
+	memset((PVOID)0x50D96A, 0x90, 5); // nop * 5
 
 	// Patch clear weapons to not set armed weapon to fists.4FF767
-	VirtualProtect((PVOID)0x4FF767,7,PAGE_EXECUTE_READWRITE,&dwVP);
-	memset((PVOID)0x4FF767,0x90,7); // nop * 7
-	VirtualProtect((PVOID)0x4FF767,7,dwVP,&dwVP2);
+	Unprotect(0x4FF767, 7);
+	memset((PVOID)0x4FF767, 0x90, 7); // nop * 7
 
 	/* DoDriveByShootings CWeapon::Update call. 5C9817
 	VirtualProtect((PVOID)0x5C9817,8,PAGE_EXECUTE_READWRITE,&dwVP);
 	memset((PVOID)0x5C9817,0x90,8); // nop * 8
 	VirtualProtect((PVOID)0x5C9817,8,dwVP,&dwVP2);*/
 
-	/* Patch to modify the gxt path
-	VirtualProtect((PVOID)0x69A4B0,256,PAGE_EXECUTE_READWRITE,&dwVP);
-	strcpy((PCHAR)0x69A4B0,"vcmp.gxt");
-	strcpy((PCHAR)0x69A4C0,"vcmp.gxt");
-	strcpy((PCHAR)0x69A4CC,"vcmp.gxt");
-	strcpy((PCHAR)0x69A4D8,"vcmp.gxt");
-	strcpy((PCHAR)0x69A4E4,"vcmp.gxt");
-	VirtualProtect((PVOID)0x69A4B0,256,dwVP,&dwVP2);*/
-
 	// Patch to modify the loadsc0 txd
-	VirtualProtect((PVOID)0x6D5E9C,16,PAGE_EXECUTE_READWRITE,&dwVP);
-	strcpy((PCHAR)0x6D5E9C,"ldvcmp0");
-	VirtualProtect((PVOID)0x6D5E9C,16,dwVP,&dwVP2);
-
-	VirtualProtect((PVOID)0x68E594,16,PAGE_EXECUTE_READWRITE,&dwVP);
-	strcpy((PCHAR)0x68E594,"ldvcmp0");
-	VirtualProtect((PVOID)0x68E594,16,dwVP,&dwVP2);
-
-	VirtualProtect((PVOID)0x68E6F4,16,PAGE_EXECUTE_READWRITE,&dwVP);
-	strcpy((PCHAR)0x68E6F4,"ldvcmp0");
-	VirtualProtect((PVOID)0x68E6F4,16,dwVP,&dwVP2);
+	Unprotect(0x6D5E9C, 16);
+	strcpy((PCHAR)0x6D5E9C, "ldvcmp0");
+	Unprotect(0x68E594, 16);
+	strcpy((PCHAR)0x68E594, "ldvcmp0");
+	Unprotect(0x68E6F4, 16);
+	strcpy((PCHAR)0x68E6F4, "ldvcmp0");
 
 	// Patch to increase vehicle pool limit from 110 to 200
-	VirtualProtect((PVOID)0x4C02E4,128,PAGE_EXECUTE_READWRITE,&dwVP);
+	Unprotect(0x4C02E4, 128); // 128, wtf?
 	*(BYTE *)0x4C02E4 = 0x6A;
 	*(BYTE *)0x4C02E5 = 0x00; // push 0 (unused param)
 	*(BYTE *)0x4C02E6 = 0x68;
@@ -177,12 +155,10 @@ void GameInstallPatches()
 	*(BYTE *)0x4C02E8 = 0x00;
 	*(BYTE *)0x4C02E9 = 0x00;
 	*(BYTE *)0x4C02EA = 0x00; // push 200
-	VirtualProtect((PVOID)0x4C02E4,128,dwVP,&dwVP2);
 
 	// Patch for cAudioManager::GetPedCommentSfx() 5EA1FC
-	VirtualProtect((PVOID)0x5EA1FC,1,PAGE_EXECUTE_READWRITE,&dwVP);
+	Unprotect(0x5EA1FC, 1);
 	*(BYTE *)0x5EA1FC = 0x75; // jnz
-	VirtualProtect((PVOID)0x5EA1FC,1,dwVP,&dwVP2);
 
 	/* ProcessVehicleOneShots (Reverse logic for CPed::IsPlayer())
 	VirtualProtect((PVOID)0x5EB6CD,1,PAGE_EXECUTE_READWRITE,&dwVP);
@@ -190,75 +166,63 @@ void GameInstallPatches()
 	VirtualProtect((PVOID)0x5EB6CD,1,dwVP,&dwVP2);*/
 
 	// For passenger engine audio hack (applied later).
-	VirtualProtect((PVOID)0x5F2175,2,PAGE_EXECUTE_READWRITE,&dwVP);
+	Unprotect(0x5F2175, 2);
 
 	// For 537723 bug (not checking in vehicle)
-	VirtualProtect((PVOID)0x537723,2,PAGE_EXECUTE_READWRITE,&dwVP);
+	Unprotect(0x537723, 2);
 	*(BYTE *)0x537723 = 0x90;
 	*(BYTE *)0x537724 = 0x90;
-	VirtualProtect((PVOID)0x537723,2,dwVP,&dwVP2);
 
 	// For Bike/Passenger bug (test driver for 0)
-	VirtualProtect((PVOID)0x5C91F5,4,PAGE_EXECUTE_READWRITE,&dwVP);
+	Unprotect(0x5C91F5, 4);
 	*(BYTE *)0x5C91F5 = 0x85;
 	*(BYTE *)0x5C91F6 = 0xC9; // test eax, eax to test ecx, ecx
 	*(BYTE *)0x5C91F8 = 0x09; // jz +9 - exit if 0
-	VirtualProtect((PVOID)0x5C91F5,4,dwVP,&dwVP2);
 
 	// For Boat driveby bug (test driver for 0)
-	VirtualProtect((PVOID)0x5C9558,4,PAGE_EXECUTE_READWRITE,&dwVP);
+	Unprotect(0x5C9558, 4);
 	*(BYTE *)0x5C9558 = 0x85;
 	*(BYTE *)0x5C9559 = 0xC9; // test eax, eax to test ecx, ecx
 	*(BYTE *)0x5C955B = 0x09; // jz +9 - exit if 0
-	VirtualProtect((PVOID)0x5C9558,4,dwVP,&dwVP2);
 
 	// Hack to prevent replays.
-	VirtualProtect((PVOID)0x4A45C3,5,PAGE_EXECUTE_READWRITE,&dwVP);
-	memset((PVOID)0x4A45C3,0x90,5); // nop * 5
-	VirtualProtect((PVOID)0x4A45C3,5,dwVP,&dwVP2);
+	Unprotect(0x4A45C3, 5);
+	memset((PVOID)0x4A45C3, 0x90, 5); // nop * 5
 
 	// Hack to get rid of the evasive dive.
-	VirtualProtect((PVOID)0x4F6A20,3,PAGE_EXECUTE_READWRITE,&dwVP);
+	Unprotect(0x4F6A20, 3);
 	*(BYTE *)0x4F6A20 = 0xC2;
 	*(BYTE *)0x4F6A21 = 0x08;
 	*(BYTE *)0x4F6A22 = 0x00;
-	VirtualProtect((PVOID)0x4F6A20,3,dwVP,&dwVP2);
 
 	// Hack to get rid of the weapon pickup message (Tab)
-	VirtualProtect((PVOID)0x440B2C,5,PAGE_EXECUTE_READWRITE,&dwVP);
-	memset((PVOID)0x440B2C,0x90,5); // nop * 5
-	VirtualProtect((PVOID)0x440B2C,5,dwVP,&dwVP2);
+	Unprotect(0x440B2C, 5);
+	memset((PVOID)0x440B2C, 0x90, 5); // nop * 5
 
 	// Don't load the main scm
-	VirtualProtect((PVOID)0x4506D1, 2, PAGE_EXECUTE_READWRITE, &dwVP);
+	Unprotect(0x4506D1, 2);
 	*(BYTE *)0x4506D1 = 0xEB; // jmp
 	*(BYTE *)0x4506D2 = 0x41; // +41h
-	VirtualProtect((PVOID)0x4506D1, 2, dwVP, &dwVP2);
 
 	// Disable CPopulation::AddPed
-	VirtualProtect((PVOID)0x53B600, 3, PAGE_EXECUTE_READWRITE, &dwVP);
+	Unprotect(0x53B600, 3);
 	*(BYTE *)0x53B600 = 0x31; // xor
 	*(BYTE *)0x53B601 = 0xC0; // eax, eax
 	*(BYTE *)0x53B602 = 0xC3; // retn
-	VirtualProtect((PVOID)0x53B600, 3, dwVP, &dwVP2);
 
 	// Stop time advancing on death
-	VirtualProtect((PVOID)0x42BD69, 15, PAGE_EXECUTE_READWRITE, &dwVP);
+	Unprotect(0x42BD69, 15);
 	memset((PVOID)0x42BD69, 0x90, 15); // nop * 15
-	VirtualProtect((PVOID)0x42BD69, 15, dwVP, &dwVP2);
 
 	// Shorten island loading time
-	VirtualProtect((PVOID)0x40DFE4, 0xA, PAGE_EXECUTE_READWRITE, &dwVP);
+	Unprotect(0x40DFE4, 0xA);
 	memset((PVOID)0x40DFE4, 0x90, 0xA); // nop * 10
-	VirtualProtect((PVOID)0x40DFE4, 0xA, dwVP, &dwVP2);
-	VirtualProtect((PVOID)0x40DFF4, 0x38, PAGE_EXECUTE_READWRITE, &dwVP);
+	Unprotect(0x40DFF4, 0x38);
 	memset((PVOID)0x40DFF4, 0x90, 0x38); // nop * 56
-	VirtualProtect((PVOID)0x40DFF4, 0x38, dwVP, &dwVP2);
 
 	// Disable taxi cash
-	VirtualProtect((PVOID)0x5B8AB6, 1, PAGE_EXECUTE_READWRITE, &dwVP);
-	*(BYTE*)0x5B8AB6 = 0;
-	VirtualProtect((PVOID)0x5B8AB6, 1, dwVP, &dwVP2);
+	Unprotect(0x5B8AB6, 1);
+	*(BYTE *)0x5B8AB6 = 0;
 }
 
 //-----------------------------------------------------------

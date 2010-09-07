@@ -368,8 +368,6 @@ BOOL CVehicle::IsDead()
 
 //-----------------------------------------------------------
 
-// Added by the VC-Players team.
-
 // popVehicleTrunk Native.
 void CVehicle::popVehicleTrunk()
 {

@@ -10,13 +10,6 @@
 
 #pragma once
 
-/*
-	file:
-		scripting.h
-	desc:
-		This is the header file for GameScripting.cpp.
-*/
-
 #define MAX_SCRIPT_VARS	16	// Size of our variable saving array
 #define MAX_SCRIPT_SIZE	255	// Size of ScriptBuf - Max is really (2+(13*5))
 
@@ -48,10 +41,8 @@ struct SCRIPT_COMMAND		//	Params
 	char Params[13];		//		v = variable
 };							//		s = string
 
-int ScriptCommand(const SCRIPT_COMMAND* ScriptCommand, ...);	// The main scripting function. See notes.
+int ScriptCommand(const SCRIPT_COMMAND * ScriptCommand, ...);	// The main scripting function. See notes.
 
-/*	Below are some opcodes i've defined, but it's still missing
-	about 95% of them ;) See http://vc-db.webtools4you.net/		*/
 const SCRIPT_COMMAND request_model				= { 0x0247, "i" };		// (CAR_*|BIKE_*|BOAT_*|WEAPON_*|OBJECT_*)
 const SCRIPT_COMMAND load_requested_models		= { 0x038B, "" };		// -/-
 const SCRIPT_COMMAND create_car					= { 0x00A5, "ifffv" };	// (CAR_*|BIKE_*|BOAT_*), x, y, z, var_car
@@ -140,10 +131,6 @@ const SCRIPT_COMMAND restart_if_wasted_at		= { 0x016C, "ffff" };	// x, y, z, a
 const SCRIPT_COMMAND restart_if_busted_at		= { 0x016D, "ffff" };	// x, y, z, a
 //const SCRIPT_COMMAND set_game_speed             = { 0x68F1F0, "f" };
 const SCRIPT_COMMAND is_key_pressed				= { 0x0e1, "ii" };
-
-// added by kyeman. (I don't use correct conventions so don't copy elsewhere
-// without double checking they're how you want them, yalls.
-
 const SCRIPT_COMMAND toggle_player_infinite_run = { 0x0330, "ii" };
 const SCRIPT_COMMAND toggle_player_controllable = { 0x01B4, "ii" };
 const SCRIPT_COMMAND toggle_player_fast_reload  = { 0x0331, "ii" };
@@ -165,9 +152,6 @@ const SCRIPT_COMMAND create_forbidden_for_cars_cube = { 0x01E8, "ffffff" };
 const SCRIPT_COMMAND set_pedestrians_density_multiplier_to = { 0x03DE, "f" };
 const SCRIPT_COMMAND set_traffic_density_multiplier_to = { 0x01EB, "f" };
 const SCRIPT_COMMAND force_weather = { 0x01B5, "i" };
-
-
-// Added by VC-Players Team.
 const SCRIPT_COMMAND flash_item = { 0x03E7, "i" };
 const SCRIPT_COMMAND water_deaths = { 0x04D8, "ii" };
 const SCRIPT_COMMAND cell_phone = { 0x052B, "ii" };
@@ -186,4 +170,3 @@ const SCRIPT_COMMAND destroy_object = { 0x0108, "i" };
 const SCRIPT_COMMAND set_target_state = { 0x035D, "i" };
 const SCRIPT_COMMAND get_object_state = { 0x0366, "i" };
 const SCRIPT_COMMAND set_object_rotation = { 0x0453, "ifff" };
-
