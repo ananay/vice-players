@@ -181,8 +181,8 @@ const SCRIPT_COMMAND shake_ped_camera = { 0x0003, "i" };
 
 // Objects
 const SCRIPT_COMMAND create_object = { 0x0107, "ifffv" };
-const SCRIPT_COMMAND destroy_object = { 0x0108, "v" };
-const SCRIPT_COMMAND set_target_state = { 0x035D, "v" };
-const SCRIPT_COMMAND get_object_state = { 0x0366, "v" };
-const SCRIPT_COMMAND set_object_rotation = { 0x0453, "vfff" };
+const SCRIPT_COMMAND destroy_object = { 0x0108, "i" };
+const SCRIPT_COMMAND set_target_state = { 0x035D, "i" };
+const SCRIPT_COMMAND get_object_state = { 0x0366, "i" };
+const SCRIPT_COMMAND set_object_rotation = { 0x0453, "ifff" };
 
