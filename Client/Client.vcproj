@@ -77,7 +77,7 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalDependencies="ws2_32.lib d3d8/d3dx8.lib winmm.lib d3d8/dinput8.lib"
-				OutputFile="..\bin\$(ProjectName).dll"
+				OutputFile="..\bin\vcp.dll"
 				LinkIncremental="1"
 				SuppressStartupBanner="true"
 				AdditionalLibraryDirectories="&quot;$(ProjectDir)\detours\&quot;"
@@ -176,7 +176,7 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalDependencies="ws2_32.lib d3d8/d3dx8.lib winmm.lib"
-				OutputFile="..\bin\$(ProjectName)_d.dll"
+				OutputFile="..\bin\vcp_d.dll"
 				LinkIncremental="2"
 				SuppressStartupBanner="true"
 				AdditionalLibraryDirectories="&quot;$(ProjectDir)\detours\&quot;"
