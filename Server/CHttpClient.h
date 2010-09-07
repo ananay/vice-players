@@ -21,6 +21,11 @@
 
 // OS Dependent Defines
 #ifndef WIN32
+#include <sys/types.h>
+#include <sys/socket.h>
+#include <netdb.h>
+#include <string.h>
+#include "system.h"
 #define SOCKET int
 #define closesocket close
 #endif

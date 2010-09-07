@@ -11,7 +11,9 @@
 #include <stdlib.h>
 #include <math.h>
 #include <time.h>
-#include <process.h>
+#ifndef WIN32
+#define Sleep(x) usleep(x * 1000)
+#endif
 
 #include "netgame.h"
 #include "../RakNet/RPC4Plugin.h"
@@ -32,7 +34,7 @@ CMasterList * pMasterList = NULL;
 // NOTE: If your going to delete the master list
 // instance you will need to end this thread first
 
-void MasterlistThread(void * pParams)
+void * MasterlistThread(void * pParams)
 {
 	while(true)
 	{
@@ -106,7 +108,7 @@ CNetGame::CNetGame(int iMaxPlayers, int iPort, char * szPassword, char * szHostn
 	CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)MasterlistThread, pMasterList, 0, NULL);
 #else
 	pthread_t handle;
-	pthread_create(&handle, NULL, MasterlistThread, pMasterList)
+	pthread_create(&handle, NULL, MasterlistThread, pMasterList);
 #endif
 }
 

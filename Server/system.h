@@ -75,6 +75,9 @@ typedef CONST void far      *LPCVOID;
 typedef int                 INT;
 typedef unsigned int        UINT;
 typedef unsigned int        *PUINT;
+
+#define INVALID_SOCKET -1
+#define SOCKET_ERROR -1
 #endif //!Win32
 
 //----------------------------------------------------
