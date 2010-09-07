@@ -17,7 +17,7 @@ CMasterList::CMasterList(char * szAddress, char * szPath, int iServerPort)
 	m_strAddress = szAddress;	
 	char port[5];
 #pragma warning(disable:4996)
-	itoa(iServerPort, port, 10);
+	sprintf(port, "%d", iServerPort);
 	m_strPostPath = szPath;
 	m_strPostPath += "/add.php?port=";
 	m_strPostPath += port;
@@ -43,6 +43,6 @@ void CMasterList::Process()
 		httpClient.Connect((char *)m_strAddress.c_str(), 80);
 		httpClient.Get((char *)m_strPostPath.c_str());
 		m_dwLastPulse = dwTick;
-		logprintf("Posted!");
+		logprintf("Master-server query.");
 	}
 }
