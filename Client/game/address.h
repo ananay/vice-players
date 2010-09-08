@@ -94,7 +94,6 @@
 #define FUNC_CBoat__ProcessControl				0x59FE90
 #define FUNC_CAutomobile__ProcessControl		0x593030
 #define VAR_GameState							0x9B5F08
-#define FUNC_CPlaceable__SetHeading				0x4BBA80
 #define FUNC_CPed__Teleport						0x4F5690
 #define VAR_Camera								0x7E4688
 #define FUNC_CCamera__Restore					0x46BC7D

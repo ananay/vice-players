@@ -18,6 +18,7 @@ typedef struct _PLAYER_SPAWN_INFO
 	float fRotation;
 	int iSpawnWeapons[3];
 	int iSpawnWeaponsAmmo[3];
+	bool bLoaded;
 } PLAYER_SPAWN_INFO;
 
 typedef struct _PLAYER_SYNC_DATA

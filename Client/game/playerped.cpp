@@ -4,6 +4,7 @@
 // Copyright 2010 VC-Players Team
 //
 // File Author(s): kyeman
+//                 jenksta
 // License: See LICENSE in root directory
 //
 //----------------------------------------------------------
@@ -123,98 +124,44 @@ void CPlayerPed::SetKeys(WORD wKeys)
 	GTA_CONTROLSET * pPlayerKeys = GameGetPlayerKeys(m_bytePlayerNumber);
 
 	memcpy(pPlayerKeys->wKeys2, pPlayerKeys->wKeys1, (sizeof(WORD) * 19));
-	if(wKeys & 1) {
-		pPlayerKeys->wKeys1[KEY_INCAR_HANDBRAKE] = 0xFF;
-	} else { 
-		pPlayerKeys->wKeys1[KEY_INCAR_HANDBRAKE] = 0x00;
-	}
+
+	pPlayerKeys->wKeys1[KEY_INCAR_HANDBRAKE] = (wKeys & 1) ? 0xFF : 0x00;
 	wKeys >>= 1; // 1
 
-	if(wKeys & 1) {
-		pPlayerKeys->wKeys1[KEY_INCAR_LOOKR] = 0xFF;
-	} else { 
-		pPlayerKeys->wKeys1[KEY_INCAR_LOOKR] = 0x00;
-	}
+	pPlayerKeys->wKeys1[KEY_INCAR_LOOKR] = (wKeys & 1) ? 0xFF : 0x00;
 	wKeys >>= 1; // 2
 
-	if(wKeys & 1) {
-		pPlayerKeys->wKeys1[KEY_INCAR_LOOKL] = 0xFF;
-	} else { 
-		pPlayerKeys->wKeys1[KEY_INCAR_LOOKL] = 0x00;
-	}
+	pPlayerKeys->wKeys1[KEY_INCAR_LOOKL] = (wKeys & 1) ? 0xFF : 0x00;
 	wKeys >>= 1; // 3
 
-	if(wKeys & 1) {
-		pPlayerKeys->wKeys1[KEY_INCAR_TURRETUD] = 0xFF80;
-	} else {
-		pPlayerKeys->wKeys1[KEY_INCAR_TURRETUD] = 0x0;
-	}		
+	pPlayerKeys->wKeys1[KEY_INCAR_TURRETUD] = (wKeys & 1) ? 0xFF80 : 0x00;
 	wKeys >>= 1; // 4
 
-	if(wKeys & 1) {
-		pPlayerKeys->wKeys1[KEY_INCAR_TURRETUD] = 0x80;
-	} else {
-		pPlayerKeys->wKeys1[KEY_INCAR_TURRETUD] = 0x0;
-	}		
+	pPlayerKeys->wKeys1[KEY_INCAR_TURRETUD] = (wKeys & 1) ? 0x80 : 0x00;
 	wKeys >>= 1; // 5
 
-	if(wKeys & 1) {
-		pPlayerKeys->wKeys1[KEY_ONFOOT_CROUCH] = 0xFF;
-	} else {
-		pPlayerKeys->wKeys1[KEY_ONFOOT_CROUCH] = 0x00;
-	}
+	pPlayerKeys->wKeys1[KEY_ONFOOT_CROUCH] = (wKeys & 1) ? 0xFF : 0x00;
 	wKeys >>= 1; // 6
 
-	if(wKeys & 1) {
-		pPlayerKeys->wKeys1[KEY_ONFOOT_FIRE] = 0xFF;
-	} else {
-		pPlayerKeys->wKeys1[KEY_ONFOOT_FIRE] = 0x00;
-	}
+	pPlayerKeys->wKeys1[KEY_ONFOOT_FIRE] = (wKeys & 1) ? 0xFF : 0x00;
 	wKeys >>= 1; // 7
 
-	if(wKeys & 1) {
-		pPlayerKeys->wKeys1[KEY_ONFOOT_SPRINT] = 0xFF;
-	} else {
-		pPlayerKeys->wKeys1[KEY_ONFOOT_SPRINT] = 0x00;
-	}
+	pPlayerKeys->wKeys1[KEY_ONFOOT_SPRINT] = (wKeys & 1) ? 0xFF : 0x00;
 	wKeys >>= 1; // 8
 
-	if(wKeys & 1) {
-		pPlayerKeys->wKeys1[KEY_ONFOOT_JUMP] = 0xFF;
-	} else {
-		pPlayerKeys->wKeys1[KEY_ONFOOT_JUMP] = 0x00;
-	}
+	pPlayerKeys->wKeys1[KEY_ONFOOT_JUMP] = (wKeys & 1) ? 0xFF : 0x00;
 	wKeys >>= 1; // 9
 
-	if(wKeys & 1) {
-		pPlayerKeys->wKeys1[KEY_ONFOOT_RIGHT] = 0xFF;
-	} else {
-		pPlayerKeys->wKeys1[KEY_ONFOOT_RIGHT] = 0x00;
-	}
+	pPlayerKeys->wKeys1[KEY_ONFOOT_RIGHT] = (wKeys & 1) ? 0xFF : 0x00;
 	wKeys >>= 1; // 10
 
-	if(wKeys & 1) {
-		pPlayerKeys->wKeys1[KEY_ONFOOT_LEFT] = 0xFF;
-	}
-	else {
-		pPlayerKeys->wKeys1[KEY_ONFOOT_LEFT] = 0x00;
-	}
+	pPlayerKeys->wKeys1[KEY_ONFOOT_LEFT] = (wKeys & 1) ? 0xFF : 0x00;
 	wKeys >>= 1; // 11
 
-	if(wKeys & 1) {
-		pPlayerKeys->wKeys1[KEY_ONFOOT_BACKWARD] = 0xFF;
-	}
-	else {
-		pPlayerKeys->wKeys1[KEY_ONFOOT_BACKWARD] = 0x00;
-	}
+	pPlayerKeys->wKeys1[KEY_ONFOOT_BACKWARD] = (wKeys & 1) ? 0xFF : 0x00;
 	wKeys >>= 1; // 12
 
-	if(wKeys & 1) {
-		pPlayerKeys->wKeys1[KEY_ONFOOT_FORWARD] = 0xFF;
-	}
-	else {
-		pPlayerKeys->wKeys1[KEY_ONFOOT_FORWARD] = 0x00;
-	}
+	pPlayerKeys->wKeys1[KEY_ONFOOT_FORWARD] = (wKeys & 1) ? 0xFF : 0x00;
 
 	GameStoreRemotePlayerKeys(m_bytePlayerNumber,pPlayerKeys);
 }
