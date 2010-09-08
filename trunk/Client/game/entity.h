@@ -17,6 +17,8 @@
 #define ENTITY_TYPE_PED			1
 #define ENTITY_TYPE_VEHICLE		2
 
+#define FUNC_CPlaceable__SetHeading 0x4BBA80
+
 class CEntity
 {
 private:

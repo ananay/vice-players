@@ -17,7 +17,7 @@ extern CNetGame * pNetGame;
 CSpawnSelection::CSpawnSelection()
 { 
 	for(int i = 0; i < MAX_SPAWNS; i++) {
-		m_AvailableSpawns[i].loaded = false;
+		m_AvailableSpawns[i].bLoaded = false;
 	}
 	m_iAvailableSpawnCount = 0;
 };
@@ -34,7 +34,7 @@ CSpawnSelection::~CSpawnSelection()
 int CSpawnSelection::AddPlayerClass(int team, int model, float x, float y, float z, float rot, int weapon1, int ammo1, int weapon2, int ammo2, int weapon3, int ammo3)
 {
 	for(int i = 0; i < MAX_SPAWNS; i++) {
-		if(!m_AvailableSpawns[i].loaded) {
+		if(!m_AvailableSpawns[i].bLoaded) {
 			m_AvailableSpawns[i].byteTeam = team;
 			m_AvailableSpawns[i].byteSkin = model;
 			m_AvailableSpawns[i].vecPos.X = x;
@@ -47,7 +47,7 @@ int CSpawnSelection::AddPlayerClass(int team, int model, float x, float y, float
 			m_AvailableSpawns[i].iSpawnWeaponsAmmo[1] = ammo2;
 			m_AvailableSpawns[i].iSpawnWeapons[2] = weapon3;
 			m_AvailableSpawns[i].iSpawnWeaponsAmmo[2] = ammo3;
-			m_AvailableSpawns[i].loaded = true;
+			m_AvailableSpawns[i].bLoaded = true;
 			m_iAvailableSpawnCount++;
 			return i;
 		}
