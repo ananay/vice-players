@@ -496,4 +496,3 @@ DWORD CLocalPlayer::GetTeamColorAsARGB()
 }
 
 //----------------------------------------------------
-
