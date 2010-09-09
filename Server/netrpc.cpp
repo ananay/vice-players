@@ -220,7 +220,7 @@ void RequestClass(RakNet::BitStream *bitStream, Packet *packet)
 	bsSpawnRequestReply.Write(byteOutcome);
 	if(byteOutcome) {
 		bsSpawnRequestReply.Write(iRequestedClass);
-		bsSpawnRequestReply.Write((char *)&SpawnInfo, sizeof(PLAYER_SPAWN_INFO));
+		bsSpawnRequestReply.Write((char *)SpawnInfo, sizeof(PLAYER_SPAWN_INFO));
 
 		pNetGame->GetRPC4()->Call("RequestClass", &bsSpawnRequestReply ,HIGH_PRIORITY, RELIABLE, 0, packet->guid, false);
 	}

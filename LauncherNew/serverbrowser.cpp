@@ -60,7 +60,7 @@ const char * GetAppPath ()
 //return path.toStdString().c_str();
 }
 
-#define CLIENT_DLL "vcp.dll"
+#define CLIENT_DLL "Client.dll"
 
 
 void ServerBrowser::onConnect()

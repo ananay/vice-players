@@ -1121,10 +1121,6 @@ SQInteger sq_getPlayerCash(SQVM * pVM)
 }
 
 
-
-
-
-
 //-------------------------------------------------------------------
 
 SQInteger sq_toggleCellPhone(SQVM * pVM)
