@@ -220,7 +220,12 @@ void RequestClass(RakNet::BitStream *bitStream, Packet *packet)
 	bsSpawnRequestReply.Write(byteOutcome);
 	if(byteOutcome) {
 		bsSpawnRequestReply.Write(iRequestedClass);
-		bsSpawnRequestReply.Write((char *)SpawnInfo, sizeof(PLAYER_SPAWN_INFO));
+		bsSpawnRequestReply.Write(SpawnInfo->byteTeam);
+		bsSpawnRequestReply.Write(SpawnInfo->byteSkin);
+		bsSpawnRequestReply.Write((char *)&SpawnInfo->vecPos, sizeof(Vector3));
+		bsSpawnRequestReply.Write(SpawnInfo->fRotation);
+		bsSpawnRequestReply.Write((char *)SpawnInfo->iSpawnWeapons, (sizeof(int) * 3));
+		bsSpawnRequestReply.Write((char *)SpawnInfo->iSpawnWeaponsAmmo, (sizeof(int) * 3));
 
 		pNetGame->GetRPC4()->Call("RequestClass", &bsSpawnRequestReply ,HIGH_PRIORITY, RELIABLE, 0, packet->guid, false);
 	}
