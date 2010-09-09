@@ -8,6 +8,7 @@
 #include <windows.h>
 #include <tlhelp32.h>
 #include <stdlib.h>
+#include <Psapi.h>
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -54,6 +55,45 @@ bool GetProcessIdFromProcessName(char * szProcessName, DWORD * dwProcessId)
 
 	return bReturn;
 }
+
+bool TerminateGTAIfRunning ( void )
+{
+    DWORD dwProcessIDs[250];
+    DWORD pBytesReturned = 0;
+    unsigned int uiListSize = 50;
+    if ( EnumProcesses ( dwProcessIDs, 250 * sizeof(DWORD), &pBytesReturned ) )
+    {
+        for ( unsigned int i = 0; i < pBytesReturned / sizeof ( DWORD ); i++ )
+        {
+            HANDLE hProcess = OpenProcess(PROCESS_ALL_ACCESS, 0, dwProcessIDs[i]);
+            if ( hProcess )
+            {
+                HMODULE pModule;
+                DWORD cbNeeded;
+                if ( EnumProcessModules ( hProcess, &pModule, sizeof ( HMODULE ), &cbNeeded ) )
+                {
+                    char szModuleName[500];
+                    if ( GetModuleFileNameEx( hProcess, pModule, szModuleName, 500 ) )
+                    {
+                        if ( strcmpi ( szModuleName + strlen ( szModuleName ) - strlen ( "gta-vc.exe" ), "gta-vc.exe" ) == 0 )
+                        {
+							if ( MessageBox ( 0, "An instance of GTA: Vice City is already running. It needs to be terminated before Vice City Players can be started. Do you want to do that now?", "Error", MB_YESNO | MB_ICONQUESTION ) == IDYES )
+                            {
+                                TerminateProcess ( hProcess, 0 );
+                                CloseHandle ( hProcess );
+                                return true;
+                            }
+                            return false;
+                        } 
+                    }
+                }
+                CloseHandle ( hProcess );
+            }
+        }
+    }
+    return true;
+}
+
 
 /////////////////////////////////////////////////////////////////////////////
 
@@ -380,6 +420,12 @@ void CLauncherDlg::OnLaunch()
 		MessageBox("Couldn't launch gta-vc.exe.\nDid you install Vice City: Players to your Vice City directory?");
 		return;
 	}
+
+	if ( !TerminateGTAIfRunning () )
+    {
+		MessageBox ("Vice City Players could not start because an another instance of GTA: Vice City is running.", "Error", MB_ICONERROR );
+        return;
+    }
 
 	// Inject our code into LaunchGTAIV.exe
 	if(!InjectLibraryIntoProcess(piProcessInfo.hProcess, szLibraryPath)) {
