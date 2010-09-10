@@ -10,7 +10,7 @@
 
 #include "main.h"
 
-#define HEALTH_BAR_COLOR D3DCOLOR_XRGB(255, 0, 0)
+#define HEALTH_BAR_COLOR D3DCOLOR_XRGB(255, 153, 230)
 #define ARMOUR_BAR_COLOR D3DCOLOR_XRGB(125, 125, 125)
 
 extern CNetGame *pNetGame;
