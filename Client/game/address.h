@@ -85,14 +85,6 @@
 #define ADDR_GET_PLAYER_CONTROLS				0x4AB060
 #define FUNC_CPed__ResetSkin					0x4EF030
 #define FUNC_CPed__Recreate						0x4EEFD0
-#define VAR_CPlayerPed__VFTable					0x694D70
-#define VAR_CBike__VFTable						0x6D7B34
-#define VAR_CBoat__VFTable						0x69B0B4
-#define VAR_CAutomobile__VFTable				0x69AD90
-#define FUNC_CPlayerPed__ProcessControl			0x537270
-#define FUNC_CBike__ProcessControl				0x60E3E0
-#define FUNC_CBoat__ProcessControl				0x59FE90
-#define FUNC_CAutomobile__ProcessControl		0x593030
 #define VAR_GameState							0x9B5F08
 #define FUNC_CPed__Teleport						0x4F5690
 #define VAR_Camera								0x7E4688

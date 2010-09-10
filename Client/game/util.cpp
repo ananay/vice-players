@@ -226,9 +226,12 @@ void VCMP_SAFECALL SetPlayerPedPtrRecord(BYTE bytePlayer, DWORD dwPedPtr)
 
 BYTE VCMP_SAFECALL FindPlayerNumFromPedPtr(DWORD dwPedPtr)
 {
-	for(BYTE x = 0; x < MAX_PLAYER_NAME; x++)
+	for(BYTE x = 0; x < MAX_PLAYERS; x++)
 	{
-		if(dwPlayerPedPtrs[x] == dwPedPtr) return x;
+		if(dwPlayerPedPtrs[x] == dwPedPtr)
+		{
+			return x;
+		}
 	}
 
 	return 0;
