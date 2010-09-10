@@ -13,11 +13,21 @@
 #include "util.h"
 #include "keystuff.h"
 
-extern CNetGame*	pNetGame;
-extern CGame*       pGame;
-BOOL                bScriptInited=FALSE;
+extern CNetGame * pNetGame;
+extern CGame *    pGame;
+BOOL              bScriptInited=FALSE;
 
 #define NUDE void _declspec(naked) 
+
+// TODO: hooks.h
+#define VAR_CPlayerPed__VFTable					0x694D70
+#define VAR_CBike__VFTable						0x6D7B34
+#define VAR_CBoat__VFTable						0x69B0B4
+#define VAR_CAutomobile__VFTable				0x69AD90
+#define FUNC_CPlayerPed__ProcessControl			0x537270
+#define FUNC_CBike__ProcessControl				0x60E3E0
+#define FUNC_CBoat__ProcessControl				0x59FE90
+#define FUNC_CAutomobile__ProcessControl		0x593030
 
 //-----------------------------------------------------------
 
@@ -210,7 +220,7 @@ void _stdcall DoOnFootWorldBoundsStuff()
 
 //-----------------------------------------------------------
 
-void SwitchContext(DWORD dwPedPtr, bool bPrePost)
+void _stdcall SwitchContext(DWORD dwPedPtr, bool bPrePost)
 {
 	if(dwPedPtr)
 	{
@@ -293,16 +303,16 @@ NUDE CPlayerPed_ProcessControl_Hook()
 	SwitchContext(dwCurPlayerActor, true);
 
 	// call the internal CPlayerPed::ProcessControl
+	dwFunc = FUNC_CPlayerPed__ProcessControl;
 	_asm
 	{
 		popad
-		mov edx, FUNC_CPlayerPed__ProcessControl
-		call edx
+		call dwFunc
 		pushad
 	}
 
 	SwitchContext(dwCurPlayerActor, false);
-	
+
 	_asm
 	{
 		popad
@@ -317,8 +327,7 @@ NUDE Vehicle_ProcessControl_Hook()
 {
 	_asm
 	{
-		mov eax, ecx
-		mov _pVehicle, eax
+		mov _pVehicle, ecx
 		mov eax, [ecx]
 		mov dwVFTable, eax
 		pushad
