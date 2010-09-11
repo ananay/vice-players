@@ -30,6 +30,8 @@ BOOL              bScriptInited=FALSE;
 #define FUNC_CBoat__ProcessControl 0x59FE90
 #define FUNC_CAutomobile__ProcessControl 0x593030
 #define CALLBACK_CRunningScript__Process 0x450245
+#define FUNC_EnterCarAnimCallback 0x5128E0
+#define FUNC_RadarTranslateColor 0x4C3050
 
 //-----------------------------------------------------------
 
@@ -60,8 +62,6 @@ extern GTA_CONTROLSET * pGcsInternalKeys;
 
 //-----------------------------------------------------------
 
-BYTE RadarTranslateColor_HookJmpCode[] = {0xFF,0x25,0x44,0x30,0x4C,0x00,0x90}; // 4C3044
-BYTE EnterCarAnimCallback_HookJmpCode[] = {0xFF,0x25,0xD8,0x28,0x51,0x00,0x90,0x90}; // 5128D8
 BYTE InflictDamage_HookJmpCode[] = {0xFF,0x25,0x15,0x5B,0x52,0x00}; // 525B15
 
 //-----------------------------------------------------------
@@ -337,27 +337,6 @@ NUDE RadarTranslateColor()
 }
 
 //-----------------------------------------------------------
-
-NUDE CantFindFuckingAnim()
-{
-	_asm
-	{
-		mov eax, [esp+4]
-		test eax, eax
-		jnz its_ok
-
-		ret ; was 0, so foobarred
-	}
-
-its_ok:
-	_asm
-	{
-		mov edx, 0x405AC0
-		add edx, 4
-	}
-}
-
-//-----------------------------------------------------------
 // ok, this bullshit procedure don't check the fucking
 // vehicle pointer for 0 and caused the widely hated 5128fb crash.
 
@@ -365,8 +344,6 @@ NUDE EnterCarAnimCallback_Hook()
 {
 	_asm
 	{
-		mov edx, [esp+4]
-		mov eax, [esp+8]
 		mov _pPlayer, eax
 		pushad
 	}
@@ -380,12 +357,13 @@ NUDE EnterCarAnimCallback_Hook()
 		}
 	}
 
+	dwFunc = (FUNC_EnterCarAnimCallback + 8);
 	_asm
 	{
 		popad
-		mov ebp, 0x5128E0
-		add ebp, 8
-		jmp ebp
+		mov edx, [esp+4]
+		mov eax, [esp+8]
+		jmp dwFunc
 	}
 }
 
@@ -608,21 +586,15 @@ void GameInstallHooks()
 	InstallJmpHook(FUNC_CPed__SetObjective, (DWORD)CPed__SetObjective_Hook);
 								
 	// Install hook for RadarTranslateColor
-	InstallHook(0x4C3050, (DWORD)RadarTranslateColor, 0x4C3044, 
-		RadarTranslateColor_HookJmpCode, sizeof(RadarTranslateColor_HookJmpCode));
+	InstallJmpHook(FUNC_RadarTranslateColor, (DWORD)RadarTranslateColor);
 	
 	// Install hook for CPed::InflictDamage
 	InstallHook(0x525B20, (DWORD)CPed__InflictDamage_Hook, 0x525B15, 
 		InflictDamage_HookJmpCode, sizeof(InflictDamage_HookJmpCode));
 
-	// Install hook for enter car animation callback..
+	// Install hook for EnterCarAnimCallback
 	// Update: Causing even more problems.
-	InstallHook(0x5128E0, (DWORD)EnterCarAnimCallback_Hook, 0x5128D8, 
-		EnterCarAnimCallback_HookJmpCode, sizeof(EnterCarAnimCallback_HookJmpCode));
-
-	/* Hook/patch code to get around 0x405AC5 animation bug
-	InstallHook(0x405AC0, (DWORD)CantFindFuckingAnim, 0x405A95,
-		CantFindFuckingAnim_HookJmpCode, sizeof(CantFindFuckingAnim_HookJmpCode));*/
+	InstallJmpHook(FUNC_EnterCarAnimCallback, (DWORD)EnterCarAnimCallback_Hook);
 
 	// Install hook for CRunningScript::Process (thx Merlin)
 	InstallCallHook(CALLBACK_CRunningScript__Process, (DWORD)CRunningScript__Process_Hook);
