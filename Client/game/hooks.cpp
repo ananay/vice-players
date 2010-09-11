@@ -231,6 +231,7 @@ NUDE Vehicle_ProcessControl_Hook()
 //-----------------------------------------------------------
 
 extern CChatWindow * pChatWindow;
+DWORD dwLastObjectiveVehicle = 0;
 
 void _stdcall DoVehicleEntryExitNotification(bool bEnterExit, DWORD dwVehicle, bool bPassenger)
 {
@@ -240,11 +241,10 @@ void _stdcall DoVehicleEntryExitNotification(bool bEnterExit, DWORD dwVehicle, b
 		// Get a pointer to the local player ped
 		CPlayerPed * pPlayerPed = pGame->FindPlayerPed();
 
-		// Make sure we are not currently exiting a vehicle
-		// NOTE: There might also need to be a check for entering a vehicle, not sure
-		if(!bEnterExit && pPlayerPed->GetAction() == ACTION_EXITING_VEHICLE)
+		// Make sure we are not currently entering exiting a vehicle
+		if((bEnterExit && dwLastObjectiveVehicle == dwVehicle && pPlayerPed->GetAction() == ACTION_GETTING_IN_VEHICLE) || (!bEnterExit && pPlayerPed->GetAction() == ACTION_EXITING_VEHICLE))
 		{
-			// Already exiting
+			// Already entering or exiting a vehicle
 			return;
 		}
 
@@ -267,6 +267,9 @@ void _stdcall DoVehicleEntryExitNotification(bool bEnterExit, DWORD dwVehicle, b
 			{
 				// Send the enter vehicle notification
 				pLocalPlayer->SendEnterVehicleNotification(iVehicleId, bPassenger);
+
+				// Set the last object vehicle pointer to this vehicle to avoid spamming enter vehicle objectives
+				dwLastObjectiveVehicle = dwVehicle;
 			}
 			else
 			{
