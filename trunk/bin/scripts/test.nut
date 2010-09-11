@@ -164,6 +164,30 @@ function onPlayerCommand(playerid, cmdtext)
 		toggleTextForPlayer(playerid, text, true);
 		
 	}
+	if(cmd[0] == "/hidetextall")
+	{
+		toggleTextForAll(cmd[1].tointeger(), false);
+	}
+	if(cmd[0] == "/settextall")
+	{
+		setTextForAll(cmd[1].tointeger(), cmd[2].tostring());
+	}
+	if(cmd[0] == "/settext")
+	{
+		setText(cmd[1].tointeger(), cmd[2].tointeger(), cmd[3].tostring());
+	}
+	if(cmd[0] == "/settextcolorall")
+	{
+		setTextColorForAll(cmd[1].tointeger(), cmd[2].tointeger());
+	}
+	if(cmd[0] == "/settextposall")
+	{
+		setTextPositionForAll(cmd[1].tointeger(), cmd[2].tofloat(), cmd[3].tofloat());
+	}
+	if(cmd[0] == "/settextpos")
+	{
+		setTextPositionForPlayer(cmd[1].tointeger(), cmd[2].tointeger(), cmd[3].tofloat(), cmd[4].tofloat());
+	}
 	if(cmd[0] == "/showtext")
 	{
 		toggleTextForPlayer(playerid, cmd[1].tointeger(), true);

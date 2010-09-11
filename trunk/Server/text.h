@@ -15,11 +15,13 @@ private:
 	EntityId m_iID;
 
 	DWORD m_dwColour;
-	const char * m_szFont;
+	std::string m_szFont;
 	int m_iSize;
 	float m_fPosX;
 	float m_fPosY;
-	const char * m_szText;
+	std::string m_szText;
+
+	bool m_bShow;
 
 public:
 	CText(DWORD color, const char * szFontName, int iSize, float posX, float posY, const char * szText);
@@ -29,6 +31,10 @@ public:
 	void HideForPlayer(EntityId playerId);
 
 	void SetID(EntityId id);
+	void SetText(const char * szText);
+	void SetPosition(float fPosX, float fPosY);
+	void SetColor(DWORD color);
+	void Show(bool show);
 
 	void InitForPlayer(EntityId playerId);
 	void InitForWorld();

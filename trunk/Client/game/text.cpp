@@ -18,8 +18,7 @@ CText::CText(EntityId TextID, DWORD color, char * szFontName, int iSize, float p
 	m_iID = TextID;
 
 	m_dwColor = color;
-	m_szText = new char[strlen(szText)+1];
-	memcpy(m_szText, szText, strlen(szText)+1);
+	m_szText = szText;
 	m_fPosX = posX;
 	m_fPosY = posY;
 	
@@ -52,6 +51,6 @@ void CText::Process()
 		posX = ((DisplayMode.Width / 100) * m_fPosX);
 		posY = ((DisplayMode.Height / 100) * m_fPosY);
 
-		m_pFont->DrawText(posX, posY, m_dwColor, m_szText);
+		m_pFont->DrawText(posX, posY, m_dwColor, m_szText.c_str());
 	}
 }
