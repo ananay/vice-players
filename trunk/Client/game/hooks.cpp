@@ -4,6 +4,7 @@
 // Copyright 2004-2005 SA:MP team
 //
 // File Author(s): kyeman
+//                 jenksta
 // License: See LICENSE in root directory
 //
 //----------------------------------------------------------
@@ -20,47 +21,44 @@ BOOL              bScriptInited=FALSE;
 #define NUDE void _declspec(naked) 
 
 // TODO: hooks.h
-#define VAR_CPlayerPed__VFTable					0x694D70
-#define VAR_CBike__VFTable						0x6D7B34
-#define VAR_CBoat__VFTable						0x69B0B4
-#define VAR_CAutomobile__VFTable				0x69AD90
-#define FUNC_CPlayerPed__ProcessControl			0x537270
-#define FUNC_CBike__ProcessControl				0x60E3E0
-#define FUNC_CBoat__ProcessControl				0x59FE90
-#define FUNC_CAutomobile__ProcessControl		0x593030
+#define VAR_CPlayerPed__VFTable 0x694D70
+#define VAR_CBike__VFTable 0x6D7B34
+#define VAR_CBoat__VFTable 0x69B0B4
+#define VAR_CAutomobile__VFTable 0x69AD90
+#define FUNC_CPlayerPed__ProcessControl 0x537270
+#define FUNC_CBike__ProcessControl 0x60E3E0
+#define FUNC_CBoat__ProcessControl 0x59FE90
+#define FUNC_CAutomobile__ProcessControl 0x593030
+#define CALLBACK_CRunningScript__Process 0x450245
 
 //-----------------------------------------------------------
 
-PED_TYPE	*_pPlayer;
-VEHICLE_TYPE *_pVehicle;
-DWORD		*_pEntity;
-int			_iWeapon;
-float		_fUnk;
-int			_iPedPieces;
-BYTE		_byteUnk;
-
-DWORD	dwStackFrame;
-DWORD	dwCurPlayerActor=0;
-BYTE	byteCurPlayer=0;
-DWORD   dwRGBARadar=0;
-int		iRadarColor1=0;
-BYTE	byteSavedCameraMode;
-BYTE	*pbyteCameraMode = (BYTE *)0x7E481C;
-BYTE	*pbyteCurrentPlayer = (BYTE *)0xA10AFB; 
-BYTE	byteUnkSave;
-DWORD   dwVFTable;
-DWORD   dwFunc;
-
-BOOL	bUsePassenger=FALSE;
-BOOL	bIsPlayer=FALSE;
-
-VEHICLE_TYPE *ObjectiveVehicle;
+PED_TYPE	 * _pPlayer = NULL;
+VEHICLE_TYPE * _pVehicle = NULL;
+DWORD		 * _pEntity = NULL;
+int			 _iWeapon = 0;
+float		 _fUnk = 0;
+int			 _iPedPieces = 0;
+BYTE		 _byteUnk = 0;
+DWORD	     dwStackFrame = 0;
+DWORD	     dwCurPlayerActor = 0;
+BYTE	     byteCurPlayer = 0;
+DWORD        dwRGBARadar = 0;
+int		     iRadarColor1 = 0;
+BYTE	     byteSavedCameraMode = 0;
+BYTE	   * pbyteCameraMode = (BYTE *)0x7E481C;
+BYTE	   * pbyteCurrentPlayer = (BYTE *)0xA10AFB; 
+BYTE	     byteUnkSave = 0;
+DWORD        dwVFTable = 0;
+DWORD        dwFunc = 0;
+DWORD        dwObjectiveActor = 0;
+DWORD        dwObjectiveType = 0;
+DWORD        dwObjectiveEntity = 0;
 
 extern GTA_CONTROLSET * pGcsInternalKeys;
 
 //-----------------------------------------------------------
 
-BYTE PedSetObjective_HookJmpCode[]	= {0xFF,0x25,0x75,0x11,0x40,0x00,0x90,0x90,0x90};
 BYTE RadarTranslateColor_HookJmpCode[] = {0xFF,0x25,0x44,0x30,0x4C,0x00,0x90}; // 4C3044
 BYTE EnterCarAnimCallback_HookJmpCode[] = {0xFF,0x25,0xD8,0x28,0x51,0x00,0x90,0x90}; // 5128D8
 BYTE InflictDamage_HookJmpCode[] = {0xFF,0x25,0x15,0x5B,0x52,0x00}; // 525B15
@@ -143,7 +141,7 @@ void _stdcall SwitchContext(DWORD dwPedPtr, bool bPrePost)
 // A hook function that switches keys for
 // CPlayerPed::ProcessControl(void)
 
-NUDE CPlayerPed_ProcessControl_Hook()
+NUDE CPlayerPed__ProcessControl_Hook()
 {
 	_asm
 	{
@@ -232,46 +230,49 @@ NUDE Vehicle_ProcessControl_Hook()
 
 //-----------------------------------------------------------
 
-void _stdcall DoEnterVehicleNotification(BOOL bPassenger)
-{
-	/*
-	if(pNetGame) {
-		ObjectiveVehicle = (VEHICLE_TYPE *)_pVehicle;			
-		pNetGame->GetPlayerPool()->GetLocalPlayer()
-			->SendEnterVehicleNotification(pNetGame->GetVehiclePool()
-			->FindIDFromGtaPtr(ObjectiveVehicle),bPassenger);
-	}*/
-}
+extern CChatWindow * pChatWindow;
 
-//-----------------------------------------------------------
-
-void _stdcall DoExitVehicleNotification()
+void _stdcall DoVehicleEntryExitNotification(bool bEnterExit, DWORD dwVehicle, bool bPassenger)
 {
-	/*
-	if(pNetGame) {
-		ObjectiveVehicle = (VEHICLE_TYPE *)_pVehicle;
-		if(ObjectiveVehicle->pDriver != GamePool_FindPlayerPed()) {
-			pNetGame->GetPlayerPool()->GetLocalPlayer()
-					->SendExitVehicleNotification(pNetGame->GetVehiclePool()
-					->FindIDFromGtaPtr(ObjectiveVehicle));
+	if(pChatWindow) pChatWindow->AddDebugMessage("DoVehicleEntryExitNotification(%d, 0x%p, %d)", bEnterExit, dwVehicle, bPassenger);
+	// Do we have a valid net game instance?
+	if(pNetGame)
+	{
+		// Get a pointer to the vehicle pool
+		CVehiclePool * pVehiclePool = pNetGame->GetVehiclePool();
+
+		// Get the vehicle's pool id
+		int iVehicleId = pVehiclePool->FindIDFromGtaPtr((VEHICLE_TYPE *)dwVehicle);
+
+		// Is the vehicle valid?
+		if(iVehicleId != -1)
+		{
+			// Get a pointer to the local player
+			CLocalPlayer * pLocalPlayer = pNetGame->GetPlayerPool()->GetLocalPlayer();
+
+			// Are we entering the vehicle or exiting it?
+			if(bEnterExit)
+			{
+				// Send the enter vehicle notification
+				pLocalPlayer->SendEnterVehicleNotification(iVehicleId, bPassenger);
+			}
+			else
+			{
+				// Send the exit vehicle notification
+				pLocalPlayer->SendExitVehicleNotification(iVehicleId);
+			}
 		}
-	}*/
+	}
 }
 
 //-----------------------------------------------------------
 // Hooks CPed::SetObjective(eObjectiveType objectiveType, CEntity * pObjectiveEntity)
 
-DWORD dwPlayerActor;
-DWORD dwObjectiveType;
-DWORD dwObjectiveEntity;
-
-extern CChatWindow * pChatWindow;
-
 NUDE CPed__SetObjective_Hook()
 {	
 	_asm
 	{
-		mov dwPlayerActor, ecx
+		mov dwObjectiveActor, ecx
 		mov eax, [esp+4]
 		mov dwObjectiveType, eax
 		mov eax, [esp+8]
@@ -279,7 +280,21 @@ NUDE CPed__SetObjective_Hook()
 		pushad
 	}
 
-	//pChatWindow->AddDebugMessage("CPed::SetObjective(Actor: 0x%x, Type: %d, Entity: 0x%x)", dwPlayerActor, dwObjectiveType, dwObjectiveEntity);
+	if((PED_TYPE *)dwObjectiveActor == GamePool_FindPlayerPed())
+	{
+		if(dwObjectiveType == OBJECTIVE_TYPE_ENTER_CAR_AS_DRIVER)
+		{
+			DoVehicleEntryExitNotification(true, dwObjectiveEntity, false);
+		}
+		else if(dwObjectiveType == OBJECTIVE_TYPE_ENTER_CAR_AS_PASSENGER)
+		{
+			DoVehicleEntryExitNotification(true, dwObjectiveEntity, true);
+		}
+		else if(dwObjectiveType == OBJECTIVE_TYPE_EXIT_CAR)
+		{
+			DoVehicleEntryExitNotification(false, dwObjectiveEntity, false);
+		}
+	}
 
 	dwFunc = (FUNC_CPed__SetObjective + 9);
 	_asm
@@ -341,7 +356,6 @@ NUDE EnterCarAnimCallback_Hook()
 	{
 		mov edx, [esp+4]
 		mov eax, [esp+8]
-
 		mov _pPlayer, eax
 		pushad
 	}
@@ -423,7 +437,7 @@ BOOL _stdcall IsFriendlyFire(PED_TYPE *pPlayer,DWORD *pdwEnt, int iWeapon, float
 
 //-----------------------------------------------------------
 
-NUDE CPed_InflictDamageHook()
+NUDE CPed__InflictDamage_Hook()
 {
 	_asm
 	{
@@ -500,7 +514,7 @@ void CRunningScript_Process()
 
 //-----------------------------------------------------------
 
-NUDE CRunningScript_Process_Hook()
+NUDE CRunningScript__Process_Hook()
 {
 	_asm
 	{
@@ -568,7 +582,7 @@ void InstallJmpHook(DWORD dwInstallAddress, DWORD dwHookFunction)
 void GameInstallHooks()
 {	
 	// Install hook for CPlayerPed::ProcessControl
-	InstallMethodHook((VAR_CPlayerPed__VFTable + 0x20), (DWORD)CPlayerPed_ProcessControl_Hook);
+	InstallMethodHook((VAR_CPlayerPed__VFTable + 0x20), (DWORD)CPlayerPed__ProcessControl_Hook);
 
 	// Install hook for CBike::ProcessControl
 	InstallMethodHook((VAR_CBike__VFTable + 0x20), (DWORD)Vehicle_ProcessControl_Hook);
@@ -578,12 +592,6 @@ void GameInstallHooks()
 
 	// Install hook for CAutomobile::ProcessControl
 	InstallMethodHook((VAR_CAutomobile__VFTable + 0x20), (DWORD)Vehicle_ProcessControl_Hook);
-	
-	// NOTE: Could use the below hook for entry/exit vehicle events maybe?
-	/* Install hook for CPed::SetObjective
-	InstallHook(ADDR_SET_OBJECTIVE, (DWORD)CPed_SetObjective_Hook, 
-		ADDR_SET_OBJECTIVE_STORAGE, PedSetObjective_HookJmpCode, 
-		sizeof(PedSetObjective_HookJmpCode));*/
 
 	// Install hook for CPed::SetObjective
 	InstallJmpHook(FUNC_CPed__SetObjective, (DWORD)CPed__SetObjective_Hook);
@@ -593,7 +601,7 @@ void GameInstallHooks()
 		RadarTranslateColor_HookJmpCode, sizeof(RadarTranslateColor_HookJmpCode));
 	
 	// Install hook for CPed::InflictDamage
-	InstallHook(0x525B20, (DWORD)CPed_InflictDamageHook, 0x525B15, 
+	InstallHook(0x525B20, (DWORD)CPed__InflictDamage_Hook, 0x525B15, 
 		InflictDamage_HookJmpCode, sizeof(InflictDamage_HookJmpCode));
 
 	// Install hook for enter car animation callback..
@@ -606,7 +614,7 @@ void GameInstallHooks()
 		CantFindFuckingAnim_HookJmpCode, sizeof(CantFindFuckingAnim_HookJmpCode));*/
 
 	// Install hook for CRunningScript::Process (thx Merlin)
-	InstallCallHook(0x450245, (DWORD)CRunningScript_Process_Hook);
+	InstallCallHook(CALLBACK_CRunningScript__Process, (DWORD)CRunningScript__Process_Hook);
 
 	// Install hook for menu process game state setting
 	InstallCallHook(0x6003B3, (DWORD)StartGame);

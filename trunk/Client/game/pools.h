@@ -10,10 +10,19 @@
 
 #pragma once
 
-#define VCMP_SAFECALL __stdcall
-
 #include "common.h"
 #include "address.h"
+
+#define VAR_PedPool								0x97F2AC
+#define VAR_VehiclePool							0xA0FDE4
+#define VAR_ObjectPool							0x94DBE0
+#define FUNC_CPool_CPed__HandleOf				0x451CF0
+#define FUNC_CPool_CPed_AtHandle				0x451CB0
+#define FUNC_CPool_CVehicle_AtHandle			0x451C70
+#define FUNC_CPool_CVehicle__HandleOf			0x42C4B0
+#define FUNC_CPool_CObject__AtHandle			0x451C30
+
+#define VCMP_SAFECALL __stdcall
 
 class CPools
 {

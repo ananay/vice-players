@@ -30,8 +30,8 @@
 #define FUNC_ShowMarker 0x4C3840
 #define FUNC_SetMarkerIcon 0x4C3780
 #define FUNC_SetMarkerColor 0x4C3930
-
-//-----------------------------------------------------------
+#define VAR_GameState 0x9B5F08
+#define VAR_GlobalGravity 0x68F5F0
 
 enum eGameState
 {
@@ -81,8 +81,8 @@ public:
 	void    FadeScreen(int iType, int iTime);
 	void	SetGameTime(int iHour, int iMinute);
 	void	SetCash(int Cash);
-	void	SetGravity(float amount);
-	void	GetGravity(float amount);
+	void	SetGravity(float fGravity);
+	float	GetGravity();
 	int     CreateMarker(int iType, float fX, float fY, float fZ, int iFlag1, int iFlag2);
 	void    ShowMarker(int iMarkerId, int iType);
 	void    SetMarkerIcon(int iMarkerId, int iIconId);

@@ -460,15 +460,11 @@ void CLocalPlayer::Say(PCHAR szText)
 
 //----------------------------------------------------------
 
-void CLocalPlayer::SendEnterVehicleNotification(EntityId vehicleID, BOOL bPassenger)
+void CLocalPlayer::SendEnterVehicleNotification(EntityId vehicleID, bool bPassenger)
 {
 	RakNet::BitStream bsSend;
-	BYTE bytePassenger=0;
-
-	if(bPassenger) bytePassenger=1;
-
 	bsSend.Write(vehicleID);
-	bsSend.Write(bytePassenger);
+	bsSend.Write(bPassenger);
 	pNetGame->GetRPC4()->Call("EnterVehicle",&bsSend,HIGH_PRIORITY,RELIABLE_SEQUENCED,0,UNASSIGNED_SYSTEM_ADDRESS,TRUE);
 }
 

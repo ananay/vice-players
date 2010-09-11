@@ -16,6 +16,14 @@
 
 //-----------------------------------------------------------
 
+#define FUNC_CPed__RemoveAllWeapons 0x4FF740
+#define FUNC_CPed__GiveWeapon 0x4FFA30
+#define FUNC_CPed__ResetSkin 0x4EF030
+#define FUNC_CPed__Recreate 0x4EEFD0
+#define FUNC_CPed__Teleport 0x4F5690
+#define FUNC_CPed__Say 0x5226B0
+#define FUNC_CPed__SetModelIndex 0x50D900
+
 enum eObjectiveType
 {
 	OBJECTIVE_TYPE_KILL_1 = 8,
@@ -65,7 +73,6 @@ public:
 	void           SetInitialState();
 	BOOL           IsOnScreen();
 
-	// Added by VC-Players Team
 	void		   SetWaterDeaths(int iToggle);
 	void		   SetCellAction(int iToggle);
 	void		   Flash(int iItem);
