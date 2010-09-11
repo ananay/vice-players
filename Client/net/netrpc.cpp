@@ -314,25 +314,23 @@ void VehicleDestroy(RakNet::BitStream *bitStream, Packet *packet)
 
 void UpdateScoreAndPing(RakNet::BitStream *bitStream, Packet *packet)
 {	
-	CPlayerPool *pPlayerPool = pNetGame->GetPlayerPool();
-
-	int iPlayers = (packet->bitSize/8) / 9;
-
+	CPlayerPool * pPlayerPool = pNetGame->GetPlayerPool();
 	EntityId playerID;
 	int iPlayerScore;
 	int iPlayerPing;
-	ULONG ip;
+	unsigned long ulIp;
 
-	for(BYTE i = 0; i < iPlayers; i++) {
-		bitStream->Read(playerID);
+	while(bitStream->Read(playerID))
+	{
 		bitStream->Read(iPlayerScore);
 		bitStream->Read(iPlayerPing);
-		bitStream->Read(ip);
+		bitStream->Read(ulIp);
 
-		if(pPlayerPool->GetSlotState(playerID) || playerID == pPlayerPool->GetLocalPlayerID()) {
-			pPlayerPool->UpdateScore(playerID,iPlayerScore);
-			pPlayerPool->UpdatePing(playerID,iPlayerPing);
-			pPlayerPool->UpdateIPAddress(playerID,ip);
+		if(pPlayerPool->GetSlotState(playerID) || playerID == pPlayerPool->GetLocalPlayerID())
+		{
+			pPlayerPool->UpdateScore(playerID, iPlayerScore);
+			pPlayerPool->UpdatePing(playerID, iPlayerPing);
+			pPlayerPool->UpdateIPAddress(playerID, ulIp);
 		}
 	}
 }
