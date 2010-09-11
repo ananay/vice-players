@@ -54,6 +54,7 @@ DWORD        dwFunc = 0;
 DWORD        dwObjectiveActor = 0;
 DWORD        dwObjectiveType = 0;
 DWORD        dwObjectiveEntity = 0;
+DWORD        dwLastObjectiveVehicle = 0;
 
 extern GTA_CONTROLSET * pGcsInternalKeys;
 
@@ -230,9 +231,6 @@ NUDE Vehicle_ProcessControl_Hook()
 
 //-----------------------------------------------------------
 
-extern CChatWindow * pChatWindow;
-DWORD dwLastObjectiveVehicle = 0;
-
 void _stdcall DoVehicleEntryExitNotification(bool bEnterExit, DWORD dwVehicle, bool bPassenger)
 {
 	// Do we have a valid net game instance?
@@ -247,8 +245,6 @@ void _stdcall DoVehicleEntryExitNotification(bool bEnterExit, DWORD dwVehicle, b
 			// Already entering or exiting a vehicle
 			return;
 		}
-
-		if(pChatWindow) pChatWindow->AddDebugMessage("DoVehicleEntryExitNotification(%d, 0x%p, %d)", bEnterExit, dwVehicle, bPassenger);
 
 		// Get a pointer to the vehicle pool
 		CVehiclePool * pVehiclePool = pNetGame->GetVehiclePool();
@@ -268,7 +264,7 @@ void _stdcall DoVehicleEntryExitNotification(bool bEnterExit, DWORD dwVehicle, b
 				// Send the enter vehicle notification
 				pLocalPlayer->SendEnterVehicleNotification(iVehicleId, bPassenger);
 
-				// Set the last object vehicle pointer to this vehicle to avoid spamming enter vehicle objectives
+				// Set the last objective vehicle pointer to this vehicle to avoid spamming enter vehicle objectives
 				dwLastObjectiveVehicle = dwVehicle;
 			}
 			else
