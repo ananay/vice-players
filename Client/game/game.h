@@ -25,7 +25,9 @@
 #define FUNC_LoadRequestedModels 0x40B5F0
 #define VAR_ModelInfo 0x94DDD8
 #define CClock__SetTime 0x487160
-#define ADDR_PlayerCash	0x94ADC8
+#define VAR_PlayerCash 0x94ADC8 // This is actually CPlayerInfo[0].Cash
+#define FUNC_CreateMarker 0x4C3C80
+#define FUNC_ShowMarker 0x4C3840
 
 //-----------------------------------------------------------
 
@@ -79,6 +81,8 @@ public:
 	void	SetCash(int Cash);
 	void	SetGravity(float amount);
 	void	GetGravity(float amount);
+	int     CreateMarker(int iType, float fX, float fY, float fZ, int iFlag1, int iFlag2);
+	void    ShowMarker(int iMarkerId, int iType);
 
 	DWORD	GetD3DDevice() { return *(DWORD *)ADDR_ID3D8DEVICE; };
 	void	SetD3DDevice(DWORD pD3DDevice) { *(DWORD *)ADDR_ID3D8DEVICE = pD3DDevice; };
