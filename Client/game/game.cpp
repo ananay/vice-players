@@ -469,3 +469,31 @@ void CGame::ShowMarker(int iMarkerId, int iType)
 }
 
 //-----------------------------------------------------------
+
+void CGame::SetMarkerIcon(int iMarkerId, int iIconId)
+{
+	DWORD dwFunc = FUNC_SetMarkerIcon;
+	_asm
+	{
+		push iIconId
+		push iMarkerId
+		call dwFunc
+		add esp, 8
+	}
+}
+
+//-----------------------------------------------------------
+
+void CGame::SetMarkerColor(int iMarkerId, int iColorId)
+{
+	DWORD dwFunc = FUNC_SetMarkerColor;
+	_asm
+	{
+		push iColorId
+		push iMarkerId
+		call dwFunc
+		add esp, 8
+	}
+}
+
+//-----------------------------------------------------------

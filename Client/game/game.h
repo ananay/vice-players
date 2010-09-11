@@ -28,6 +28,8 @@
 #define VAR_PlayerCash 0x94ADC8 // This is actually CPlayerInfo[0].Cash
 #define FUNC_CreateMarker 0x4C3C80
 #define FUNC_ShowMarker 0x4C3840
+#define FUNC_SetMarkerIcon 0x4C3780
+#define FUNC_SetMarkerColor 0x4C3930
 
 //-----------------------------------------------------------
 
@@ -83,6 +85,8 @@ public:
 	void	GetGravity(float amount);
 	int     CreateMarker(int iType, float fX, float fY, float fZ, int iFlag1, int iFlag2);
 	void    ShowMarker(int iMarkerId, int iType);
+	void    SetMarkerIcon(int iMarkerId, int iIconId);
+	void    SetMarkerColor(int iMarkerId, int iColorId);
 
 	DWORD	GetD3DDevice() { return *(DWORD *)ADDR_ID3D8DEVICE; };
 	void	SetD3DDevice(DWORD pD3DDevice) { *(DWORD *)ADDR_ID3D8DEVICE = pD3DDevice; };
