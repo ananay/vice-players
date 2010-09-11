@@ -143,7 +143,7 @@ int main (int argc, char* argv[])
 
 	// Get the show on radar option (default is ON)
 	iShowOnRadarOption = pServerConfig->GetConfigEntryAsBool("ShowOnRadar");
-	if(iShowOnRadarOption == -1 || iShowOnRadarOption == 0)	{
+	if(iShowOnRadarOption == 0)	{
 		byteShowOnRadarOption = 0;
 	}
 
