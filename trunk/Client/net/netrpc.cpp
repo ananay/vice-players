@@ -667,6 +667,47 @@ void Script_ClientMessage(RakNet::BitStream *bitStream, Packet *packet)
 	pChatWindow->AddClientMessage(dwColor,szMessage);
 }
 
+// createText
+void CreateText(RakNet::BitStream *bitStream, Packet *packet)
+{
+	CTextPool *pTextPool = pNetGame->GetTextPool();
+	EntityId TextID=0;
+	DWORD dwColor;
+	CHAR szFontName[64], szMessage[256];
+	UINT uiFLength, uiLength;
+	int size;
+	float posX, posY;
+
+	bitStream->Read(TextID);
+	bitStream->Read(dwColor);
+	bitStream->Read(uiFLength);
+	bitStream->Read(szFontName,uiFLength);
+	szFontName[uiFLength] = '\0';
+	bitStream->Read(size);
+	bitStream->Read(posX);
+	bitStream->Read(posY);
+	bitStream->Read(uiLength);
+	bitStream->Read(szMessage,uiLength);
+	szMessage[uiLength] = '\0';
+
+	pTextPool->New(TextID, dwColor, szFontName, size, posX, posY, szMessage);
+}
+
+// Script_toggleTextForPlayer
+void Script_toggleTextForPlayer(RakNet::BitStream *bitStream, Packet *packet)
+{
+	int textId;
+	SQBool show;
+
+	bitStream->Read(textId);
+	bitStream->Read(show);
+
+	if(pNetGame->GetTextPool()->GetSlotState(textId))
+	{
+		pNetGame->GetTextPool()->GetAt(textId)->Show(show);
+	}
+}
+
 // setworldbounds
 void Script_WorldBounds(RakNet::BitStream *bitStream, Packet *packet)
 {
@@ -922,6 +963,7 @@ void RegisterRPCs()
 	pNetGame->GetRPC4()->RegisterFunction("SetCameraBehindPlayer",SetCameraBehindPlayer);
 	pNetGame->GetRPC4()->RegisterFunction("UploadClientScript",UploadClientScript);
 	pNetGame->GetRPC4()->RegisterFunction("ObjectSpawn", ObjectSpawn);
+	pNetGame->GetRPC4()->RegisterFunction("CreateText", CreateText);
 
 	pNetGame->GetRPC4()->RegisterFunction("Script_SetHealth",Script_SetHealth);
 	pNetGame->GetRPC4()->RegisterFunction("Script_SetArmour",Script_SetArmour);
@@ -961,6 +1003,7 @@ void RegisterRPCs()
 	pNetGame->GetRPC4()->RegisterFunction("Script_toggleCellPhone", Script_toggleCellPhone);
 	pNetGame->GetRPC4()->RegisterFunction("Script_SetCameraShakeIntensity", Script_SetCameraShakeIntensity);
 	pNetGame->GetRPC4()->RegisterFunction("Script_SetPlayerGravity", Script_setPlayerGravity);
+	pNetGame->GetRPC4()->RegisterFunction("Script_toggleTextForPlayer", Script_toggleTextForPlayer);
 }
 
 //----------------------------------------------------
@@ -988,6 +1031,7 @@ void UnRegisterRPCs()
 	pNetGame->GetRPC4()->UnregisterFunction("SetCameraBehindPlayer");
 	pNetGame->GetRPC4()->UnregisterFunction("UploadClientScript");
 	pNetGame->GetRPC4()->UnregisterFunction("ObjectSpawn");
+	pNetGame->GetRPC4()->UnregisterFunction("CreateText");
 
 	pNetGame->GetRPC4()->UnregisterFunction("Script_SetHealth");
 	pNetGame->GetRPC4()->UnregisterFunction("Script_SetArmour");
@@ -1022,6 +1066,7 @@ void UnRegisterRPCs()
 	pNetGame->GetRPC4()->UnregisterFunction("Script_toggleCellPhone");
 	pNetGame->GetRPC4()->UnregisterFunction("Script_SetCameraShakeIntensity");
 	pNetGame->GetRPC4()->UnregisterFunction("Script_SetPlayerGravity");
+	pNetGame->GetRPC4()->UnregisterFunction("Script_toggleTextForPlayer");
 }
 
 //----------------------------------------------------

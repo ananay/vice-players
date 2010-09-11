@@ -52,6 +52,7 @@ CNetGame::CNetGame(PCHAR szHostOrIp, int iPort,
 	m_pVehiclePool = new CVehiclePool();
 
 	m_pObjectPool = new CObjectPool();
+	m_pTextPool = new CTextPool();
 
 	m_pRakPeer = RakPeerInterface::GetInstance();
 	m_pRPC4 = RPC4::GetInstance();

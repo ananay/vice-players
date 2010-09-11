@@ -17,6 +17,7 @@
 #include "playerped.h"
 #include "camera.h"
 #include "scripting.h"
+#include "text.h"
 
 //-----------------------------------------------------------
 

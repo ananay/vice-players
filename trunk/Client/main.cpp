@@ -172,6 +172,7 @@ void TheSceneEnd()
 				pGame->DisplayHud(TRUE);
 				if(pChatWindow) pChatWindow->Draw();
 				if(pCmdWindow) pCmdWindow->Draw();
+				pNetGame->GetTextPool()->Process();
 			}
 		}
 	}

@@ -462,6 +462,60 @@ SQInteger sq_sendPlayerMessage(SQVM * pVM)
 	sq_pushbool(pVM, false);
 	return 1;
 }
+
+// createText
+SQInteger sq_createText(SQVM * pVM)
+{
+	SQInteger colourMessage, size;
+	float posX, posY;
+	const char * fontName;
+	const char * messageValue;
+
+	sq_getinteger(pVM, -6, &colourMessage);
+	sq_getstring(pVM, -5, &fontName);
+	sq_getinteger(pVM, -4, &size);
+	sq_getfloat(pVM, -3, &posX);
+	sq_getfloat(pVM, -2, &posY);
+	sq_getstring(pVM, -1, &messageValue);
+
+	EntityId text = pNetGame->GetTextPool()->New(colourMessage, fontName, size, posX, posY, messageValue);
+
+	if(text != -1)
+	{
+		sq_pushinteger(pVM, text);
+		return 1;
+	}
+
+	sq_pushbool(pVM, false);
+	return 1;
+}
+
+// showTextForPlayer
+SQInteger sq_toggleTextForPlayer(SQVM * pVM)
+{
+	SQInteger playerId;
+	SQInteger textId;
+	SQBool show;
+
+	sq_getbool(pVM, -1, &show);
+	sq_getinteger(pVM, -2, &textId);
+	sq_getinteger(pVM, -3, &playerId);
+
+	if(pNetGame->GetPlayerPool()->GetSlotState(playerId))
+	{
+		RakNet::BitStream bsSend;
+		bsSend.Write(textId);
+		bsSend.Write(show);
+		pNetGame->GetRPC4()->Call("Script_toggleTextForPlayer",&bsSend,HIGH_PRIORITY,RELIABLE,0,pNetGame->GetRakPeer()->GetSystemAddressFromIndex(playerId),false);
+
+		sq_pushbool(pVM, true);
+		return 1;
+	}
+
+	sq_pushbool(pVM, false);
+	return 1;		
+}
+
 // sendMessageAsPlayer
 SQInteger sq_sendMessageAsPlayer(SQVM * pVM)
 {
