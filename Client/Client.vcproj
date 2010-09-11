@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="Windows-1252"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="9.00"
+	Version="9,00"
 	Name="Client"
 	ProjectGUID="{24F45D58-098D-42B1-973A-8A3F9C8EA41E}"
 	RootNamespace="vcp"
@@ -422,6 +422,14 @@
 			</File>
 			<File
 				RelativePath="game\scripting.h"
+				>
+			</File>
+			<File
+				RelativePath=".\game\text.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\game\text.h"
 				>
 			</File>
 			<File
@@ -1394,6 +1402,14 @@
 			</File>
 			<File
 				RelativePath=".\net\spawnselection.h"
+				>
+			</File>
+			<File
+				RelativePath=".\net\textpool.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\net\textpool.h"
 				>
 			</File>
 			<File

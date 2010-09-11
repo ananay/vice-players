@@ -95,6 +95,8 @@ int sq_register_natives(SQVM * pVM)
 	RegisterFunction(pVM, "clientCall", sq_clientCall, -1, NULL);
 	RegisterFunction(pVM, "setPlayerGravity", sq_setPlayerGravity, 3, ".ni");
 	RegisterFunction(pVM, "getPlayerGravity", sq_getPlayerGravity, 2, ".n");
+	RegisterFunction(pVM, "createText", sq_createText, 7, ".isiffs");
+	RegisterFunction(pVM, "toggleTextForPlayer", sq_toggleTextForPlayer, 4, ".nnb");
 
 	// Timers
 	RegisterFunction(pVM, "setTimer", sq_setTimer, -1, NULL);

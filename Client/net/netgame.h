@@ -39,6 +39,7 @@ private:
 	CPlayerPool			*m_pPlayerPool;
 	CVehiclePool		*m_pVehiclePool;
 	CObjectPool			*m_pObjectPool;
+	CTextPool			*m_pTextPool;
 	RakPeerInterface	*m_pRakPeer;
 	static RPC4			*m_pRPC4;
 	CSpawnSelection	*m_pGameLogic;
@@ -76,6 +77,7 @@ public:
 	CPlayerPool * GetPlayerPool() { return m_pPlayerPool; };
 	CVehiclePool * GetVehiclePool() { return m_pVehiclePool; };
 	CObjectPool * GetObjectPool() { return m_pObjectPool; };
+	CTextPool * GetTextPool() { return m_pTextPool; };
 	RakPeerInterface * GetRakPeer() { return m_pRakPeer; };
 	RPC4 * GetRPC4() { return m_pRPC4; };
 	CSpawnSelection * GetGameLogic() { return m_pGameLogic; };

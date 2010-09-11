@@ -136,6 +136,9 @@ void ClientJoin(RakNet::BitStream *bitStream, Packet *packet)
 
 	// Spawn all objects for the player
 	pNetGame->GetObjectPool()->InitForPlayer(playerID);
+
+	// Create all texts for player
+	pNetGame->GetTextPool()->InitForPlayer(playerID);
 }
 
 //----------------------------------------------------
