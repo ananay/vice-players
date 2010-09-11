@@ -95,8 +95,6 @@ int sq_register_natives(SQVM * pVM)
 	RegisterFunction(pVM, "clientCall", sq_clientCall, -1, NULL);
 	RegisterFunction(pVM, "setPlayerGravity", sq_setPlayerGravity, 3, ".ni");
 	RegisterFunction(pVM, "getPlayerGravity", sq_getPlayerGravity, 2, ".n");
-	RegisterFunction(pVM, "createText", sq_createText, 7, ".isiffs");
-	RegisterFunction(pVM, "toggleTextForPlayer", sq_toggleTextForPlayer, 4, ".nnb");
 
 	// Timers
 	RegisterFunction(pVM, "setTimer", sq_setTimer, -1, NULL);
@@ -106,6 +104,18 @@ int sq_register_natives(SQVM * pVM)
 	// Map/Mode names
 	RegisterFunction(pVM, "setModeName", sq_setModeName, 2, ".s");
 	RegisterFunction(pVM, "setMapName", sq_setMapName, 2, ".s");
+
+	// Text functions
+	RegisterFunction(pVM, "createText", sq_createText, 7, ".isiffs");
+	RegisterFunction(pVM, "toggleTextForPlayer", sq_toggleTextForPlayer, 4, ".nnb");
+	RegisterFunction(pVM, "toggleTextForAll", sq_toggleTextForAll, 3, ".nb");
+	RegisterFunction(pVM, "setTextForAll", sq_setTextForAll, 3, ".ns");
+	RegisterFunction(pVM, "setTextForPlayer", sq_setTextForPlayer, 4, ".nns");
+	RegisterFunction(pVM, "setTextColorForAll", sq_setTextColorForAll, 3, ".nn");
+	RegisterFunction(pVM, "setTextColorForPlayer", sq_setTextColorForPlayer, 4, ".nnn");
+	RegisterFunction(pVM, "setTextPositionForAll", sq_setTextPositionForAll, 4, ".nff");
+	RegisterFunction(pVM, "setTextPositionForPlayer", sq_setTextPositionForPlayer, 5, ".nnff");
+
 	return 1;
 }
 

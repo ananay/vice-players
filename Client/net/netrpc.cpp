@@ -696,8 +696,8 @@ void CreateText(RakNet::BitStream *bitStream, Packet *packet)
 // Script_toggleTextForPlayer
 void Script_toggleTextForPlayer(RakNet::BitStream *bitStream, Packet *packet)
 {
-	int textId;
-	SQBool show;
+	EntityId textId;
+	bool show;
 
 	bitStream->Read(textId);
 	bitStream->Read(show);
@@ -705,6 +705,52 @@ void Script_toggleTextForPlayer(RakNet::BitStream *bitStream, Packet *packet)
 	if(pNetGame->GetTextPool()->GetSlotState(textId))
 	{
 		pNetGame->GetTextPool()->GetAt(textId)->Show(show);
+	}
+}
+
+void Script_SetText(RakNet::BitStream *bitStream, Packet *packet)
+{
+	EntityId textId;
+	int len;
+
+	bitStream->Read(textId);
+	bitStream->Read(len);
+	char * szText = new char[len+1];
+	bitStream->Read(szText, len);
+	szText[len] = '\0';
+
+	if(pNetGame->GetTextPool()->GetSlotState(textId))
+	{
+		pNetGame->GetTextPool()->GetAt(textId)->SetText(szText);
+	}
+}
+
+void Script_SetTextPosition(RakNet::BitStream *bitStream, Packet *packet)
+{
+	EntityId textId;
+	float fPosX, fPosY;
+
+	bitStream->Read(textId);
+	bitStream->Read(fPosX);
+	bitStream->Read(fPosY);
+
+	if(pNetGame->GetTextPool()->GetSlotState(textId))
+	{
+		pNetGame->GetTextPool()->GetAt(textId)->SetPosition(fPosX, fPosY);
+	}
+}
+
+void Script_SetTextColor(RakNet::BitStream *bitStream, Packet *packet)
+{
+	EntityId textId;
+	DWORD color;
+
+	bitStream->Read(textId);
+	bitStream->Read(color);
+
+	if(pNetGame->GetTextPool()->GetSlotState(textId))
+	{
+		pNetGame->GetTextPool()->GetAt(textId)->SetColor(color);
 	}
 }
 
@@ -1004,6 +1050,9 @@ void RegisterRPCs()
 	pNetGame->GetRPC4()->RegisterFunction("Script_SetCameraShakeIntensity", Script_SetCameraShakeIntensity);
 	pNetGame->GetRPC4()->RegisterFunction("Script_SetPlayerGravity", Script_setPlayerGravity);
 	pNetGame->GetRPC4()->RegisterFunction("Script_toggleTextForPlayer", Script_toggleTextForPlayer);
+	pNetGame->GetRPC4()->RegisterFunction("Script_SetText", Script_SetText);
+	pNetGame->GetRPC4()->RegisterFunction("Script_SetTextPosition", Script_SetTextPosition);
+	pNetGame->GetRPC4()->RegisterFunction("Script_SetTextColor", Script_SetTextColor);
 }
 
 //----------------------------------------------------
@@ -1067,6 +1116,9 @@ void UnRegisterRPCs()
 	pNetGame->GetRPC4()->UnregisterFunction("Script_SetCameraShakeIntensity");
 	pNetGame->GetRPC4()->UnregisterFunction("Script_SetPlayerGravity");
 	pNetGame->GetRPC4()->UnregisterFunction("Script_toggleTextForPlayer");
+	pNetGame->GetRPC4()->UnregisterFunction("Script_SetText");
+	pNetGame->GetRPC4()->UnregisterFunction("Script_SetTextPosition");
+	pNetGame->GetRPC4()->UnregisterFunction("Script_SetTextColor");
 }
 
 //----------------------------------------------------

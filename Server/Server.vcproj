@@ -535,6 +535,14 @@
 				>
 			</File>
 			<File
+				RelativePath=".\sq_graphic_natives.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\sq_graphic_natives.h"
+				>
+			</File>
+			<File
 				RelativePath=".\sq_misc_natives.cpp"
 				>
 			</File>
