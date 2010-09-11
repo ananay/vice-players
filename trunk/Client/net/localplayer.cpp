@@ -12,7 +12,6 @@
 #include "../game/util.h"
 
 // Sync send rates
-
 #define INCAR_SENDRATE_IDLE 200
 #define INCAR_SENDRATE_ACTIVE 66
 #define ONFOOT_SENDRATE_IDLE 60
