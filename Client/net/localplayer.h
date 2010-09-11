@@ -104,8 +104,8 @@ public:
 
 	void Say(PCHAR szText);
 
-	void SendExitVehicleNotification(EntityId vehicleID);
-	void SendEnterVehicleNotification(EntityId vehicleID, BOOL bPassenger);
+	void SendEnterVehicleNotification(EntityId vehicleID, bool bPassenger);
+	void SendExitVehicleNotification(EntityId vehicleID);	
 	
 	DWORD GetTeamColorAsRGBA();
 	DWORD GetTeamColorAsARGB();

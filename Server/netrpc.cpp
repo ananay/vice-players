@@ -319,7 +319,7 @@ void ExitVehicle(RakNet::BitStream *bitStream, Packet *packet)
 	pPlayer->ExitVehicle(vehicleID);
 
 	pScripts->onPlayerExitVehicle(playerID, vehicleID);
-	//logprintf("%u exits vehicle %u",playerID,vehicleID);
+	logprintf("%u exits vehicle %u",playerID,vehicleID);
 }
 
 //----------------------------------------------------

@@ -197,7 +197,7 @@ BOOL VCMP_SAFECALL GameIsEntityOnScreen(DWORD * pdwEnt)
 {
 	BYTE byteRet=0;
 
-	DWORD dwFunc = FUNC_CEntity__IsOnScreen;
+	DWORD dwFunc = FUNC_CWorld__IsEntityOnScreen;
 	_asm
 	{
 		mov ecx, pdwEnt

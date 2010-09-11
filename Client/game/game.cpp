@@ -428,9 +428,16 @@ void CGame::SetCash(int Cash)
 
 //-----------------------------------------------------------
 
-void CGame::SetGravity(float amount)
+void CGame::SetGravity(float fGravity)
 {
-	*(float *)ADDR_PlayerGravity = amount;
+	*(float *)VAR_GlobalGravity = fGravity;
+}
+
+//-----------------------------------------------------------
+
+float CGame::GetGravity()
+{
+	return *(float *)VAR_GlobalGravity;
 }
 
 //-----------------------------------------------------------

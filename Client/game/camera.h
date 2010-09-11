@@ -15,6 +15,14 @@
 
 //-----------------------------------------------------------
 
+#define VAR_Camera								0x7E4688
+#define FUNC_CCamera__Restore					0x46BC7D
+#define FUNC_CCamera__PutBehindPlayer			0x46BADE
+#define FUNC_CCamera__SetTargetPoint			0x46A494
+#define FUNC_CCamera__SetPositionAndRotation	0x46BA72
+
+//-----------------------------------------------------------
+
 class CCamera
 {
 private:
