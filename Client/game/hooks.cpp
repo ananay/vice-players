@@ -56,144 +56,14 @@ BOOL	bIsPlayer=FALSE;
 
 VEHICLE_TYPE *ObjectiveVehicle;
 
-extern GTA_CONTROLSET *pGcsInternalKeys;
-
-// CHEATING STUFF
-
-DWORD GetMemSum(BYTE * mem, int size);
-
-BOOL  bIsACheater=FALSE;
-BOOL  bHasCheaterBeenPunished=FALSE;
-BOOL  bHasSamplesOfPlayerData=FALSE;
-
-DWORD dwSuspectedCheat=0;
-
-DWORD dwStoredPlayerDataSum[2];
-float fStoredPlayerHealth=0.0f;
-float fStoredPlayerArmour=0.0f;
-float fCheaterFlingSpeed = 0.0f;
+extern GTA_CONTROLSET * pGcsInternalKeys;
 
 //-----------------------------------------------------------
 
-BYTE PreGameProcess_HookJmpCode[]	= {0xFF,0x25,0x77,0x5D,0x4A,0x00}; // 4A5D77
 BYTE PedSetObjective_HookJmpCode[]	= {0xFF,0x25,0x75,0x11,0x40,0x00,0x90,0x90,0x90};
 BYTE RadarTranslateColor_HookJmpCode[] = {0xFF,0x25,0x44,0x30,0x4C,0x00,0x90}; // 4C3044
 BYTE EnterCarAnimCallback_HookJmpCode[] = {0xFF,0x25,0xD8,0x28,0x51,0x00,0x90,0x90}; // 5128D8
-BYTE HookedRand_HookJmpCode[] = {0xFF,0x25,0xE8,0x99,0x64,0x00,0x90,0x90}; // 6499E8
 BYTE InflictDamage_HookJmpCode[] = {0xFF,0x25,0x15,0x5B,0x52,0x00}; // 525B15
-BYTE InTheGame_HookJmpCode[] = {0xFF,0x25,0x3c,0x5c,0x4a,0x00}; // 4A5C3C
-
-//-----------------------------------------------------------
-
-void DoCheatEntryChecking() 
-{
-	if( pNetGame &&
-	    pNetGame->GetPlayerPool()->GetLocalPlayer()->IsActive() &&
-		bHasSamplesOfPlayerData )
-	{
-		if(dwSuspectedCheat == 15) {
-			bIsACheater = TRUE;
-		}
-
-		if(fStoredPlayerHealth != GamePool_FindPlayerPed()->fHealth) {
-			dwSuspectedCheat++; return;
-		}
-		
-		if(fStoredPlayerArmour != GamePool_FindPlayerPed()->fArmour) {
-			dwSuspectedCheat++; return;
-		}
-
-		if(dwStoredPlayerDataSum[1] != GetMemSum((BYTE *)GamePool_FindPlayerPed()+1032,192)) {
-			dwSuspectedCheat++; return;
-		}
-	}
-	else {
-		dwSuspectedCheat = 0;
-	}
-}
-
-//-----------------------------------------------------------
-
-void DoCheatExitStoring()
-{	
-	if(pNetGame) {
-		if(pNetGame->GetPlayerPool()->GetLocalPlayer()->IsActive()) {
-
-			dwStoredPlayerDataSum[1] = GetMemSum((BYTE *)GamePool_FindPlayerPed()+1032,192);
-			fStoredPlayerHealth = GamePool_FindPlayerPed()->fHealth;
-			fStoredPlayerArmour = GamePool_FindPlayerPed()->fArmour;
-
-			bHasSamplesOfPlayerData = TRUE;
-		} else {
-			bHasSamplesOfPlayerData = FALSE;
-		}
-	}
-}
-
-//-----------------------------------------------------------
-
-NUDE PreGameProcessHook()
-{
-	_asm
-	{
-		mov dwStackFrame, esp
-		pushad
-	}
-	
-	DoCheatExitStoring();
-
-	_asm
-	{
-		popad
-
-		mov esp, dwStackFrame
-		push ebx
-		sub esp, 112
-		push 0
-		mov edx, ADDR_PRE_GAME_PROCESS ; back into the real proc
-		add edx, 6
-		jmp edx
-	}
-}
-
-//-----------------------------------------------------------
-
-NUDE InTheGameHook()
-{
-	_asm
-	{
-		pushad
-	}
-
-	DoCheatEntryChecking();
-
-	_asm
-	{
-		popad
-
-		mov edx, 0x4A5D80
-		call edx
-		pop ecx
-
-		mov edx, 0x4A5BE6
-		jmp edx
-	}
-}
-
-//-----------------------------------------------------------
-
-DWORD GetMemSum(BYTE * mem, int size)
-{
-	int		x=0;
-	DWORD	ret=0;
-
-	while(x!=size) {
-		ret+=mem[x];
-		x++;
-	}
-
-	return ret;
-}
 
 //-----------------------------------------------------------
 
@@ -265,25 +135,6 @@ void _stdcall SwitchContext(DWORD dwPedPtr, bool bPrePost)
 		else
 		{
 			// Its the local player
-
-			/*
-			if(!bIsACheater) {
-				// Do world bounds checking
-				DoOnFootWorldBoundsStuff();
-			}
-			else {
-				// We have a cheater, fuck with them
-				if(!_pPlayer->byteIsInVehicle) {
-					pGcsInternalKeys->wKeys1[KEY_ONFOOT_JUMP] = 0xFF;
-					pGcsInternalKeys->wKeys2[KEY_ONFOOT_JUMP] = 0xFF;
-					_pPlayer = (PED_TYPE *)dwCurPlayerActor;
-					_pPlayer->physical.vecMoveSpeed.Z = fCheaterFlingSpeed;
-					fCheaterFlingSpeed += 0.025f;
-				} else {
-					_pPlayer->byteIsInVehicle = 0;
-				}
-			}
-			*/
 		}
 	}
 }
@@ -488,20 +339,6 @@ NUDE EnterCarAnimCallback_Hook()
 }
 
 //-----------------------------------------------------------
-// The rand() function in GTA is hooked and we can
-// control the seed this way.
-
-NUDE HookedRand_Hook()
-{
-	rand();
-
-	_asm
-	{
-		ret
-	}
-}
-
-//-----------------------------------------------------------
 
 #define NO_TEAM 255
 
@@ -694,18 +531,7 @@ void InstallCallHook(DWORD dwInstallAddress, DWORD dwHookFunction)
 //-----------------------------------------------------------
 
 void GameInstallHooks()
-{
-	InstallHook(0x6499F0, (DWORD)HookedRand_Hook, 0x6499E8, HookedRand_HookJmpCode, 
-		sizeof(HookedRand_HookJmpCode));
-
-	// Below is the Render2DStuff hook, don't be confused by the poor naming.
-	InstallHook(ADDR_PRE_GAME_PROCESS, (DWORD)PreGameProcessHook, 
-		ADDR_PRE_GAME_PROCESS_STORAGE, PreGameProcess_HookJmpCode, 
-		sizeof(PreGameProcess_HookJmpCode));
-
-	InstallHook(0x4A5BE0, (DWORD)InTheGameHook, 0x4A5C3C, InTheGame_HookJmpCode, 
-		sizeof(InTheGame_HookJmpCode));
-	
+{	
 	// Install hook for CPlayerPed::ProcessControl
 	InstallMethodHook((VAR_CPlayerPed__VFTable + 0x20), (DWORD)CPlayerPed_ProcessControl_Hook);
 
@@ -718,6 +544,7 @@ void GameInstallHooks()
 	// Install hook for CAutomobile::ProcessControl
 	InstallMethodHook((VAR_CAutomobile__VFTable + 0x20), (DWORD)Vehicle_ProcessControl_Hook);
 	
+	// NOTE: Could use the below hook for entry/exit vehicle events maybe?
 	/* Install hook for CPed::SetObjective
 	InstallHook(ADDR_SET_OBJECTIVE, (DWORD)CPed_SetObjective_Hook, 
 		ADDR_SET_OBJECTIVE_STORAGE, PedSetObjective_HookJmpCode, 

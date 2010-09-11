@@ -16,8 +16,6 @@
 #define ADDR_KEYSTATES							0x7DBCB0
 #define FUNC_CPed__Say							0x5226B0
 #define FUNC_CEntity__IsOnScreen				0x4885D0
-#define ADDR_PRE_GAME_PROCESS					0x4A6190 // Poor naming, is actually Render2DStuff
-#define ADDR_PRE_GAME_PROCESS_STORAGE			0x4A5D77
 #define FUNC_CFont__SetDropShadowPosition		0x54ff20
 #define FUNC_CFont__SetDropColor				0x54ff30
 #define FUNC_CFont__SetAlphaFade				0x54ffc0
