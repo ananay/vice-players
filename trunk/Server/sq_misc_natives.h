@@ -17,3 +17,5 @@ SQInteger sq_getMaxPlayers(SQVM * pVM); // done
 SQInteger sq_getTickCount(SQVM * pVM); // done
 SQInteger sq_createObject(SQVM * pVM); // done
 SQInteger sq_isPluginLoaded(SQVM * pVM); // done
+SQInteger sq_setModeName(SQVM * pVM); // done
+SQInteger sq_setMapName(SQVM * pVM); // done

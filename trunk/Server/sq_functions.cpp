@@ -102,6 +102,10 @@ int sq_register_natives(SQVM * pVM)
 	RegisterFunction(pVM, "setTimer", sq_setTimer, -1, NULL);
 	RegisterFunction(pVM, "killTimer", sq_killTimer, -1, NULL);
 	RegisterFunction(pVM, "isTimerActive", sq_isTimerActive, -1, NULL);
+
+	// Map/Mode names
+	RegisterFunction(pVM, "setModeName", sq_setModeName, 2, ".s");
+	RegisterFunction(pVM, "setMapName", sq_setMapName, 2, ".s");
 	return 1;
 }
 

@@ -61,6 +61,10 @@ CNetGame::CNetGame(int iMaxPlayers, int iPort, char * szPassword, char * szHostn
 
 	m_szHostname = szHostname;
 
+	// Set the default map and mode names
+	m_szMapName = "Vice - City";
+	m_szModeName = "Unknown";
+
 	LoadBanList();
 	
 	m_bPassworded = false;

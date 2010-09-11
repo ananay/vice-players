@@ -21,11 +21,13 @@ ServerBrowser::ServerBrowser(QWidget *parent) :
 {
     ui->setupUi(this);
     QStringList labels;
-    labels << "Server Name" << "Players" << "IP/Port";
+    labels << "Server Name" << "Players" << "Mode" << "Map" << "IP/Port";
     ui->twServers->setHeaderLabels(labels);
-    ui->twServers->setColumnWidth(0, 500);
-    ui->twServers->setColumnWidth(1, 100);
-    ui->twServers->setColumnWidth(2, 100);
+    ui->twServers->setColumnWidth(0, 200);
+    ui->twServers->setColumnWidth(1, 70);
+    ui->twServers->setColumnWidth(2, 170);
+    ui->twServers->setColumnWidth(3, 170);
+    ui->twServers->setColumnWidth(4, 170);
 
     ui->twServers->setParent(ui->wServers);
     ui->btnConnect2->setParent(ui->wServers);
@@ -145,7 +147,7 @@ void ServerBrowser::onConnect()
 
 void ServerBrowser::onDoubleClick(QTreeWidgetItem* item,int index)
 {
-    QStringList s = item->text(2).split(":");
+    QStringList s = item->text(4).split(":");
     QString ip = s.at(0);
     QString port = s.at(1);
     ui->leIP->setText(ip);
@@ -375,6 +377,30 @@ void ServerBrowser::ListenThreadProc()
                         szHostname[iHostNameLen] = '\0';
                         nLen += iHostNameLen;
 
+                        // Read the mode name length
+                        int iModeNameLen = *(int *)&szBuf[nLen];
+                        nLen += sizeof(int);
+
+                        // Allocate the mode name buffer
+                        char * szModeName = new char[iModeNameLen + 1];
+
+                        // Read the mode name
+                        memcpy(szModeName, (szBuf + nLen), iModeNameLen);
+                        szModeName[iModeNameLen] = '\0';
+                        nLen += iModeNameLen;
+
+                        // Read the map name length
+                        int iMapNameLen = *(int *)&szBuf[nLen];
+                        nLen += sizeof(int);
+
+                        // Allocate the map name buffer
+                        char * szMapName = new char[iMapNameLen + 1];
+
+                        // Read the map name
+                        memcpy(szMapName, (szBuf + nLen), iMapNameLen);
+                        szMapName[iMapNameLen] = '\0';
+                        nLen += iMapNameLen;
+
                         // Read the player count
                         int iPlayerCount = *(int *)&szBuf[nLen];
                         nLen += sizeof(int);
@@ -411,7 +437,9 @@ void ServerBrowser::ListenThreadProc()
                         QTreeWidgetItem *wdgitem = new QTreeWidgetItem;
                         wdgitem->setText(0, szHostname);
                         wdgitem->setText(1, players);
-                        wdgitem->setText(2, host);
+                        wdgitem->setText(2, szModeName);
+                        wdgitem->setText(3, szMapName);
+                        wdgitem->setText(4, host);
                         ui->twServers->addTopLevelItem(wdgitem);
 
                         // Free the host name buffer
