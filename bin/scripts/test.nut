@@ -9,6 +9,9 @@ function onServerInit()
 	addPlayerClass(0, 1, -673.2837, -1325.3040, 11.0715, 116.6886, 4, 1, 3, 35, 19, 15);
 	addPlayerClass(1, 87, -673.2837, -1325.3040, 11.0715, 116.6886, 9, 1, 22, 70, 21, 13);
 	addPlayerClass(2, 93, -673.2837, -1325.3040, 11.0715, 116.6886, 10, 1, 23, 80, 19, 23);
+
+	setModeName("Vice Madness");
+	setMapName("Blood Vice-City");
 	
 	// Some test vehicles
 	//local v1 = createVehicle(149, -681.5270, -1329.4580, 10.8290, 292.6041, 5, 5);

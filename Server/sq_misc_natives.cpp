@@ -67,3 +67,25 @@ SQInteger sq_isPluginLoaded(SQVM * pVM)
 	sq_pushinteger(pVM, pPlugins->IsPluginLoaded(szName));
 	return 1;
 }
+
+SQInteger sq_setModeName(SQVM * pVM)
+{
+	const char * szMode;
+	sq_getstring(pVM, -1, &szMode);
+
+	pNetGame->m_szModeName = szMode;
+
+	sq_pushbool(pVM, true);
+	return 1;
+}
+
+SQInteger sq_setMapName(SQVM * pVM)
+{
+	const char * szMap;
+	sq_getstring(pVM, -1, &szMap);
+
+	pNetGame->m_szMapName = szMap;
+
+	sq_pushbool(pVM, true);
+	return 1;
+}

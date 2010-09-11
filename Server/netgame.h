@@ -66,6 +66,8 @@ public:
 	float						m_WorldBounds[4]; // pos_x neg_x pos_y neg_y
 	BYTE						m_byteFriendlyFire;
 	BYTE						m_byteShowOnRadar;
+	std::string					m_szModeName;
+	std::string					m_szMapName;
 private:
 		
 	void UpdateNetwork();
@@ -87,6 +89,8 @@ public:
 	CSpawnSelection * GetGameLogic() { return m_pGameLogic; };
 	int	GetMaxPlayers() { return m_iMaxPlayers; };
 	std::string GetHostname() { return m_szHostname; };
+	std::string GetMapName() { return m_szMapName; };
+	std::string GetModeName() { return m_szModeName; };
 	bool IsPassworded() { return m_bPassworded; };
 	
 	void Process();

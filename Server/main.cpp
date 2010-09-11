@@ -375,6 +375,24 @@ void HandleServerQuery(const QueryJob &job)
 			memcpy((szSend + iWriteLength), pNetGame->GetHostname().c_str(), iHostNameLen);
 			iWriteLength += iHostNameLen;
 
+			// Write game mode name length
+			int iModeLen = pNetGame->GetModeName().size();
+			memcpy((szSend + iWriteLength), &iModeLen, sizeof(int));
+			iWriteLength += sizeof(int);
+
+			// Write game mode name
+			memcpy((szSend + iWriteLength), pNetGame->GetModeName().c_str(), iModeLen);
+			iWriteLength += iModeLen;
+
+			// Write map name len
+			int iMapLen = pNetGame->GetMapName().size();
+			memcpy((szSend + iWriteLength), &iMapLen, sizeof(int));
+			iWriteLength += sizeof(int);
+
+			// Write map name
+			memcpy((szSend + iWriteLength), pNetGame->GetMapName().c_str(), iMapLen);
+			iWriteLength += iMapLen;
+
 			// Write the player count
 			int iPlayerCount = pNetGame->GetPlayerPool()->GetPlayerCount();
 			memcpy((szSend + iWriteLength), &iPlayerCount, sizeof(int));
