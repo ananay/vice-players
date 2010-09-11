@@ -261,9 +261,35 @@ void _stdcall DoExitVehicleNotification()
 //-----------------------------------------------------------
 // Hooks CPed::SetObjective(enum eObjective)
 
-NUDE CPed_SetObjective_Hook()
+DWORD dwPlayerActor;
+DWORD dwObjectiveType;
+DWORD dwObjectiveEntity;
+
+extern CChatWindow * pChatWindow;
+
+NUDE CPed__SetObjective_Hook()
 {	
-	
+	_asm
+	{
+		mov dwPlayerActor, ecx
+		mov eax, [esp+0Ch]
+		mov dwObjectiveType, eax
+		mov eax, [esp+10h]
+		mov dwObjectiveEntity, eax
+		pushad
+	}
+
+	pChatWindow->AddDebugMessage("CPed::SetObjective(Actor: 0x%x, Type: %d, Entity: 0x%x)", dwPlayerActor, dwObjectiveType, dwObjectiveEntity);
+
+	dwFunc = (FUNC_CPed__SetObjective + 9);
+	_asm
+	{
+		popad
+		push ebx
+		mov ebx, ecx
+		mov eax, [ebx+244h]
+		jmp dwFunc
+	}
 }
 
 //-----------------------------------------------------------
@@ -530,6 +556,15 @@ void InstallCallHook(DWORD dwInstallAddress, DWORD dwHookFunction)
 
 //-----------------------------------------------------------
 
+void InstallJmpHook(DWORD dwInstallAddress, DWORD dwHookFunction)
+{
+	Unprotect(dwInstallAddress, 5);
+	*(BYTE *)dwInstallAddress = 0xE9;
+	*(DWORD *)(dwInstallAddress + 1) = (dwHookFunction - (dwInstallAddress + 5));
+}
+
+//-----------------------------------------------------------
+
 void GameInstallHooks()
 {	
 	// Install hook for CPlayerPed::ProcessControl
@@ -549,6 +584,9 @@ void GameInstallHooks()
 	InstallHook(ADDR_SET_OBJECTIVE, (DWORD)CPed_SetObjective_Hook, 
 		ADDR_SET_OBJECTIVE_STORAGE, PedSetObjective_HookJmpCode, 
 		sizeof(PedSetObjective_HookJmpCode));*/
+
+	// Install hook for CPed::SetObjective
+	InstallJmpHook(FUNC_CPed__SetObjective, (DWORD)CPed__SetObjective_Hook);
 								
 	// Install hook for RadarTranslateColor
 	InstallHook(0x4C3050, (DWORD)RadarTranslateColor, 0x4C3044, 
