@@ -95,7 +95,6 @@
 #define ADDR_HUD_SWITCH							0xA10B45
 #define VAR_Menu__HudMode						(VAR_Menu + 0xA)
 #define ADDR_Toggle_Radar						0xA10AB6
-#define ADDR_PlayerCash							0x94ADC8
 #define ADDR_PlayerGravity						0x68F5F0
 
 //-----------------------------------------------------------

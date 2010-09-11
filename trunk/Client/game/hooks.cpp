@@ -259,7 +259,7 @@ void _stdcall DoExitVehicleNotification()
 }
 
 //-----------------------------------------------------------
-// Hooks CPed::SetObjective(enum eObjective)
+// Hooks CPed::SetObjective(eObjectiveType objectiveType, CEntity * pObjectiveEntity)
 
 DWORD dwPlayerActor;
 DWORD dwObjectiveType;
@@ -272,14 +272,14 @@ NUDE CPed__SetObjective_Hook()
 	_asm
 	{
 		mov dwPlayerActor, ecx
-		mov eax, [esp+0Ch]
+		mov eax, [esp+4]
 		mov dwObjectiveType, eax
-		mov eax, [esp+10h]
+		mov eax, [esp+8]
 		mov dwObjectiveEntity, eax
 		pushad
 	}
 
-	pChatWindow->AddDebugMessage("CPed::SetObjective(Actor: 0x%x, Type: %d, Entity: 0x%x)", dwPlayerActor, dwObjectiveType, dwObjectiveEntity);
+	//pChatWindow->AddDebugMessage("CPed::SetObjective(Actor: 0x%x, Type: %d, Entity: 0x%x)", dwPlayerActor, dwObjectiveType, dwObjectiveEntity);
 
 	dwFunc = (FUNC_CPed__SetObjective + 9);
 	_asm

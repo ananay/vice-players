@@ -423,12 +423,49 @@ void CGame::SetGameTime(int iHour, int iMinute)
 
 void CGame::SetCash(int Cash)
 {
-	*(int *)ADDR_PlayerCash = Cash;
+	*(int *)VAR_PlayerCash = Cash;
 }
+
+//-----------------------------------------------------------
 
 void CGame::SetGravity(float amount)
 {
 	*(float *)ADDR_PlayerGravity = amount;
+}
+
+//-----------------------------------------------------------
+
+int CGame::CreateMarker(int iType, float fX, float fY, float fZ, int iFlag1, int iFlag2)
+{
+	DWORD dwFunc = FUNC_CreateMarker;
+	int iMarkerId;
+	_asm
+	{
+		push iFlag2
+		push iFlag1
+		push fZ
+		push fY
+		push fX
+		push iType
+		call dwFunc
+		add esp, 18h
+		mov iMarkerId, eax
+	}
+	return iMarkerId;
+}
+
+//-----------------------------------------------------------
+
+void CGame::ShowMarker(int iMarkerId, int iType)
+{
+	DWORD dwFunc = FUNC_ShowMarker;
+	_asm
+	{
+		push iType
+		push iMarkerId
+		call dwFunc
+		add esp, 8
+	}
 }
 
 //-----------------------------------------------------------
