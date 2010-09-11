@@ -56,7 +56,7 @@ SQInteger sq_toggleTextForPlayer(SQVM * pVM)
 	{
 		RakNet::BitStream bsSend;
 		bsSend.Write((EntityId)textId);
-		bsSend.Write((bool)show);
+		bsSend.Write(show != 0);
 		pNetGame->GetRPC4()->Call("Script_toggleTextForPlayer",&bsSend,HIGH_PRIORITY,RELIABLE,0,pNetGame->GetRakPeer()->GetSystemAddressFromIndex(playerId),false);
 
 		sq_pushbool(pVM, true);
@@ -78,7 +78,7 @@ SQInteger sq_toggleTextForAll(SQVM * pVM)
 
 	if(pNetGame->GetTextPool()->GetSlotState(textId))
 	{
-		pNetGame->GetTextPool()->GetAt(textId)->Show(show);
+		pNetGame->GetTextPool()->GetAt(textId)->Show(show != 0);
 
 		sq_pushbool(pVM, true);
 		return 1;
