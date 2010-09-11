@@ -234,10 +234,22 @@ extern CChatWindow * pChatWindow;
 
 void _stdcall DoVehicleEntryExitNotification(bool bEnterExit, DWORD dwVehicle, bool bPassenger)
 {
-	if(pChatWindow) pChatWindow->AddDebugMessage("DoVehicleEntryExitNotification(%d, 0x%p, %d)", bEnterExit, dwVehicle, bPassenger);
 	// Do we have a valid net game instance?
 	if(pNetGame)
 	{
+		// Get a pointer to the local player ped
+		CPlayerPed * pPlayerPed = pGame->FindPlayerPed();
+
+		// Make sure we are not currently exiting a vehicle
+		// NOTE: There might also need to be a check for entering a vehicle, not sure
+		if(!bEnterExit && pPlayerPed->GetAction() == ACTION_EXITING_VEHICLE)
+		{
+			// Already exiting
+			return;
+		}
+
+		if(pChatWindow) pChatWindow->AddDebugMessage("DoVehicleEntryExitNotification(%d, 0x%p, %d)", bEnterExit, dwVehicle, bPassenger);
+
 		// Get a pointer to the vehicle pool
 		CVehiclePool * pVehiclePool = pNetGame->GetVehiclePool();
 
