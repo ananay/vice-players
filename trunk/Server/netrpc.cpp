@@ -328,31 +328,29 @@ void ExitVehicle(RakNet::BitStream *bitStream, Packet *packet)
 void UpdateScoreAndPing(RakNet::BitStream *bitStream, Packet *packet)
 {
 	RakNet::BitStream bsSend;
-	EntityId playerID = (BYTE)packet->guid.systemIndex;
+	EntityId playerID = (EntityId)packet->guid.systemIndex;
 	if(!pNetGame->GetPlayerPool()->GetSlotState(playerID)) return;
 
 	CPlayerPool *pPlayerPool = pNetGame->GetPlayerPool();
-
-	int write_counter = 0;
-	SystemAddress systemAddress;
 	RakPeerInterface * pRak = pNetGame->GetRakPeer();
 
-	for(BYTE i = 0; i < MAX_PLAYERS; i++) {
-		if(pPlayerPool->GetSlotState(i)) {
-			bsSend.Write((BYTE)i);
+	for(EntityId i = 0; i < MAX_PLAYERS; i++)
+	{
+		if(pPlayerPool->GetSlotState(i))
+		{
+			bsSend.Write(i);
 			bsSend.Write(pPlayerPool->GetScore(i));
 			bsSend.Write(pRak->GetLastPing(pRak->GetSystemAddressFromIndex(i)));
 			
-			if(pPlayerPool->IsAdmin(playerID)) {
-				systemAddress = pRak->GetSystemAddressFromIndex(i);
-				bsSend.Write(systemAddress.binaryAddress);
-			} else {
+			if(pPlayerPool->IsAdmin(playerID))
+			{
+				bsSend.Write((unsigned long)pRak->GetSystemAddressFromIndex(i).binaryAddress);
+			}
+			else
+			{
 				bsSend.Write((unsigned long)0UL);
 			}
-
-			write_counter++;
 		}
-		i++;
 	}
 
 	pNetGame->GetRPC4()->Call("UpdateScoreAndPing", &bsSend, HIGH_PRIORITY, RELIABLE, 0, packet->guid, false);
