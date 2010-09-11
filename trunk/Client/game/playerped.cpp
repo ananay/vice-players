@@ -347,25 +347,8 @@ void CPlayerPed::ShowMarker(int iMarkerColor)
 			pop ecx
 		}
 
-		dwFunc = ADDR_SET_MARKER_COLOR;
-		_asm
-		{
-			push iMarkerColor
-			push hndMarker
-			call dwFunc
-			pop ecx
-			pop ecx
-		}
-
-		dwFunc = ADDR_SHOW_ON_RADAR1;
-		_asm
-		{
-			push 2
-			push hndMarker
-			call dwFunc
-			pop ecx
-			pop ecx
-		}
+		pGame->SetMarkerColor(hndMarker, iMarkerColor);
+		pGame->ShowMarker(hndMarker, 2);
 	}
 }
 
