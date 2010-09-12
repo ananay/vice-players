@@ -24,7 +24,10 @@ CTextPool::CTextPool()
 
 CTextPool::~CTextPool()
 {
-
+	for(EntityId i = 0; i < MAX_TEXTS; i++)
+	{
+		Delete(i);
+	}
 }
 
 EntityId CTextPool::New(EntityId TextID, DWORD color, char * szFontName, int iSize, float posX, float posY, char * szText)
@@ -60,4 +63,18 @@ void CTextPool::Process()
 
 		m_pTexts[id]->Process();
 	}
+}
+
+bool CTextPool::Delete(EntityId TextID)
+{
+	if(TextID > MAX_TEXTS || !m_pTexts[TextID])
+	{
+		return false;
+	}
+
+	m_bTextSlotState[TextID] = false;
+	delete m_pTexts[TextID];
+	m_pTexts[TextID] = NULL;
+
+	return true;
 }
