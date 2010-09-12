@@ -106,7 +106,33 @@ CCheckpoint::~CCheckpoint()
 
 void CCheckpoint::Process()
 {
+	CPlayerPed * pPlayer = pGame->FindPlayerPed();
+	Vector3 vecPos;
+	pPlayer->GetPosition(&vecPos);
+	BitStream bsSend;
+	bsSend.Write(m_iID);
+	if(GetDistanceBetweenPoints3D(vecPos.X, vecPos.Y, vecPos.Z, m_vecPos.X, m_vecPos.Y, m_vecPos.Z) < m_fRadius)
+	{
+		if(!m_bInCP)
+		{
+			bsSend.Write(true);
+			pNetGame->GetRPC4()->Call("CheckpointEvent",&bsSend,HIGH_PRIORITY,RELIABLE,0,UNASSIGNED_SYSTEM_ADDRESS,TRUE);
+		}
+		else
+		{
 
+		}
+		m_bInCP = true;
+	}
+	else
+	{
+		if(m_bInCP)
+		{
+			bsSend.Write(false);
+			pNetGame->GetRPC4()->Call("CheckpointEvent",&bsSend,HIGH_PRIORITY,RELIABLE,0,UNASSIGNED_SYSTEM_ADDRESS,TRUE);
+		}
+		m_bInCP = false;
+	}
 }
 
 CCheckpoints::CCheckpoints()

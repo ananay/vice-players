@@ -395,6 +395,16 @@ function onPlayerKeyEvent(playerid, type, key)
 	print("onPlayerKeyEvent(" + playerid + ", " + type + ", " + key + ");");
 }
 
+function onCheckpointEnter(playerid, cpid)
+{
+	print(format("onCheckpointEnter(%d, %d)", playerid, cpid));
+}
+
+function onCheckpointLeave(playerid, cpid)
+{
+	print(format("onCheckpointLeave(%d, %d)", playerid, cpid));
+}
+
 function returnQuitReason(reason)
 {
 	switch(reason)
