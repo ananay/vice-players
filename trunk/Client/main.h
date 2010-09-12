@@ -56,6 +56,7 @@ typedef struct _GAME_SETTINGS {
 #include "net/vehiclepool.h"
 #include "net/objectpool.h"
 #include "net/textpool.h"
+#include "net/checkpoints.h"
 #include "net/netgame.h"
 #include "scripting/scripts.h"
 

@@ -89,3 +89,31 @@ SQInteger sq_setMapName(SQVM * pVM)
 	sq_pushbool(pVM, true);
 	return 1;
 }
+
+SQInteger sq_createCheckpoint(SQVM * pVM)
+{
+	Vector3 vecPos;
+	float fRadius;
+
+	sq_getfloat(pVM, -1, &fRadius);
+	sq_getfloat(pVM, -2, &vecPos.Z);
+	sq_getfloat(pVM, -3, &vecPos.Y);
+	sq_getfloat(pVM, -4, &vecPos.X);
+
+	pNetGame->GetCheckpoints()->New(vecPos, 0, fRadius);
+	
+	sq_pushinteger(pVM, 0);
+	return 1;
+}
+
+SQInteger sq_destroyCheckpoint(SQVM * pVM)
+{
+	SQInteger cpId;
+
+	sq_getinteger(pVM, -1, &cpId);
+
+	pNetGame->GetCheckpoints()->Delete(cpId);
+
+	sq_pushbool(pVM, true);
+	return 1;
+}

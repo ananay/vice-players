@@ -984,6 +984,26 @@ void Script_setPlayerGravity(RakNet::BitStream *bitStream, Packet *packet)
 	pGame->SetGravity(amount);
 }
 
+void CreateCheckpoint(RakNet::BitStream *bitStream, Packet *packet)
+{
+	Vector3 vecPos;
+	float fRadius;
+	EntityId cpId;
+	bitStream->Read(cpId);
+	bitStream->Read((char*)&vecPos, sizeof(Vector3));
+	bitStream->Read(fRadius);
+
+	pNetGame->GetCheckpoints()->New(cpId, vecPos, 0, fRadius);
+}
+
+void DestroyCheckpoint(RakNet::BitStream *bitStream, Packet *packet)
+{
+	EntityId cpId;
+	bitStream->Read(cpId);
+
+	pNetGame->GetCheckpoints()->Delete(cpId);
+}
+
 void RegisterRPCs()
 {
 	pNetGame->GetRPC4()->RegisterFunction("ServerJoin",ServerJoin);
@@ -1008,6 +1028,8 @@ void RegisterRPCs()
 	pNetGame->GetRPC4()->RegisterFunction("UploadClientScript",UploadClientScript);
 	pNetGame->GetRPC4()->RegisterFunction("ObjectSpawn", ObjectSpawn);
 	pNetGame->GetRPC4()->RegisterFunction("CreateText", CreateText);
+	pNetGame->GetRPC4()->RegisterFunction("CreateCheckpoint", CreateCheckpoint);
+	pNetGame->GetRPC4()->RegisterFunction("DestroyCheckpoint", DestroyCheckpoint);
 
 	pNetGame->GetRPC4()->RegisterFunction("Script_SetHealth",Script_SetHealth);
 	pNetGame->GetRPC4()->RegisterFunction("Script_SetArmour",Script_SetArmour);
@@ -1033,10 +1055,7 @@ void RegisterRPCs()
 	pNetGame->GetRPC4()->RegisterFunction("Script_DestroyVehicle",Script_DestroyVehicle);
 	pNetGame->GetRPC4()->RegisterFunction("Script_PlaySound",Script_PlaySound);
 	pNetGame->GetRPC4()->RegisterFunction("Script_FadeScreen",Script_FadeScreen);
-
 	pNetGame->GetRPC4()->RegisterFunction("Script_ClientCall", Script_ClientCall);
-
-	// Added by VC-Players team.
 	pNetGame->GetRPC4()->RegisterFunction("Script_forceClassSelection",Script_forceClassSelection);
 	pNetGame->GetRPC4()->RegisterFunction("Script_togglePlayerBleeding",Script_togglePlayerBleeding);
 	pNetGame->GetRPC4()->RegisterFunction("Script_FlashItem",Script_FlashItem);
@@ -1079,6 +1098,8 @@ void UnRegisterRPCs()
 	pNetGame->GetRPC4()->UnregisterFunction("UploadClientScript");
 	pNetGame->GetRPC4()->UnregisterFunction("ObjectSpawn");
 	pNetGame->GetRPC4()->UnregisterFunction("CreateText");
+	pNetGame->GetRPC4()->UnregisterFunction("CreateCheckpoint");
+	pNetGame->GetRPC4()->UnregisterFunction("DestroyCheckpoint");
 
 	pNetGame->GetRPC4()->UnregisterFunction("Script_SetHealth");
 	pNetGame->GetRPC4()->UnregisterFunction("Script_SetArmour");
@@ -1099,10 +1120,7 @@ void UnRegisterRPCs()
 	pNetGame->GetRPC4()->UnregisterFunction("Script_DestroyVehicle");
 	pNetGame->GetRPC4()->UnregisterFunction("Script_PlaySound");
 	pNetGame->GetRPC4()->UnregisterFunction("Script_FadeScreen");
-
 	pNetGame->GetRPC4()->UnregisterFunction("Script_ClientCall");
-
-	// Added by VC-Players team.
 	pNetGame->GetRPC4()->UnregisterFunction("Script_forceClassSelection");
 	pNetGame->GetRPC4()->UnregisterFunction("Script_togglePlayerBleeding");
 	pNetGame->GetRPC4()->UnregisterFunction("Script_FlashItem");

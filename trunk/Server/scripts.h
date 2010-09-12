@@ -67,4 +67,7 @@ public:
 	void onTimerDestroy(int timerId);
 
 	void onPlayerKeyEvent(int playerId, BYTE type, char * key);
+
+	void onCheckpointEnter(int playerId, int cpId);
+	void onCheckpointLeave(int playerId, int cpId);
 };

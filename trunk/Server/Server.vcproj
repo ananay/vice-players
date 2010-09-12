@@ -207,6 +207,14 @@
 			Name="Net"
 			>
 			<File
+				RelativePath=".\checkpoints.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\checkpoints.h"
+				>
+			</File>
+			<File
 				RelativePath=".\masterlist.cpp"
 				>
 			</File>
