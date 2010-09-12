@@ -473,8 +473,10 @@ NUDE CPed__InflictDamage_Hook()
 	_asm
 	{
 		mov dwStackFrame, esp
+#ifdef DAMAGE_SYNC
 		mov eax, [esp]
 		mov dwRet, eax
+#endif
 		mov _pPlayer, ecx
 		mov eax, [esp+4]
 		mov _pEntity, eax
