@@ -22,6 +22,8 @@
 #include "timerpool.h"
 #include "text.h"
 #include "textpool.h"
+#include "pickup.h"
+#include "pickuppool.h"
 #include "checkpoints.h"
 #include "../RakNet/MessageIdentifiers.h"
 #include "netrpc.h"
@@ -50,6 +52,7 @@ private:
 	CVehiclePool				*m_pVehiclePool;
 	CTimerPool					*m_pTimerPool;
 	CObjectPool					*m_pObjectPool;
+	CPickupPool					*m_pPickupPool;
 	CTextPool					*m_pTextPool;
 	CCheckpoints				*m_pCheckpoints;
 	RakPeerInterface			*m_pRakPeer;
@@ -84,6 +87,7 @@ public:
 	CPlayerPool * GetPlayerPool() { return m_pPlayerPool; };
 	CVehiclePool * GetVehiclePool() { return m_pVehiclePool; };
 	CObjectPool * GetObjectPool() { return m_pObjectPool; };
+	CPickupPool * GetPickupPool() { return m_pPickupPool; };
 	CTextPool * GetTextPool() { return m_pTextPool; };
 	CCheckpoints * GetCheckpoints() { return m_pCheckpoints; };
 	CTimerPool * GetTimerPool() { return m_pTimerPool; };

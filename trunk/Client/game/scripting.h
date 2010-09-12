@@ -125,4 +125,10 @@ const SCRIPT_COMMAND set_target_state = { 0x035D, "i" };
 const SCRIPT_COMMAND get_object_state = { 0x0366, "i" };
 const SCRIPT_COMMAND set_object_rotation = { 0x0453, "ifff" };
 const SCRIPT_COMMAND set_object_z_angle			= { 0x0177, "if" };
-const SCRIPT_COMMAND set_object_collision		= { 0x0382, "ii" }; 
+const SCRIPT_COMMAND set_object_collision		= { 0x0382, "ii" };
+
+// Pickups
+
+const SCRIPT_COMMAND create_pickup = { 0x0213, "iifffv" };
+const SCRIPT_COMMAND is_pickup_collected = { 0x0214, "i" };
+const SCRIPT_COMMAND destroy_pickup = { 0x0215, "i" };

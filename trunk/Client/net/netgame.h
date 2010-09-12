@@ -39,6 +39,7 @@ private:
 	CPlayerPool			*m_pPlayerPool;
 	CVehiclePool		*m_pVehiclePool;
 	CObjectPool			*m_pObjectPool;
+	CPickupPool			*m_pPickupPool;
 	CTextPool			*m_pTextPool;
 	CCheckpoints		*m_pCheckpoints;
 	RakPeerInterface	*m_pRakPeer;
@@ -78,6 +79,7 @@ public:
 	CPlayerPool * GetPlayerPool() { return m_pPlayerPool; };
 	CVehiclePool * GetVehiclePool() { return m_pVehiclePool; };
 	CObjectPool * GetObjectPool() { return m_pObjectPool; };
+	CPickupPool * GetPickupPool() { return m_pPickupPool; };
 	CTextPool * GetTextPool() { return m_pTextPool; };
 	CCheckpoints * GetCheckpoints() { return m_pCheckpoints; };
 	RakPeerInterface * GetRakPeer() { return m_pRakPeer; };
