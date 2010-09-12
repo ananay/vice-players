@@ -75,28 +75,33 @@ PED_TYPE *CPlayerPed::GetPed()
 
 //-----------------------------------------------------------
 
-void CPlayerPed::Create(int iModel, float fX, float fY,float fZ,float fRotation)
+void CPlayerPed::Create(int iModel, float fX, float fY, float fZ, float fRotation)
 {
-	if((iModel < 107) && !pGame->IsModelLoaded(iModel)) {
+	// Is the model not loaded?
+	if((iModel < 107) && !pGame->IsModelLoaded(iModel))
+	{
+		// Request the model
 		pGame->RequestModel(iModel);
+
+		// Load all requested models
 		pGame->LoadRequestedModels();
-		while(!pGame->IsModelLoaded(iModel)) { Sleep(1); }
+
+		// Wait for the model to load
+		while(!pGame->IsModelLoaded(iModel))
+		{
+			Sleep(1);
+		}
 	}
 
-	// TODO: I think this is wrong (the opcode calls), if it is fix it
-	// (will also need to fix it in the running script process hook)
 	DWORD dwPlayerHandle;
 	int iPlayerNumber = m_bytePlayerNumber;
 	ScriptCommand(&create_player, &iPlayerNumber, fX, fY, fZ, &dwPlayerHandle);
-	ScriptCommand(&create_actor_from_player, &iPlayerNumber, &dwPlayerHandle);
+	SetEntity((ENTITY_TYPE *)CPools::GetPlayerPedFromIndex(iPlayerNumber));
+	m_dwGTAId = CPools::GetIndexFromPed(GetPed());
 	ScriptCommand(&toggle_player_infinite_run, iPlayerNumber, 1);
 	SetRotation(fRotation);
-
-	m_dwGTAId = dwPlayerHandle;
-	SetEntity((ENTITY_TYPE *)CPools::GetPedFromIndex(m_dwGTAId));
 	SetPlayerPedPtrRecord(m_bytePlayerNumber, (DWORD)GetEntity());
 	ScriptCommand(&set_actor_immunities, m_dwGTAId, 1, 1, 1, 1, 1);
-
 	SetModel(iModel);
 }
 
@@ -105,13 +110,15 @@ void CPlayerPed::Create(int iModel, float fX, float fY,float fZ,float fRotation)
 void CPlayerPed::Destroy()
 {
 	PED_TYPE * pPed = (PED_TYPE *)GetEntity();
-	if(pPed) {
+
+	if(pPed)
+	{
 		_asm
 		{
 			mov ecx, pPed
-			mov ebx, [ecx] ; vtable
+			mov ebx, [ecx] // CPlayerPed::VFTable
 			push 1
-			call [ebx+8] ; destroy
+			call [ebx+8] // CPlayerPed::~CPlayerPed
 		}
 		SetEntity(NULL);
 	}
@@ -644,8 +651,25 @@ void CPlayerPed::SetWaterDeaths(int iToggle)
 void CPlayerPed::SetCellAction(int iToggle)
 {
 	PED_TYPE * pPed = (PED_TYPE *)GetEntity();
-	if(pPed) {
-		ScriptCommand(&load_model, 258);
+
+	if(pPed)
+	{
+		// Has the cellphone model not loaded?
+		if(!pGame->IsModelLoaded(MODEL_CELLPHONE))
+		{
+			// Request the model
+			pGame->RequestModel(MODEL_CELLPHONE);
+
+			// Load all requested models
+			pGame->LoadRequestedModels();
+
+			// Wait for the model to load
+			while(!pGame->IsModelLoaded(MODEL_CELLPHONE))
+			{
+				Sleep(1);
+			}
+		}
+
 		ScriptCommand(&cell_phone, m_dwGTAId, iToggle);
 	}
 }	
@@ -872,7 +896,7 @@ void CPlayerPed::SetModel(int iModel)
 
 	if(pPed)
 	{
-		PCHAR szModelName=0;
+		char * szModelName = 0;
 
 		if(iModel == 8) return; // invalid skin
 		
@@ -910,11 +934,20 @@ void CPlayerPed::SetModel(int iModel)
 		}
 		else // default.ide number
 		{
+			// Is the model not loaded?
 			if(!pGame->IsModelLoaded(iModel))
 			{
+				// Request the model
 				pGame->RequestModel(iModel);
+
+				// Load all requested models
 				pGame->LoadRequestedModels();
-				while(!pGame->IsModelLoaded(iModel)) Sleep(1);
+
+				// Wait for the model to load
+				while(!pGame->IsModelLoaded(iModel))
+				{
+					Sleep(1);
+				}
 			}
 
 			DWORD dwFunc = FUNC_CPed__SetModelIndex;
@@ -933,12 +966,31 @@ void CPlayerPed::SetModel(int iModel)
 void CPlayerPed::SetObjective(PDWORD pObjectiveEntity, eObjectiveType objectiveType)
 {
 	PED_TYPE * pPed = (PED_TYPE *)GetEntity();
-	if(pPed && pObjectiveEntity) {
+
+	if(pPed/* && pObjectiveEntity*/)
+	{
 		DWORD dwFunc = FUNC_CPed__SetObjective;
 		_asm
 		{
 			push pObjectiveEntity
 			push objectiveType
+			mov ecx, pPed
+			call dwFunc
+		}
+	}
+}
+
+//-----------------------------------------------------------
+
+void CPlayerPed::ClearObjective()
+{
+	PED_TYPE * pPed = (PED_TYPE *)GetEntity();
+
+	if(pPed)
+	{
+		DWORD dwFunc = FUNC_CPed__ClearObjective;
+		_asm
+		{
 			mov ecx, pPed
 			call dwFunc
 		}
@@ -964,9 +1016,11 @@ void CPlayerPed::TogglePlayerControllable(int iControllable)
 void CPlayerPed::SetDead()
 {
 	PED_TYPE * pPed = (PED_TYPE *)GetEntity();
-	if(pPed) {
+
+	if(pPed)
+	{
 		pPed->fHealth = 0.0f;
-		DWORD dwFunc = 0x4F6430;
+		DWORD dwFunc = FUNC_CPed__SetDead;
 		_asm
 		{
 			mov ecx, pPed
@@ -993,8 +1047,8 @@ BYTE CPlayerPed::FindDeathReasonAndResponsiblePlayer(EntityId * nPlayer)
 			pPlayerPool = pNetGame->GetPlayerPool();
 		}
 		else { // just leave if there's no netgame.
-			*nPlayer = INVALID_PLAYER_ID;
-			return INVALID_PLAYER_ID;
+			*nPlayer = INVALID_ENTITY_ID;
+			return INVALID_ENTITY_ID;
 		}
 
 		if(pPed)
@@ -1008,19 +1062,19 @@ BYTE CPlayerPed::FindDeathReasonAndResponsiblePlayer(EntityId * nPlayer)
 					playerIDWhoKilled = pPlayerPool->
 						FindPlayerIDFromGtaPtr((PED_TYPE *)pPed->pDamageEntity);
 
-					if(playerIDWhoKilled != INVALID_PLAYER_ID) {
+					if(playerIDWhoKilled != INVALID_ENTITY_ID) {
 						// killed by another player with a weapon, this is all easy.
 						*nPlayer = playerIDWhoKilled;
 						return byteDeathReason;
 					}
 				}
 				else { // weapon was used but who_killed is 0 (?)
-					*nPlayer = INVALID_PLAYER_ID;
-					return INVALID_PLAYER_ID;
+					*nPlayer = INVALID_ENTITY_ID;
+					return INVALID_ENTITY_ID;
 				}
 			}
 			else if(byteDeathReason == WEAPON_DROWN) {
-				*nPlayer = INVALID_PLAYER_ID;
+				*nPlayer = INVALID_ENTITY_ID;
 				return WEAPON_DROWN;
 			}
 			else if(byteDeathReason == WEAPON_DRIVEBY) {
@@ -1029,14 +1083,14 @@ BYTE CPlayerPed::FindDeathReasonAndResponsiblePlayer(EntityId * nPlayer)
 					// now, if we can find the vehicle
 					// we can probably derive the responsible player.
 					// Look in the vehicle pool for this vehicle.
-					if(pVehiclePool->FindIDFromGtaPtr((VEHICLE_TYPE *)pPed->pDamageEntity) != (-1))
+					if(pVehiclePool->FindIDFromGtaPtr((VEHICLE_TYPE *)pPed->pDamageEntity) != INVALID_ENTITY_ID)
 					{
 						VEHICLE_TYPE *pGtaVehicle = (VEHICLE_TYPE *)pPed->pDamageEntity;
 
 						playerIDWhoKilled = pPlayerPool->
 							FindPlayerIDFromGtaPtr((PED_TYPE *)pGtaVehicle->pDriver);
 												
-						if(playerIDWhoKilled != INVALID_PLAYER_ID) {
+						if(playerIDWhoKilled != INVALID_ENTITY_ID) {
 							*nPlayer = playerIDWhoKilled;
 							return WEAPON_DRIVEBY;
 						}
@@ -1046,14 +1100,14 @@ BYTE CPlayerPed::FindDeathReasonAndResponsiblePlayer(EntityId * nPlayer)
 			else if(byteDeathReason == WEAPON_COLLISION) {
 
 				if(pPed->pDamageEntity) {
-					if(pVehiclePool->FindIDFromGtaPtr((VEHICLE_TYPE *)pPed->pDamageEntity) != (-1))
+					if(pVehiclePool->FindIDFromGtaPtr((VEHICLE_TYPE *)pPed->pDamageEntity) != INVALID_ENTITY_ID)
 					{
 						VEHICLE_TYPE *pGtaVehicle = (VEHICLE_TYPE *)pPed->pDamageEntity;
 											
 						playerIDWhoKilled = pPlayerPool->
 							FindPlayerIDFromGtaPtr((PED_TYPE *)pGtaVehicle->pDriver);
 							
-						if(playerIDWhoKilled != INVALID_PLAYER_ID) {
+						if(playerIDWhoKilled != INVALID_ENTITY_ID) {
 							*nPlayer = playerIDWhoKilled;
 							return WEAPON_COLLISION;
 						}
@@ -1064,8 +1118,8 @@ BYTE CPlayerPed::FindDeathReasonAndResponsiblePlayer(EntityId * nPlayer)
 	}
 
 	// Unhandled death type.
-	*nPlayer = INVALID_PLAYER_ID;
-	return INVALID_PLAYER_ID;
+	*nPlayer = INVALID_ENTITY_ID;
+	return INVALID_ENTITY_ID;
 }
 
 //-----------------------------------------------------------

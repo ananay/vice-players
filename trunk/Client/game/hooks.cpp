@@ -57,6 +57,7 @@ DWORD        dwObjectiveActor = 0;
 DWORD        dwObjectiveType = 0;
 DWORD        dwObjectiveEntity = 0;
 DWORD        dwLastObjectiveVehicle = 0;
+bool         bDamageDisabled = true;
 
 extern GTA_CONTROLSET * pGcsInternalKeys;
 
@@ -250,10 +251,10 @@ void _stdcall DoVehicleEntryExitNotification(bool bEnterExit, DWORD dwVehicle, b
 		CVehiclePool * pVehiclePool = pNetGame->GetVehiclePool();
 
 		// Get the vehicle's pool id
-		int iVehicleId = pVehiclePool->FindIDFromGtaPtr((VEHICLE_TYPE *)dwVehicle);
+		EntityId vehicleID = pVehiclePool->FindIDFromGtaPtr((VEHICLE_TYPE *)dwVehicle);
 
 		// Is the vehicle valid?
-		if(iVehicleId != -1)
+		if(vehicleID != INVALID_ENTITY_ID)
 		{
 			// Get a pointer to the local player
 			CLocalPlayer * pLocalPlayer = pNetGame->GetPlayerPool()->GetLocalPlayer();
@@ -262,7 +263,7 @@ void _stdcall DoVehicleEntryExitNotification(bool bEnterExit, DWORD dwVehicle, b
 			if(bEnterExit)
 			{
 				// Send the enter vehicle notification
-				pLocalPlayer->SendEnterVehicleNotification(iVehicleId, bPassenger);
+				pLocalPlayer->SendEnterVehicleNotification(vehicleID, bPassenger);
 
 				// Set the last objective vehicle pointer to this vehicle to avoid spamming enter vehicle objectives
 				dwLastObjectiveVehicle = dwVehicle;
@@ -270,7 +271,7 @@ void _stdcall DoVehicleEntryExitNotification(bool bEnterExit, DWORD dwVehicle, b
 			else
 			{
 				// Send the exit vehicle notification
-				pLocalPlayer->SendExitVehicleNotification(iVehicleId);
+				pLocalPlayer->SendExitVehicleNotification(vehicleID);
 			}
 		}
 	}
@@ -291,6 +292,7 @@ NUDE CPed__SetObjective_Hook()
 		pushad
 	}
 
+	// TODO: If entering vehicle and vehicle is not in pool don't let them enter it
 	if((PED_TYPE *)dwObjectiveActor == GamePool_FindPlayerPed())
 	{
 		if(dwObjectiveType == OBJECTIVE_TYPE_ENTER_CAR_AS_DRIVER)
@@ -378,7 +380,7 @@ BOOL _stdcall IsFriendlyFire(PED_TYPE *pPlayer,DWORD *pdwEnt, int iWeapon, float
 	CRemotePlayer *pRemotePlayer;
 	CVehicle *pVehicle;
 	CLocalPlayer *pLocalPlayer;
-	BYTE byteRemoteSystemAddress;
+	EntityId remotePlayerID;
 	BYTE byteLocalPlayerTeam;
 
 	if(pPlayer == GamePool_FindPlayerPed()) {
@@ -389,10 +391,10 @@ BOOL _stdcall IsFriendlyFire(PED_TYPE *pPlayer,DWORD *pdwEnt, int iWeapon, float
 
 			if(pLocalPlayer->IsWasted() || (byteLocalPlayerTeam == NO_TEAM)) return FALSE;
 
-			byteRemoteSystemAddress = pPlayerPool->FindPlayerIDFromGtaPtr((PED_TYPE *)pdwEnt);
+			remotePlayerID = pPlayerPool->FindPlayerIDFromGtaPtr((PED_TYPE *)pdwEnt);
 
-			if(byteRemoteSystemAddress != INVALID_PLAYER_ID) {
-				pRemotePlayer = pPlayerPool->GetAt(byteRemoteSystemAddress);
+			if(remotePlayerID != INVALID_ENTITY_ID) {
+				pRemotePlayer = pPlayerPool->GetAt(remotePlayerID);
 				if(pRemotePlayer->GetTeam() == byteLocalPlayerTeam) {
 					return TRUE;
 				} else {
@@ -402,14 +404,14 @@ BOOL _stdcall IsFriendlyFire(PED_TYPE *pPlayer,DWORD *pdwEnt, int iWeapon, float
 
 			pVehiclePool = pNetGame->GetVehiclePool();
 
-			int iVehicleId = pVehiclePool->FindIDFromGtaPtr((VEHICLE_TYPE *)pdwEnt);
+			EntityId vehicleID = pVehiclePool->FindIDFromGtaPtr((VEHICLE_TYPE *)pdwEnt);
 
-			if(iVehicleId != -1) {
-				pVehicle = pVehiclePool->GetAt(iVehicleId);
+			if(vehicleID != INVALID_ENTITY_ID) {
+				pVehicle = pVehiclePool->GetAt(vehicleID);
 				if(pVehicle->GetDriver()) {
-					byteRemoteSystemAddress = pPlayerPool->FindPlayerIDFromGtaPtr((PED_TYPE *)pdwEnt);
-					if(byteRemoteSystemAddress != INVALID_PLAYER_ID) {
-						pRemotePlayer = pPlayerPool->GetAt(byteRemoteSystemAddress);
+					remotePlayerID = pPlayerPool->FindPlayerIDFromGtaPtr((PED_TYPE *)pdwEnt);
+					if(remotePlayerID != INVALID_ENTITY_ID) {
+						pRemotePlayer = pPlayerPool->GetAt(remotePlayerID);
 						if(pRemotePlayer->GetTeam() == byteLocalPlayerTeam) {
 							return TRUE;
 						}
@@ -425,6 +427,47 @@ BOOL _stdcall IsFriendlyFire(PED_TYPE *pPlayer,DWORD *pdwEnt, int iWeapon, float
 }
 
 //-----------------------------------------------------------
+
+extern CChatWindow * pChatWindow;
+
+// NOTE: Only problem i can see with this is getting damaged by entitys that have moved remotely since you were damaged
+void DoInflictedDamageNotification(DWORD * pdwEntity, int iWeapon, float fUnk, int iPedPieces, BYTE byteUnk)
+{
+	// Get the player pool pointer
+	CPlayerPool * pPlayerPool = pNetGame->GetPlayerPool();
+
+	// Get the vehicle pool pointer
+	CVehiclePool * pVehiclePool = pNetGame->GetVehiclePool();
+
+	// Try and get a player id from the entity pointer
+	EntityId playerID = pPlayerPool->FindPlayerIDFromGtaPtr((PED_TYPE *)pdwEntity);
+
+	// Try and get a vehicle id from the entity pointer
+	//EntityId vehicleID = pVehiclePool->FindIDFromGtaPtr((VEHICLE_TYPE *)pdwEntity);
+	EntityId vehicleID = INVALID_ENTITY_ID; // was causing problems, disabled
+
+	// Is the damager ourselves?
+	if(playerID == INVALID_ENTITY_ID && vehicleID == INVALID_ENTITY_ID && (PED_TYPE *)pdwEntity == GamePool_FindPlayerPed())
+	{
+		playerID = pPlayerPool->GetLocalPlayerID();
+	}
+
+	pChatWindow->AddDebugMessage("DoInflictedDamageNotification(0x%p (LPID: %d, LPP: 0x%p, Player: %d, Vehicle: %d), %d, %f, %d, %d)", pdwEntity, pPlayerPool->GetLocalPlayerID(), GamePool_FindPlayerPed(), playerID, vehicleID, iWeapon, fUnk, iPedPieces, byteUnk);
+
+	// Do we have a valid player or vehicle id?
+	if(playerID != INVALID_ENTITY_ID || vehicleID != INVALID_ENTITY_ID)
+	{
+		// Get a pointer to the local player
+		CLocalPlayer * pLocalPlayer = pNetGame->GetPlayerPool()->GetLocalPlayer();
+
+		// Send the inflicted damage notification
+		pLocalPlayer->SendInflictedDamageNotification(playerID, vehicleID, iWeapon, fUnk, iPedPieces, byteUnk);
+	}
+}
+
+//-----------------------------------------------------------
+
+bool bSelf = false;
 
 NUDE CPed__InflictDamage_Hook()
 {
@@ -445,9 +488,15 @@ NUDE CPed__InflictDamage_Hook()
 		pushad
 	}
 
+	// TODO: Move this to DoInflictedDamageNotification then if DoInflictedDamageNotification returns false
+	// cancel the damage infliction
 	if(pNetGame)
 	{
-		if(IsFriendlyFire(_pPlayer,_pEntity,_iWeapon,_fUnk,_iPedPieces,_byteUnk))
+		// Get weather or not the inflicted player is ourself
+		bSelf = (_pPlayer == GamePool_FindPlayerPed());
+
+		// If its ourselves and friendly fire or not ourselves and damage is disabled, don't inflict the damage
+		if((bSelf && IsFriendlyFire(_pPlayer, _pEntity, _iWeapon, _fUnk, _iPedPieces, _byteUnk)) || (!bSelf && bDamageDisabled))
 		{
 			_asm
 			{
@@ -457,13 +506,15 @@ NUDE CPed__InflictDamage_Hook()
 				retn 0x14
 			}
 		}
-
-		/*
-		if(_pPlayer == GamePool_FindPlayerPed()) {
-			fLastDamageAmount = _fUnk;
-			fLastHealth = _pPlayer->fHealth - fLastDamageAmount;
-			bLastDamageProcessed = FALSE;
-		}*/
+		else
+		{
+			// Is it ourself?
+			if(bSelf)
+			{
+				// Its ourself, notify the server of the inflicted damage
+				DoInflictedDamageNotification(_pEntity, _iWeapon, _fUnk, _iPedPieces, _byteUnk);
+			}
+		}
 	}
 
 	_asm
@@ -479,7 +530,7 @@ NUDE CPed__InflictDamage_Hook()
 
 //-----------------------------------------------------------
 
-void CRunningScript_Process()
+void CRunningScript__Process()
 {
 	if(!bScriptInited)
 	{
@@ -510,7 +561,7 @@ NUDE CRunningScript__Process_Hook()
 		pushad
 	}
 
-	CRunningScript_Process();
+	CRunningScript__Process();
 
 	_asm
 	{
@@ -545,7 +596,7 @@ void InstallHook(DWORD dwInstallAddress, DWORD dwHookFunction, DWORD dwHookStora
 
 	// Install the Jmp code.
 	Unprotect(dwInstallAddress, iJmpCodeSize);
-	memcpy((PVOID)dwInstallAddress,pbyteJmpCode,iJmpCodeSize);
+	memcpy((PVOID)dwInstallAddress, pbyteJmpCode, iJmpCodeSize);
 }
 
 //-----------------------------------------------------------
@@ -589,7 +640,7 @@ void GameInstallHooks()
 	InstallJmpHook(FUNC_RadarTranslateColor, (DWORD)RadarTranslateColor);
 	
 	// Install hook for CPed::InflictDamage
-	InstallHook(0x525B20, (DWORD)CPed__InflictDamage_Hook, 0x525B15, 
+	InstallHook(FUNC_CPed__InflictDamage, (DWORD)CPed__InflictDamage_Hook, 0x525B15, 
 		InflictDamage_HookJmpCode, sizeof(InflictDamage_HookJmpCode));
 
 	// Install hook for EnterCarAnimCallback

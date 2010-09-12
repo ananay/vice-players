@@ -82,8 +82,8 @@ BOOL CLocalPlayer::Process()
 
 					// VEHICLE WORLD BOUNDS STUFF
 					pVehiclePool = pNetGame->GetVehiclePool();
-					vehicleID = (BYTE)pVehiclePool->FindIDFromGtaPtr(m_pPlayerPed->GetGtaVehicle());
-					if(vehicleID != 255) {
+					vehicleID = pVehiclePool->FindIDFromGtaPtr(m_pPlayerPed->GetGtaVehicle());
+					if(vehicleID != INVALID_ENTITY_ID) {
 						pGameVehicle = pVehiclePool->GetAt(vehicleID);
 						pGameVehicle->EnforceWorldBoundries(
 							pNetGame->m_WorldBounds[0],pNetGame->m_WorldBounds[1],
@@ -219,10 +219,10 @@ void CLocalPlayer::SendInCarFullSyncData()
 		// write packet id
 		bsVehicleSync.Write((MessageID)ID_VEHICLE_SYNC);
 
-		vehicleSyncData.vehicleID = (BYTE)pVehiclePool->FindIDFromGtaPtr(m_pPlayerPed->GetGtaVehicle());
+		vehicleSyncData.vehicleID = pVehiclePool->FindIDFromGtaPtr(m_pPlayerPed->GetGtaVehicle());
 
 		// make sure we have a valid vehicle
-		if(vehicleSyncData.vehicleID == 255)
+		if(vehicleSyncData.vehicleID == INVALID_ENTITY_ID)
 		{
 			return;
 		}
@@ -283,8 +283,8 @@ void CLocalPlayer::SendInCarPassengerData()
 	Vector3 vPos;
 	CVehiclePool *pVehiclePool = pNetGame->GetVehiclePool();
 
-	EntityId vehicleID = (BYTE)pVehiclePool->FindIDFromGtaPtr(m_pPlayerPed->GetGtaVehicle());
-	if(vehicleID == 255) return;
+	EntityId vehicleID = pVehiclePool->FindIDFromGtaPtr(m_pPlayerPed->GetGtaVehicle());
+	if(vehicleID == INVALID_ENTITY_ID) return;
 
 	BYTE bytePassengerSeat = m_pPlayerPed->GetPassengerSeat();
 	
@@ -304,11 +304,11 @@ int CLocalPlayer::GetOptimumInCarSendRate()
 	CVehiclePool *pVehiclePool = pNetGame->GetVehiclePool();
 	CVehicle	 *pGameVehicle=NULL;
 	Vector3		 vecMoveSpeed;
-	BYTE		 vehicleID=0;
+	EntityId		 vehicleID=0;
 
 	if(m_pPlayerPed)
 	{
-		vehicleID = (BYTE)pVehiclePool->FindIDFromGtaPtr(m_pPlayerPed->GetGtaVehicle());
+		vehicleID = pVehiclePool->FindIDFromGtaPtr(m_pPlayerPed->GetGtaVehicle());
 		pGameVehicle = pVehiclePool->GetAt(vehicleID);
 
 		if(pGameVehicle)
@@ -488,6 +488,35 @@ DWORD CLocalPlayer::GetTeamColorAsRGBA()
 DWORD CLocalPlayer::GetTeamColorAsARGB()
 {
 	return (TranslateColorCodeToRGBA(m_SpawnInfo.byteTeam) >> 8) | 0xFF000000;	
+}
+
+//----------------------------------------------------------
+
+void CLocalPlayer::SendInflictedDamageNotification(EntityId playerID, EntityId vehicleID, int iWeapon, float fUnk, int iPedPieces, BYTE byteUnk)
+{
+	BitStream bsSend;
+
+	// Is the damager a player or a vehicle?
+	bool bPlayerVehicleDamager = (playerID != INVALID_ENTITY_ID) ? true : false;
+
+	// If its a player damager write a 1 and the player id
+	if(bPlayerVehicleDamager)
+	{
+		bsSend.Write1();
+		bsSend.Write(playerID);
+	}
+	else
+	{
+		// If its a vehicle damager write a 0 and the vehicle id
+		bsSend.Write0();
+		bsSend.Write(vehicleID);
+	}
+
+	bsSend.Write(iWeapon);
+	bsSend.Write(fUnk);
+	bsSend.Write(iPedPieces);
+	bsSend.Write(byteUnk);
+	pNetGame->GetRPC4()->Call("InflictDamage", &bsSend, HIGH_PRIORITY, RELIABLE_ORDERED, 0, UNASSIGNED_SYSTEM_ADDRESS, true);
 }
 
 //----------------------------------------------------

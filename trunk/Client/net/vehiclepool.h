@@ -56,8 +56,8 @@ public:
 				Vector3 * vecPos, float fRotation,
 				int iColor1, int iColor2 );
 
-	int FindIDFromGtaPtr(VEHICLE_TYPE * pGtaVehicle);
-	int FindGtaIDFromID(int iID);
+	EntityId FindIDFromGtaPtr(VEHICLE_TYPE * pGtaVehicle);
+	int FindGtaIDFromID(EntityId vehicleID);
 
 	void SendVehicleDeath(EntityId vehicleID);
 

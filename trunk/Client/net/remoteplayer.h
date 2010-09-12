@@ -117,6 +117,8 @@ public:
 
 	DWORD GetTeamColorAsRGBA();
 	DWORD GetTeamColorAsARGB();
+
+	void InflictDamage(bool bPlayerVehicleDamager, EntityId damagerID, int iWeapon, float fUnk, int iPedPieces, BYTE byteUnk);
 };
 
 //----------------------------------------------------

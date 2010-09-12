@@ -21,6 +21,7 @@
 #define FUNC_CPool_CVehicle_AtHandle			0x451C70
 #define FUNC_CPool_CVehicle__HandleOf			0x42C4B0
 #define FUNC_CPool_CObject__AtHandle			0x451C30
+#define VAR_Players								0x94AD28
 
 #define VCMP_SAFECALL __stdcall
 
@@ -32,4 +33,5 @@ public:
 	static VEHICLE_TYPE * VCMP_SAFECALL GetVehicleFromIndex(int iIndex);
 	static int            VCMP_SAFECALL GetIndexFromVehicle(VEHICLE_TYPE * pVehicle);
 	static ENTITY_TYPE  * VCMP_SAFECALL GetObjectFromIndex(int iIndex);
+	static PED_TYPE *     VCMP_SAFECALL GetPlayerPedFromIndex(int iIndex);
 };

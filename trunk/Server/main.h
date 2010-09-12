@@ -25,6 +25,8 @@
 // NOTE: Must ALWAYS be unsigned
 typedef unsigned char EntityId;
 
+#define INVALID_ENTITY_ID 255
+
 #include "../RakNet/RakPeer.h"
 #include "../RakNet/RPC4Plugin.h"
 #include "../RakNet/BitStream.h"

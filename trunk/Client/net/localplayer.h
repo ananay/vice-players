@@ -109,6 +109,8 @@ public:
 	
 	DWORD GetTeamColorAsRGBA();
 	DWORD GetTeamColorAsARGB();
+
+	void CLocalPlayer::SendInflictedDamageNotification(EntityId playerID, EntityId vehicleID, int iWeapon, float fUnk, int iPedPieces, BYTE byteUnk);
 };
 
 

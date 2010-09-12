@@ -23,7 +23,7 @@ extern CNetGame* pNetGame;
 CRemotePlayer::CRemotePlayer()
 {
 	m_byteUpdateFromNetwork = UPDATE_TYPE_NONE;
-	m_playerID = INVALID_PLAYER_ID;
+	m_playerID = INVALID_ENTITY_ID;
 	m_bIsActive = FALSE;
 	m_bIsWasted = FALSE;
 	m_pPlayerPed = NULL;
@@ -325,7 +325,7 @@ void CRemotePlayer::HandleDeath(BYTE byteReason, BYTE byteWhoKilled, BYTE byteSc
 	char * szPlayerName = pNetGame->GetPlayerPool()->GetPlayerName(m_playerID);
 	char * szWhoKilledName;
 
-	if(byteWhoKilled != INVALID_PLAYER_ID) {
+	if(byteWhoKilled != INVALID_ENTITY_ID) {
 		szWhoKilledName = pNetGame->GetPlayerPool()->GetPlayerName(byteWhoKilled);
 	}
 
@@ -424,3 +424,40 @@ DWORD CRemotePlayer::GetTeamColorAsARGB()
 
 //----------------------------------------------------
 
+extern bool bDamageDisabled;
+
+void CRemotePlayer::InflictDamage(bool bPlayerVehicleDamager, EntityId damagerID, int iWeapon, float fUnk, int iPedPieces, BYTE byteUnk)
+{
+	DWORD dwEntity;
+
+	if(bPlayerVehicleDamager)
+	{
+		dwEntity = (DWORD)pNetGame->GetPlayerPool()->GetAt(damagerID)->GetPlayerPed()->GetEntity();		
+	}
+	else
+	{
+		dwEntity = (DWORD)pNetGame->GetVehiclePool()->GetAt(damagerID)->GetVehicle();
+	}
+
+	// Enable CPed::InflictDamage for remote players
+	bDamageDisabled = false;
+
+	// TODO: Move to CPlayerPed
+	int iUnk = byteUnk;
+	DWORD dwFunc = FUNC_CPed__InflictDamage;
+	_asm
+	{
+		push iUnk
+		push iPedPieces
+		push fUnk
+		push iWeapon
+		push dwEntity
+		call dwFunc
+		add esp, 14h
+	}
+
+	// Disable CPed::InflictDamage for remote players
+	bDamageDisabled = true;
+}
+
+//----------------------------------------------------

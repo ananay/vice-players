@@ -4,9 +4,11 @@
 // Copyright 2004-2005 SA:MP team
 //
 // File Author(s): kyeman
+//                 jenksta
 // License: See LICENSE in root directory
 //
 //----------------------------------------------------------
+// TODO: Create/Destroy functions
 
 #include "../../raknet/WindowsIncludes.h"
 #include <math.h>
@@ -21,51 +23,88 @@ extern CChatWindow  *pChatWindow;
 
 //-----------------------------------------------------------
 
-CVehicle::CVehicle(int iType, float fPosX, float fPosY,
-					float fPosZ, float fRotation)
+CVehicle::CVehicle(int iType, float fPosX, float fPosY, float fPosZ, float fRotation)
 {	
 	DWORD dwRetID=0;
-
 	m_dwGTAId = 0;
 	m_bIsInvulnerable = FALSE;
 
-	if(!pGame->IsModelLoaded(iType)) {
+	// Is the model not loaded?
+	if(!pGame->IsModelLoaded(iType))
+	{
+		// Request the model
 		pGame->RequestModel(iType);
+
+		// Load all requested models
 		pGame->LoadRequestedModels();
-		while(!pGame->IsModelLoaded(iType)) Sleep(2);
+
+		// Wait for the model to load
+		while(!pGame->IsModelLoaded(iType))
+		{
+			Sleep(2);
+		}
 	}
 
-	ScriptCommand(&create_car,iType,fPosX,fPosY,fPosZ,&dwRetID);
-	ScriptCommand(&set_car_z_angle,dwRetID,fRotation);
-
+	ScriptCommand(&create_car, iType, fPosX, fPosY, fPosZ, &dwRetID);
+	ScriptCommand(&set_car_z_angle, dwRetID, fRotation);
 	SetEntity((ENTITY_TYPE*)CPools::GetVehicleFromIndex(dwRetID));
 	m_dwGTAId = dwRetID;
-	
+
 	Vector3 vPos;
 	GetPosition(&vPos);
 	vPos.Z = fPosZ;
 	SetPosition(vPos);
+
 	VEHICLE_TYPE * pVehicle = (VEHICLE_TYPE *)GetEntity();
 	pVehicle->dwDoorsLocked = 0;
 	//m_pEntity->byteLockedFlags = 1;
-	
+
 	SetInvulnerable(TRUE);
-	toggleRhinoInstantExplosionUponContact(FALSE);
-
-
+	ToggleRhinoInstantExplosionUponContact(FALSE);
 	m_bDead = FALSE;
 }
 
 //-----------------------------------------------------------
 
-CVehicle::~CVehicle() 
+CVehicle::~CVehicle()
 {
-	ScriptCommand(&destroy_car,m_dwGTAId);
+	// Get the vehicle pointer
+	VEHICLE_TYPE * pVehicle = (VEHICLE_TYPE *)GetEntity();
+
+	// Remove ourself from the world
+	DWORD dwFunc = FUNC_CWorld__Remove;
+	_asm
+	{
+		push pVehicle
+		call dwFunc
+		add esp, 4
+	}
+
+	// Remove all references to ourself
+	dwFunc = FUNC_CWorld__RemoveReferencesToDeletedObject;
+	_asm
+	{
+		push pVehicle
+		call dwFunc
+		add esp, 4
+	}
+
+	// Delete ourselves
+	_asm
+	{
+		mov ecx, pVehicle
+		mov ebx, [ecx] // C*::VFTable
+		push 1
+		call [ebx+8] // C*::~C*
+	}
+
+	// Set our pointer to null
+	SetEntity(NULL);
 }
 
 //-----------------------------------------------------------
 
-VEHICLE_TYPE *CVehicle::GetVehicle()
+VEHICLE_TYPE * CVehicle::GetVehicle()
 {
 	return (VEHICLE_TYPE *)GetEntity();
 }
@@ -238,7 +277,7 @@ void CVehicle::SetColor(int iColor1, int iColor2)
 
 //-----------------------------------------------------------
  
-BYTE CVehicle::GetVehicleSubtype()
+BYTE CVehicle::GetSubtype()
 {
 	VEHICLE_TYPE * pVehicle = (VEHICLE_TYPE *)GetEntity();
 	if(!pVehicle) return 0;
@@ -301,20 +340,26 @@ BOOL CVehicle::IsDriverLocalPlayer()
 BYTE CVehicle::GetMaxPassengers()
 {
 	VEHICLE_TYPE * pVehicle = (VEHICLE_TYPE *)GetEntity();
-	if(pVehicle) {
+
+	if(pVehicle)
+	{
 		return pVehicle->byteMaxPassengers;
-	}	
+	}
+
 	return 0;
 }
 
 //-----------------------------------------------------------
 
-PED_TYPE *CVehicle::GetDriver()
+PED_TYPE * CVehicle::GetDriver()
 {
 	VEHICLE_TYPE * pVehicle = (VEHICLE_TYPE *)GetEntity();
-	if(pVehicle) {
+
+	if(pVehicle)
+	{
 		return pVehicle->pDriver;
 	}
+
 	return NULL;
 }
 
@@ -368,13 +413,31 @@ BOOL CVehicle::IsDead()
 
 //-----------------------------------------------------------
 
-// popVehicleTrunk Native.
-void CVehicle::popVehicleTrunk()
+void CVehicle::PopTrunk()
 {
 	ScriptCommand(&pop_vehicle_trunk, m_dwGTAId);
 }
 
-void CVehicle::toggleRhinoInstantExplosionUponContact(int iToggle)
+//-----------------------------------------------------------
+
+void CVehicle::ToggleRhinoInstantExplosionUponContact(int iToggle)
 {
-	ScriptCommand(&toggle_rhino_instant_explosion_upon_contact, m_dwGTAId, iToggle);
+	if(GetModelIndex() == 162) // Rhino
+	{
+		AUTOMOBILE_TYPE * pAutomobile = (AUTOMOBILE_TYPE *)GetEntity();
+
+		if(pAutomobile)
+		{
+			if(iToggle)
+			{
+				pAutomobile->byteUnknownFlags = (pAutomobile->byteUnknownFlags & 0xBF | 0x40);
+			}
+			else
+			{
+				pAutomobile->byteUnknownFlags &= 0xBF;
+			}
+		}
+	}
 }
+
+//-----------------------------------------------------------

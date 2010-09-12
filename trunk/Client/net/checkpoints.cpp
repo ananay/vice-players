@@ -85,11 +85,11 @@ CCheckpoint::CCheckpoint(EntityId id, Vector3 vecPos, BYTE type, float radius)
 	memcpy(&m_vecPos, &vecPos, sizeof(Vector3));
 	m_byteType = type;
 	m_fRadius = radius;
-	m_dwSphere = NULL;
+	m_sphereID = NULL;
 	m_dwMarker = NULL;
 	m_bInCP = false;
 
-	m_dwSphere = CreateSphere(&vecPos, radius);
+	m_sphereID = CreateSphere(&vecPos, radius);
 	ScriptCommand(&create_icon_marker_without_sphere, vecPos.X, vecPos.Y, vecPos.Z, 0, &m_dwMarker);
 	ScriptCommand(&set_marker_color, m_dwMarker, 5);
 	ScriptCommand(&show_on_radar, m_dwMarker, 2);
@@ -97,7 +97,7 @@ CCheckpoint::CCheckpoint(EntityId id, Vector3 vecPos, BYTE type, float radius)
 
 CCheckpoint::~CCheckpoint()
 {
-	GetSphereFromIndex(m_dwSphere)->byteInUse = 0;
+	GetSphereFromIndex(m_sphereID)->byteInUse = 0;
 	if(m_dwMarker != NULL)
 	{
 		ScriptCommand(&disable_marker, m_dwMarker);

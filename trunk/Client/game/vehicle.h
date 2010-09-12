@@ -23,47 +23,45 @@ private:
 	BOOL  m_bDead;
 
 public:
-	CVehicle(int iType, float fPosX, float fPosY,
-			 float fPosZ, float fRotation = 0.0f);
-
+	CVehicle(int iType, float fPosX, float fPosY, float fPosZ, float fRotation = 0.0f);
 	~CVehicle();
 
-	VEHICLE_TYPE *GetVehicle();
+	VEHICLE_TYPE * GetVehicle();
 
-	float GetDistanceFromLocalPlayerPed();
-	void  SetLockedState(int iLocked);
+	float          GetDistanceFromLocalPlayerPed();
+	void           SetLockedState(int iLocked);
 
-	BYTE  GetVehicleSubtype();
+	BYTE           GetSubtype();
 
-	float GetHealth();
-	void  SetHealth(float fHealth);
-	void  SetColor(int iColor1, int iColor2);
-	void  VerifyControlState();
+	float          GetHealth();
+	void           SetHealth(float fHealth);
+	void           SetColor(int iColor1, int iColor2);
+	void           VerifyControlState();
 
-	BOOL  HasSunk();
-	BOOL  IsDriverLocalPlayer();
-	void  EnforceWorldBoundries(float fPX, float fZX, float fPY, float fNY);
-	BOOL  HasExceededWorldBoundries(float fPX, float fZX, float fPY, float fNY);
+	BOOL           HasSunk();
+	BOOL           IsDriverLocalPlayer();
+	void           EnforceWorldBoundries(float fPX, float fZX, float fPY, float fNY);
+	BOOL           HasExceededWorldBoundries(float fPX, float fZX, float fPY, float fNY);
 
-	BOOL  GetHandbrakeState();
-	void  SetHandbrakeState(BOOL bState);
-	BYTE  GetMaxPassengers();
+	BOOL           GetHandbrakeState();
+	void           SetHandbrakeState(BOOL bState);
+	BYTE           GetMaxPassengers();
 
-	void popVehicleTrunk();
-	void toggleRhinoInstantExplosionUponContact(int iToggle);
+	BYTE           GetEntityFlags();
+	void           SetEnitityFlags(BYTE byteEntityFlags);
 
-	BYTE  GetEntityFlags();
-	void  SetEnitityFlags(BYTE byteEntityFlags);
+	void           SetInvulnerable(BOOL bInv);
+	BOOL           IsInvulnerable() { return m_bIsInvulnerable; };
 
-	void  SetInvulnerable(BOOL bInv);
-	BOOL  IsInvulnerable() { return m_bIsInvulnerable; };
+	PED_TYPE *     GetDriver();
 
-	PED_TYPE *GetDriver();
+	void           SetImmunities(int iIm1, int iIm2, int iIm3, int iIm4, int iIm5);
 
-	void  SetImmunities(int iIm1, int iIm2, int iIm3, int iIm4, int iIm5);
+	void           SetDead(BOOL bDead);
+	BOOL           IsDead();
 
-	void  SetDead(BOOL bDead);
-	BOOL  IsDead();
+	void           PopTrunk();
+	void           ToggleRhinoInstantExplosionUponContact(int iToggle);
 };
 
 //-----------------------------------------------------------

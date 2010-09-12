@@ -109,25 +109,30 @@ BOOL CVehiclePool::Spawn( EntityId vehicleID, BYTE byteVehicleType,
 
 //----------------------------------------------------
 
-int CVehiclePool::FindIDFromGtaPtr(VEHICLE_TYPE * pGtaVehicle)
+EntityId CVehiclePool::FindIDFromGtaPtr(VEHICLE_TYPE * pGtaVehicle)
 {
-	for(int i = 1; i < MAX_VEHICLES; i++) {
-		if(m_bVehicleSlotState[i]) {
-			if(pGtaVehicle == m_pVehicles[i]->GetVehicle()) {
+	for(EntityId i = 1; i < MAX_VEHICLES; i++)
+	{
+		if(m_bVehicleSlotState[i])
+		{
+			if(pGtaVehicle == m_pVehicles[i]->GetVehicle())
+			{
 				return i;
 			}
 		}
 	}
-	return (-1);
+
+	return INVALID_ENTITY_ID;
 }
 
 //----------------------------------------------------
 
-int CVehiclePool::FindGtaIDFromID(int iID)
+int CVehiclePool::FindGtaIDFromID(EntityId vehicleID)
 {
-	if(m_pVehicles[iID]) {
-		return CPools::GetIndexFromVehicle(m_pVehicles[iID]->GetVehicle());
+	if(m_pVehicles[vehicleID]) {
+		return CPools::GetIndexFromVehicle(m_pVehicles[vehicleID]->GetVehicle());
 	}
+
 	// not too sure about this
 	return 0;
 }
@@ -156,8 +161,8 @@ void CVehiclePool::Process()
 
 			if(m_bIsActive[x]) {
 				if((pVehicle->GetHealth() == 0.0f) || 
-					(pVehicle->GetVehicleSubtype() != VEHICLE_SUBTYPE_BOAT &&
-					pVehicle->GetVehicleSubtype() != VEHICLE_SUBTYPE_PLANE &&
+					(pVehicle->GetSubtype() != VEHICLE_SUBTYPE_BOAT &&
+					pVehicle->GetSubtype() != VEHICLE_SUBTYPE_PLANE &&
 					pVehicle->HasSunk())) { // It's dead or its not a boat and it has sunk
 					if(!pVehicle->IsDead()) {
 						SendVehicleDeath(x);
@@ -180,7 +185,7 @@ void CVehiclePool::Process()
 						pVehicle->SetLockedState(0);
 					}
 
-					if(pVehicle->GetVehicleSubtype() == VEHICLE_SUBTYPE_BIKE) {
+					if(pVehicle->GetSubtype() == VEHICLE_SUBTYPE_BIKE) {
 						pVehicle->VerifyControlState();
 					}		
 				}

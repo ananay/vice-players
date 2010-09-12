@@ -17,34 +17,21 @@ D3DDISPLAYMODE D3DDisplayMode;
 
 BOOL SubclassGameWindow(HWND hWnd);
 
+// Class Functions
 IDirect3D8Hook::IDirect3D8Hook(IDirect3D8 * pD3D)
 {
 	m_pD3D = pD3D;
 }
 
-// Functions
-HRESULT __stdcall IDirect3D8Hook::CreateDevice(UINT Adapter, D3DDEVTYPE DeviceType, HWND hFocusWindow, DWORD BehaviorFlags, D3DPRESENT_PARAMETERS* pPresentationParameters, IDirect3DDevice8** ppReturnedDeviceInterface)
+IDirect3D8Hook::~IDirect3D8Hook()
 {
-	if (bWindowedMode)
-	{
-		pPresentationParameters->Windowed = 1;
-		pPresentationParameters->Flags = 0;
-		pPresentationParameters->FullScreen_RefreshRateInHz = 0;
-		pPresentationParameters->FullScreen_PresentationInterval = 0;
 
-		GetAdapterDisplayMode(Adapter, &D3DDisplayMode);
-		pPresentationParameters->BackBufferFormat = D3DDisplayMode.Format;
+}
 
-		SetWindowPos(pPresentationParameters->hDeviceWindow, HWND_NOTOPMOST, 0, 0, pPresentationParameters->BackBufferWidth, pPresentationParameters->BackBufferHeight, SWP_SHOWWINDOW);
-	}
-
-	SubclassGameWindow(hFocusWindow);
-
-	HRESULT hr = m_pD3D->CreateDevice(Adapter, DeviceType, hFocusWindow, BehaviorFlags, pPresentationParameters, ppReturnedDeviceInterface);
-
-	*ppReturnedDeviceInterface = new IDirect3DDevice8Hook(this, *ppReturnedDeviceInterface);
-
-	return hr;
+// Functions
+HRESULT __stdcall IDirect3D8Hook::QueryInterface(REFIID iid, void ** ppvObject)
+{
+	return m_pD3D->QueryInterface(iid, ppvObject);
 }
 
 ULONG __stdcall IDirect3D8Hook::AddRef(void)
@@ -55,13 +42,6 @@ ULONG __stdcall IDirect3D8Hook::AddRef(void)
 ULONG __stdcall IDirect3D8Hook::Release(void)
 {
 	return m_pD3D->Release();
-}
-
-//################################################################################
-
-HRESULT __stdcall IDirect3D8Hook::QueryInterface(REFIID iid, void ** ppvObject)
-{
-	return m_pD3D->QueryInterface(iid, ppvObject);
 }
 
 HRESULT __stdcall IDirect3D8Hook::RegisterSoftwareDevice(void *pInitializeFunction)
@@ -122,4 +102,31 @@ HRESULT __stdcall IDirect3D8Hook::GetDeviceCaps(UINT Adapter, D3DDEVTYPE DeviceT
 HMONITOR __stdcall IDirect3D8Hook::GetAdapterMonitor(UINT Adapter)
 {
 	return m_pD3D->GetAdapterMonitor(Adapter);
+}
+
+HRESULT __stdcall IDirect3D8Hook::CreateDevice(UINT Adapter, D3DDEVTYPE DeviceType, HWND hFocusWindow, DWORD BehaviorFlags, D3DPRESENT_PARAMETERS* pPresentationParameters, IDirect3DDevice8** ppReturnedDeviceInterface)
+{
+	if(bWindowedMode)
+	{
+		pPresentationParameters->Windowed = 1;
+		pPresentationParameters->Flags = 0;
+		pPresentationParameters->FullScreen_RefreshRateInHz = 0;
+		pPresentationParameters->FullScreen_PresentationInterval = 0;
+
+		GetAdapterDisplayMode(Adapter, &D3DDisplayMode);
+		pPresentationParameters->BackBufferFormat = D3DDisplayMode.Format;
+
+		SetWindowPos(pPresentationParameters->hDeviceWindow, HWND_NOTOPMOST, 0, 0, pPresentationParameters->BackBufferWidth, pPresentationParameters->BackBufferHeight, SWP_SHOWWINDOW);
+	}
+
+	SubclassGameWindow(hFocusWindow);
+
+	HRESULT hr = m_pD3D->CreateDevice(Adapter, DeviceType, hFocusWindow, BehaviorFlags, pPresentationParameters, ppReturnedDeviceInterface);
+
+	if(SUCCEEDED(hr))
+	{
+		*ppReturnedDeviceInterface = new IDirect3DDevice8Hook(this, *ppReturnedDeviceInterface);
+	}
+
+	return hr;
 }

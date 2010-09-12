@@ -44,12 +44,16 @@
 #define ADDR_SET_ACTOR_ARMED_WEAPON				0x4FF900
 #define ADDR_GAME_RUNNING						0x86969C
 #define ADDR_SET_CURRENT_WEAPON					0x4FF90D
+// Used in CPlayerPed and hooks
 #define FUNC_CPed__SetObjective					0x521F10
+#define FUNC_CPed__InflictDamage				0x525B20
 #define ADDR_ACTOR_PUT_IN_VEHICLE				0x4C6AC0
 #define ADDR_VEHICLE_SET_DRIVER					0x512520
 // TODO: CWorld class
 #define FUNC_CWorld__FindGroundZFromCoords		0x4D51D0
 #define FUNC_CWorld__IsEntityOnScreen			0x4885D0
+#define FUNC_CWorld__Remove						0x4DB310
+#define FUNC_CWorld__RemoveReferencesToDeletedObject 0x4D5090
 #define ADDR_REQUEST_MODEL_REQ_VAR				0x7D1DE0
 #define ADDR_REQUEST_MODEL						0x40E310
 #define ADDR_LOAD_REQUESTED_MODELS1				0x4D0DB0

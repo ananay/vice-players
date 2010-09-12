@@ -104,13 +104,11 @@ BOOL CPlayerPool::Process()
 
 EntityId CPlayerPool::FindPlayerIDFromGtaPtr(PED_TYPE * pActor)
 {
-	CPlayerPed *pPlayerPed;
-
 	for(EntityId i = 0; i < MAX_PLAYERS; i++)
 	{
 		if(m_bPlayerSlotState[i])
 		{
-			pPlayerPed = m_pPlayers[i]->GetPlayerPed();
+			CPlayerPed * pPlayerPed = m_pPlayers[i]->GetPlayerPed();
 
 			if(pPlayerPed)
 			{
@@ -124,7 +122,7 @@ EntityId CPlayerPool::FindPlayerIDFromGtaPtr(PED_TYPE * pActor)
 		}
 	}
 
-	return INVALID_PLAYER_ID;
+	return INVALID_ENTITY_ID;
 }
 	
 //----------------------------------------------------
