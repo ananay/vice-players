@@ -95,3 +95,21 @@ ENTITY_TYPE * VCMP_SAFECALL CPools::GetObjectFromIndex(int iIndex)
 
 	return pObject;
 }
+
+struct PLAYER_TYPE
+{
+	PED_TYPE * pPed;     // 000-004
+	_pad(__pad0, 0x16C); // 004-170
+};
+
+PED_TYPE * VCMP_SAFECALL CPools::GetPlayerPedFromIndex(int iIndex)
+{
+	PLAYER_TYPE * pPlayer = (PLAYER_TYPE *)(VAR_Players + (iIndex * sizeof(PLAYER_TYPE)));
+	
+	if(pPlayer)
+	{
+		return pPlayer->pPed;
+	}
+
+	return NULL;
+}

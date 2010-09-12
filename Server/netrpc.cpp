@@ -420,7 +420,7 @@ void BanIPAddress(RakNet::BitStream *bitStream, Packet *packet)
 
 void KeyEvent(RakNet::BitStream *bitStream, Packet *packet)
 {
-	EntityId playerID = (BYTE)packet->guid.systemIndex;
+	EntityId playerID = (EntityId)packet->guid.systemIndex;
 	if(!pNetGame->GetPlayerPool()->GetSlotState(playerID)) return;
 
 	BYTE type;
@@ -451,6 +451,61 @@ void KeyEvent(RakNet::BitStream *bitStream, Packet *packet)
 }
 
 //----------------------------------------------------
+// Remote client has had damage inflicted upon them
+
+void InflictDamage(RakNet::BitStream * bitStream, Packet * packet)
+{
+	EntityId playerID = (EntityId)packet->guid.systemIndex;
+	CPlayerPool * pPlayerPool = pNetGame->GetPlayerPool();
+	CVehiclePool * pVehiclePool = pNetGame->GetVehiclePool();
+
+	if(!pPlayerPool->GetSlotState(playerID))
+	{
+		return;
+	}
+
+	bool bPlayerVehicleDamager;
+	EntityId damagerID;
+	int iWeapon;
+	float fUnk;
+	int iPedPieces;
+	BYTE byteUnk;
+
+	bPlayerVehicleDamager = bitStream->ReadBit();
+	bitStream->Read(damagerID);
+
+	if((bPlayerVehicleDamager && !pPlayerPool->GetSlotState(damagerID)) || (!bPlayerVehicleDamager && !pVehiclePool->GetSlotState(damagerID)))
+	{
+		return;
+	}
+
+	bitStream->Read(iWeapon);
+	bitStream->Read(fUnk);
+	bitStream->Read(iPedPieces);
+	bitStream->Read(byteUnk);
+
+	BitStream bsSend;
+	bsSend.Write(playerID);
+	
+	if(bPlayerVehicleDamager)
+	{
+		bsSend.Write1();
+	}
+	else
+	{
+		bsSend.Write0();
+	}
+
+	bsSend.Write(damagerID);
+	bsSend.Write(iWeapon);
+	bsSend.Write(fUnk);
+	bsSend.Write(iPedPieces);
+	bsSend.Write(byteUnk);
+	pNetGame->GetRPC4()->Call("InflictDamage", &bsSend, HIGH_PRIORITY, RELIABLE_ORDERED, 0, packet->guid, true);
+	logprintf("InflictDamage(%d, %d, %d, %d, %f, %d, %d)", playerID, bPlayerVehicleDamager, damagerID, iWeapon, fUnk, iPedPieces, byteUnk);
+}
+
+//----------------------------------------------------
 
 void RegisterRPCs()
 {
@@ -468,6 +523,7 @@ void RegisterRPCs()
 	pNetGame->GetRPC4()->RegisterFunction("KickPlayer", KickPlayer);
 	pNetGame->GetRPC4()->RegisterFunction("BanIPAddress", BanIPAddress);
 	pNetGame->GetRPC4()->RegisterFunction("KeyEvent", KeyEvent);
+	pNetGame->GetRPC4()->RegisterFunction("InflictDamage", InflictDamage);
 }
 
 //----------------------------------------------------
@@ -488,6 +544,7 @@ void UnRegisterRPCs()
 	pNetGame->GetRPC4()->UnregisterFunction("KickPlayer");
 	pNetGame->GetRPC4()->UnregisterFunction("BanIPAddress");
 	pNetGame->GetRPC4()->UnregisterFunction("KeyEvent");
+	pNetGame->GetRPC4()->UnregisterFunction("InflictDamage");
 }
 
 //----------------------------------------------------

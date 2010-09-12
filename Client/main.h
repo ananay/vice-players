@@ -20,7 +20,10 @@
 #define CLIENT_VERSION "(Alpha-2)"
 #define PROJECT_WEBSITE "www.vc-p.com"
 
+// NOTE: Must ALWAYS be unsigned
 typedef unsigned char EntityId;
+
+#define INVALID_ENTITY_ID 255
 
 typedef struct _GAME_SETTINGS {
 	BOOL bDebug;

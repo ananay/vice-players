@@ -23,6 +23,10 @@
 #define FUNC_CPed__Teleport 0x4F5690
 #define FUNC_CPed__Say 0x5226B0
 #define FUNC_CPed__SetModelIndex 0x50D900
+#define FUNC_CPed__SetDead 0x4F6430
+#define FUNC_CPed__ClearObjective 0x521720
+
+#define MODEL_CELLPHONE 258
 
 enum eObjectiveType
 {
@@ -113,6 +117,7 @@ public:
 
 	void           ClearLastWeaponDamage();
 	void           SetObjective(DWORD * pObjEntity, eObjectiveType objectiveType);
+	void           ClearObjective();
 	void           SetImmunities(BOOL bBullet, BOOL bFire, BOOL bExplosion, BOOL bDamage, BOOL bUnknown);
 
 	void           PutDirectlyInVehicle(int iVehicleID);

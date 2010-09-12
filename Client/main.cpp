@@ -61,6 +61,7 @@ BOOL WINAPI DllMain(HINSTANCE hinstDLL, DWORD fdwReason, LPVOID lpvReserved)
 	{
 		hInstance = hinstDLL;
 		
+		// Initialize the settings from the command line
 		InitSettings();
 
 		// Check the GTA version
@@ -71,41 +72,36 @@ BOOL WINAPI DllMain(HINSTANCE hinstDLL, DWORD fdwReason, LPVOID lpvReserved)
 			ExitProcess(1);
 		}
 
-		FILE* CheckPNG = fopen("vcpfnt.png", "r");
-		FILE* CheckDAT = fopen("vcpfnt.dat", "r");
+		// Ensure we have the font files
+		FILE * fCheckPNG = fopen("vcpfnt.png", "rb");
+		FILE * fCheckDAT = fopen("vcpfnt.dat", "rb");
 
-		if(CheckPNG) 
+		if(!fCheckPNG || !fCheckDAT)
 		{
-			fclose(CheckPNG);
-		}
-		else
-		{
-			MessageBox(0,"You are missing the vcpfnt.png file from your games directory.","Vice City: Players Error",MB_OK);
+			MessageBox(0,"You are missing the vcpfnt.png/dat file from your games directory.","Vice City: Players Error",MB_OK);
 			SetForegroundWindow(HWND_DESKTOP);
-			ExitProcess(1);
+			ExitProcess(1);			
 		}
 		
-		if(CheckDAT) 
-		{
-			fclose(CheckDAT);
-		}
-		else
-		{
-			MessageBox(0,"You are missing the vcpfnt.dat file from your games directory.","Vice City: Players Error",MB_OK);
-			SetForegroundWindow(HWND_DESKTOP);
-			ExitProcess(1);
-		}
+		fclose(fCheckPNG);
+		fclose(fCheckDAT);
 
+		// Create the game instance
 		pGame = new CGame();
+
+		// Create the scripts instance (move to net game)
 		pScripts = new CScripts();
 
+		// Install the d3d8 hook
 		InstallD3D8Hook();
 	}
 	else if(fdwReason == DLL_PROCESS_DETACH)
 	{
+		// Uninstall the d3d8 hook
 		UninstallD3D8Hook();
 
-		if(pNetGame) {
+		if(pNetGame)
+		{
 			pScripts->onExit();
 			pNetGame->Shutdown();
 		}
@@ -260,9 +256,9 @@ void SetStringFromCommandLine(char *szCmdLine, char *szString)
 
 int DetermineGTAVersion()
 {
-	BYTE* VerCheck = (BYTE*)0x608578;
+	BYTE * byteVerCheck = (BYTE *)0x608578;
 	
-	switch (*VerCheck)
+	switch(*byteVerCheck)
 	{
 	case 0x81: 
 		return VICE_11;

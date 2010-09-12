@@ -128,7 +128,7 @@ BYTE CPlayerPool::AddResponsibleDeath(BYTE byteWhoKilled, BYTE byteWhoDied)
 	CPlayer *pWhoKilled;
 	CPlayer *pWhoDied;
 
-	if( byteWhoKilled != INVALID_PLAYER_ID &&
+	if( byteWhoKilled != INVALID_ENTITY_ID &&
 		byteWhoKilled < MAX_PLAYERS &&
 		byteWhoDied < MAX_PLAYERS ) {
 
@@ -157,7 +157,7 @@ BYTE CPlayerPool::AddResponsibleDeath(BYTE byteWhoKilled, BYTE byteWhoDied)
 		return SELF_KILL;
 	}
 
-	if(byteWhoKilled == INVALID_PLAYER_ID && byteWhoDied < MAX_PLAYERS)
+	if(byteWhoKilled == INVALID_ENTITY_ID && byteWhoDied < MAX_PLAYERS)
 	{
 		if(m_bPlayerSlotState[byteWhoDied]) {
 

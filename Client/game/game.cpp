@@ -223,6 +223,37 @@ void GameInstallPatches()
 	// Disable taxi cash
 	Unprotect(0x5B8AB6, 1);
 	*(BYTE *)0x5B8AB6 = 0;
+
+	// Disable golf clubs from caddys
+	Unprotect(0x5B89C0, 1);
+	*(BYTE *)0x5B89C0 = 0xEB;
+
+	// Disable shotguns from police cars
+	Unprotect(0x5B895F, 1);
+	*(BYTE *)0x5B895F = 0xEB;
+
+	// Disable health increases from vehicle model 146 (ambulance?)
+	Unprotect(0x5B8A4B, 2);
+	memset((PVOID)0x5B8A4B, 0x90, 2); // nop * 2
+
+	// Disable armour increases from vehicle model 157 (enforcer?)
+	Unprotect(0x5B8A5A, 6);
+	memset((PVOID)0x5B8A5A, 0x90, 6);
+
+	// Disable menu after alt + tab
+	Unprotect(0x4A4FFC, 7);
+	memset((PVOID)0x4A4FFC, 0x90, 7); // nop * 7
+
+	// Allow camera movement in vehicles (Test)
+	/*Unprotect(0x4A45FA, 5);
+	*(DWORD *)0x4A45FA = 0x9090C030; // xor al, al, nop nop
+	*(BYTE *)(0x4A45FA + 4) = 0x90;  // nop
+	Unprotect(0x4A4601, 1);
+	*(BYTE *)0x4A4601 = 0x75; // jz to jnz*/
+
+	// Disable plane traffic
+	Unprotect(0x4A4515, 5);
+	memset((PVOID)0x4A4515, 0x90, 5); // nop * 5
 }
 
 //-----------------------------------------------------------
@@ -415,7 +446,7 @@ void CGame::SetGameTime(int iHour, int iMinute)
 		push iMinute
 		push iHour
 		call dwFunc
-		add esp, 4
+		add esp, 8
 	}
 }
 

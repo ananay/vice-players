@@ -144,6 +144,7 @@ typedef struct _PED_TYPE {
 	DWORD *       pDamageEntity;   // 59C-5A0
 	_pad(__pad10b, 0x6C);          // 5A0-60C
 	BYTE		  byteCurWepSlot;  // 60C-60D
+	// 6D8 = sizeof(CPlayerPed)?
 } PED_TYPE;
 
 //-----------------------------------------------------------
@@ -190,10 +191,12 @@ typedef struct _AUTOMOBILE_TYPE
 	_pad(__pad1c, 0x1);                   // 2AF-2B0
 	DWORD dwLightStatus;                  // 2B0-2B4
 	DWORD dwPanelStatus;                  // 2B4-2B8
-	_pad(__pad2c, 0x2F8);                 // 2B8-5B0
+	_pad(__pad2c, 0x249);                 // 2B8-501
+	BYTE byteUnknownFlags;				  // 501-502
+	_pad(__pad3c, 0xAE);                  // 502-5B0
 	float	     fSpecialWeaponRotation1; // 5B0-5B4 (following 2 are rhino turret and firetruck spray)
 	float	     fSpecialWeaponRotation2; // 5B4-5B8
-	_pad(__pad3c, 0x24);                  // 5B8-5DC
+	_pad(__pad4c, 0x24);                  // 5B8-5DC
 } AUTOMOBILE_TYPE;
 
 //-----------------------------------------------------------

@@ -41,7 +41,7 @@ void VCMP_SAFECALL GameToggleCheatCodes(bool bToggle)
 
 PED_TYPE * VCMP_SAFECALL GamePool_FindPlayerPed()
 {
-	return CPools::GetPedFromIndex(1);
+	return CPools::GetPlayerPedFromIndex(0);
 }
 
 //-----------------------------------------------------------

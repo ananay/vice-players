@@ -19,8 +19,14 @@ DirectInput8Create_t m_pfnDirectInput8Create = NULL;
 
 IDirect3D8 * WINAPI Direct3DCreate8(UINT SDKVersion)
 {
+	// Create our device
 	IDirect3D8 * pDevice = m_pfnDirect3DCreate8(SDKVersion);
-	return pDevice ? new IDirect3D8Hook(pDevice) : NULL;
+
+	// Create our device hook
+	IDirect3D8Hook * pDeviceHook = new IDirect3D8Hook(pDevice);
+
+	// Return the device hook pointer
+	return pDeviceHook;
 }
 
 HRESULT WINAPI DirectInput8Create(HINSTANCE hinst, DWORD dwVersion, REFIID riidltf, LPVOID *ppvOut, LPUNKNOWN punkOuter)

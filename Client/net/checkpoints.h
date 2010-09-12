@@ -19,7 +19,7 @@ public:
 private:
 	EntityId m_iID;
 	DWORD m_dwMarker;
-	DWORD m_dwSphere;
+	EntityId m_sphereID;
 	Vector3 m_vecPos;
 	float m_fRadius;
 	BYTE m_byteType;

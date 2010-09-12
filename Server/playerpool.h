@@ -10,8 +10,6 @@
 
 #pragma once
 
-#define INVALID_PLAYER_ID 255
-
 #define VALID_KILL		  1
 #define TEAM_KILL		  2
 #define SELF_KILL		  3

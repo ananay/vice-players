@@ -109,3 +109,24 @@ BOOL CEntity::IsOnScreen()
 }
 
 //-----------------------------------------------------------
+
+float CEntity::GetDistanceFromCentreOfMassToBaseOfModel()
+{
+	float fDistance = 0.0f;
+
+	if(m_pEntity)
+	{
+		ENTITY_TYPE * pEntity = m_pEntity;
+		DWORD dwFunc = FUNC_CEntity__GetDistanceFromCentreOfMassToBaseOfModel;
+		_asm
+		{
+			mov ecx, pEntity
+			call dwFunc
+			fstp fDistance
+		}
+	}
+
+	return fDistance;
+}
+
+//-----------------------------------------------------------

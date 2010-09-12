@@ -32,7 +32,7 @@ void DecompressVector1(VECTOR_PAD * vec, C_VECTOR1 * c1)
 CPlayer::CPlayer()
 {
 	m_byteUpdateFromNetwork = UPDATE_TYPE_NONE;
-	m_bytePlayerID = INVALID_PLAYER_ID;
+	m_bytePlayerID = INVALID_ENTITY_ID;
 	m_bIsActive = FALSE;
 	m_bIsWasted = FALSE;
 	m_vehicleID = 0;
@@ -134,7 +134,7 @@ void CPlayer::BroadcastSyncData()
 void CPlayer::StoreOnFootFullSyncData(PLAYER_SYNC_DATA * pPlayerSyncData)
 {
 	if(m_vehicleID != 0) {
-		pNetGame->GetVehiclePool()->GetAt(m_vehicleID)->SetDriverId(INVALID_PLAYER_ID);
+		pNetGame->GetVehiclePool()->GetAt(m_vehicleID)->SetDriverId(INVALID_ENTITY_ID);
 		m_vehicleID = 0;
 	}
 

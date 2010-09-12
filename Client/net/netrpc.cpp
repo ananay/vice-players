@@ -691,6 +691,51 @@ void CreateText(RakNet::BitStream *bitStream, Packet *packet)
 	pTextPool->New(TextID, dwColor, szFontName, size, posX, posY, szMessage);
 }
 
+//----------------------------------------------------
+// Remote client has had damage inflicted upon them
+
+void InflictDamage(RakNet::BitStream * bitStream, Packet * packet)
+{
+	CPlayerPool * pPlayerPool = pNetGame->GetPlayerPool();
+	CVehiclePool * pVehiclePool = pNetGame->GetVehiclePool();
+	EntityId playerID;
+	bool bPlayerVehicleDamager;
+	EntityId damagerID;
+	int iWeapon;
+	float fUnk;
+	int iPedPieces;
+	BYTE byteUnk;
+
+	bitStream->Read(playerID);
+
+	if(!pVehiclePool->GetAt(playerID))
+	{
+		return;
+	}
+
+	bPlayerVehicleDamager = bitStream->ReadBit();
+	bitStream->Read(damagerID);
+
+	if((bPlayerVehicleDamager && !pPlayerPool->GetSlotState(damagerID)) || (!bPlayerVehicleDamager && !pVehiclePool->GetSlotState(damagerID)))
+	{
+		return;
+	}
+
+	bitStream->Read(iWeapon);
+	bitStream->Read(fUnk);
+	bitStream->Read(iPedPieces);
+	bitStream->Read(byteUnk);
+
+	CRemotePlayer * pPlayer = pPlayerPool->GetAt(playerID);
+
+	if(pPlayer)
+	{
+		pPlayer->InflictDamage(bPlayerVehicleDamager, damagerID, iWeapon, fUnk, iPedPieces, byteUnk);
+	}
+}
+
+//----------------------------------------------------
+
 // Script_toggleTextForPlayer
 void Script_toggleTextForPlayer(RakNet::BitStream *bitStream, Packet *packet)
 {
@@ -912,7 +957,7 @@ void Script_popVehicleTrunk(RakNet::BitStream *bitStream, Packet *packet)
 	bitStream->Read(vehicle);
 	
 	CVehicle *pVehicle = pNetGame->GetVehiclePool()->GetAt(vehicle);
-	pVehicle->popVehicleTrunk();
+	pVehicle->PopTrunk();
 }
 
 // setSkyColor
@@ -1028,6 +1073,7 @@ void RegisterRPCs()
 	pNetGame->GetRPC4()->RegisterFunction("UploadClientScript",UploadClientScript);
 	pNetGame->GetRPC4()->RegisterFunction("ObjectSpawn", ObjectSpawn);
 	pNetGame->GetRPC4()->RegisterFunction("CreateText", CreateText);
+	pNetGame->GetRPC4()->RegisterFunction("InflictDamage", InflictDamage);
 	pNetGame->GetRPC4()->RegisterFunction("CreateCheckpoint", CreateCheckpoint);
 	pNetGame->GetRPC4()->RegisterFunction("DestroyCheckpoint", DestroyCheckpoint);
 
@@ -1098,6 +1144,7 @@ void UnRegisterRPCs()
 	pNetGame->GetRPC4()->UnregisterFunction("UploadClientScript");
 	pNetGame->GetRPC4()->UnregisterFunction("ObjectSpawn");
 	pNetGame->GetRPC4()->UnregisterFunction("CreateText");
+	pNetGame->GetRPC4()->UnregisterFunction("InflictDamage");
 	pNetGame->GetRPC4()->UnregisterFunction("CreateCheckpoint");
 	pNetGame->GetRPC4()->UnregisterFunction("DestroyCheckpoint");
 

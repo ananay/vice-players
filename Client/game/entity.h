@@ -17,7 +17,9 @@
 #define ENTITY_TYPE_PED			1
 #define ENTITY_TYPE_VEHICLE		2
 
+// TODO: CPlaceable class
 #define FUNC_CPlaceable__SetHeading 0x4BBA80
+#define FUNC_CEntity__GetDistanceFromCentreOfMassToBaseOfModel 0x487D10
 
 class CEntity
 {
@@ -37,4 +39,6 @@ public:
 	WORD		  GetModelIndex();
 
 	BOOL          IsOnScreen();
+
+	float         GetDistanceFromCentreOfMassToBaseOfModel();
 };
