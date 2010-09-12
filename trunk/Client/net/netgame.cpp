@@ -57,6 +57,8 @@ CNetGame::CNetGame(PCHAR szHostOrIp, int iPort,
 	
 	m_pCheckpoints = new CCheckpoints();
 
+	m_pPickupPool = new CPickupPool();
+
 	m_pRakPeer = RakPeerInterface::GetInstance();
 	m_pRPC4 = RPC4::GetInstance();
 

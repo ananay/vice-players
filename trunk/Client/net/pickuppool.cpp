@@ -32,7 +32,7 @@ CPickupPool::~CPickupPool()
 
 bool CPickupPool::New(EntityId PickupID, int iModel, int iType, Vector3 * vecPos)
 {
-	if(m_pPickups[PickupID])
+	if(m_bPickupSlotState[PickupID] == true)
 	{
 		Delete(PickupID);
 	}

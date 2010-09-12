@@ -75,6 +75,17 @@ SQInteger sq_createPickup(SQVM * pVM)
 	return 1;
 }
 
+SQInteger sq_destroyPickup(SQVM * pVM)
+{
+	SQInteger pickupId;
+
+	sq_getinteger(pVM, -1, &pickupId);
+
+	pNetGame->GetPickupPool()->Delete(pickupId);
+
+	sq_pushbool(pVM, true);
+	return 1;
+}
 
 SQInteger sq_isPluginLoaded(SQVM * pVM)
 {

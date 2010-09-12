@@ -142,6 +142,9 @@ void ClientJoin(RakNet::BitStream *bitStream, Packet *packet)
 
 	// Create all checkpoints for player
 	pNetGame->GetCheckpoints()->InitForPlayer(playerID);
+
+	// Create all pickups for player
+	pNetGame->GetPickupPool()->InitForPlayer(playerID);
 }
 
 //----------------------------------------------------

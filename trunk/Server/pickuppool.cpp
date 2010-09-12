@@ -53,6 +53,9 @@ EntityId CPickupPool::New(int iModel, int iType, Vector3 * vecPos)
 				// Set the pickup id
 				m_pPickups[i]->SetID(i);
 
+				// Spawn the pickup for world
+				m_pPickups[i]->SpawnForWorld();
+
 				// Set the slot state to used
 				m_bPickupSlotState[i] = true;
 

@@ -16,7 +16,6 @@ CPickup::CPickup(int iModel, int iType, Vector3 * vecPos)
 	m_iModel = iModel;
 	m_iType = iType;
 	memcpy(&m_vecPos, vecPos, sizeof(Vector3));
-	SpawnForWorld();
 }
 
 CPickup::~CPickup()

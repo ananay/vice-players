@@ -474,12 +474,20 @@ void PickupSpawn(RakNet::BitStream *bitStream, Packet *packet)
 	bitStream->Read(PickupID);
 	bitStream->Read(iModel);
 	bitStream->Read(iType);
-	bitStream->Read(vecPos);
+	bitStream->Read((char*)&vecPos, sizeof(Vector3));
 
 	pPickupPool->New(PickupID, iModel, iType, &vecPos);
 }
 
+void PickupDestroy(RakNet::BitStream *bitStream, Packet *packet)
+{
+	CPickupPool *pPickupPool = pNetGame->GetPickupPool();
+	EntityId PickupID=0;
 
+	bitStream->Read(PickupID);
+
+	pPickupPool->Delete(PickupID);
+}
 //----------------------------------------------------
 
 // ============= Scripting RPC's ====================//
@@ -1091,6 +1099,7 @@ void RegisterRPCs()
 	pNetGame->GetRPC4()->RegisterFunction("CreateCheckpoint", CreateCheckpoint);
 	pNetGame->GetRPC4()->RegisterFunction("DestroyCheckpoint", DestroyCheckpoint);
 	pNetGame->GetRPC4()->RegisterFunction("PickupSpawn", PickupSpawn);
+	pNetGame->GetRPC4()->RegisterFunction("PickupDestroy", PickupDestroy);
 
 	pNetGame->GetRPC4()->RegisterFunction("Script_SetHealth",Script_SetHealth);
 	pNetGame->GetRPC4()->RegisterFunction("Script_SetArmour",Script_SetArmour);
@@ -1163,6 +1172,7 @@ void UnRegisterRPCs()
 	pNetGame->GetRPC4()->UnregisterFunction("CreateCheckpoint");
 	pNetGame->GetRPC4()->UnregisterFunction("DestroyCheckpoint");
 	pNetGame->GetRPC4()->UnregisterFunction("PickupSpawn");
+	pNetGame->GetRPC4()->UnregisterFunction("PickupDestroy");
 
 	pNetGame->GetRPC4()->UnregisterFunction("Script_SetHealth");
 	pNetGame->GetRPC4()->UnregisterFunction("Script_SetArmour");
