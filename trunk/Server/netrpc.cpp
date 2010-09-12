@@ -450,6 +450,23 @@ void KeyEvent(RakNet::BitStream *bitStream, Packet *packet)
 	pScripts->onPlayerKeyEvent(playerID, type, (char*)&dwKey);
 }
 
+void CheckpointEvent(RakNet::BitStream *bitStream, Packet *packet)
+{
+	EntityId playerID = (BYTE)packet->guid.systemIndex;
+	if(!pNetGame->GetPlayerPool()->GetSlotState(playerID)) return;
+
+	EntityId cpId;
+	bool state; // true - entered, false - leaved.
+	bitStream->Read(cpId);
+	bitStream->Read(state);
+
+	if(state)
+		pScripts->onCheckpointEnter(playerID, cpId);
+	else
+		pScripts->onCheckpointLeave(playerID, cpId);
+
+}
+
 //----------------------------------------------------
 // Remote client has had damage inflicted upon them
 
@@ -523,6 +540,7 @@ void RegisterRPCs()
 	pNetGame->GetRPC4()->RegisterFunction("KickPlayer", KickPlayer);
 	pNetGame->GetRPC4()->RegisterFunction("BanIPAddress", BanIPAddress);
 	pNetGame->GetRPC4()->RegisterFunction("KeyEvent", KeyEvent);
+	pNetGame->GetRPC4()->RegisterFunction("CheckpointEvent", CheckpointEvent);
 	pNetGame->GetRPC4()->RegisterFunction("InflictDamage", InflictDamage);
 }
 
@@ -544,6 +562,7 @@ void UnRegisterRPCs()
 	pNetGame->GetRPC4()->UnregisterFunction("KickPlayer");
 	pNetGame->GetRPC4()->UnregisterFunction("BanIPAddress");
 	pNetGame->GetRPC4()->UnregisterFunction("KeyEvent");
+	pNetGame->GetRPC4()->UnregisterFunction("CheckpointEvent");
 	pNetGame->GetRPC4()->UnregisterFunction("InflictDamage");
 }
 

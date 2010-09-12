@@ -45,36 +45,7 @@ CCheckpoint::~CCheckpoint()
 
 void CCheckpoint::Process()
 {
-	CPlayerPool * pPlayerPool = pNetGame->GetPlayerPool();
-	for(EntityId pId = 0; pId < MAX_PLAYERS; pId++)
-	{
-		if(pPlayerPool->GetSlotState(pId)==TRUE)
-		{
-			CPlayer * pPlayer = pPlayerPool->GetAt(pId);
-			Vector3 vecPos;
-			pPlayer->GetPosition(&vecPos);
-			if(GetDistanceBetweenPoints3D(vecPos.X, vecPos.Y, vecPos.Z, m_vecPos.X, m_vecPos.Y, m_vecPos.Z) < m_fRadius)
-			{
-				if(!m_bInCP)
-				{
-					pScripts->onCheckpointEnter(pId, m_iID);
-				}
-				else
-				{
 
-				}
-				m_bInCP = true;
-			}
-			else
-			{
-				if(m_bInCP)
-				{
-					pScripts->onCheckpointLeave(pId, m_iID);
-				}
-				m_bInCP = false;
-			}
-		}
-	}
 }
 
 void CCheckpoint::InitForPlayer(EntityId playerId)
