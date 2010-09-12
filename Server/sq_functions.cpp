@@ -119,6 +119,11 @@ int sq_register_natives(SQVM * pVM)
 	// Checkpoints
 	RegisterFunction(pVM, "createCheckpoint", sq_createCheckpoint, 5, ".ffff");
 	RegisterFunction(pVM, "destroyCheckpoint", sq_destroyCheckpoint, 2, ".n");
+
+	// Pickups
+	RegisterFunction(pVM, "createPickup", sq_createPickup, 6, ".nnfff");
+	RegisterFunction(pVM, "destroyPickup", sq_destroyPickup, 2, ".n");
+
 	return 1;
 }
 

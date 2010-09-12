@@ -173,6 +173,11 @@ function onPlayerCommand(playerid, cmdtext)
 	{
 		destroyCheckpoint(cmd[1].tointeger());
 	}
+	if(cmd[0] == "/cpickup")
+	{
+		local pos = getPlayerPosition(playerid);
+		createPickup(cmd[1].tointeger(), cmd[2].tointeger(), pos[0], pos[1]+3, pos[2]);
+	}
 	if(cmd[0] == "/hidetextall")
 	{
 		toggleTextForAll(cmd[1].tointeger(), false);
