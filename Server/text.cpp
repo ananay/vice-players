@@ -16,8 +16,8 @@ CText::CText(DWORD color, const char * szFontName, int iSize, float posX, float 
 	m_dwColour = color;
 	m_szFont = szFontName;
 	m_iSize = iSize;
-	m_fPosX = posX;
-	m_fPosY = posY;
+	m_fRelativePosX = posX;
+	m_fRelativePosY = posY;
 	m_szText = szText;
 
 	m_bShow = false;
@@ -48,8 +48,8 @@ void CText::InitForPlayer(EntityId playerId)
 	bsSend.Write(m_szFont.size());
 	bsSend.Write(m_szFont.c_str(), m_szFont.size());
 	bsSend.Write(m_iSize);
-	bsSend.Write(m_fPosX);
-	bsSend.Write(m_fPosY);
+	bsSend.Write(m_fRelativePosX);
+	bsSend.Write(m_fRelativePosY);
 	bsSend.Write(m_szText.size());
 	bsSend.Write(m_szText.c_str(), m_szText.size());
 	
@@ -112,8 +112,8 @@ void CText::Show(bool show)
 
 void CText::SetPosition(float fPosX, float fPosY)
 {
-	m_fPosX = fPosX;
-	m_fPosY = fPosY;
+	m_fRelativePosX = fPosX;
+	m_fRelativePosY = fPosY;
 
 	CPlayerPool * pPlayerPool = pNetGame->GetPlayerPool();
 	for(EntityId i = 0; i < MAX_PLAYERS; i++) {

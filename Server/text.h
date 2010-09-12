@@ -17,8 +17,8 @@ private:
 	DWORD m_dwColour;
 	std::string m_szFont;
 	int m_iSize;
-	float m_fPosX;
-	float m_fPosY;
+	float m_fRelativePosX;
+	float m_fRelativePosY;
 	std::string m_szText;
 
 	bool m_bShow;

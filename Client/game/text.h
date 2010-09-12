@@ -14,8 +14,8 @@ private:
 
 	std::string m_szText;
 	CD3DFont * m_pFont;
-	float m_fPosX;
-	float m_fPosY;
+	float m_fRelativePosX;
+	float m_fRelativePosY;
 	DWORD m_dwColor;
 
 	bool m_bShow;
@@ -24,7 +24,7 @@ public:
 	~CText();
 
 	void SetText(const char * szText) { m_szText = szText; };
-	void SetPosition(float fPosX, float fPosY) { m_fPosX = fPosX; m_fPosY = fPosY; };
+	void SetPosition(float fPosX, float fPosY) { m_fRelativePosX = fPosX; m_fRelativePosY = fPosY; };
 	void SetColor(DWORD color) { m_dwColor = color; };
 	void Process();
 
