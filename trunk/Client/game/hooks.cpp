@@ -63,10 +63,6 @@ extern GTA_CONTROLSET * pGcsInternalKeys;
 
 //-----------------------------------------------------------
 
-BYTE InflictDamage_HookJmpCode[] = {0xFF,0x25,0x15,0x5B,0x52,0x00}; // 525B15
-
-//-----------------------------------------------------------
-
 void _stdcall DoOnFootWorldBoundsStuff()
 {
 	if(pNetGame) {
@@ -428,8 +424,9 @@ BOOL _stdcall IsFriendlyFire(PED_TYPE *pPlayer,DWORD *pdwEnt, int iWeapon, float
 
 //-----------------------------------------------------------
 
-extern CChatWindow * pChatWindow;
+//extern CChatWindow * pChatWindow;
 
+#ifdef DAMAGE_SYNC
 // NOTE: Only problem i can see with this is getting damaged by entitys that have moved remotely since you were damaged
 void DoInflictedDamageNotification(DWORD * pdwEntity, int iWeapon, float fUnk, int iPedPieces, BYTE byteUnk)
 {
@@ -452,7 +449,7 @@ void DoInflictedDamageNotification(DWORD * pdwEntity, int iWeapon, float fUnk, i
 		playerID = pPlayerPool->GetLocalPlayerID();
 	}
 
-	pChatWindow->AddDebugMessage("DoInflictedDamageNotification(0x%p (LPID: %d, LPP: 0x%p, Player: %d, Vehicle: %d), %d, %f, %d, %d)", pdwEntity, pPlayerPool->GetLocalPlayerID(), GamePool_FindPlayerPed(), playerID, vehicleID, iWeapon, fUnk, iPedPieces, byteUnk);
+	//pChatWindow->AddDebugMessage("DoInflictedDamageNotification(0x%p (LPID: %d, LPP: 0x%p, Player: %d, Vehicle: %d), %d, %f, %d, %d)", pdwEntity, pPlayerPool->GetLocalPlayerID(), GamePool_FindPlayerPed(), playerID, vehicleID, iWeapon, fUnk, iPedPieces, byteUnk);
 
 	// Do we have a valid player or vehicle id?
 	if(playerID != INVALID_ENTITY_ID || vehicleID != INVALID_ENTITY_ID)
@@ -468,12 +465,16 @@ void DoInflictedDamageNotification(DWORD * pdwEntity, int iWeapon, float fUnk, i
 //-----------------------------------------------------------
 
 bool bSelf = false;
+DWORD dwRet = 0;
+#endif
 
 NUDE CPed__InflictDamage_Hook()
 {
 	_asm
 	{
 		mov dwStackFrame, esp
+		mov eax, [esp]
+		mov dwRet, eax
 		mov _pPlayer, ecx
 		mov eax, [esp+4]
 		mov _pEntity, eax
@@ -492,20 +493,28 @@ NUDE CPed__InflictDamage_Hook()
 	// cancel the damage infliction
 	if(pNetGame)
 	{
+#ifdef DAMAGE_SYNC
 		// Get weather or not the inflicted player is ourself
 		bSelf = (_pPlayer == GamePool_FindPlayerPed());
+#endif
 
 		// If its ourselves and friendly fire or not ourselves and damage is disabled, don't inflict the damage
+#ifdef DAMAGE_SYNC
 		if((bSelf && IsFriendlyFire(_pPlayer, _pEntity, _iWeapon, _fUnk, _iPedPieces, _byteUnk)) || (!bSelf && bDamageDisabled))
+#else
+		if(IsFriendlyFire(_pPlayer, _pEntity, _iWeapon, _fUnk, _iPedPieces, _byteUnk))
+#endif
 		{
+			//pChatWindow->AddDebugMessage("Not inflicting damage (ret: 0x%p, wep: %d, self?: %d, disabled?: %d)", dwRet, _iWeapon, bSelf, bDamageDisabled);
 			_asm
 			{
 				popad
 				mov esp, dwStackFrame
 				xor al, al
-				retn 0x14
+				retn 14h
 			}
 		}
+#ifdef DAMAGE_SYNC
 		else
 		{
 			// Is it ourself?
@@ -515,16 +524,16 @@ NUDE CPed__InflictDamage_Hook()
 				DoInflictedDamageNotification(_pEntity, _iWeapon, _fUnk, _iPedPieces, _byteUnk);
 			}
 		}
+#endif
 	}
 
+	dwFunc = (FUNC_CPed__InflictDamage + 6);
 	_asm
 	{
 		popad
 		mov esp, dwStackFrame
 		fld ds:[0x694170]
-		mov edx, 0x525B20
-		add edx, 6
-		jmp edx
+		jmp dwFunc
 	}
 }
 
@@ -640,8 +649,7 @@ void GameInstallHooks()
 	InstallJmpHook(FUNC_RadarTranslateColor, (DWORD)RadarTranslateColor);
 	
 	// Install hook for CPed::InflictDamage
-	InstallHook(FUNC_CPed__InflictDamage, (DWORD)CPed__InflictDamage_Hook, 0x525B15, 
-		InflictDamage_HookJmpCode, sizeof(InflictDamage_HookJmpCode));
+	InstallJmpHook(FUNC_CPed__InflictDamage, (DWORD)CPed__InflictDamage_Hook);
 
 	// Install hook for EnterCarAnimCallback
 	// Update: Causing even more problems.

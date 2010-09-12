@@ -516,7 +516,7 @@ void CLocalPlayer::SendInflictedDamageNotification(EntityId playerID, EntityId v
 	bsSend.Write(fUnk);
 	bsSend.Write(iPedPieces);
 	bsSend.Write(byteUnk);
-	pNetGame->GetRPC4()->Call("InflictDamage", &bsSend, HIGH_PRIORITY, RELIABLE_ORDERED, 0, UNASSIGNED_SYSTEM_ADDRESS, true);
+	//pNetGame->GetRPC4()->Call("InflictDamage", &bsSend, HIGH_PRIORITY, RELIABLE_ORDERED, 0, UNASSIGNED_SYSTEM_ADDRESS, true);
 }
 
 //----------------------------------------------------

@@ -443,17 +443,16 @@ void CRemotePlayer::InflictDamage(bool bPlayerVehicleDamager, EntityId damagerID
 	bDamageDisabled = false;
 
 	// TODO: Move to CPlayerPed
-	int iUnk = byteUnk;
 	DWORD dwFunc = FUNC_CPed__InflictDamage;
 	_asm
 	{
-		push iUnk
+		push byteUnk
 		push iPedPieces
 		push fUnk
 		push iWeapon
 		push dwEntity
 		call dwFunc
-		add esp, 14h
+		add esp, 10h
 	}
 
 	// Disable CPed::InflictDamage for remote players

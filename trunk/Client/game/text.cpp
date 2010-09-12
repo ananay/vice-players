@@ -13,15 +13,13 @@
 extern IDirect3DDevice8 *pD3DDevice;
 extern CChatWindow * pChatWindow;
 
-CText::CText(EntityId TextID, DWORD color, char * szFontName, int iSize, float posX, float posY, char * szText)
+CText::CText(EntityId TextID, DWORD color, char * szFontName, int iSize, float fRelativePosX, float fRelativePosY, char * szText)
 {
 	m_iID = TextID;
-
 	m_dwColor = color;
 	m_szText = szText;
-	m_fPosX = posX;
-	m_fPosY = posY;
-	
+	m_fRelativePosX = fRelativePosX;
+	m_fRelativePosY = fRelativePosY;
 	m_bShow = false;
 
 	m_pFont = new CD3DFont(szFontName, iSize, 0);
@@ -47,10 +45,9 @@ void CText::Process()
 		D3DDISPLAYMODE DisplayMode;
 		pD3DDevice->GetDisplayMode(&DisplayMode);
 
-		float posX, posY;
-		posX = ((DisplayMode.Width / 100) * m_fPosX);
-		posY = ((DisplayMode.Height / 100) * m_fPosY);
+		float fAbsaloutePosX = ((DisplayMode.Width / 100) * m_fRelativePosX);
+		float fAbsaloutePosY = ((DisplayMode.Height / 100) * m_fRelativePosY);
 
-		m_pFont->DrawText(posX, posY, m_dwColor, m_szText.c_str());
+		m_pFont->DrawText(fAbsaloutePosX, fAbsaloutePosY, m_dwColor, m_szText.c_str());
 	}
 }
