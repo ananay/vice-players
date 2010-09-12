@@ -59,6 +59,23 @@ SQInteger sq_createObject(SQVM * pVM)
 	return 1;
 }
 
+SQInteger sq_createPickup(SQVM * pVM)
+{
+	SQInteger model, type;
+	Vector3 vecPos;
+	sq_getinteger(pVM, -5, &model);
+	sq_getinteger(pVM, -4, &type);
+	sq_getfloat(pVM, -3, &vecPos.X);
+	sq_getfloat(pVM, -2, &vecPos.Y);
+	sq_getfloat(pVM, -1, &vecPos.Z);
+
+	EntityId pickup = pNetGame->GetPickupPool()->New(model, type, &vecPos);
+
+	sq_pushinteger(pVM, pickup);
+	return 1;
+}
+
+
 SQInteger sq_isPluginLoaded(SQVM * pVM)
 {
 	const char * szName;

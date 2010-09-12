@@ -40,6 +40,7 @@ typedef struct _GAME_SETTINGS {
 
 #include "game/game.h"
 #include "game/object.h"
+#include "game/pickup.h"
 
 #include "d3dhook/IDirect3D8Hook.h"
 #include "d3dhook/IDirect3DDevice8Hook.h"
@@ -58,6 +59,7 @@ typedef struct _GAME_SETTINGS {
 #include "net/playerpool.h"
 #include "net/vehiclepool.h"
 #include "net/objectpool.h"
+#include "net/pickuppool.h"
 #include "net/textpool.h"
 #include "net/checkpoints.h"
 #include "net/netgame.h"

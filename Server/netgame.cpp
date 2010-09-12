@@ -86,6 +86,9 @@ CNetGame::CNetGame(int iMaxPlayers, int iPort, char * szPassword, char * szHostn
 	// Setup object pool
 	m_pObjectPool = new CObjectPool();
 
+	// Setup pickup pool
+	m_pPickupPool = new CPickupPool();
+
 	// Setup text pool
 	m_pTextPool = new CTextPool();
 

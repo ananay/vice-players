@@ -21,3 +21,4 @@ SQInteger sq_setModeName(SQVM * pVM); // done
 SQInteger sq_setMapName(SQVM * pVM); // done
 SQInteger sq_createCheckpoint(SQVM * pVM); // done
 SQInteger sq_destroyCheckpoint(SQVM * pVM); // done
+SQInteger sq_createPickup(SQVM * pVM); // done
