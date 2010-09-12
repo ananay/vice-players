@@ -19,7 +19,7 @@ public:
 	~CObjectPool();
 
 	EntityId New(int iModel, Vector3 * vecPos, Vector3 * vecRot);
-	BOOL Delete(EntityId ObjectID);
+	bool Delete(EntityId ObjectID);
 
 	CObject* GetAt(EntityId ObjectID)
 	{

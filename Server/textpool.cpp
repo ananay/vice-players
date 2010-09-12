@@ -25,7 +25,16 @@ CTextPool::CTextPool()
 
 CTextPool::~CTextPool()
 {
-
+	// Loop through all pickup slots
+	for(EntityId i = 0; i < MAX_TEXTS; i++)
+	{
+		// Is this pickup slot used?
+		if(m_bTextSlotState[i])
+		{
+			// Delete this pickup
+			Delete(i);
+		}
+	}
 }
 
 EntityId CTextPool::New(DWORD color, const char * szFontName, int iSize, float posX, float posY, const char * szText)

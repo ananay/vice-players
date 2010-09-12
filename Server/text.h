@@ -27,9 +27,6 @@ public:
 	CText(DWORD color, const char * szFontName, int iSize, float posX, float posY, const char * szText);
 	~CText();
 
-	void ShowForPlayer(EntityId playerId);
-	void HideForPlayer(EntityId playerId);
-
 	void SetID(EntityId id);
 	void SetText(const char * szText);
 	void SetPosition(float fPosX, float fPosY);

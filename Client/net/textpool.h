@@ -19,7 +19,7 @@ public:
 	~CTextPool();
 
 	EntityId New(EntityId TextID, DWORD color, char * szFontName, int iSize, float posX, float posY, char * szText);
-	BOOL Delete(EntityId TextID);
+	bool Delete(EntityId TextID);
 
 	CText* GetAt(EntityId TextID)
 	{

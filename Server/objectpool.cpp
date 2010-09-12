@@ -23,7 +23,16 @@ CObjectPool::CObjectPool()
 
 CObjectPool::~CObjectPool()
 {
-
+	// Loop through all object slots
+	for(EntityId i = 0; i < MAX_OBJECTS; i++)
+	{
+		// Is this object slot used?
+		if(m_bObjectSlotState[i])
+		{
+			// Delete this object
+			Delete(i);
+		}
+	}
 }
 
 

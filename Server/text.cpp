@@ -28,17 +28,6 @@ CText::~CText()
 
 }
 
-
-void CText::ShowForPlayer(EntityId playerId)
-{
-
-}
-
-void CText::HideForPlayer(EntityId playerId)
-{
-
-}
-
 void CText::InitForPlayer(EntityId playerId)
 {
 	RakNet::BitStream bsSend;
