@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="Windows-1252"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="9,00"
+	Version="9.00"
 	Name="Launcher"
 	ProjectGUID="{701B5071-EBE6-463C-A4DD-E34E84AB77DC}"
 	RootNamespace="launcher"
@@ -77,7 +77,7 @@
 				Name="VCLinkerTool"
 				AdditionalDependencies="kernel32.lib psapi.lib"
 				OutputFile="..\bin\$(ProjectName)_d.exe"
-				LinkIncremental="2"
+				LinkIncremental="1"
 				SuppressStartupBanner="true"
 				AdditionalLibraryDirectories="kernel32.lib user32.lib gdi32.lib comdlg32.lib ole32.lib psapi.lib dinput8.lib d3d9.lib dxguid.lib winmm.lib opengl32.lib"
 				GenerateDebugInformation="true"

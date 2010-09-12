@@ -161,7 +161,7 @@
 				Name="VCLinkerTool"
 				AdditionalDependencies="ws2_32.lib"
 				OutputFile="..\bin\$(ProjectName)_d.exe"
-				LinkIncremental="2"
+				LinkIncremental="1"
 				SuppressStartupBanner="true"
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile=".\Debug/rcon.pdb"
