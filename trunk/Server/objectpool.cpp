@@ -79,3 +79,22 @@ void CObjectPool::InitForPlayer(EntityId playerId)
 		}
 	}
 }
+
+bool CObjectPool::Delete(EntityId ObjectID)
+{
+	// Is this slot used?
+	if(!GetSlotState(ObjectID))
+	{
+		// It's not used
+		return false;
+	}
+
+	// Destroy this object for all players
+	//m_pObjects[ObjectID]->DestroyForWorld(); FINISH!!!!
+
+	// Delete this text
+	delete m_pObjects[ObjectID];
+	m_pObjects[ObjectID] = NULL;
+
+	return true;
+}
