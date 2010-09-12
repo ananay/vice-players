@@ -27,17 +27,21 @@ public:
 		return m_pObjects[ObjectID];
 	};
 
-	BOOL GetSlotState(EntityId ObjectID)
-	{
-		if(ObjectID > MAX_OBJECTS) { return FALSE; }
-		return m_bObjectSlotState[ObjectID];
-	};
-
 	void InitForPlayer(EntityId playerID);
 
 	EntityId GetFreeSlot();
 
+	bool GetSlotState(EntityId ObjectID)
+	{
+		if(ObjectID > MAX_OBJECTS)
+		{
+			return false;
+		}
+
+		return m_bObjectSlotState[ObjectID];
+	};
+
 private:
-	BOOL m_bObjectSlotState[MAX_OBJECTS];
+	bool m_bObjectSlotState[MAX_OBJECTS];
 	CObject * m_pObjects[MAX_OBJECTS];
 };

@@ -91,3 +91,22 @@ EntityId CTextPool::GetFreeSlot()
 	}
 	return false;
 }
+
+bool CTextPool::Delete(EntityId TextID)
+{
+	// Is this slot used?
+	if(!GetSlotState(TextID))
+	{
+		// It's not used
+		return false;
+	}
+
+	// Destroy this text for all players
+	//m_pTexts[TextID]->DestroyForWorld(); FINISH!!!!
+
+	// Delete this text
+	delete m_pTexts[TextID];
+	m_pTexts[TextID] = NULL;
+
+	return true;
+}

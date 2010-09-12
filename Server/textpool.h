@@ -28,18 +28,22 @@ public:
 		return m_pTexts[TextID];
 	};
 
-	BOOL GetSlotState(EntityId TextID)
-	{
-		if(TextID > MAX_TEXTS) { return FALSE; }
-		return m_bTextSlotState[TextID];
-	};
-
 	EntityId GetFreeSlot();
 
 	void InitForPlayer(EntityId playerId);
 	void InitForWorld();
 
+	bool GetSlotState(EntityId TextID)
+	{
+		if(TextID > MAX_TEXTS)
+		{
+			return false;
+		}
+
+		return m_bTextSlotState[TextID];
+	};
+
 private:
-	BOOL m_bTextSlotState[MAX_TEXTS];
+	bool m_bTextSlotState[MAX_TEXTS];
 	CText * m_pTexts[MAX_TEXTS];
 };
