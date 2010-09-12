@@ -109,10 +109,13 @@ const SCRIPT_COMMAND set_camera_position		= { 0x015F, "ffffff" }; // x, y, z, vx
 const SCRIPT_COMMAND tie_actor_to_player		= { 0x01DF, "vv" };		// var_actor, PLAYER_CHAR
 const SCRIPT_COMMAND tie_marker_to_car			= { 0x0161, "iiiv" };	// var_car, ukn, ukn, var_marker
 const SCRIPT_COMMAND tie_marker_to_actor		= { 0x0162, "viiv" };	// var_actor, ukn, ukn, var_marker
-const SCRIPT_COMMAND disable_marker				= { 0x0164, "v" };		// var_marker
+const SCRIPT_COMMAND disable_marker				= { 0x0164, "i" };		// var_marker
 const SCRIPT_COMMAND set_marker_color			= { 0x0165, "vi" };		// var_marker, color
 const SCRIPT_COMMAND set_marker_brightness		= { 0x0166, "ii" };		// var_marker, brightness
 const SCRIPT_COMMAND create_marker				= { 0x0167, "fffiiv" };	// x, y, z, ukn, ukn, var_marker
+const SCRIPT_COMMAND create_icon_marker_without_sphere	= { 0x04CE, "fffiv" };
+const SCRIPT_COMMAND create_sphere				= { 0x03BC, "ffffv" }; 
+const SCRIPT_COMMAND destroy_sphere				= { 0x03BD, "i" };
 const SCRIPT_COMMAND show_on_radar				= { 0x0168, "vi" };		// var_marker, size
 const SCRIPT_COMMAND set_car_driver_behaviour	= { 0x00AF, "vi" };		// var_car, behaviour
 const SCRIPT_COMMAND set_actor_to_kill_actor	= { 0x01C9, "vv" };		// var_actor, var_actor
@@ -163,6 +166,7 @@ const SCRIPT_COMMAND set_ped_sky_color = { 0x04F9, "ii" };
 const SCRIPT_COMMAND set_driveby_state = { 0x0501, "ii" };
 const SCRIPT_COMMAND shake_ped_camera = { 0x0003, "i" };
 const SCRIPT_COMMAND toggle_rhino_instant_explosion_upon_contact = { 0x0493, "ii" };
+const SCRIPT_COMMAND create_checkpoint_at = { 0x018A, "fffv" };
 
 // Objects
 const SCRIPT_COMMAND create_object = { 0x0107, "ifffv" };

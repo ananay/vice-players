@@ -430,7 +430,7 @@ BOOL CLocalPlayer::SpawnPlayer(PLAYER_SPAWN_INFO * pSpawnInfo)
 
 		m_bIsWasted = FALSE;
 		m_bIsActive = TRUE;
-	}	
+	}
 
 	// Let the rest of the network know we're spawning.
 	RakNet::BitStream bsSendSpawn;

@@ -116,6 +116,9 @@ int sq_register_natives(SQVM * pVM)
 	RegisterFunction(pVM, "setTextPositionForAll", sq_setTextPositionForAll, 4, ".nff");
 	RegisterFunction(pVM, "setTextPositionForPlayer", sq_setTextPositionForPlayer, 5, ".nnff");
 
+	// Checkpoints
+	RegisterFunction(pVM, "createCheckpoint", sq_createCheckpoint, 5, ".ffff");
+	RegisterFunction(pVM, "destroyCheckpoint", sq_destroyCheckpoint, 2, ".n");
 	return 1;
 }
 

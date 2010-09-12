@@ -1269,6 +1269,14 @@
 			Name="Net"
 			>
 			<File
+				RelativePath=".\net\checkpoints.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\net\checkpoints.h"
+				>
+			</File>
+			<File
 				RelativePath="net\localplayer.cpp"
 				>
 				<FileConfiguration

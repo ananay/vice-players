@@ -52,7 +52,10 @@ CNetGame::CNetGame(PCHAR szHostOrIp, int iPort,
 	m_pVehiclePool = new CVehiclePool();
 
 	m_pObjectPool = new CObjectPool();
+
 	m_pTextPool = new CTextPool();
+	
+	m_pCheckpoints = new CCheckpoints();
 
 	m_pRakPeer = RakPeerInterface::GetInstance();
 	m_pRPC4 = RPC4::GetInstance();
@@ -115,6 +118,7 @@ void CNetGame::Process()
 		if(m_pPlayerPool) m_pPlayerPool->Process();
 		if(m_pVehiclePool) m_pVehiclePool->Process();
 		if(pScripts) pScripts->onPulse();
+		if(m_pCheckpoints) m_pCheckpoints->Process();
 	}
 
 	// For syncing rand()

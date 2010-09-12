@@ -164,6 +164,15 @@ function onPlayerCommand(playerid, cmdtext)
 		toggleTextForPlayer(playerid, text, true);
 		
 	}
+	if(cmd[0] == "/createcp")
+	{
+		local pos = getPlayerPosition(playerid);
+		createCheckpoint(pos[0], pos[1], pos[2], cmd[1].tofloat());
+	}
+	if(cmd[0] == "/destroycp")
+	{
+		destroyCheckpoint(cmd[1].tointeger());
+	}
 	if(cmd[0] == "/hidetextall")
 	{
 		toggleTextForAll(cmd[1].tointeger(), false);

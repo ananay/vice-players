@@ -92,6 +92,9 @@ CNetGame::CNetGame(int iMaxPlayers, int iPort, char * szPassword, char * szHostn
 	// Setup timer pool
 	m_pTimerPool = new CTimerPool();
 
+	// Setup checkpoints
+	m_pCheckpoints = new CCheckpoints();
+
 	// Setup the init positions.
 	SetupInitPositions();
 
@@ -146,6 +149,9 @@ void CNetGame::Process()
 
 	// Process the timers
 	m_pTimerPool->Process();
+
+	// Process checkpoints
+	m_pCheckpoints->Process();
 }
 
 //----------------------------------------------------
