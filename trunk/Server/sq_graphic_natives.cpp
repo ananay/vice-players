@@ -41,6 +41,18 @@ SQInteger sq_createText(SQVM * pVM)
 	return 1;
 }
 
+SQInteger sq_destroyText(SQVM * pVM)
+{
+	SQInteger textId;
+
+	sq_getinteger(pVM, -1, &textId);
+
+	pNetGame->GetTextPool()->Delete(textId);
+
+	sq_pushbool(pVM, true);
+	return 1;
+}
+
 // showTextForPlayer
 SQInteger sq_toggleTextForPlayer(SQVM * pVM)
 {

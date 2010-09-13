@@ -13,6 +13,7 @@
 #include "scripts.h"
 
 SQInteger sq_createText(SQVM * pVM);
+SQInteger sq_destroyText(SQVM * pVM);
 SQInteger sq_toggleTextForPlayer(SQVM * pVM);
 SQInteger sq_toggleTextForAll(SQVM * pVM);
 SQInteger sq_setTextForAll(SQVM * pVM);

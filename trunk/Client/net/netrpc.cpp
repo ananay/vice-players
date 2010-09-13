@@ -723,6 +723,16 @@ void CreateText(RakNet::BitStream *bitStream, Packet *packet)
 	pTextPool->New(TextID, dwColor, szFontName, size, posX, posY, szMessage);
 }
 
+void DestroyText(RakNet::BitStream *bitStream, Packet *packet)
+{
+	CTextPool *pTextPool = pNetGame->GetTextPool();
+	EntityId text;
+
+	bitStream->Read(text);
+
+	pTextPool->Delete(text);
+}
+
 //----------------------------------------------------
 // Remote client has had damage inflicted upon them
 
@@ -1106,6 +1116,7 @@ void RegisterRPCs()
 	pNetGame->GetRPC4()->RegisterFunction("ObjectSpawn", ObjectSpawn);
 	pNetGame->GetRPC4()->RegisterFunction("ObjectDestroy", ObjectDestroy);
 	pNetGame->GetRPC4()->RegisterFunction("CreateText", CreateText);
+	pNetGame->GetRPC4()->RegisterFunction("DestroyText", DestroyText);
 	pNetGame->GetRPC4()->RegisterFunction("InflictDamage", InflictDamage);
 	pNetGame->GetRPC4()->RegisterFunction("CreateCheckpoint", CreateCheckpoint);
 	pNetGame->GetRPC4()->RegisterFunction("DestroyCheckpoint", DestroyCheckpoint);
@@ -1180,6 +1191,7 @@ void UnRegisterRPCs()
 	pNetGame->GetRPC4()->UnregisterFunction("ObjectSpawn");
 	pNetGame->GetRPC4()->UnregisterFunction("ObjectDestroy");
 	pNetGame->GetRPC4()->UnregisterFunction("CreateText");
+	pNetGame->GetRPC4()->UnregisterFunction("DestroyText");
 	pNetGame->GetRPC4()->UnregisterFunction("InflictDamage");
 	pNetGame->GetRPC4()->UnregisterFunction("CreateCheckpoint");
 	pNetGame->GetRPC4()->UnregisterFunction("DestroyCheckpoint");

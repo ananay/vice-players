@@ -34,5 +34,6 @@ public:
 	void Show(bool show);
 
 	void InitForPlayer(EntityId playerId);
+	void DestroyForPlayer(EntityId playerId);
 	void InitForWorld();
 };
