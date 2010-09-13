@@ -197,16 +197,17 @@ float CPlayerPool::GetDistanceFromPlayerToPlayer(EntityId player1, EntityId play
 
 BOOL CPlayerPool::IsNickInUse(PCHAR szNick)
 {
-	int x=0;
-	while(x!=MAX_PLAYERS) {
-		if(GetSlotState((BYTE)x)) {
-#pragma warning(disable:4996)
-			if(!stricmp(GetPlayerName((BYTE)x),szNick)) {
+	for(EntityId i = 0; i < MAX_PLAYERS; i++)
+	{
+		if(m_bPlayerSlotState[i])
+		{
+			if(!stricmp(GetPlayerName(i), szNick))
+			{
 				return TRUE;
 			}
 		}
-		x++;
 	}
+
 	return FALSE;
 }
 

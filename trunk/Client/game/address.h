@@ -49,11 +49,6 @@
 #define FUNC_CPed__InflictDamage				0x525B20
 #define ADDR_ACTOR_PUT_IN_VEHICLE				0x4C6AC0
 #define ADDR_VEHICLE_SET_DRIVER					0x512520
-// TODO: CWorld class
-#define FUNC_CWorld__FindGroundZFromCoords		0x4D51D0
-#define FUNC_CWorld__IsEntityOnScreen			0x4885D0
-#define FUNC_CWorld__Remove						0x4DB310
-#define FUNC_CWorld__RemoveReferencesToDeletedObject 0x4D5090
 #define ADDR_REQUEST_MODEL_REQ_VAR				0x7D1DE0
 #define ADDR_REQUEST_MODEL						0x40E310
 #define ADDR_LOAD_REQUESTED_MODELS1				0x4D0DB0
@@ -70,7 +65,6 @@
 #define VAR_Menu__IsActive						(VAR_Menu + 0x38)
 #define VAR_Menu__HudMode						(VAR_Menu + 0xA)
 #define ADDR_CAMERA_ON_ENTITY					0x46A4F8
-#define ADDR_TIE_MARKER_TO_ACTOR				0x4C3B40
 #define ADDR_RESTART_IF_WASTED_AT				0x443010
 #define ADDR_IS_MODEL_LOADED_VAR				0x94DDD8
 #define ADDR_IS_KEY_PRESSED						0x460C00

@@ -133,7 +133,6 @@ void CRcon::Packet_RconCommand(RakNet::Packet* pPacket)
 	char* arg = strtok(NULL, " ");
 	if (rconcmd)
 	{
-#pragma warning(disable:4996)
 		if (stricmp(rconcmd, "players") == 0)
 		{
 			CPlayerPool* pPlayerPool = pNetGame->GetPlayerPool();

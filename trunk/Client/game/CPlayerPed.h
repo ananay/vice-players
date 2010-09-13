@@ -20,11 +20,10 @@
 #define FUNC_CPed__GiveWeapon 0x4FFA30
 #define FUNC_CPed__ResetSkin 0x4EF030
 #define FUNC_CPed__Recreate 0x4EEFD0
-#define FUNC_CPed__Teleport 0x4F5690
 #define FUNC_CPed__Say 0x5226B0
-#define FUNC_CPed__SetModelIndex 0x50D900
 #define FUNC_CPed__SetDead 0x4F6430
 #define FUNC_CPed__ClearObjective 0x521720
+#define FUNC_TieMarkerToActor 0x4C3B40
 
 #define MODEL_CELLPHONE 258
 
@@ -112,7 +111,6 @@ public:
 
 	void           SetModel(int iSkin);
 	void           CheckAndRepairInvisProblems();
-	void           Teleport(float x, float y, float z);
 	void           ClearTargetAndVehicle();
 
 	void           ClearLastWeaponDamage();

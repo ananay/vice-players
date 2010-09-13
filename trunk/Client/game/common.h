@@ -148,34 +148,45 @@ typedef struct _PED_TYPE {
 } PED_TYPE;
 
 //-----------------------------------------------------------
+// CVehicleHandling
+
+struct VEHICLE_HANDLING_TYPE
+{
+	_pad(__pad0e, 0xCC); // 00-CC
+	DWORD dwFlags;       // CC-D0
+	_pad(__pad1e, 0xC);  // D0-DC
+};
+
+//-----------------------------------------------------------
 // CVehicle
 
 typedef struct _VEHICLE_TYPE {
-	PHYSICAL_TYPE physical;           // 000-120
-	_pad(__pad0b, 0x80);              // 120-1A0
-	BYTE          byteColors[4];      // 1A0-1A4
-	_pad(__pad1b, 0x4);               // 1A4-1A8
-	PED_TYPE *    pDriver;            // 1A8-1AC
-	PED_TYPE *    pPassengers[8];     // 1AC-1CC
-	BYTE	      bytePassengerCount; // 1CC-1CD
-	_pad(__pad3b, 0x3);               // 1CD-1D0
-	BYTE	      byteMaxPassengers;  // 1D0-1D1
-	_pad(__pad4b, 0x17);              // 1D1-1E8
-	float	      fSteerAngle1;       // 1E8-1EC
-	float	      fSteerAngle2;       // 1EC-1F0
-	float	      fAcceleratorPedal;  // 1F0-1F4
-	float	      fBrakePedal;        // 1F4-1F8
-	_pad(__pad5b, 0xC);               // 1F8-204
-	float	      fHealth;            // 204-208
-	_pad(__pad6b, 0x28);              // 208-230
-	DWORD	      dwDoorsLocked;      // 230-234
-	DWORD         dwWeaponUsed;       // 234-238
-	DWORD *       pDamageEntity;      // 238-23C
-	DWORD	      nRadio;             // 23C-240
-	BYTE	      byteHorn;           // 240-241
-	DWORD         dwUnk1;             // 241-245
-	BYTE	      byteSiren;          // 245-246
-	_pad(__pad7b, 0x5A);              // 246-2A0
+	PHYSICAL_TYPE           physical;           // 000-120
+	VEHICLE_HANDLING_TYPE * pHandling;          // 120-124
+	_pad(__pad0b, 0x7C);                        // 124-1A0
+	BYTE                    byteColors[4];      // 1A0-1A4
+	_pad(__pad1b, 0x4);                         // 1A4-1A8
+	PED_TYPE *              pDriver;            // 1A8-1AC
+	PED_TYPE *              pPassengers[8];     // 1AC-1CC
+	BYTE	                bytePassengerCount; // 1CC-1CD
+	_pad(__pad3b, 0x3);                         // 1CD-1D0
+	BYTE	                byteMaxPassengers;  // 1D0-1D1
+	_pad(__pad4b, 0x17);                        // 1D1-1E8
+	float	                fSteerAngle1;       // 1E8-1EC
+	float	                fSteerAngle2;       // 1EC-1F0
+	float	                fAcceleratorPedal;  // 1F0-1F4
+	float	                fBrakePedal;        // 1F4-1F8
+	_pad(__pad5b, 0xC);                         // 1F8-204
+	float	                fHealth;            // 204-208
+	_pad(__pad6b, 0x28);                        // 208-230
+	DWORD	                dwDoorsLocked;      // 230-234
+	DWORD                   dwWeaponUsed;       // 234-238
+	DWORD *                 pDamageEntity;      // 238-23C
+	DWORD	                nRadio;             // 23C-240
+	BYTE	                byteHorn;           // 240-241
+	DWORD                   dwUnk1;             // 241-245
+	BYTE	                byteSiren;          // 245-246
+	_pad(__pad7b, 0x5A);                        // 246-2A0
 } VEHICLE_TYPE;
 
 //-----------------------------------------------------------
@@ -270,6 +281,7 @@ typedef struct _CAMERA_TYPE
 //-----------------------------------------------------------
 // Vehicle Subtypes
 
+#define VEHICLE_SUBTYPE_NONE            0
 #define	VEHICLE_SUBTYPE_CAR				1
 #define	VEHICLE_SUBTYPE_BIKE			2
 #define	VEHICLE_SUBTYPE_HELI			3

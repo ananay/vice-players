@@ -193,23 +193,6 @@ DWORD VCMP_SAFECALL TranslateColorCodeToRGBA(int iCode)
 
 //-----------------------------------------------------------
 
-BOOL VCMP_SAFECALL GameIsEntityOnScreen(DWORD * pdwEnt)
-{
-	BYTE byteRet=0;
-
-	DWORD dwFunc = FUNC_CWorld__IsEntityOnScreen;
-	_asm
-	{
-		mov ecx, pdwEnt
-		call dwFunc
-		mov byteRet, al
-	}
-
-	return byteRet ? TRUE : FALSE;
-}
-
-//-----------------------------------------------------------
-
 void VCMP_SAFECALL InitPlayerPedPtrRecords() 
 {
 	memset(&dwPlayerPedPtrs[0], 0, sizeof(DWORD) * MAX_PLAYERS);
