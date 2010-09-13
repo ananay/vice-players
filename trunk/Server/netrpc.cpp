@@ -22,7 +22,7 @@ extern CScripts	*pScripts;
 #	define stricmp strcasecmp
 #endif
 
-#define NETGAME_VERSION 6
+#define NETGAME_VERSION 7
 
 #define REJECT_REASON_BAD_VERSION   1
 #define REJECT_REASON_BAD_NICKNAME  2
@@ -43,6 +43,7 @@ void ClientJoin(RakNet::BitStream *bitStream, Packet *packet)
 	CVehiclePool *pVehiclePool = pNetGame->GetVehiclePool();
 
 	CHAR szPlayerName[MAX_PLAYER_NAME];
+	CHAR szSerial[20];
 	EntityId playerID;
 	BYTE byteVersion;
 	BYTE byteNickLen;
@@ -61,6 +62,8 @@ void ClientJoin(RakNet::BitStream *bitStream, Packet *packet)
 	bitStream->Read(szPlayerName,byteNickLen);
 	szPlayerName[byteNickLen] = '\0';
 
+	bitStream->Read(szSerial, 20);
+
 	FilterInvalidNickChars(szPlayerName);
 	byteNickLen = strlen(szPlayerName);
 
@@ -74,7 +77,7 @@ void ClientJoin(RakNet::BitStream *bitStream, Packet *packet)
 	playerID = (BYTE)packet->guid.systemIndex;
 	
 	// Add this client to the player pool.
-	pPlayerPool->New(playerID, szPlayerName);
+	pPlayerPool->New(playerID, szPlayerName, szSerial);
 
 	// Send this client back an 'InitGame' RPC
 	RakNet::BitStream bsInitGame;

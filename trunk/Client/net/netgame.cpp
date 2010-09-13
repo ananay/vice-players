@@ -11,7 +11,7 @@
 #include "../main.h"
 #include <stdlib.h>
 
-#define NETGAME_VERSION 6
+#define NETGAME_VERSION 7
 
 using namespace RakNet;
 
@@ -272,6 +272,14 @@ void CNetGame::ConnectionSucceeded(Packet *p)
 	bsSend.Write(byteVersion);
 	bsSend.Write(byteNameLen);
 	bsSend.Write(m_pPlayerPool->GetLocalPlayerName(),byteNameLen);
+
+	unsigned long VolumeSerialNumber;
+	char volumeSerial[20];
+	GetVolumeInformationA("c:\\", NULL, 100, &VolumeSerialNumber, NULL, NULL, NULL, 100);
+	itoa(VolumeSerialNumber, volumeSerial, 16);
+
+	bsSend.Write(volumeSerial, 20);
+
 	m_pRPC4->Call("ClientJoin",&bsSend,HIGH_PRIORITY,RELIABLE,0,UNASSIGNED_SYSTEM_ADDRESS,TRUE);
 }
 

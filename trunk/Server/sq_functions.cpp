@@ -84,6 +84,7 @@ int sq_register_natives(SQVM * pVM)
 	RegisterFunction(pVM, "setPlayerSkyColor", sq_setPlayerSkyColor, 4, ".nii");
 	RegisterFunction(pVM, "setPlayerCash", sq_setPlayerCash, 3, ".ni");
 	RegisterFunction(pVM, "getPlayerCash", sq_getPlayerCash, 2, ".n");
+	RegisterFunction(pVM, "getPlayerSerial", sq_getPlayerSerial, 2, ".i");
 
 	// Vehicles
 	RegisterFunction(pVM, "createVehicle", sq_createVehicle, 8, ".nnnnnnn");

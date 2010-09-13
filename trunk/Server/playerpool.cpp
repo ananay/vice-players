@@ -47,7 +47,7 @@ CPlayerPool::~CPlayerPool()
 
 //----------------------------------------------------
 
-BOOL CPlayerPool::New(EntityId playerID, PCHAR szPlayerName)
+BOOL CPlayerPool::New(EntityId playerID, PCHAR szPlayerName, PCHAR szSerial)
 {
 	m_pPlayers[playerID] = new CPlayer();
 
@@ -55,6 +55,7 @@ BOOL CPlayerPool::New(EntityId playerID, PCHAR szPlayerName)
 	{
 		strcpy(m_szPlayerName[playerID],szPlayerName);
 		m_pPlayers[playerID]->SetID(playerID);
+		m_pPlayers[playerID]->SetSerial(szSerial);
 		m_bPlayerSlotState[playerID] = TRUE;
 		m_iPlayerScore[playerID] = 0;
 		m_bIsAnAdmin[playerID] = FALSE;
@@ -67,7 +68,7 @@ BOOL CPlayerPool::New(EntityId playerID, PCHAR szPlayerName)
 		bsSend.Write(szPlayerName,strlen(szPlayerName));
 		pNetGame->GetRPC4()->Call("ServerJoin", &bsSend,HIGH_PRIORITY,RELIABLE_ORDERED,0,pNetGame->GetRakPeer()->GetSystemAddressFromIndex(playerID),true);
 
-		logprintf("[join] %u %s",playerID,szPlayerName);
+		logprintf("[join] %u %s [Serial: %s]",playerID,szPlayerName,szSerial);
 
 		pScripts->onPlayerConnect(playerID);
 
