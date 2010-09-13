@@ -465,6 +465,16 @@ void ObjectSpawn(RakNet::BitStream *bitStream, Packet *packet)
 	pObjectPool->New(ObjectID, iModel, vecPos, vecRot);
 }
 
+void ObjectDestroy(RakNet::BitStream *bitStream, Packet *packet)
+{
+	CObjectPool *pObjectPool = pNetGame->GetObjectPool();
+	EntityId objId=0;
+
+	bitStream->Read(objId);
+
+	pObjectPool->Delete(objId);
+}
+
 void PickupSpawn(RakNet::BitStream *bitStream, Packet *packet)
 {
 	CPickupPool *pPickupPool = pNetGame->GetPickupPool();
@@ -1094,6 +1104,7 @@ void RegisterRPCs()
 	pNetGame->GetRPC4()->RegisterFunction("SetCameraBehindPlayer",SetCameraBehindPlayer);
 	pNetGame->GetRPC4()->RegisterFunction("UploadClientScript",UploadClientScript);
 	pNetGame->GetRPC4()->RegisterFunction("ObjectSpawn", ObjectSpawn);
+	pNetGame->GetRPC4()->RegisterFunction("ObjectDestroy", ObjectDestroy);
 	pNetGame->GetRPC4()->RegisterFunction("CreateText", CreateText);
 	pNetGame->GetRPC4()->RegisterFunction("InflictDamage", InflictDamage);
 	pNetGame->GetRPC4()->RegisterFunction("CreateCheckpoint", CreateCheckpoint);
@@ -1167,6 +1178,7 @@ void UnRegisterRPCs()
 	pNetGame->GetRPC4()->UnregisterFunction("SetCameraBehindPlayer");
 	pNetGame->GetRPC4()->UnregisterFunction("UploadClientScript");
 	pNetGame->GetRPC4()->UnregisterFunction("ObjectSpawn");
+	pNetGame->GetRPC4()->UnregisterFunction("ObjectDestroy");
 	pNetGame->GetRPC4()->UnregisterFunction("CreateText");
 	pNetGame->GetRPC4()->UnregisterFunction("InflictDamage");
 	pNetGame->GetRPC4()->UnregisterFunction("CreateCheckpoint");

@@ -89,9 +89,6 @@ bool CObjectPool::Delete(EntityId ObjectID)
 		return false;
 	}
 
-	// Destroy this object for all players
-	//m_pObjects[ObjectID]->DestroyForWorld(); FINISH!!!!
-
 	// Delete this text
 	delete m_pObjects[ObjectID];
 	m_pObjects[ObjectID] = NULL;

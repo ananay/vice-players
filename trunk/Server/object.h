@@ -26,7 +26,6 @@ public:
 	BOOL IsActive() { return m_bIsActive; };
 	
 	void SpawnForPlayer(EntityId forPlayerID);
-	//void DestroyForPlayer(EntityId forPlayerID);
+	void DestroyForPlayer(EntityId forPlayerID);
 	void SpawnForWorld();
-	//void DestroyForWorld();
 };

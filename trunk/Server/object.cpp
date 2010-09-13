@@ -22,7 +22,15 @@ CObject::CObject(int iModel, Vector3 * vecPos, Vector3 * vecRot)
 
 CObject::~CObject()
 {
+	CPlayerPool * pPlayerPool = pNetGame->GetPlayerPool();
 
+	for(EntityId i = 0; i < MAX_PLAYERS; i++)
+	{
+		if(pPlayerPool->GetSlotState(i))
+		{
+			DestroyForPlayer(i);
+		}
+	}
 }
 
 void CObject::SpawnForPlayer(EntityId playerId)
@@ -47,3 +55,11 @@ void CObject::SpawnForWorld()
 	}
 }
 
+void CObject::DestroyForPlayer(EntityId playerId)
+{
+	RakNet::BitStream bsSend;
+
+	bsSend.Write(m_ObjectID);
+
+	pNetGame->GetRPC4()->Call("ObjectDestroy", &bsSend, HIGH_PRIORITY, RELIABLE, 0, pNetGame->GetRakPeer()->GetSystemAddressFromIndex(playerId), 0);
+}
