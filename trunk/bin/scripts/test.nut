@@ -1,3 +1,6 @@
+local testCP = -1;
+local testText = -1;
+
 function onServerInit()
 {
 	print("---------------------------\n");
@@ -12,6 +15,9 @@ function onServerInit()
 
 	setModeName("Vice Madness");
 	setMapName("Blood Vice-City");
+
+	testCP = createCheckpoint(-670.2837, -1325.3040, 11.0715, 2.0);
+	testText = createText(0xFFFF00FF, "Tahoma", 16, 45.0, 50.0, "You in cp!");
 	
 	// Some test vehicles
 	//local v1 = createVehicle(149, -681.5270, -1329.4580, 10.8290, 292.6041, 5, 5);
@@ -407,11 +413,19 @@ function onPlayerKeyEvent(playerid, type, key)
 function onCheckpointEnter(playerid, cpid)
 {
 	print(format("onCheckpointEnter(%d, %d)", playerid, cpid));
+	if(cpid == testCP)
+	{
+		toggleTextForPlayer(playerid, testText, true);
+	}
 }
 
 function onCheckpointLeave(playerid, cpid)
 {
 	print(format("onCheckpointLeave(%d, %d)", playerid, cpid));
+	if(cpid == testCP)
+	{
+		toggleTextForPlayer(playerid, testText, false);
+	}
 }
 
 function returnQuitReason(reason)

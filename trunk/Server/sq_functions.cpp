@@ -40,9 +40,8 @@ int sq_register_natives(SQVM * pVM)
 	RegisterFunction(pVM, "toggleCellPhone", sq_toggleCellPhone, 3, ".ni");
 	RegisterFunction(pVM, "setCameraShakeIntensity", sq_setCameraShakeIntensity, 3, ".ni");
 	RegisterFunction(pVM, "isPluginLoaded", sq_isPluginLoaded, 2, ".s");
-	RegisterFunction(pVM, "_call", sq__call, -1, NULL);
+	RegisterFunction(pVM, "call", sq__call, -1, NULL);
 	RegisterFunction(pVM, "clientCall", sq_clientCall, -1, NULL);
-
 
 	// Players
 	RegisterFunction(pVM, "setPlayerTime", sq_setPlayerTime, 4, ".nnn");
