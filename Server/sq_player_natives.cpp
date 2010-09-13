@@ -1212,3 +1212,17 @@ SQInteger sq_getPlayerGravity(SQVM * pVM)
 	sq_pushbool(pVM, false);
 	return 1;
 }
+
+SQInteger sq_getPlayerSerial(SQVM * pVM)
+{
+	SQInteger playerSystemAddress;
+	sq_getinteger(pVM, -1, &playerSystemAddress);
+	if(pNetGame->GetPlayerPool()->GetSlotState(playerSystemAddress))
+	{
+		sq_pushstring(pVM, pNetGame->GetPlayerPool()->GetAt(playerSystemAddress)->GetSerial().c_str(), -1);
+		return 1;
+	}
+
+	sq_pushbool(pVM, false);
+	return 1;
+}

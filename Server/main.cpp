@@ -93,7 +93,7 @@ int main (int argc, char* argv[])
 		fatal_exit(szError);
 	}
 
-	//logprintf("Using config file: %s",szConfigFile);
+	logprintf("Using config file: %s",szConfigFile);
 
 	// Get the max players setting
 	if((iMaxPlayers=pServerConfig->GetConfigEntryAsInt("MaxPlayers"))==(-1)) {

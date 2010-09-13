@@ -85,6 +85,7 @@ private:
 	BOOL					m_bHasSpawnInfo;
 	int						m_iMoney;
 	float					m_iGravity;
+	std::string				m_szSerial;
 
 public:
 
@@ -152,6 +153,9 @@ public:
 		m_vecPos.Y=y; 
 		m_vecPos.Z=z;
 	};
+
+	std::string GetSerial() { return m_szSerial; };
+	void SetSerial(const char * szSerial) { m_szSerial = szSerial; };
 
 	void HandleDeath(BYTE byteReason, BYTE byteWhoWasResponsible);
 	void Spawn();

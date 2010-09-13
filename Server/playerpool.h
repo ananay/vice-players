@@ -32,7 +32,7 @@ public:
 
 	void Process();
 
-	BOOL New(EntityId playerID, PCHAR szPlayerName);
+	BOOL New(EntityId playerID, PCHAR szPlayerName, PCHAR szSerial);
 	BOOL Delete(EntityId playerID, BYTE byteReason);
 		
 	// Retrieve a player

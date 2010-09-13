@@ -56,15 +56,14 @@ SQInteger sq_getPlayerTeam(SQVM * v); // done
 SQInteger sq_getPlayerTurnSpeed(SQVM * v); // done
 SQInteger sq_getPlayerMoveSpeed(SQVM * v); // done
 SQInteger sq_addPlayerClass(SQVM * v); // done
-
-// Added by VC-Players team.
-SQInteger sq_forceClassSelection(SQVM * pVM);
-SQInteger sq_togglePlayerBleeding(SQVM * pVM);
-SQInteger sq_setItemFlashing(SQVM * pVM);
-SQInteger sq_setPlayerSkyColor(SQVM * pVM);
-SQInteger sq_setPlayerCash(SQVM * pVM);
-SQInteger sq_getPlayerCash(SQVM * pVM);
-SQInteger sq_setCameraShakeIntensity(SQVM * pVM);
-SQInteger sq_toggleCellPhone(SQVM * pVM);
-SQInteger sq_setPlayerGravity(SQVM * pVM);
-SQInteger sq_getPlayerGravity(SQVM * pVM);
+SQInteger sq_forceClassSelection(SQVM * pVM);  // done
+SQInteger sq_togglePlayerBleeding(SQVM * pVM);  // done
+SQInteger sq_setItemFlashing(SQVM * pVM);  // done
+SQInteger sq_setPlayerSkyColor(SQVM * pVM);  // done
+SQInteger sq_setPlayerCash(SQVM * pVM);  // done
+SQInteger sq_getPlayerCash(SQVM * pVM);  // done
+SQInteger sq_setCameraShakeIntensity(SQVM * pVM);  // done
+SQInteger sq_toggleCellPhone(SQVM * pVM);  // done
+SQInteger sq_setPlayerGravity(SQVM * pVM);  // done
+SQInteger sq_getPlayerGravity(SQVM * pVM);  // done
+SQInteger sq_getPlayerSerial(SQVM * pVM); // done
