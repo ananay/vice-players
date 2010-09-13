@@ -25,7 +25,15 @@ CText::CText(DWORD color, const char * szFontName, int iSize, float posX, float 
 
 CText::~CText()
 {
+	CPlayerPool * pPlayerPool = pNetGame->GetPlayerPool();
 
+	for(EntityId i = 0; i < MAX_PLAYERS; i++)
+	{
+		if(pPlayerPool->GetSlotState(i))
+		{
+			DestroyForPlayer(i);
+		}
+	}
 }
 
 void CText::InitForPlayer(EntityId playerId)
@@ -61,6 +69,15 @@ void CText::InitForWorld()
 			InitForPlayer(i);
 		}
 	}
+}
+
+void CText::DestroyForPlayer(EntityId playerId)
+{
+	RakNet::BitStream bsSend;
+
+	bsSend.Write(m_iID);
+
+	pNetGame->GetRPC4()->Call("DestroyText", &bsSend, HIGH_PRIORITY, RELIABLE, 0, pNetGame->GetRakPeer()->GetSystemAddressFromIndex(playerId), 0);
 }
 
 void CText::SetID(EntityId id)

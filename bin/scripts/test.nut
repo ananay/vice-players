@@ -164,6 +164,10 @@ function onPlayerCommand(playerid, cmdtext)
 		toggleTextForPlayer(playerid, text, true);
 		
 	}
+	if(cmd[0] == "/destroytext")
+	{
+		destroyText(cmd[1].tointeger());
+	}
 	if(cmd[0] == "/createcp")
 	{
 		local pos = getPlayerPosition(playerid);

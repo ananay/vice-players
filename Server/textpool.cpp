@@ -101,9 +101,6 @@ bool CTextPool::Delete(EntityId TextID)
 		return false;
 	}
 
-	// Destroy this text for all players
-	//m_pTexts[TextID]->DestroyForWorld(); FINISH!!!!
-
 	// Delete this text
 	delete m_pTexts[TextID];
 	m_pTexts[TextID] = NULL;

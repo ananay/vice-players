@@ -111,6 +111,7 @@ int sq_register_natives(SQVM * pVM)
 
 	// Text functions
 	RegisterFunction(pVM, "createText", sq_createText, 7, ".isiffs");
+	RegisterFunction(pVM, "destroyText", sq_destroyText, 2, ".i");
 	RegisterFunction(pVM, "toggleTextForPlayer", sq_toggleTextForPlayer, 4, ".nnb");
 	RegisterFunction(pVM, "toggleTextForAll", sq_toggleTextForAll, 3, ".nb");
 	RegisterFunction(pVM, "setTextForAll", sq_setTextForAll, 3, ".ns");

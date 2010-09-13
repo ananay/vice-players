@@ -33,7 +33,12 @@ CText::CText(EntityId TextID, DWORD color, char * szFontName, int iSize, float f
 
 CText::~CText()
 {
-
+	if(m_pFont)
+	{
+		m_pFont->DeleteDeviceObjects();
+		delete m_pFont;
+		m_pFont = NULL;
+	}
 }
 
 void CText::Process()
