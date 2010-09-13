@@ -59,6 +59,18 @@ SQInteger sq_createObject(SQVM * pVM)
 	return 1;
 }
 
+SQInteger sq_destroyObject(SQVM * pVM)
+{
+	SQInteger objId;
+
+	sq_getinteger(pVM, -1, &objId);
+
+	pNetGame->GetObjectPool()->Delete(objId);
+
+	sq_pushbool(pVM, true);
+	return 1;
+}
+
 SQInteger sq_createPickup(SQVM * pVM)
 {
 	SQInteger model, type;
