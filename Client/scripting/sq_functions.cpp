@@ -22,7 +22,7 @@ int sq_register_natives(SQVM * pVM)
 	RegisterFunction(pVM, "setScriptAuthor", sq_setScriptAuthor, 2 , ".s");
 	RegisterFunction(pVM, "setScriptVersion", sq_setScriptVersion, 2, ".s");
 	RegisterFunction(pVM, "addChatMessage", sq_addChatMessage, 2, ".s");
-	RegisterFunction(pVM, "_call", sq__call, -1, NULL);
+	RegisterFunction(pVM, "call", sq__call, -1, NULL);
 	RegisterFunction(pVM, "toggleCheatCodes", sq_toggleCheatCodes, 2, ".b");
 
 	// Timers
