@@ -12,6 +12,10 @@
 #include "CEntity.h"
 #include "util.h"
 #include "address.h"
+#include "CWorld.h"
+#include "../main.h"
+
+extern CGame * pGame;
 
 //----------------------------------------------------------
 
@@ -80,6 +84,29 @@ void CEntity::SetHeading(float fHeading)
 			push fHeading
 			mov ecx, pPlaceable
 			call dwFunc
+			add esp, 4
+		}
+	}
+}
+
+//-----------------------------------------------------------
+
+void CEntity::Teleport(float fX, float fY, float fZ)
+{
+	if(m_pEntity)
+	{
+		ENTITY_TYPE * pEntity = m_pEntity;
+
+		// Call Teleport
+		_asm
+		{
+			mov ecx, pEntity
+			mov ebx, [ecx]
+			push fZ
+			push fY
+			push fX
+			call [ebx+2Ch]
+			add esp, 0Ch
 		}
 	}
 }
@@ -98,11 +125,47 @@ WORD CEntity::GetModelIndex()
 
 //-----------------------------------------------------------
 
+void CEntity::SetModelIndex(WORD wModelIndex)
+{
+	if(m_pEntity)
+	{
+		// Is the model not loaded?
+		if(!pGame->IsModelLoaded(wModelIndex))
+		{
+			// Request the model
+			pGame->RequestModel(wModelIndex);
+
+			// Load all requested models
+			pGame->LoadRequestedModels();
+
+			// Wait for the model to load
+			while(!pGame->IsModelLoaded(wModelIndex))
+			{
+				Sleep(1);
+			}
+		}
+
+		ENTITY_TYPE * pEntity = m_pEntity;
+
+		// Call SetModelIndex
+		_asm
+		{
+			mov ecx, pEntity
+			mov ebx, [ecx]
+			push wModelIndex
+			call [ebx+0Ch]
+			add esp, 4
+		}
+	}
+}
+
+//-----------------------------------------------------------
+
 BOOL CEntity::IsOnScreen()
 {
 	if(m_pEntity)
 	{
-		return GameIsEntityOnScreen((DWORD *)m_pEntity);
+		return CWorld::IsEntityOnScreen((ENTITY_TYPE *)m_pEntity);
 	}
 
 	return FALSE;

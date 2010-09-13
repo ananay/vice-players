@@ -16,7 +16,6 @@ int VCMP_SAFECALL GameGetWeaponModelFromWeapon(int iWeaponID);
 void VCMP_SAFECALL GameToggleCheatCodes(bool bToggle);
 PED_TYPE * VCMP_SAFECALL GamePool_FindPlayerPed();
 DWORD VCMP_SAFECALL TranslateColorCodeToRGBA(int iCode);
-BOOL VCMP_SAFECALL GameIsEntityOnScreen(DWORD * pdwEnt);
 void VCMP_SAFECALL InitPlayerPedPtrRecords();
 void VCMP_SAFECALL SetPlayerPedPtrRecord(BYTE bytePlayer, DWORD dwPedPtr);
 BYTE VCMP_SAFECALL FindPlayerNumFromPedPtr(DWORD dwPedPtr);

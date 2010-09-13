@@ -25,14 +25,18 @@ extern CChatWindow   *pChatWindow;
 
 //-----------------------------------------------------------
 
+#define NUM_SPECIAL_MODELS 54
+
 char szSpecialActorModels[][32] =
-{"igdiaz","igpercy","igken","igcandy","ighlary","igjezz","igphil",
-"sam","igsonny","igbuddy","igmerc","igdick","igalscb","igbudy2",
-"igbudy3","igcolon","igdick","iggonz","ighlry2","igmerc2","igmike",
-"igmike2", "igphil2", "igphil3","bounca","burger","cdrivra","cdrivrb",
-"cgona","cgonb","cgonc","chef","cmraman","courier","crewa","crewb","cservra",
-"dgoona","dgoonb","mba","mbb","mgoona","mporna","printra","printrb","printrc","psycho",
-"sgc","spandxa","spandxb","stripa","stripb","stripc","S_keep"};
+{
+	"igdiaz","igpercy","igken","igcandy","ighlary","igjezz","igphil",
+	"sam","igsonny","igbuddy","igmerc","igdick","igalscb","igbudy2",
+	"igbudy3","igcolon","igdick","iggonz","ighlry2","igmerc2","igmike",
+	"igmike2", "igphil2", "igphil3","bounca","burger","cdrivra","cdrivrb",
+	"cgona","cgonb","cgonc","chef","cmraman","courier","crewa","crewb","cservra",
+	"dgoona","dgoonb","mba","mbb","mgoona","mporna","printra","printrb","printrc","psycho",
+	"sgc","spandxa","spandxb","stripa","stripb","stripc","S_keep"
+};
 
 //-----------------------------------------------------------
 // Obtain an instance of CPlayerPed for the local player.
@@ -113,12 +117,13 @@ void CPlayerPed::Destroy()
 
 	if(pPed)
 	{
+		// Call class destructor
 		_asm
 		{
 			mov ecx, pPed
-			mov ebx, [ecx] // CPlayerPed::VFTable
+			mov ebx, [ecx]
 			push 1
-			call [ebx+8] // CPlayerPed::~CPlayerPed
+			call [ebx+8]
 		}
 		SetEntity(NULL);
 	}
@@ -309,7 +314,9 @@ BOOL CPlayerPed::EnforceWorldBoundries(float fPX, float fZX, float fPY, float fN
 void CPlayerPed::SetInitialState()
 {
 	PED_TYPE * pPed = (PED_TYPE *)GetEntity();
-	if(pPed) {
+
+	if(pPed)
+	{
 		pPed->byteJumpFlags = 0xA;
 	}
 }
@@ -319,9 +326,12 @@ void CPlayerPed::SetInitialState()
 int CPlayerPed::GetCurrentVehicleID()
 {
 	PED_TYPE *pPed = (PED_TYPE *)GetEntity();
-	if(pPed) {
+
+	if(pPed)
+	{
 		return CPools::GetIndexFromVehicle((VEHICLE_TYPE *)pPed->pVehicle);
 	}
+
 	// Not sure about this one
 	return -1;
 }
@@ -331,14 +341,12 @@ int CPlayerPed::GetCurrentVehicleID()
 void CPlayerPed::ShowMarker(int iMarkerColor)
 {	
 	PED_TYPE * pPed = (PED_TYPE *)GetEntity();
-	if(pPed) {
+
+	if(pPed)
+	{		
+		DWORD dwFunc = FUNC_TieMarkerToActor;
+		DWORD dwPedID = m_dwGTAId;
 		DWORD hndMarker;
-		DWORD dwPedID;
-		float f=0.0f;
-
-		dwPedID = CPools::GetIndexFromPed(pPed);
-
-		DWORD dwFunc = ADDR_TIE_MARKER_TO_ACTOR;
 		_asm
 		{
 			push 2
@@ -348,10 +356,7 @@ void CPlayerPed::ShowMarker(int iMarkerColor)
 			push 2
 			call dwFunc
 			mov hndMarker, eax
-			pop ecx
-			pop ecx
-			pop ecx
-			pop ecx
+			add esp, 10h
 		}
 
 		pGame->SetMarkerColor(hndMarker, iMarkerColor);
@@ -363,9 +368,11 @@ void CPlayerPed::ShowMarker(int iMarkerColor)
 
 BOOL CPlayerPed::IsOnScreen()
 {
-	if(GetEntity()) {
+	if(GetEntity())
+	{
 		return CEntity::IsOnScreen();
 	}
+
 	return FALSE;
 }
 
@@ -382,6 +389,7 @@ void CPlayerPed::Say(UINT uiNum)
 			push uiNum
 			mov ecx, pPed
 			call dwFunc
+			add esp, 4
 		}
 	}
 }
@@ -389,11 +397,14 @@ void CPlayerPed::Say(UINT uiNum)
 //-----------------------------------------------------------
 
 float CPlayerPed::GetHealth()
-{	
+{
 	PED_TYPE * pPed = (PED_TYPE *)GetEntity();
-	if(pPed) {
+
+	if(pPed)
+	{
 		return pPed->fHealth;
 	}
+
 	return 0.0f;
 }
 
@@ -402,10 +413,14 @@ float CPlayerPed::GetHealth()
 void CPlayerPed::SetHealth(float fHealth)
 {
 	PED_TYPE * pPed = (PED_TYPE *)GetEntity();
-	if(pPed) {
+
+	if(pPed)
+	{
 		pPed->fHealth = fHealth;
 	}
-}	
+}
+
+//-----------------------------------------------------------
 
 /*
 void CPlayerPed::SetGameSpeed(float gSpeed)
@@ -418,6 +433,7 @@ void CPlayerPed::SetGameSpeed(float gSpeed)
 	ScriptCommand(&set_game_speed, gSpeed);
 }	
 */
+
 //-----------------------------------------------------------
 
 float CPlayerPed::GetArmour()
@@ -519,10 +535,13 @@ float CPlayerPed::GetRotation()
 void CPlayerPed::SetRotation(float fRotation)
 {
 	PED_TYPE * pPed = (PED_TYPE *)GetEntity();
-	if(pPed && !pPed->byteIsInVehicle) {
-		float fRot = (PI * fRotation * 0.0055555557f);
-		pPed->fRotation1 = pPed->fRotation2 = fRot;
-		SetHeading(fRot);
+
+	if(pPed && !pPed->byteIsInVehicle)
+	{
+		float fNewRotation = (PI * fRotation * 0.0055555557f);
+		pPed->fRotation1 = fNewRotation;
+		pPed->fRotation2 = fNewRotation;
+		SetHeading(fNewRotation);
 	}
 	//ScriptCommand(&set_player_z_angle, m_bytePlayerNumber, fRotation);
 }
@@ -560,28 +579,11 @@ VEHICLE_TYPE * CPlayerPed::GetGtaVehicle()
 void CPlayerPed::CheckAndRepairInvisProblems()
 {
 	PED_TYPE * pPed = (PED_TYPE *)GetEntity();
+
 	if(pPed && (pPed->byteAction != ACTION_EXITING_VEHICLE) &&
 		((pPed->byteIsInVehicle) || (pPed->byteAction == ACTION_DRIVING_VEHICLE)) ) {
 		pPed->byteIsInVehicle = 0;
 		pPed->byteAction = 1;
-	}
-}
-
-//-----------------------------------------------------------
-
-void CPlayerPed::Teleport(float x, float y, float z)
-{
-	PED_TYPE * pPed = (PED_TYPE *)GetEntity();
-	if(pPed) {
-		DWORD dwFunc = FUNC_CPed__Teleport;
-		_asm
-		{
-			push z
-			push y
-			push x
-			mov ecx, pPed
-			call dwFunc
-		}
 	}
 }
 
@@ -597,13 +599,27 @@ void CPlayerPed::ClearTargetAndVehicle()
 BOOL CPlayerPed::GiveWeapon(int iWeaponID, int iAmmo)
 {
 	PED_TYPE * pPed = (PED_TYPE *)GetEntity();
-	if(pPed) {
+
+	if(pPed)
+	{
 		int iModelID = GameGetWeaponModelFromWeapon(iWeaponID);
-		if(iModelID != -1) {
-			if(!pGame->IsModelLoaded(iModelID)) {
+
+		if(iModelID != -1)
+		{
+			// Is the model not loaded?
+			if(!pGame->IsModelLoaded(iModelID))
+			{
+				// Request the model
 				pGame->RequestModel(iModelID);
+
+				// Load all requested models
 				pGame->LoadRequestedModels();
-				while(!pGame->IsModelLoaded(iModelID)) Sleep(1);
+
+				// Wait for the model to load
+				while(!pGame->IsModelLoaded(iModelID))
+				{
+					Sleep(1);
+				}
 			}
 
 			DWORD dwFunc = FUNC_CPed__GiveWeapon;
@@ -614,6 +630,7 @@ BOOL CPlayerPed::GiveWeapon(int iWeaponID, int iAmmo)
 				push iWeaponID
 				mov ecx, pPed
 				call dwFunc
+				add esp, 0Ch
 			}
 
 			SetArmedWeapon(iWeaponID);
@@ -628,7 +645,9 @@ BOOL CPlayerPed::GiveWeapon(int iWeaponID, int iAmmo)
 void CPlayerPed::ClearAllWeapons()
 {
 	PED_TYPE * pPed = (PED_TYPE *)GetEntity();
-	if(pPed) {
+
+	if(pPed)
+	{
 		DWORD dwFunc = FUNC_CPed__RemoveAllWeapons;
 		_asm
 		{
@@ -638,10 +657,14 @@ void CPlayerPed::ClearAllWeapons()
 	}
 }
 
+//-----------------------------------------------------------
+
 void CPlayerPed::SetWaterDeaths(int iToggle)
 {
 	PED_TYPE * pPed = (PED_TYPE *)GetEntity();
-	if(pPed) {
+
+	if(pPed)
+	{
 		ScriptCommand(&water_deaths, m_dwGTAId, iToggle);
 	}
 }	
@@ -686,8 +709,6 @@ void CPlayerPed::Flash(int iItem)
 
 void CPlayerPed::SetActorBleeding(int iToggle)
 {
-	DWORD dwSystemAddress = m_bytePlayerNumber;
-
 	ScriptCommand(&set_actor_bleeding, m_dwGTAId, iToggle);	
 }
 
@@ -709,7 +730,7 @@ void CPlayerPed::SetDrivebyState(int iToggle)
 
 void CPlayerPed::SetCameraShakeIntensity(int iIntensity)
 {
-		ScriptCommand(&shake_ped_camera, iIntensity);
+	ScriptCommand(&shake_ped_camera, iIntensity);
 }
 
 //-----------------------------------------------------------
@@ -717,14 +738,19 @@ void CPlayerPed::SetCameraShakeIntensity(int iIntensity)
 BOOL CPlayerPed::SetArmedWeapon(int iWeaponType)
 {
 	PED_TYPE * pPed = (PED_TYPE *)GetEntity();
-	if(pPed) {
-		for(BYTE i = 0; i < 10; i++) {
-			if(pPed->weaponSlots[i].dwType == iWeaponType) {
+
+	if(pPed)
+	{
+		for(BYTE i = 0; i < 10; i++)
+		{
+			if(pPed->weaponSlots[i].dwType == iWeaponType)
+			{
 				pPed->byteCurWepSlot = i;
 				return TRUE;
 			}
 		}
 	}
+
 	return FALSE;
 }
 
@@ -732,9 +758,11 @@ BOOL CPlayerPed::SetArmedWeapon(int iWeaponType)
 
 int CPlayerPed::GetCurrentWeapon()
 {
-	if(GetEntity()) {
+	if(GetEntity())
+	{
 		return GetCurrentWeaponSlot()->dwType;
 	}
+
 	return 0;
 }
 
@@ -742,18 +770,22 @@ int CPlayerPed::GetCurrentWeapon()
 
 BOOL CPlayerPed::HasAmmoForCurrentWeapon()
 {
-	if(GetEntity()) {
+	if(GetEntity())
+	{
 		WEAPON_SLOT * pWeapon = GetCurrentWeaponSlot();
 
 		// melee weapons always have ammo
-		if(pWeapon->dwType < 12) {
+		if(pWeapon->dwType < 12)
+		{
 			return TRUE;
 		}
 
-		if(pWeapon->dwAmmo) {
+		if(pWeapon->dwAmmo)
+		{
 			return TRUE;
 		}
 	}
+
 	return FALSE;
 }
 
@@ -762,9 +794,12 @@ BOOL CPlayerPed::HasAmmoForCurrentWeapon()
 WEAPON_SLOT * CPlayerPed::GetCurrentWeaponSlot()
 {
 	PED_TYPE * pPed = (PED_TYPE *)GetEntity();
-	if(pPed) {
+
+	if(pPed)
+	{
 		return &pPed->weaponSlots[pPed->byteCurWepSlot];
 	}
+
 	return NULL;
 }
 
@@ -773,9 +808,12 @@ WEAPON_SLOT * CPlayerPed::GetCurrentWeaponSlot()
 WEAPON_SLOT * CPlayerPed::GetWeaponInSlot(BYTE byteSlot)
 {
 	PED_TYPE * pPed = (PED_TYPE *)GetEntity();
-	if(pPed && (byteSlot >= 0 && byteSlot <= 10)) {
+
+	if(pPed && (byteSlot >= 0 && byteSlot <= 10))
+	{
 		return &pPed->weaponSlots[byteSlot];
 	}
+
 	return NULL;
 }
 
@@ -783,8 +821,8 @@ WEAPON_SLOT * CPlayerPed::GetWeaponInSlot(BYTE byteSlot)
 
 void CPlayerPed::PutDirectlyInVehicle(int iVehicleID)
 {
-	DWORD dwSystemAddress = m_bytePlayerNumber;
-	ScriptCommand(&put_player_in_car,dwSystemAddress,iVehicleID);
+	DWORD dwPlayerID = m_bytePlayerNumber;
+	ScriptCommand(&put_player_in_car, dwPlayerID, iVehicleID);
 }
 
 //-----------------------------------------------------------
@@ -896,67 +934,46 @@ void CPlayerPed::SetModel(int iModel)
 
 	if(pPed)
 	{
-		char * szModelName = 0;
-
-		if(iModel == 8) return; // invalid skin
+		if(iModel == 8 || iModel > 160)
+		{
+			// Invalid skin
+			return;
+		}
 		
 		if(iModel > 106)
 		{
+			// Special model
 			iModel -= 106;
+			
+			char * szModelName = szSpecialActorModels[iModel];
 
-			if(iModel < 54)
-			{
-				szModelName = szSpecialActorModels[iModel];
-
-				DWORD dwFunc = FUNC_CPed__ResetSkin;
-				_asm
-				{
-					push szModelName
-					mov ecx, pPed
-					call dwFunc
-				}
-
-				dwFunc = ADDR_LOAD_REQUESTED_MODELS2;
-				_asm
-				{
-					push 0
-					call dwFunc
-					pop ecx
-				}
-
-				dwFunc = FUNC_CPed__Recreate;
-				_asm
-				{
-					mov ecx, pPed
-					call dwFunc
-				}
-			}
-		}
-		else // default.ide number
-		{
-			// Is the model not loaded?
-			if(!pGame->IsModelLoaded(iModel))
-			{
-				// Request the model
-				pGame->RequestModel(iModel);
-
-				// Load all requested models
-				pGame->LoadRequestedModels();
-
-				// Wait for the model to load
-				while(!pGame->IsModelLoaded(iModel))
-				{
-					Sleep(1);
-				}
-			}
-
-			DWORD dwFunc = FUNC_CPed__SetModelIndex;
+			DWORD dwFunc = FUNC_CPed__ResetSkin;
 			_asm
 			{
-				push iModel
+				push szModelName
 				mov ecx, pPed
 				call dwFunc
 			}
+
+			dwFunc = ADDR_LOAD_REQUESTED_MODELS2;
+			_asm
+			{
+				push 0
+				call dwFunc
+				add esp, 4
+			}
+
+			dwFunc = FUNC_CPed__Recreate;
+			_asm
+			{
+				mov ecx, pPed
+				call dwFunc
+			}
+		}
+		else
+		{
+			// default.ide number
+			CEntity::SetModelIndex(iModel);
 		}
 	}
 }
@@ -976,6 +993,7 @@ void CPlayerPed::SetObjective(PDWORD pObjectiveEntity, eObjectiveType objectiveT
 			push objectiveType
 			mov ecx, pPed
 			call dwFunc
+			add esp, 4
 		}
 	}
 }

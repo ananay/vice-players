@@ -16,6 +16,7 @@
 #include "../main.h"
 #include "util.h"
 #include "CPools.h"
+#include "CWorld.h"
 
 extern CGame		*pGame;
 extern CChatWindow  *pChatWindow;
@@ -71,30 +72,18 @@ CVehicle::~CVehicle()
 	VEHICLE_TYPE * pVehicle = (VEHICLE_TYPE *)GetEntity();
 
 	// Remove ourself from the world
-	DWORD dwFunc = FUNC_CWorld__Remove;
-	_asm
-	{
-		push pVehicle
-		call dwFunc
-		add esp, 4
-	}
+	CWorld::Remove((ENTITY_TYPE *)pVehicle);
 
 	// Remove all references to ourself
-	dwFunc = FUNC_CWorld__RemoveReferencesToDeletedObject;
-	_asm
-	{
-		push pVehicle
-		call dwFunc
-		add esp, 4
-	}
+	CWorld::Remove((ENTITY_TYPE *)pVehicle);
 
-	// Delete ourselves
+	// Call class destructor
 	_asm
 	{
 		mov ecx, pVehicle
-		mov ebx, [ecx] // C*::VFTable
+		mov ebx, [ecx]
 		push 1
-		call [ebx+8] // C*::~C*
+		call [ebx+8]
 	}
 
 	// Set our pointer to null
@@ -223,7 +212,9 @@ void CVehicle::SetInvulnerable(BOOL bInv)
 void CVehicle::SetLockedState(int iLocked)
 {
 	PHYSICAL_TYPE * pPhysical = (PHYSICAL_TYPE *)GetEntity();
-	if(pPhysical) {
+
+	if(pPhysical)
+	{
 		pPhysical->byteLockedFlags = iLocked;
 	}
 }
@@ -235,9 +226,10 @@ void CVehicle::SetLockedState(int iLocked)
 void CVehicle::VerifyControlState()
 {
 	VEHICLE_TYPE * pVehicle = (VEHICLE_TYPE *)GetEntity();
-	if(pVehicle) {
-		if( (!pVehicle->pDriver) &&
-			(pVehicle->physical.entity.nControlFlags == 0x2) )
+
+	if(pVehicle)
+	{
+		if(!pVehicle->pDriver && (pVehicle->physical.entity.nControlFlags == 0x2))
 		{
 			pVehicle->physical.entity.nControlFlags = 0x22;
 		}
@@ -249,8 +241,13 @@ void CVehicle::VerifyControlState()
 float CVehicle::GetHealth()
 {	
 	VEHICLE_TYPE * pVehicle = (VEHICLE_TYPE *)GetEntity();
-	if(pVehicle) return pVehicle->fHealth;
-	else return 0.0f;
+
+	if(pVehicle)
+	{
+		return pVehicle->fHealth;
+	}
+
+	return 0.0f;
 }
 
 //-----------------------------------------------------------
@@ -258,7 +255,9 @@ float CVehicle::GetHealth()
 void CVehicle::SetHealth(float fHealth)
 {	
 	VEHICLE_TYPE * pVehicle = (VEHICLE_TYPE *)GetEntity();
-	if(pVehicle) {
+
+	if(pVehicle)
+	{
 		pVehicle->fHealth = fHealth;
 	}
 }	
@@ -268,7 +267,9 @@ void CVehicle::SetHealth(float fHealth)
 void CVehicle::SetColor(int iColor1, int iColor2)
 {
 	VEHICLE_TYPE * pVehicle = (VEHICLE_TYPE *)GetEntity();
-	if(pVehicle)  {
+
+	if(pVehicle)
+	{
 		pVehicle->byteColors[0] = (BYTE)iColor1;
 		pVehicle->byteColors[1] = (BYTE)iColor2;
 	}
@@ -279,33 +280,40 @@ void CVehicle::SetColor(int iColor1, int iColor2)
 BYTE CVehicle::GetSubtype()
 {
 	VEHICLE_TYPE * pVehicle = (VEHICLE_TYPE *)GetEntity();
-	if(!pVehicle) return 0;
-	DWORD dwVehicle = (DWORD)pVehicle;
 
-	_asm
+	if(pVehicle)
 	{
-		mov ecx, dwVehicle
-		mov edx, [ecx+288]
-		mov eax, [edx+204]
-		and eax, 0F0000h
-		jz ret_car
-		sub eax, 10000h
-		jz ret_bike
-		sub eax, 10000h
-		jz ret_heli
-		sub eax, 20000h
-		jz ret_boat
-		sub eax, 40000h
-		jz ret_plane
+		DWORD dwFlags = pVehicle->pHandling->dwFlags;
+		_asm
+		{
+			mov eax, dwFlags
+			and eax, 0F0000h
+			jz ret_car
+			sub eax, 10000h
+			jz ret_bike
+			sub eax, 10000h
+			jz ret_heli
+			sub eax, 20000h
+			jz ret_boat
+			sub eax, 40000h
+			jz ret_plane
+		}
+
+		return VEHICLE_SUBTYPE_NONE;
+
+ret_car:
+		return VEHICLE_SUBTYPE_CAR;
+ret_bike:
+		return VEHICLE_SUBTYPE_BIKE;
+ret_heli:
+		return VEHICLE_SUBTYPE_HELI;
+ret_boat:
+		return VEHICLE_SUBTYPE_BOAT;
+ret_plane:
+		return VEHICLE_SUBTYPE_PLANE;
 	}
 
-	return 0;
-
-ret_car:	return	VEHICLE_SUBTYPE_CAR;
-ret_bike:	return	VEHICLE_SUBTYPE_BIKE;
-ret_heli:	return	VEHICLE_SUBTYPE_HELI;
-ret_boat:	return	VEHICLE_SUBTYPE_BOAT;
-ret_plane:	return	VEHICLE_SUBTYPE_PLANE;
+	return VEHICLE_SUBTYPE_NONE;
 }
 
 //-----------------------------------------------------------
@@ -313,11 +321,15 @@ ret_plane:	return	VEHICLE_SUBTYPE_PLANE;
 BOOL CVehicle::HasSunk()
 {
 	PHYSICAL_TYPE * pPhysical = (PHYSICAL_TYPE *)GetEntity();
-	if(pPhysical) {
-		if(pPhysical->byteSunkFlags & 0x10) {
+
+	if(pPhysical)
+	{
+		if(pPhysical->byteSunkFlags & 0x10)
+		{
 			return TRUE;
 		}
 	}
+
 	return FALSE;
 }
 
@@ -326,11 +338,15 @@ BOOL CVehicle::HasSunk()
 BOOL CVehicle::IsDriverLocalPlayer()
 {
 	VEHICLE_TYPE * pVehicle = (VEHICLE_TYPE *)GetEntity();
-	if(pVehicle) {
-		if(pVehicle->pDriver == GamePool_FindPlayerPed()) {
+
+	if(pVehicle)
+	{
+		if(pVehicle->pDriver == GamePool_FindPlayerPed())
+		{
 			return TRUE;
 		}
 	}
+
 	return FALSE;
 }
 
@@ -367,27 +383,33 @@ PED_TYPE * CVehicle::GetDriver()
 void CVehicle::SetImmunities(int iIm1, int iIm2, int iIm3, int iIm4, int iIm5)
 {
 	ENTITY_TYPE * pEntity = (ENTITY_TYPE *)GetEntity();
-	if(pEntity) {
+
+	if(pEntity)
+	{
 		if(iIm1) {
 			pEntity->byteUnkFlags2 = (pEntity->byteUnkFlags2 & 0xFD | 2);
 		} else {
 			pEntity->byteUnkFlags2 &= 0xFD;
 		}
+
 		if(iIm2) {
 			pEntity->byteUnkFlags2 = (pEntity->byteUnkFlags2 & 0xFB | 4);
 		} else {
 			pEntity->byteUnkFlags2 &= 0xFB;
 		}
+
 		if(iIm3) {
 			pEntity->byteUnkFlags1 = (pEntity->byteUnkFlags1 & 0xFD | 2);
 		} else {
 			pEntity->byteUnkFlags1 &= 0xFD;
 		}
+
 		if(iIm4) {
 			pEntity->byteUnkFlags2 = (pEntity->byteUnkFlags2 & 0xF7 | 8);
 		} else {
 			pEntity->byteUnkFlags2 &= 0xF7u;
 		}
+
 		if(iIm5) {
 			pEntity->byteUnkFlags2 = (pEntity->byteUnkFlags2 & 0xEF | 0x10);
 		} else {

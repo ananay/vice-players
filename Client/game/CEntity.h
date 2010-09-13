@@ -35,8 +35,10 @@ public:
 	void          GetPosition(Vector3 * vecPosition);
 	void          SetPosition(Vector3 vecPosition);
 	void          SetHeading(float fHeading);
+	void          Teleport(float fX, float fY, float fZ);
 
 	WORD		  GetModelIndex();
+	void          SetModelIndex(WORD wModelIndex);
 
 	BOOL          IsOnScreen();
 

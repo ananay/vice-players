@@ -745,27 +745,9 @@ HRESULT CD3DFont::DrawTextBox(float xTop, float yTop, float pad, DWORD dwColorBo
 HRESULT CD3DFont::DrawBox(float xTop, float yTop, float fWidth, float fHeight, float pad, DWORD dwColorBox)
 {
     // Setup renderstate
-    /*char *vb_verts = 0;
-    
-    xTop -= fWidth/2;
-    my_vertex square_verts[] ={
-        { xTop-pad,  yTop+fHeight+pad, 0.5f, 1.0f, dwColorBox }, // x, y, z, rhw, color
-        { xTop-pad,  yTop,  0.5f, 1.0f, dwColorBox },
-        { xTop+fWidth+pad,  yTop+fHeight+pad, 0.5f, 1.0f, dwColorBox },
-        { xTop+fWidth+pad,  yTop,  0.5f, 1.0f, dwColorBox }
-    };
-    m_pd3dDevice->CaptureStateBlock( m_dwSavedStateBlock );
-    m_pd3dDevice->ApplyStateBlock( m_dwDrawBoxStateBlock );
-    m_pd3dDevice->SetVertexShader( D3DFVF_XYZRHW|D3DFVF_DIFFUSE );
-    m_pd3dDevice->SetStreamSource( 0, m_pVB, sizeof(my_vertex) );
-
-    m_pVB->Lock( 0, 0, (BYTE**)&vb_verts, 0  );
-    memcpy(vb_verts,square_verts,sizeof(square_verts));
-    m_pVB->Unlock();
-    m_pd3dDevice->DrawPrimitive( D3DPT_TRIANGLESTRIP, 0, 2 );
-    m_pd3dDevice->ApplyStateBlock( m_dwSavedStateBlock );*/
 	char *vb_verts = 0;
 
+	//xTop -= fWidth/2;
 	my_vertex square_verts[] ={
 		{ xTop-pad,  yTop+fHeight+pad, 0.5f, 1.0f, dwColorBox }, // x, y, z, rhw, color
 		{ xTop-pad,  yTop,  0.5f, 1.0f, dwColorBox },
