@@ -10,8 +10,9 @@
 //-----------------------------------------------------
 
 #include "sq_misc_natives.h"
-#include "netgame.h"
-#include "plugins.h"
+#include "CNetGame.h"
+#include "CPlugins.h"
+
 extern CNetGame *pNetGame;
 extern CPlugins *pPlugins;
 using namespace RakNet;

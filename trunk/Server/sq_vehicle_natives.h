@@ -10,7 +10,7 @@
 //-----------------------------------------------------
 
 #include "main.h"
-#include "scripts.h"
+#include "CScripts.h"
 
 SQInteger sq_createVehicle(SQVM * v); // done
 SQInteger sq_destroyVehicle(SQVM * v); // done

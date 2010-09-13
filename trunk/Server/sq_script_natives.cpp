@@ -8,8 +8,8 @@
 //-----------------------------------------------------
 
 #include "sq_timer_natives.h"
-#include "scripts.h"
-#include "netgame.h"
+#include "CScripts.h"
+#include "CNetGame.h"
 #include "../squirrel/sqstring.h"
 
 extern CNetGame *pNetGame;

@@ -10,7 +10,7 @@
 //-----------------------------------------------------
 
 #include "main.h"
-#include "scripts.h"
+#include "CScripts.h"
 
 SQInteger sq_setGameTime(SQVM * pVM); // done
 SQInteger sq_getMaxPlayers(SQVM * pVM); // done

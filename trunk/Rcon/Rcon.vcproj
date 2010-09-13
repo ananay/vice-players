@@ -202,7 +202,7 @@
 			Name="Net"
 			>
 			<File
-				RelativePath="rconclient.cpp"
+				RelativePath=".\CRconClient.cpp"
 				>
 				<FileConfiguration
 					Name="Release|Win32"
@@ -222,7 +222,7 @@
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath="rconclient.h"
+				RelativePath=".\CRconClient.h"
 				>
 			</File>
 		</Filter>

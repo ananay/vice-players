@@ -9,7 +9,7 @@
 //----------------------------------------------------
 
 #include "main.h"
-#include "game/pools.h"
+#include "game/CPools.h"
 
 extern CGame		 *pGame;
 extern CChatWindow   *pChatWindow;

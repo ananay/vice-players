@@ -32,7 +32,7 @@ typedef unsigned char EntityId;
 #include "../RakNet/BitStream.h"
 
 #include "system.h"
-#include "config.h"
+#include "CConfig.h"
 
 #define DEFAULT_CONFIG_FILE "server.ini"
 #define DEFAULT_MAX_PLAYERS 32

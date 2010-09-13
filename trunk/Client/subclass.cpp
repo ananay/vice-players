@@ -10,7 +10,7 @@
 //----------------------------------------------------
 
 #include "main.h"
-#include "screenshot.h"
+#include "CScreenshot.h"
 #include <string>
 #include <windowsx.h>
 
