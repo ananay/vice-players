@@ -9,7 +9,7 @@
 #pragma once
 
 #include "../main.h"
-#include "scripts.h"
+#include "CScripts.h"
 
 SQInteger sq_setScriptAuthor(SQVM * pVM); // done
 SQInteger sq_setScriptVersion(SQVM * pVM); // done

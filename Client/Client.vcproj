@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="Windows-1252"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="9,00"
+	Version="9.00"
 	Name="Client"
 	ProjectGUID="{24F45D58-098D-42B1-973A-8A3F9C8EA41E}"
 	RootNamespace="vcp"
@@ -225,7 +225,7 @@
 				>
 			</File>
 			<File
-				RelativePath="game\aimstuff.cpp"
+				RelativePath=".\game\AimSync.cpp"
 				>
 				<FileConfiguration
 					Name="Release|Win32"
@@ -245,11 +245,11 @@
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath="game\aimstuff.h"
+				RelativePath=".\game\AimSync.h"
 				>
 			</File>
 			<File
-				RelativePath="game\camera.cpp"
+				RelativePath=".\game\CCamera.cpp"
 				>
 				<FileConfiguration
 					Name="Release|Win32"
@@ -269,7 +269,47 @@
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath="game\camera.h"
+				RelativePath=".\game\CCamera.h"
+				>
+			</File>
+			<File
+				RelativePath=".\game\CEntity.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\game\CEntity.h"
+				>
+			</File>
+			<File
+				RelativePath=".\game\CGame.cpp"
+				>
+				<FileConfiguration
+					Name="Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath=".\game\CGame.h"
+				>
+			</File>
+			<File
+				RelativePath=".\game\CObject.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\game\CObject.h"
 				>
 			</File>
 			<File
@@ -277,15 +317,23 @@
 				>
 			</File>
 			<File
-				RelativePath=".\game\entity.cpp"
+				RelativePath=".\game\CPhysical.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\game\entity.h"
+				RelativePath=".\game\CPhysical.h"
 				>
 			</File>
 			<File
-				RelativePath="game\game.cpp"
+				RelativePath=".\game\CPickup.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\game\CPickup.h"
+				>
+			</File>
+			<File
+				RelativePath=".\game\CPlayerPed.cpp"
 				>
 				<FileConfiguration
 					Name="Release|Win32"
@@ -305,7 +353,47 @@
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath="game\game.h"
+				RelativePath=".\game\CPlayerPed.h"
+				>
+			</File>
+			<File
+				RelativePath=".\game\CPools.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\game\CPools.h"
+				>
+			</File>
+			<File
+				RelativePath=".\game\CText.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\game\CText.h"
+				>
+			</File>
+			<File
+				RelativePath=".\game\CVehicle.cpp"
+				>
+				<FileConfiguration
+					Name="Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath=".\game\CVehicle.h"
 				>
 			</File>
 			<File
@@ -329,7 +417,7 @@
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath="game\keystuff.cpp"
+				RelativePath=".\game\KeySync.cpp"
 				>
 				<FileConfiguration
 					Name="Release|Win32"
@@ -349,63 +437,7 @@
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath="game\keystuff.h"
-				>
-			</File>
-			<File
-				RelativePath=".\game\object.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\game\object.h"
-				>
-			</File>
-			<File
-				RelativePath=".\game\physical.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\game\physical.h"
-				>
-			</File>
-			<File
-				RelativePath=".\game\pickup.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\game\pickup.h"
-				>
-			</File>
-			<File
-				RelativePath="game\playerped.cpp"
-				>
-				<FileConfiguration
-					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						PreprocessorDefinitions=""
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						PreprocessorDefinitions=""
-					/>
-				</FileConfiguration>
-			</File>
-			<File
-				RelativePath="game\playerped.h"
-				>
-			</File>
-			<File
-				RelativePath=".\game\pools.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\game\pools.h"
+				RelativePath=".\game\KeySync.h"
 				>
 			</File>
 			<File
@@ -433,14 +465,6 @@
 				>
 			</File>
 			<File
-				RelativePath=".\game\text.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\game\text.h"
-				>
-			</File>
-			<File
 				RelativePath="game\util.cpp"
 				>
 				<FileConfiguration
@@ -462,30 +486,6 @@
 			</File>
 			<File
 				RelativePath="game\util.h"
-				>
-			</File>
-			<File
-				RelativePath="game\vehicle.cpp"
-				>
-				<FileConfiguration
-					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						PreprocessorDefinitions=""
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						PreprocessorDefinitions=""
-					/>
-				</FileConfiguration>
-			</File>
-			<File
-				RelativePath="game\vehicle.h"
 				>
 			</File>
 		</Filter>
@@ -517,7 +517,7 @@
 				>
 			</File>
 			<File
-				RelativePath="bbfont.cpp"
+				RelativePath=".\CBBFont.cpp"
 				>
 				<FileConfiguration
 					Name="Release|Win32"
@@ -537,11 +537,11 @@
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath="bbfont.h"
+				RelativePath=".\CBBFont.h"
 				>
 			</File>
 			<File
-				RelativePath="chatwindow.cpp"
+				RelativePath=".\CChatWindow.cpp"
 				>
 				<FileConfiguration
 					Name="Release|Win32"
@@ -561,7 +561,31 @@
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath="chatwindow.h"
+				RelativePath=".\CChatWindow.h"
+				>
+			</File>
+			<File
+				RelativePath=".\CCmdWindow.cpp"
+				>
+				<FileConfiguration
+					Name="Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath=".\CCmdWindow.h"
 				>
 			</File>
 			<File
@@ -585,7 +609,15 @@
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath="cmdwindow.cpp"
+				RelativePath=".\CNameTags.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\CNameTags.h"
+				>
+			</File>
+			<File
+				RelativePath=".\CNetStats.cpp"
 				>
 				<FileConfiguration
 					Name="Release|Win32"
@@ -605,7 +637,55 @@
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath="cmdwindow.h"
+				RelativePath=".\CNetStats.h"
+				>
+			</File>
+			<File
+				RelativePath=".\CScoreBoard.cpp"
+				>
+				<FileConfiguration
+					Name="Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath=".\CScoreBoard.h"
+				>
+			</File>
+			<File
+				RelativePath=".\CScreenshot.cpp"
+				>
+				<FileConfiguration
+					Name="Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath=".\CScreenShot.h"
 				>
 			</File>
 			<File
@@ -673,87 +753,7 @@
 				>
 			</File>
 			<File
-				RelativePath=".\nametags.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\nametags.h"
-				>
-			</File>
-			<File
-				RelativePath="netstats.cpp"
-				>
-				<FileConfiguration
-					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						PreprocessorDefinitions=""
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						PreprocessorDefinitions=""
-					/>
-				</FileConfiguration>
-			</File>
-			<File
-				RelativePath="netstats.h"
-				>
-			</File>
-			<File
 				RelativePath="resource.h"
-				>
-			</File>
-			<File
-				RelativePath="scoreboard.cpp"
-				>
-				<FileConfiguration
-					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						PreprocessorDefinitions=""
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						PreprocessorDefinitions=""
-					/>
-				</FileConfiguration>
-			</File>
-			<File
-				RelativePath="scoreboard.h"
-				>
-			</File>
-			<File
-				RelativePath="screenshot.cpp"
-				>
-				<FileConfiguration
-					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						PreprocessorDefinitions=""
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						PreprocessorDefinitions=""
-					/>
-				</FileConfiguration>
-			</File>
-			<File
-				RelativePath="screenshot.h"
 				>
 			</File>
 			<File
@@ -1277,39 +1277,15 @@
 			Name="Net"
 			>
 			<File
-				RelativePath=".\net\checkpoints.cpp"
+				RelativePath=".\net\CCheckPoints.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\net\checkpoints.h"
+				RelativePath=".\net\CCheckPoints.h"
 				>
 			</File>
 			<File
-				RelativePath="net\localplayer.cpp"
-				>
-				<FileConfiguration
-					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						PreprocessorDefinitions=""
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						PreprocessorDefinitions=""
-					/>
-				</FileConfiguration>
-			</File>
-			<File
-				RelativePath="net\localplayer.h"
-				>
-			</File>
-			<File
-				RelativePath="net\netgame.cpp"
+				RelativePath=".\net\CLocalPlayer.cpp"
 				>
 				<FileConfiguration
 					Name="Release|Win32"
@@ -1329,7 +1305,135 @@
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath="net\netgame.h"
+				RelativePath=".\net\CLocalPlayer.h"
+				>
+			</File>
+			<File
+				RelativePath=".\net\CNetGame.cpp"
+				>
+				<FileConfiguration
+					Name="Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath=".\net\CNetGame.h"
+				>
+			</File>
+			<File
+				RelativePath=".\net\CObjectPool.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\net\CObjectPool.h"
+				>
+			</File>
+			<File
+				RelativePath=".\net\CPickupPool.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\net\CPickupPool.h"
+				>
+			</File>
+			<File
+				RelativePath=".\net\CPlayerPool.cpp"
+				>
+				<FileConfiguration
+					Name="Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath=".\net\CPlayerPool.h"
+				>
+			</File>
+			<File
+				RelativePath=".\net\CRemotePlayer.cpp"
+				>
+				<FileConfiguration
+					Name="Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath=".\net\CRemotePlayer.h"
+				>
+			</File>
+			<File
+				RelativePath=".\net\CSpawnSelection.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\net\CSpawnSelection.h"
+				>
+			</File>
+			<File
+				RelativePath=".\net\CTextPool.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\net\CTextPool.h"
+				>
+			</File>
+			<File
+				RelativePath=".\net\CVehiclePool.cpp"
+				>
+				<FileConfiguration
+					Name="Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath=".\net\CVehiclePool.h"
 				>
 			</File>
 			<File
@@ -1356,128 +1460,32 @@
 				RelativePath="net\netrpc.h"
 				>
 			</File>
-			<File
-				RelativePath=".\net\objectpool.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\net\objectpool.h"
-				>
-			</File>
-			<File
-				RelativePath=".\net\pickuppool.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\net\pickuppool.h"
-				>
-			</File>
-			<File
-				RelativePath="net\playerpool.cpp"
-				>
-				<FileConfiguration
-					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						PreprocessorDefinitions=""
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						PreprocessorDefinitions=""
-					/>
-				</FileConfiguration>
-			</File>
-			<File
-				RelativePath="net\playerpool.h"
-				>
-			</File>
-			<File
-				RelativePath="net\remoteplayer.cpp"
-				>
-				<FileConfiguration
-					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						PreprocessorDefinitions=""
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						PreprocessorDefinitions=""
-					/>
-				</FileConfiguration>
-			</File>
-			<File
-				RelativePath="net\remoteplayer.h"
-				>
-			</File>
-			<File
-				RelativePath=".\net\spawnselection.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\net\spawnselection.h"
-				>
-			</File>
-			<File
-				RelativePath=".\net\textpool.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\net\textpool.h"
-				>
-			</File>
-			<File
-				RelativePath="net\vehiclepool.cpp"
-				>
-				<FileConfiguration
-					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						PreprocessorDefinitions=""
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						PreprocessorDefinitions=""
-					/>
-				</FileConfiguration>
-			</File>
-			<File
-				RelativePath="net\vehiclepool.h"
-				>
-			</File>
 		</Filter>
 		<Filter
 			Name="Scripting"
 			>
 			<File
-				RelativePath=".\scripting\script.cpp"
+				RelativePath=".\scripting\CScript.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\scripting\script.h"
+				RelativePath=".\scripting\CScript.h"
 				>
 			</File>
 			<File
-				RelativePath=".\scripting\scripts.cpp"
+				RelativePath=".\scripting\CScripts.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\scripting\scripts.h"
+				RelativePath=".\scripting\CScripts.h"
+				>
+			</File>
+			<File
+				RelativePath=".\CTimerPool.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\CTimerPool.h"
 				>
 			</File>
 			<File
@@ -1518,14 +1526,6 @@
 			</File>
 			<File
 				RelativePath=".\scripting\sq_utils.h"
-				>
-			</File>
-			<File
-				RelativePath=".\timerpool.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\timerpool.h"
 				>
 			</File>
 			<Filter

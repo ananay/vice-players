@@ -19,7 +19,7 @@
 #include "../raknet/BitStream.h"
 #include "../raknet/MessageIdentifiers.h"
 
-#include "rconclient.h"
+#include "CRconClient.h"
 
 extern bool bQuitApp;
 

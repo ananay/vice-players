@@ -10,7 +10,7 @@
 //-----------------------------------------------------
 
 #include "main.h"
-#include "scripts.h"
+#include "CScripts.h"
 
 SQInteger sq_setPlayerHealth(SQVM * v); // done
 SQInteger sq_setPlayerArmour(SQVM * v); // done

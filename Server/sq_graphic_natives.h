@@ -10,7 +10,7 @@
 //-----------------------------------------------------
 
 #include "main.h"
-#include "scripts.h"
+#include "CScripts.h"
 
 SQInteger sq_createText(SQVM * pVM);
 SQInteger sq_destroyText(SQVM * pVM);

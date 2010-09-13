@@ -8,7 +8,7 @@
 //-----------------------------------------------------
 
 #include "sq_timer_natives.h"
-#include "scripts.h"
+#include "CScripts.h"
 #include "../main.h"
 
 extern CNetGame *pNetGame;

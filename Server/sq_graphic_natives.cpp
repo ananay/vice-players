@@ -10,7 +10,7 @@
 //-----------------------------------------------------
 
 #include "sq_graphic_natives.h"
-#include "netgame.h"
+#include "CNetGame.h"
 
 extern CNetGame *pNetGame;
 

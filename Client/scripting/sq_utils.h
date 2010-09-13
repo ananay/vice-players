@@ -10,7 +10,7 @@
 //-----------------------------------------------------
 
 #include "../main.h"
-#include "scripts.h"
+#include "CScripts.h"
 
 void RegisterFunction(HSQUIRRELVM pVM, char * szFunc, SQFUNCTION func, int params, const char * szTemplate);
 void RegisterVariable(HSQUIRRELVM pVM, const char * szVarName, bool bValue);

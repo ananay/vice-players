@@ -12,7 +12,7 @@
 
 #include "sq_functions.h"
 #include "sq_utils.h"
-#include "netgame.h"
+#include "CNetGame.h"
 
 extern CNetGame *pNetGame;
 

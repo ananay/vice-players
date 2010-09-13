@@ -8,9 +8,9 @@
 //
 //----------------------------------------------------
 
-#include "netgame.h"
-#include "rcon.h"
-#include "scripts.h"
+#include "CNetGame.h"
+#include "CRcon.h"
+#include "CScripts.h"
 
 using namespace RakNet;
 

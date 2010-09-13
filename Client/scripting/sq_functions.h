@@ -9,7 +9,7 @@
 //-----------------------------------------------------
 
 #include "../main.h"
-#include "scripts.h"
+#include "CScripts.h"
 //#include "sq_player_natives.h"
 //#include "sq_vehicle_natives.h"
 #include "sq_client_natives.h"
