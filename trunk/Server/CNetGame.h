@@ -24,7 +24,7 @@
 #include "CTextPool.h"
 #include "CPickup.h"
 #include "CPickupPool.h"
-#include "CCheckpoints.h"
+#include "CCheckPoints.h"
 #include "../RakNet/MessageIdentifiers.h"
 #include "netrpc.h"
 #include "CSpawnSelection.h"
