@@ -4,6 +4,7 @@
 // Copyright 2010 VC-Players Team
 //
 // File Author(s): adamix
+//                 jenksta
 // License: See LICENSE in root directory
 //
 //----------------------------------------------------------
@@ -15,6 +16,7 @@ extern CGame * pGame;
 extern CChatWindow * pChatWindow;
 extern CNetGame * pNetGame;
 
+// TODO: CSphere
 #define MAX_SPHERES 16
 #define VAR_Spheres 0x811528
 
@@ -61,7 +63,7 @@ EntityId CreateSphere(Vector3 * vecCenter, float fRadius)
 	{
 		SPHERE_TYPE * pSphere = GetSphereFromIndex(index);
 		pSphere->byteInUse = 1;
-		pSphere->dwUniqueId = index + 0xDEADBEEF;
+		pSphere->dwUniqueId = (index + 0xDEADBEEF);
 		memcpy(&pSphere->vecCenter, vecCenter, sizeof(Vector3));
 		pSphere->fRadius = fRadius;
 	}
@@ -71,11 +73,10 @@ EntityId CreateSphere(Vector3 * vecCenter, float fRadius)
 
 float GetDistanceBetweenPoints3D(float x, float y, float z, float xx, float yy, float zz)
 {
-        float newx = xx - x;
-        float newy = yy - y;
-        float newz = zz - z;
-
-        return sqrt(newx * newx + newy * newy + newz * newz);
+    float newx = (xx - x);
+    float newy = (yy - y);
+    float newz = (zz - z);
+    return sqrt(newx * newx + newy * newy + newz * newz);
 }
 
 
@@ -88,7 +89,6 @@ CCheckpoint::CCheckpoint(EntityId id, Vector3 vecPos, BYTE type, float radius)
 	m_sphereID = NULL;
 	m_dwMarker = NULL;
 	m_bInCP = false;
-
 	m_sphereID = CreateSphere(&vecPos, radius);
 	ScriptCommand(&create_icon_marker_without_sphere, vecPos.X, vecPos.Y, vecPos.Z, 0, &m_dwMarker);
 	ScriptCommand(&set_marker_color, m_dwMarker, 5);
@@ -109,29 +109,28 @@ void CCheckpoint::Process()
 	CPlayerPed * pPlayer = pGame->FindPlayerPed();
 	Vector3 vecPos;
 	pPlayer->GetPosition(&vecPos);
-	BitStream bsSend;
-	bsSend.Write(m_iID);
+
 	if(GetDistanceBetweenPoints3D(vecPos.X, vecPos.Y, vecPos.Z, m_vecPos.X, m_vecPos.Y, m_vecPos.Z) < m_fRadius)
 	{
 		if(!m_bInCP)
 		{
+			BitStream bsSend;
+			bsSend.Write(m_iID);
 			bsSend.Write(true);
-			pNetGame->GetRPC4()->Call("CheckpointEvent",&bsSend,HIGH_PRIORITY,RELIABLE,0,UNASSIGNED_SYSTEM_ADDRESS,TRUE);
+			pNetGame->GetRPC4()->Call("CheckpointEvent", &bsSend, HIGH_PRIORITY, RELIABLE, 0, UNASSIGNED_SYSTEM_ADDRESS, true);
+			m_bInCP = true;
 		}
-		else
-		{
-
-		}
-		m_bInCP = true;
 	}
 	else
 	{
 		if(m_bInCP)
 		{
+			BitStream bsSend;
+			bsSend.Write(m_iID);
 			bsSend.Write(false);
-			pNetGame->GetRPC4()->Call("CheckpointEvent",&bsSend,HIGH_PRIORITY,RELIABLE,0,UNASSIGNED_SYSTEM_ADDRESS,TRUE);
+			pNetGame->GetRPC4()->Call("CheckpointEvent", &bsSend, HIGH_PRIORITY, RELIABLE, 0, UNASSIGNED_SYSTEM_ADDRESS, true);
+			m_bInCP = false;
 		}
-		m_bInCP = false;
 	}
 }
 
@@ -179,4 +178,3 @@ void CCheckpoints::Process()
 		m_Checkpoints[id]->Process();
 	}
 }
-
