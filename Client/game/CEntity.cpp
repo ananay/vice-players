@@ -106,7 +106,6 @@ void CEntity::Teleport(float fX, float fY, float fZ)
 			push fY
 			push fX
 			call [ebx+2Ch]
-			add esp, 0Ch
 		}
 	}
 }
