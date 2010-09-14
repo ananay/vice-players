@@ -630,7 +630,6 @@ BOOL CPlayerPed::GiveWeapon(int iWeaponID, int iAmmo)
 				push iWeaponID
 				mov ecx, pPed
 				call dwFunc
-				add esp, 0Ch
 			}
 
 			SetArmedWeapon(iWeaponID);

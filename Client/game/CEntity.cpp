@@ -146,13 +146,13 @@ void CEntity::SetModelIndex(WORD wModelIndex)
 		ENTITY_TYPE * pEntity = m_pEntity;
 
 		// Call SetModelIndex
+		DWORD dwModelIndex = wModelIndex;
 		_asm
 		{
 			mov ecx, pEntity
 			mov ebx, [ecx]
-			push wModelIndex
+			push dwModelIndex
 			call [ebx+0Ch]
-			add esp, 4
 		}
 	}
 }

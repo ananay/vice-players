@@ -16,7 +16,7 @@ function onServerInit()
 	setModeName("Vice Madness");
 	setMapName("Blood Vice-City");
 
-	testCP = createCheckpoint(-670.2837, -1325.3040, 11.0715, 2.0);
+	//testCP = createCheckpoint(-670.2837, -1325.3040, 11.0715, 2.0);
 	testText = createText(0xFFFF00FF, "Tahoma", 16, 45.0, 50.0, "You in cp!");
 	
 	// Some test vehicles
