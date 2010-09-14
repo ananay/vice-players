@@ -84,7 +84,6 @@ void CEntity::SetHeading(float fHeading)
 			push fHeading
 			mov ecx, pPlaceable
 			call dwFunc
-			add esp, 4
 		}
 	}
 }
