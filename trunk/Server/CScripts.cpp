@@ -95,7 +95,7 @@ bool CScripts::LoadFromConfig(CConfig * pConfig)
 	int iScriptCount = pConfig->GetConfigArrayCount("SCRIPT");
 		iScriptCount++;
 	int iScriptsLoaded = 0;
-	
+
 	for(int i = 1; i < iScriptCount; i++) {
 		char * szScriptName = pConfig->GetConfigEntryAsString("SCRIPT", i);
 
