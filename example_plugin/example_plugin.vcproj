@@ -173,6 +173,14 @@
 				RelativePath=".\sq_functions.cpp"
 				>
 			</File>
+			<Filter
+				Name="SDK"
+				>
+				<File
+					RelativePath=".\sq_utils.cpp"
+					>
+				</File>
+			</Filter>
 		</Filter>
 		<Filter
 			Name="Header Files"
@@ -187,6 +195,14 @@
 				RelativePath=".\sq_functions.h"
 				>
 			</File>
+			<Filter
+				Name="SDK"
+				>
+				<File
+					RelativePath=".\sq_utils.h"
+					>
+				</File>
+			</Filter>
 		</Filter>
 		<Filter
 			Name="Squirrel"
