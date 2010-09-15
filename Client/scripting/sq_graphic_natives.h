@@ -11,6 +11,6 @@
 #include "../main.h"
 #include "CScripts.h"
 
-SQInteger sq_addChatMessage(SQVM * pVM); // done
-SQInteger sq_toggleCheatCodes(SQVM * pVM); // done
-SQInteger sq_getVersion(SQVM * pVM); // done
+SQInteger sq_drawText(SQVM * pVM); // done
+SQInteger sq_drawBox(SQVM * pVM); // done
+SQInteger sq_getResolution(SQVM * pVM); // done
