@@ -170,6 +170,8 @@ void TheSceneEnd()
 				if(pCmdWindow) pCmdWindow->Draw();
 				pNetGame->GetTextPool()->Process();
 			}
+			if(pScripts)
+				pScripts->onRender();
 		}
 	}
 }

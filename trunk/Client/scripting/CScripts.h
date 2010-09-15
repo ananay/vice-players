@@ -44,6 +44,7 @@ public:
 	void onInit(int iScript);
 	void onExit();
 	void onPulse();
+	void onRender();
 /*	bool onRconCommand(const char *command, const char *arg);
 	void onBan(const char *szText);
 	void onKick(int playerId);

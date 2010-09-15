@@ -32,3 +32,9 @@ SQInteger sq_toggleCheatCodes(SQVM * pVM)
 	GameToggleCheatCodes(toggle != 0);
 	return 1;
 }
+
+SQInteger sq_getVersion(SQVM * pVM)
+{
+	sq_pushstring(pVM, CLIENT_VERSION, -1);
+	return 1;
+}

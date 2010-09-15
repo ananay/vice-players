@@ -111,9 +111,6 @@ function onServerInit()
 
 	setScriptAuthor("adamix & jenksta & chris & bpeterson");
 	setScriptVersion("0.1");
-
-	local text = whirlpool_Hash("nigga style");
-	print(text);
 }
 
 function onServerPulse()
