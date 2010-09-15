@@ -1166,14 +1166,3 @@ BYTE CPlayerPed::GetPassengerSeat()
 }
 
 //-----------------------------------------------------------
-
-bool CPlayerPed::IsPaused()
-{
-	if(pGame->IsMenuActive())
-	{
-		return true;
-	}
-	return false;
-}
-
-//-----------------------------------------------------------
