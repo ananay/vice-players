@@ -1226,3 +1226,18 @@ SQInteger sq_getPlayerSerial(SQVM * pVM)
 	sq_pushbool(pVM, false);
 	return 1;
 }
+
+SQInteger sq_isPlayerPaused(SQVM * pVM)
+{
+	SQInteger playerSystemAddress;
+	sq_getinteger(pVM, -1, &playerSystemAddress);
+
+	if(pNetGame->GetPlayerPool()->GetSlotState(playerSystemAddress))
+	{
+		sq_pushbool(pVM, pNetGame->GetPlayerPool()->GetAt(playerSystemAddress)->IsPaused());
+		return 1;
+	}
+
+	sq_pushbool(pVM, false);
+	return 1;
+}

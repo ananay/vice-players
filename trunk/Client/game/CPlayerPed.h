@@ -133,6 +133,8 @@ public:
 	BYTE           FindDeathReasonAndResponsiblePlayer(EntityId * nPlayer);
 	void           RestartIfWastedAt(Vector3 *vecRestart, float fRotation);
 	BYTE           GetPassengerSeat();
+
+	bool		   IsPaused();
 };
 
 //-----------------------------------------------------------

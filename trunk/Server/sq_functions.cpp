@@ -85,6 +85,7 @@ int sq_register_natives(SQVM * pVM)
 	RegisterFunction(pVM, "setPlayerCash", sq_setPlayerCash, 3, ".ni");
 	RegisterFunction(pVM, "getPlayerCash", sq_getPlayerCash, 2, ".n");
 	RegisterFunction(pVM, "getPlayerSerial", sq_getPlayerSerial, 2, ".i");
+	RegisterFunction(pVM, "isPlayerPaused", sq_isPlayerPaused, 2, ".n");
 
 	// Vehicles
 	RegisterFunction(pVM, "createVehicle", sq_createVehicle, 8, ".nnnnnnn");
