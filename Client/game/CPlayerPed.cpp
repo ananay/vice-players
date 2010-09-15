@@ -5,6 +5,7 @@
 //
 // File Author(s): kyeman
 //                 jenksta
+//				   bpeterson
 // License: See LICENSE in root directory
 //
 //----------------------------------------------------------
@@ -1162,6 +1163,17 @@ BYTE CPlayerPed::GetPassengerSeat()
 	}
 
 	return 0;
+}
+
+//-----------------------------------------------------------
+
+bool CPlayerPed::IsPaused()
+{
+	if(pGame->IsMenuActive())
+	{
+		return true;
+	}
+	return false;
 }
 
 //-----------------------------------------------------------

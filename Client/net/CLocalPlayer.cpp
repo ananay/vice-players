@@ -138,6 +138,16 @@ BOOL CLocalPlayer::Process()
 		pNetGame->GetGameLogic()->HandleClassSelection(this);
 		return TRUE;
 	}
+	else if ((m_pPlayerPed->IsPaused()) && (m_bPause != true))
+	{
+		m_bPause = true;
+		SendPauseNotification(true);
+	}
+	else if ((!m_pPlayerPed->IsPaused()) && (m_bPause != false))
+	{
+		m_bPause = false;
+		SendPauseNotification(false);
+	}
 
 	pGameLogic = pNetGame->GetGameLogic();
 	if(pGameLogic) pGameLogic->ProcessLocalPlayer(this);
@@ -517,6 +527,15 @@ void CLocalPlayer::SendInflictedDamageNotification(EntityId playerID, EntityId v
 	bsSend.Write(iPedPieces);
 	bsSend.Write(byteUnk);
 	//pNetGame->GetRPC4()->Call("InflictDamage", &bsSend, HIGH_PRIORITY, RELIABLE_ORDERED, 0, UNASSIGNED_SYSTEM_ADDRESS, true);
+}
+
+//----------------------------------------------------------
+
+void CLocalPlayer::SendPauseNotification(bool bPause)
+{
+	RakNet::BitStream bsSend;
+	bsSend.Write(bPause);
+	pNetGame->GetRPC4()->Call("Pause",&bsSend,HIGH_PRIORITY,RELIABLE_SEQUENCED,0,UNASSIGNED_SYSTEM_ADDRESS,TRUE);
 }
 
 //----------------------------------------------------

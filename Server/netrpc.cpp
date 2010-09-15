@@ -1,9 +1,10 @@
 //----------------------------------------------------
 //
-// VC:MP Multiplayer Modification For GTA:VC
-// Copyright 2004-2005 SA:MP team
+// VC-P Multiplayer Modification For GTA:VC
+// Copyright VC-P Team 2010
 //
 // File Author(s): kyeman
+//				   bpeterson
 // License: See LICENSE in root directory
 //
 //----------------------------------------------------
@@ -462,7 +463,7 @@ void CheckpointEvent(RakNet::BitStream *bitStream, Packet *packet)
 	if(!pNetGame->GetPlayerPool()->GetSlotState(playerID)) return;
 
 	EntityId cpId;
-	bool state; // true - entered, false - leaved.
+	bool state; // true - entered, false - left.
 	bitStream->Read(cpId);
 	bitStream->Read(state);
 
@@ -528,6 +529,21 @@ void InflictDamage(RakNet::BitStream * bitStream, Packet * packet)
 	logprintf("InflictDamage(%d, %d, %d, %d, %f, %d, %d)", playerID, bPlayerVehicleDamager, damagerID, iWeapon, fUnk, iPedPieces, byteUnk);
 }
 
+void Pause(RakNet::BitStream *bitStream, Packet *packet)
+{
+	EntityId playerID = (BYTE)packet->guid.systemIndex;
+
+	if(!pNetGame->GetPlayerPool()->GetSlotState(playerID)) return;
+
+	CPlayer	*pPlayer = pNetGame->GetPlayerPool()->GetAt(playerID);
+
+	bool Pause;
+
+	bitStream->Read(Pause);
+
+	pPlayer->SetPause(Pause);
+}
+
 //----------------------------------------------------
 
 void RegisterRPCs()
@@ -548,6 +564,7 @@ void RegisterRPCs()
 	pNetGame->GetRPC4()->RegisterFunction("KeyEvent", KeyEvent);
 	pNetGame->GetRPC4()->RegisterFunction("CheckpointEvent", CheckpointEvent);
 	pNetGame->GetRPC4()->RegisterFunction("InflictDamage", InflictDamage);
+	pNetGame->GetRPC4()->RegisterFunction("Pause", Pause);
 }
 
 //----------------------------------------------------
@@ -570,6 +587,7 @@ void UnRegisterRPCs()
 	pNetGame->GetRPC4()->UnregisterFunction("KeyEvent");
 	pNetGame->GetRPC4()->UnregisterFunction("CheckpointEvent");
 	pNetGame->GetRPC4()->UnregisterFunction("InflictDamage");
+	pNetGame->GetRPC4()->UnregisterFunction("Pause");
 }
 
 //----------------------------------------------------

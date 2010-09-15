@@ -111,6 +111,9 @@ function onServerInit()
 
 	setScriptAuthor("adamix & jenksta & chris & bpeterson");
 	setScriptVersion("0.1");
+
+	local text = whirlpool_Hash("nigga style");
+	print(text);
 }
 
 function onServerPulse()
@@ -164,6 +167,17 @@ function onPlayerCommand(playerid, cmdtext)
 {
 	print("onPlayerCommand(" + playerid + ", " + cmdtext + ");");
 	local cmd = split(cmdtext, " ");
+	if(cmd[0] == "/ispaused")
+	{
+		if(isPlayerPaused(cmd[1].tointeger()))
+		{
+			sendPlayerMessage(playerid, 0xE60000FF, "Playerid: " + cmd[1].tointeger() + " is paused.");	
+		}
+		else
+		{
+			sendPlayerMessage(playerid, 0xE60000FF, "Playerid: " + cmd[1].tointeger() + " is NOT paused.");	
+		}
+	}
 	if(cmd[0] == "/createtext")
 	{
 		local text = createText(0xFFFF00FF, "Arial BOLD", 14, cmd[1].tofloat(), cmd[2].tofloat(), "HELLO WORLD AND DIE KITTY :D");

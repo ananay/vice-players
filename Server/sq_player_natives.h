@@ -67,3 +67,4 @@ SQInteger sq_toggleCellPhone(SQVM * pVM);  // done
 SQInteger sq_setPlayerGravity(SQVM * pVM);  // done
 SQInteger sq_getPlayerGravity(SQVM * pVM);  // done
 SQInteger sq_getPlayerSerial(SQVM * pVM); // done
+SQInteger sq_isPlayerPaused(SQVM * pVM); // done
