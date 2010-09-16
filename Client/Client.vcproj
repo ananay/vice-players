@@ -49,7 +49,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="2"
 				InlineFunctionExpansion="1"
-				AdditionalIncludeDirectories="../squirrel/;../Vendor/CEGUI/cegui/include/"
+				AdditionalIncludeDirectories="../squirrel/;../Vendor/CEGUI/cegui/include/;d3d8/include"
 				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_CRT_SECURE_NO_WARNINGS;_CRT_SECURE_NO_DEPRECATE;CEGUI_STATIC"
 				StringPooling="true"
 				RuntimeLibrary="0"
@@ -149,7 +149,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="../squirrel/;../Vendor/CEGUI/cegui/include/"
+				AdditionalIncludeDirectories="../squirrel/;../Vendor/CEGUI/cegui/include/;d3d8/include"
 				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_DEBUG1;_CRT_SECURE_NO_WARNINGS;_CRT_SECURE_NO_DEPRECATE;CEGUI_STATIC"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"

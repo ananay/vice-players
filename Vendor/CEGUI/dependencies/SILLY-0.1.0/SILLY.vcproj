@@ -41,7 +41,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="include;include/loaders;../lpng142;../jpeg-6b"
+				AdditionalIncludeDirectories="include;include/loaders;../lpng142;../zlib-1.2.5;../jpeg-6b"
 				PreprocessorDefinitions="WIN32;_WIN32;__WIN32__;_CRT_SECURE_NO_DEPRECATE;SILLY_HAVE_JPG;SILLY_HAVE_PNG;DEBUG;_DEBUG;SILLY_OPT_DEBUG"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
