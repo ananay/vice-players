@@ -1,7 +1,7 @@
 /***********************************************************************
     filename:   CEGUIDirect3D8ViewportTarget.h
-    created:    Thu Aug 19 2010
-    author:     Justin "ReGeX" Snyder
+    created:    Thu Jul 29 2010
+    author:     Mark Rohrbacher
 *************************************************************************/
 /***************************************************************************
  *   Copyright (C) 2004 - 2009 Paul D Turner & The CEGUI Development Team
@@ -38,7 +38,7 @@ namespace CEGUI
 \brief
     Direct3D8 RenderTarget that represents a screen viewport.
 */
-class Direct3D8_GUIRENDERER_API Direct3D8ViewportTarget : 
+class DIRECT3D8_GUIRENDERER_API Direct3D8ViewportTarget : 
     public Direct3D8RenderTarget
 {
 public:

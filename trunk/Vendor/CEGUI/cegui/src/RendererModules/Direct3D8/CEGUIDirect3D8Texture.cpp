@@ -1,7 +1,7 @@
 /***********************************************************************
     filename:   CEGUIDirect3D8Texture.cpp
-    created:    Thu Aug 19 2010
-    author:     Justin "ReGeX" Snyder
+    created:    Thu Jul 29 2010
+    author:     Mark Rohrbacher
 *************************************************************************/
 /***************************************************************************
  *   Copyright (C) 2004 - 2009 Paul D Turner & The CEGUI Development Team
@@ -78,9 +78,9 @@ Direct3D8Texture::Direct3D8Texture(Direct3D8Renderer& owner, const Size& sz) :
                                    &d_texture);
 
     if (FAILED(hr))
-        throw RendererException(
+        CEGUI_THROW(RendererException(
             "Direct3D8Texture - Failed to create texture of specified size: "
-            "D3D Texture creation failed.");
+            "D3D Texture creation failed."));
 
     updateTextureSize();
     updateCachedScaleValues();
@@ -154,8 +154,8 @@ void Direct3D8Texture::loadFromFile(const String& filename,
     // get and check existence of CEGUI::System object
     System* sys = System::getSingletonPtr();
     if (!sys)
-        throw RendererException("Direct3D8Texture::loadFromFile - "
-                                "CEGUI::System object has not been created!");
+        CEGUI_THROW(RendererException("Direct3D8Texture::loadFromFile - "
+            "CEGUI::System object has not been created!"));
 
     // load file to memory via resource provider
     RawDataContainer texFile;
@@ -169,9 +169,9 @@ void Direct3D8Texture::loadFromFile(const String& filename,
 
     if (!res)
         // It's an error
-        throw RendererException("Direct3D8Texture::loadFromFile - " +
-                                sys->getImageCodec().getIdentifierString() +
-                                " failed to load image '" + filename + "'.");
+        CEGUI_THROW(RendererException("Direct3D8Texture::loadFromFile - " +
+            sys->getImageCodec().getIdentifierString() +
+            " failed to load image '" + filename + "'."));
 }
 
 //----------------------------------------------------------------------------//
@@ -193,8 +193,8 @@ void Direct3D8Texture::loadFromMemory(const void* buffer,
         pixfmt = D3DFMT_A8R8G8B8;
         break;
     default:
-        throw RendererException("Direct3D8Texture::loadFromMemory failed: "
-                                "Invalid PixelFormat value specified.");
+        CEGUI_THROW(RendererException("Direct3D8Texture::loadFromMemory failed: "
+            "Invalid PixelFormat value specified."));
     }
 
     Size tex_sz(d_owner.getAdjustedSize(buffer_size));
@@ -203,10 +203,15 @@ void Direct3D8Texture::loadFromMemory(const void* buffer,
                                    static_cast<UINT>(tex_sz.d_width),
                                    static_cast<UINT>(tex_sz.d_height),
                                    1, 0, pixfmt, D3DPOOL_MANAGED, &d_texture);
+    if (FAILED(hr))
+        hr = D3DXCreateTexture(d_owner.getDevice(),
+                                   static_cast<UINT>(tex_sz.d_width),
+                                   static_cast<UINT>(tex_sz.d_height),
+                                   1, D3DUSAGE_DYNAMIC, pixfmt, D3DPOOL_DEFAULT, &d_texture);
 
     if (FAILED(hr))
-        throw RendererException("Direct3D8Texture::loadFromMemory failed: "
-                                "Direct3D8 texture creation failed.");
+        CEGUI_THROW(RendererException("Direct3D8Texture::loadFromMemory failed: "
+            "Direct3D8 texture creation failed."));
 
     d_dataSize = buffer_size;
     updateTextureSize();
@@ -221,8 +226,8 @@ void Direct3D8Texture::loadFromMemory(const void* buffer,
         d_texture->Release();
         d_texture = 0;
 
-        throw RendererException("Direct3D8Texture::loadFromMemory failed: "
-                                "IDirect3DTexture9::LockRect failed.");
+        CEGUI_THROW(RendererException("Direct3D8Texture::loadFromMemory failed: "
+            "IDirect3DTexture8::LockRect failed."));
     }
 
     // copy data from buffer into texture
@@ -278,7 +283,8 @@ void Direct3D8Texture::loadFromMemory(const void* buffer,
 void Direct3D8Texture::saveToMemory(void* buffer)
 {
     // TODO:
-    throw RendererException("Direct3D8Texture::saveToMemory - Unimplemented!");
+    CEGUI_THROW(RendererException(
+        "Direct3D8Texture::saveToMemory - Unimplemented!"));
 }
 
 //----------------------------------------------------------------------------//

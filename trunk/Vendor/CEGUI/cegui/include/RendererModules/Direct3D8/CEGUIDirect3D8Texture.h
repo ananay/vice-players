@@ -1,7 +1,7 @@
 /***********************************************************************
     filename:   CEGUIDirect3D8Texture.h
-    created:    Thu Aug 19 2010
-    author:     Justin "ReGeX" Snyder
+    created:    Thu Jul 29 2010
+    author:     Mark Rohrbacher
 *************************************************************************/
 /***************************************************************************
  *   Copyright (C) 2004 - 2009 Paul D Turner & The CEGUI Development Team
@@ -36,23 +36,24 @@
 // Start of CEGUI namespace section
 namespace CEGUI
 {
+
 //! Texture implementation for the Direct3D8Renderer.
-class Direct3D8_GUIRENDERER_API Direct3D8Texture : public Texture
+class DIRECT3D8_GUIRENDERER_API Direct3D8Texture : public Texture
 {
 public:
     /*!
     \brief
-        set the D3D9 texture that this Texture is based on to the specified
+        set the D3D8 texture that this Texture is based on to the specified
         texture.
     */
     void setDirect3D8Texture(LPDIRECT3DTEXTURE8 tex);
 
     /*!
     \brief
-        Return the internal D3D9 texture used by this Texture object.
+        Return the internal D3D8 texture used by this Texture object.
 
     \return
-        Pointer to the D3D9 texture interface that this object is using.
+        Pointer to the D3D8 texture interface that this object is using.
     */
     LPDIRECT3DTEXTURE8 getDirect3D8Texture() const;
 
@@ -65,10 +66,10 @@ public:
     */
     void setOriginalDataSize(const Size& sz);
 
-    //! auto called via the Renderer prior to Reset on the Direct3DDevice9.
+    //! auto called via the Renderer prior to Reset on the Direct3DDevice8.
     void preD3DReset();
 
-    //! auto called via the Renderer after Reset on the Direct3DDevice9.
+    //! auto called via the Renderer after Reset on the Direct3DDevice8.
     void postD3DReset();
 
     // implement abstract members from base class.
@@ -95,7 +96,7 @@ protected:
                      const String& resourceGroup);
     //! Construct texture with a given size.
     Direct3D8Texture(Direct3D8Renderer& owner, const Size& sz);
-    //! Construct texture that wraps an existing D3D9 texture.
+    //! Construct texture that wraps an existing D3D8 texture.
     Direct3D8Texture(Direct3D8Renderer& owner, LPDIRECT3DTEXTURE8 tex);
     //! Destructor.
     virtual ~Direct3D8Texture();
@@ -109,7 +110,7 @@ protected:
 
     //! Direct3D8Renderer object that created and owns this texture.
     Direct3D8Renderer& d_owner;
-    //! The D3D9 texture we're wrapping.
+    //! The D3D8 texture we're wrapping.
     LPDIRECT3DTEXTURE8 d_texture;
     //! Size of the texture.
     Size d_size;

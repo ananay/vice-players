@@ -169,7 +169,6 @@ HRESULT __stdcall IDirect3DDevice8Hook::Reset(D3DPRESENT_PARAMETERS* pPresentati
 
 HRESULT __stdcall IDirect3DDevice8Hook::Present(CONST RECT* pSourceRect, CONST RECT* pDestRect, HWND hDestWindowOverride, CONST RGNDATA* pDirtyRegion)
 {
-
 	return m_pDevice->Present(pSourceRect, pDestRect, hDestWindowOverride, pDirtyRegion);
 }
 
@@ -270,7 +269,6 @@ HRESULT __stdcall IDirect3DDevice8Hook::BeginScene()
 
 HRESULT __stdcall IDirect3DDevice8Hook::EndScene()
 {	
-
 	DWORD token = 0;
     CreateStateBlock ( D3DSBT_ALL, &token );
 

@@ -1,7 +1,7 @@
 /***********************************************************************
     filename:   CEGUIDirect3D8ViewportTarget.cpp
-    created:    Thu Aug 19 2010
-    author:     Justin "ReGeX" Snyder
+    created:    Thu Jul 29 2010
+    author:     Mark Rohrbacher
 *************************************************************************/
 /***************************************************************************
  *   Copyright (C) 2004 - 2009 Paul D Turner & The CEGUI Development Team
@@ -42,8 +42,8 @@ Direct3D8ViewportTarget::Direct3D8ViewportTarget(Direct3D8Renderer& owner) :
     // initialise renderer size
     D3DVIEWPORT8 vp;
     if (FAILED(d_owner.getDevice()->GetViewport(&vp)))
-        throw RendererException("Direct3D8RenderTarget: Unable to access "
-        "required view port information from Direct3DDevice9.");
+        CEGUI_THROW(RendererException("Direct3D8RenderTarget: Unable to access "
+            "required view port information from Direct3DDevice8."));
 
     Rect area(
         Point(static_cast<float>(vp.X), static_cast<float>(vp.Y)),

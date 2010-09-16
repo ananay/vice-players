@@ -92,7 +92,8 @@ CCheckpoint::CCheckpoint(EntityId id, Vector3 vecPos, BYTE type, float radius)
 	m_sphereID = CreateSphere(&vecPos, radius);
 	ScriptCommand(&create_icon_marker_without_sphere, vecPos.X, vecPos.Y, vecPos.Z, 0, &m_dwMarker);
 	ScriptCommand(&set_marker_color, m_dwMarker, 5);
-	ScriptCommand(&show_on_radar, m_dwMarker, 2);
+	pGame->SetMarkerColor(m_dwMarker, 5);
+	pGame->ShowMarker(m_dwMarker, 2);
 }
 
 CCheckpoint::~CCheckpoint()

@@ -1,7 +1,7 @@
 /***********************************************************************
     filename:   CEGUIDirect3D8TextureTarget.cpp
-    created:    Thu Aug 19 2010
-    author:     Justin "ReGeX" Snyder
+    created:    Thu Jul 29 2010
+    author:     Mark Rohrbacher
 *************************************************************************/
 /***************************************************************************
  *   Copyright (C) 2004 - 2009 Paul D Turner & The CEGUI Development Team
@@ -153,22 +153,31 @@ void Direct3D8TextureTarget::cleanupRenderTexture()
 void Direct3D8TextureTarget::enableRenderTexture()
 {
     LPDIRECT3DSURFACE8 oldSurface;
+    LPDIRECT3DSURFACE8 oldDepthStencilSurface;
     d_device->GetRenderTarget(&oldSurface);
+    d_device->GetDepthStencilSurface(&oldDepthStencilSurface);
 
     if (oldSurface && oldSurface != d_surface)
     {
         d_prevColourSurface = oldSurface;
-        d_device->SetRenderTarget(d_surface, 0);
+        d_prevDepthStencilSurface = oldDepthStencilSurface;
+        d_device->SetRenderTarget(d_surface,0);
     }
-    else if (oldSurface)
-        oldSurface->Release();
+    else
+    {
+        if (oldSurface)
+            oldSurface->Release();
+        if (oldDepthStencilSurface)
+            oldDepthStencilSurface->Release();
+    }
 }
 
 //----------------------------------------------------------------------------//
 void Direct3D8TextureTarget::disableRenderTexture()
 {
-    d_device->SetRenderTarget(d_prevColourSurface, 0);
+    d_device->SetRenderTarget(d_prevColourSurface, d_prevDepthStencilSurface);
     d_prevColourSurface->Release();
+    d_prevDepthStencilSurface->Release();
 }
 
 //----------------------------------------------------------------------------//

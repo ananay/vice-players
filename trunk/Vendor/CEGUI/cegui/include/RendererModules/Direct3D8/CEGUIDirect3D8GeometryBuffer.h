@@ -1,10 +1,10 @@
 /***********************************************************************
     filename:   CEGUIDirect3D8GeometryBuffer.h
-    created:    Thu Aug 19 2010
-    author:     Justin "ReGeX" Snyder
+    created:    Thu Jul 29 2010
+    author:     Mark Rohrbacher
 *************************************************************************/
 /***************************************************************************
- *   Copyright (C) 2004 - 2009 Paul D Turner & The CEGUI Development Team
+ *   Copyright (C) 2004 - 2010 Paul D Turner & The CEGUI Development Team
  *
  *   Permission is hereby granted, free of charge, to any person obtaining
  *   a copy of this software and associated documentation files (the
@@ -49,11 +49,11 @@ class Direct3D8Texture;
 \brief
     Direct3D8 based implementation of the GeometryBuffer interface.
 */
-class Direct3D8_GUIRENDERER_API Direct3D8GeometryBuffer : public GeometryBuffer
+class DIRECT3D8_GUIRENDERER_API Direct3D8GeometryBuffer : public GeometryBuffer
 {
 public:
     //! Constructor
-    Direct3D8GeometryBuffer(LPDIRECT3DDEVICE8 device);
+    Direct3D8GeometryBuffer(Direct3D8Renderer& owner, LPDIRECT3DDEVICE8 device);
 
     //! return pointer to D3DXMATRIX used as world transform.
     const D3DXMATRIX* getMatrix() const;
@@ -91,6 +91,8 @@ protected:
         float tu, tv;
     };
 
+    //! Owning Direct3D8Renderer object
+    Direct3D8Renderer& d_owner;
     //! last texture that was set as active
     Direct3D8Texture* d_activeTexture;
     //! type to track info for per-texture sub batches of geometry

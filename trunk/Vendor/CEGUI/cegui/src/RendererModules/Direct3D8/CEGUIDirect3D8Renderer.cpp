@@ -1,10 +1,10 @@
 /***********************************************************************
     filename:   CEGUIDirect3D8Renderer.cpp
-    created:    Thu Aug 19 2010
-    author:     Justin "ReGeX" Snyder
+    created:    Thu Jul 29 2010
+    author:     Mark Rohrbacher
 *************************************************************************/
 /***************************************************************************
- *   Copyright (C) 2004 - 2009 Paul D Turner & The CEGUI Development Team
+ *   Copyright (C) 2004 - 2010 Paul D Turner & The CEGUI Development Team
  *
  *   Permission is hereby granted, free of charge, to any person obtaining
  *   a copy of this software and associated documentation files (the
@@ -35,7 +35,7 @@
 #include "CEGUIDirect3D8ViewportTarget.h"
 #include "CEGUIDirect3D8TextureTarget.h"
 #include "CEGUISystem.h"
-
+#include "CEGUIDefaultResourceProvider.h"
 #include <algorithm>
 
 // Start of CEGUI namespace section
@@ -43,7 +43,7 @@ namespace CEGUI
 {
 //----------------------------------------------------------------------------//
 String Direct3D8Renderer::d_rendererID(
-"CEGUI::Direct3D8Renderer - Official Direct3D 8.1 based 2nd generation renderer "
+"CEGUI::Direct3D8Renderer - Official Direct3D 8 based 2nd generation renderer "
 "module.");
 
 //----------------------------------------------------------------------------//
@@ -54,6 +54,39 @@ static const D3DMATRIX s_identityMatrix =
     0.0, 0.0, 1.0, 0.0,
     0.0, 0.0, 0.0, 1.0
 };
+
+//----------------------------------------------------------------------------//
+Direct3D8Renderer& Direct3D8Renderer::bootstrapSystem(LPDIRECT3DDEVICE8 device)
+{
+    if (System::getSingletonPtr())
+        CEGUI_THROW(InvalidRequestException(
+            "Direct3D8Renderer::bootstrapSystem: CEGUI::System object is "
+            "already initialised."));
+
+    Direct3D8Renderer& renderer(create(device));
+    DefaultResourceProvider* rp = new CEGUI::DefaultResourceProvider();
+    System::create(renderer, rp);
+
+    return renderer;
+}
+
+//----------------------------------------------------------------------------//
+void Direct3D8Renderer::destroySystem()
+{
+    System* sys;
+    if (!(sys = System::getSingletonPtr()))
+        CEGUI_THROW(InvalidRequestException("Direct3D8Renderer::destroySystem: "
+            "CEGUI::System object is not created or was already destroyed."));
+
+    Direct3D8Renderer* renderer =
+        static_cast<Direct3D8Renderer*>(sys->getRenderer());
+    DefaultResourceProvider* rp =
+        static_cast<DefaultResourceProvider*>(sys->getResourceProvider());
+
+    System::destroy();
+    delete rp;
+    destroy(*renderer);
+}
 
 //----------------------------------------------------------------------------//
 Direct3D8Renderer& Direct3D8Renderer::create(LPDIRECT3DDEVICE8 device)
@@ -76,7 +109,7 @@ RenderingRoot& Direct3D8Renderer::getDefaultRenderingRoot()
 //----------------------------------------------------------------------------//
 GeometryBuffer& Direct3D8Renderer::createGeometryBuffer()
 {
-    Direct3D8GeometryBuffer* b = new Direct3D8GeometryBuffer(d_device);
+    Direct3D8GeometryBuffer* b = new Direct3D8GeometryBuffer(*this, d_device);
     d_geometryBuffers.push_back(b);
     return *b;
 }
@@ -181,10 +214,10 @@ void Direct3D8Renderer::destroyAllTextures()
 //----------------------------------------------------------------------------//
 void Direct3D8Renderer::beginRendering()
 {
-    // no shaders initially
     d_device->SetVertexShader(D3DFVF_XYZ | D3DFVF_DIFFUSE | D3DFVF_TEX1);
 
-	d_device->SetPixelShader(0);
+    // no pixel shaders initially
+    d_device->SetPixelShader(0);
 
     // set device states
     d_device->SetRenderState(D3DRS_LIGHTING, FALSE);
@@ -193,7 +226,6 @@ void Direct3D8Renderer::beginRendering()
     d_device->SetRenderState(D3DRS_ALPHATESTENABLE, FALSE);
     d_device->SetRenderState(D3DRS_CULLMODE, D3DCULL_NONE);
     d_device->SetRenderState(D3DRS_FILLMODE, D3DFILL_SOLID);
-	d_device->SetRenderState(D3DRS_CLIPPING, TRUE); // we need this for our "scissoring"
     d_device->SetRenderState(D3DRS_ZWRITEENABLE, FALSE);
 
     // setup texture addressing settings
@@ -219,11 +251,12 @@ void Direct3D8Renderer::beginRendering()
 
     // setup scene alpha blending
     d_device->SetRenderState(D3DRS_ALPHABLENDENABLE, TRUE);
-    d_device->SetRenderState(D3DRS_SRCBLEND, D3DBLEND_SRCALPHA);
-    d_device->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA);
+
+    // put alpha blend operations into a known state
+    setupRenderingBlendMode(BM_NORMAL, true);
 
     // set view matrix back to identity.
-    d_device->SetTransform(D3DTS_PROJECTION, &s_identityMatrix);
+    d_device->SetTransform(D3DTS_VIEW, &s_identityMatrix);
 }
 
 //----------------------------------------------------------------------------//
@@ -277,7 +310,6 @@ Direct3D8Renderer::Direct3D8Renderer(LPDIRECT3DDEVICE8 device) :
     d_defaultRoot(0),
     d_defaultTarget(0)
 {
-
     D3DCAPS8 caps;
     device->GetDeviceCaps(&caps);
 
@@ -307,10 +339,12 @@ Direct3D8Renderer::~Direct3D8Renderer()
 Size Direct3D8Renderer::getViewportSize()
 {
     D3DVIEWPORT8 vp;
+
     if (FAILED(d_device->GetViewport(&vp)))
-        throw RendererException("Direct3D8RenderTarget: Unable to access "
-        "required view port information from Direct3DDevice8.");
-	else
+        CEGUI_THROW(RendererException(
+            "Direct3D8Renderer::getViewportSize - Unable to access required "
+            "view port information from Direct3DDevice8."));
+    else
         return Size(static_cast<float>(vp.Width),
                     static_cast<float>(vp.Height));
 }
@@ -408,6 +442,31 @@ float Direct3D8Renderer::getSizeNextPOT(float sz) const
     }
 
     return static_cast<float>(size);
+}
+
+//----------------------------------------------------------------------------//
+void Direct3D8Renderer::setupRenderingBlendMode(const BlendMode mode,
+                                                const bool force)
+{
+    // exit if no change (and setup not forced)
+    if ((d_activeBlendMode == mode) && !force)
+        return;
+
+    d_activeBlendMode = mode;
+
+
+    if (d_activeBlendMode == BM_RTT_PREMULTIPLIED)
+    {
+        d_device->SetRenderState(D3DRS_SRCBLEND, D3DBLEND_ONE);
+        d_device->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA);
+        d_device->SetRenderState(D3DRS_BLENDOP, D3DBLENDOP_ADD);
+    }
+    else
+    {
+        d_device->SetRenderState(D3DRS_SRCBLEND, D3DBLEND_SRCALPHA);
+        d_device->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA);
+        d_device->SetRenderState(D3DRS_BLENDOP, D3DBLENDOP_ADD);
+    }
 }
 
 //----------------------------------------------------------------------------//

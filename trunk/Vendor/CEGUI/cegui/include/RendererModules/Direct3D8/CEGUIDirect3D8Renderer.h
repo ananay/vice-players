@@ -1,10 +1,10 @@
 /***********************************************************************
     filename:   CEGUIDirect3D8Renderer.h
-    created:    Thu Aug 19 2010
-    author:     Justin "ReGeX" Snyder
+    created:    Thu Jul 29 2010
+    author:     Mark Rohrbacher
 *************************************************************************/
 /***************************************************************************
- *   Copyright (C) 2004 - 2009 Paul D Turner & The CEGUI Development Team
+ *   Copyright (C) 2004 - 2010 Paul D Turner & The CEGUI Development Team
  *
  *   Permission is hereby granted, free of charge, to any person obtaining
  *   a copy of this software and associated documentation files (the
@@ -37,13 +37,13 @@
 #include <vector>
 
 #if (defined( __WIN32__ ) || defined( _WIN32 )) && !defined(CEGUI_STATIC)
-#   ifdef Direct3D8_GUIRENDERER_EXPORTS
-#       define Direct3D8_GUIRENDERER_API __declspec(dllexport)
+#   ifdef DIRECT3D8_GUIRENDERER_EXPORTS
+#       define DIRECT3D8_GUIRENDERER_API __declspec(dllexport)
 #   else
-#       define Direct3D8_GUIRENDERER_API __declspec(dllimport)
+#       define DIRECT3D8_GUIRENDERER_API __declspec(dllimport)
 #   endif
 #else
-#   define Direct3D8_GUIRENDERER_API
+#   define DIRECT3D8_GUIRENDERER_API
 #endif
 
 #if defined(_MSC_VER)
@@ -61,9 +61,45 @@ class Direct3D8GeometryBuffer;
 \brief
     Renderer class to interface with Direct3D 8.
 */
-class Direct3D8_GUIRENDERER_API Direct3D8Renderer : public Renderer
+class DIRECT3D8_GUIRENDERER_API Direct3D8Renderer : public Renderer
 {
 public:
+    /*!
+    \brief
+        Convenience function that creates the required objects to initialise the
+        CEGUI system.
+
+        This will create and initialise the following objects for you:
+        - CEGUI::Direct3D8Renderer
+        - CEGUI::DefaultResourceProvider
+        - CEGUI::System
+
+    \param device
+        LPDIRECT3DDEVICE8 of the device that is to be used for CEGUI
+        rendering operations.
+
+    \return
+        Reference to the CEGUI::Direct3D8Renderer object that was created.
+    */
+    static Direct3D8Renderer& bootstrapSystem(LPDIRECT3DDEVICE8 device);
+
+    /*!
+    \brief
+        Convenience function to cleanup the CEGUI system and related objects
+        that were created by calling the bootstrapSystem function.
+
+        This function will destroy the following objects for you:
+        - CEGUI::System
+        - CEGUI::DefaultResourceProvider
+        - CEGUI::Direct3D8Renderer
+
+    \note
+        If you did not initialise CEGUI by calling the bootstrapSystem function,
+        you should \e not call this, but rather delete any objects you created
+        manually.
+    */
+    static void destroySystem();
+
     /*!
     \brief
         Create an Direct3D8Renderer object.
@@ -79,13 +115,13 @@ public:
     */
     static void destroy(Direct3D8Renderer& renderer);
 
-	//! support function to be called prior to a Reset on the Direct3DDevice9.
+	//! support function to be called prior to a Reset on the Direct3DDevice8.
     void preD3DReset();
 
-    //! support function to be called after a Reset on the Direct3DDevice9.
+    //! support function to be called after a Reset on the Direct3DDevice8.
     void postD3DReset();
 
-    //! return the Direct3D 9 Device interface used by this renderer object.
+    //! return the Direct3D 8 Device interface used by this renderer object.
     LPDIRECT3DDEVICE8 getDevice() const;
 
     //! create a CEGUI::texture from an existing D3D texture
@@ -99,6 +135,10 @@ public:
 
     //! returns Size object from \a sz adjusted for hardware capabilities.
     Size getAdjustedSize(const Size& sz);
+
+    //! set the render states for the specified BlendMode.
+    void setupRenderingBlendMode(const BlendMode mode,
+                                 const bool force = false);
 
     // implement Renderer interface
     RenderingRoot& getDefaultRenderingRoot();
@@ -135,7 +175,7 @@ private:
 
     //! String holding the renderer identification text.
     static String d_rendererID;
-    //! Direct3DDevice9 interface we were given when constructed.
+    //! Direct3DDevice8 interface we were given when constructed.
     LPDIRECT3DDEVICE8 d_device;
     //! What the renderer considers to be the current display size.
     Size d_displaySize;
@@ -163,6 +203,8 @@ private:
     bool d_supportNPOTTex;
     //! whether the hardware supports non-square textures.
     bool d_supportNonSquareTex;
+    //! What we think is the active blendine mode
+    BlendMode d_activeBlendMode;
   };
 
 } // End of  CEGUI namespace section

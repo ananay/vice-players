@@ -1,10 +1,10 @@
 /***********************************************************************
     filename:   CEGUIDirect3D8GeometryBuffer.cpp
-    created:    Thu Aug 19 2010
-    author:     Justin "ReGeX" Snyder
+    created:    Thu Jul 29 2010
+    author:     Mark Rohrbacher
 *************************************************************************/
 /***************************************************************************
- *   Copyright (C) 2004 - 2009 Paul D Turner & The CEGUI Development Team
+ *   Copyright (C) 2004 - 2010 Paul D Turner & The CEGUI Development Team
  *
  *   Permission is hereby granted, free of charge, to any person obtaining
  *   a copy of this software and associated documentation files (the
@@ -30,13 +30,16 @@
 #include "CEGUIDirect3D8Texture.h"
 #include "CEGUIRenderEffect.h"
 #include "CEGUIVertex.h"
+#include <windows.h>
 #include <d3d8.h>
 
 // Start of CEGUI namespace section
 namespace CEGUI
 {
 //----------------------------------------------------------------------------//
-Direct3D8GeometryBuffer::Direct3D8GeometryBuffer(LPDIRECT3DDEVICE8 device) :
+Direct3D8GeometryBuffer::Direct3D8GeometryBuffer(Direct3D8Renderer& owner,
+                                                 LPDIRECT3DDEVICE8 device) :
+    d_owner(owner),
     d_activeTexture(0),
     d_translation(0, 0, 0),
     d_rotation(0, 0, 0),
@@ -50,35 +53,15 @@ Direct3D8GeometryBuffer::Direct3D8GeometryBuffer(LPDIRECT3DDEVICE8 device) :
 //----------------------------------------------------------------------------//
 void Direct3D8GeometryBuffer::draw() const
 {
-	// The clipping planes will solve the scissoring.
-	// We use point normal since the coordinates are not transformed, which will boost efficiency on the GPU and CPU.
-	D3DXPLANE pOut;
-	D3DXVECTOR3 pos(d_clipRect.d_left, 0, 0), normal(1, 0, 0);
-	D3DXPlaneFromPointNormal(&pOut, &pos, &normal);
-	d_device->SetClipPlane(0, pOut);
-
-	pos = D3DXVECTOR3(d_clipRect.d_right, 0, 0);
-	normal = D3DXVECTOR3(-1, 0, 0);
-	D3DXPlaneFromPointNormal(&pOut, &pos, &normal);
-	d_device->SetClipPlane(1, pOut);
-
-	pos = D3DXVECTOR3(0, d_clipRect.d_top, 0);
-	normal = D3DXVECTOR3(0, 1, 0);
-	D3DXPlaneFromPointNormal(&pOut, &pos, &normal);
-	d_device->SetClipPlane(2, pOut);
-
-	pos = D3DXVECTOR3(0, d_clipRect.d_bottom, 0);
-	normal = D3DXVECTOR3(0, -1, 0);
-	D3DXPlaneFromPointNormal(&pOut, &pos, &normal);
-	d_device->SetClipPlane(3, pOut);
-
-	d_device->SetRenderState(D3DRS_CLIPPLANEENABLE, D3DCLIPPLANE0 | D3DCLIPPLANE1 | D3DCLIPPLANE2 | D3DCLIPPLANE3);
+    //TODO: Set up clipping for this buffer
 
     // apply the transformations we need to use.
     if (!d_matrixValid)
         updateMatrix();
 
     d_device->SetTransform(D3DTS_WORLD, &d_matrix);
+
+    d_owner.setupRenderingBlendMode(d_blendMode);
 
     const int pass_count = d_effect ? d_effect->getPassCount() : 1;
     for (int pass = 0; pass < pass_count; ++pass)
@@ -128,7 +111,10 @@ void Direct3D8GeometryBuffer::setPivot(const Vector3& p)
 //----------------------------------------------------------------------------//
 void Direct3D8GeometryBuffer::setClippingRegion(const Rect& region)
 {
-    d_clipRect = region;
+    d_clipRect.d_top    = PixelAligned(region.d_top);
+    d_clipRect.d_bottom = PixelAligned(region.d_bottom);
+    d_clipRect.d_left   = PixelAligned(region.d_left);
+    d_clipRect.d_right  = PixelAligned(region.d_right);
 }
 
 //----------------------------------------------------------------------------//
@@ -232,7 +218,6 @@ void Direct3D8GeometryBuffer::updateMatrix() const
         D3DXToRadian(d_rotation.d_z));
 
     D3DXMatrixTransformation(&d_matrix, 0, 0, 0, &p, &r, &t);
-
     d_matrixValid = true;
 }
 

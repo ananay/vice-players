@@ -1,7 +1,7 @@
 /***********************************************************************
     filename:   CEGUIDirect3D8RenderTarget.h
-    created:    Thu Aug 19 2010
-    author:     Justin "ReGeX" Snyder
+    created:    Thu Jul 29 2010
+    author:     Mark Rohrbacher
 *************************************************************************/
 /***************************************************************************
  *   Copyright (C) 2004 - 2009 Paul D Turner & The CEGUI Development Team
@@ -41,11 +41,12 @@
 // Start of CEGUI namespace section
 namespace CEGUI
 {
+
 /*!
 \brief
     Intermediate Direct3D8 implementation of a RenderTarget.
 */
-class Direct3D8_GUIRENDERER_API Direct3D8RenderTarget : public virtual RenderTarget
+class DIRECT3D8_GUIRENDERER_API Direct3D8RenderTarget : public virtual RenderTarget
 {
 public:
     //! Constructor
@@ -69,7 +70,7 @@ protected:
 
     //! Direct3D8Renderer that created this object
     Direct3D8Renderer& d_owner;
-    //! Direct3DDevice9 interface obtained from our owner.
+    //! Direct3DDevice8 interface obtained from our owner.
     LPDIRECT3DDEVICE8 d_device;
     //! holds defined area for the RenderTarget
     Rect d_area;
