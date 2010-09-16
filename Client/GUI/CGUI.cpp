@@ -678,7 +678,7 @@ void CGUI::SetCursorVisible(bool bVisible)
 	}
 }
 
-bool CGUI::IsCursorVisible(bool bVisible)
+bool CGUI::IsCursorVisible()
 {
 	if(m_bInitialized)
 		return m_pCursor->isVisible();

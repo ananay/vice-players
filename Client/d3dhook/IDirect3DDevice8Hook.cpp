@@ -170,19 +170,6 @@ HRESULT __stdcall IDirect3DDevice8Hook::Reset(D3DPRESENT_PARAMETERS* pPresentati
 HRESULT __stdcall IDirect3DDevice8Hook::Present(CONST RECT* pSourceRect, CONST RECT* pDestRect, HWND hDestWindowOverride, CONST RGNDATA* pDirtyRegion)
 {
 
-	DWORD token = 0;
-    CreateStateBlock ( D3DSBT_ALL, &token );
-
-	if(pGUI) pGUI->Render();
-
-    // Restore the render states
-    if ( token != 0 )
-    {
-		ApplyStateBlock(token);
-    }
-
-	DeleteStateBlock(token);
-
 	return m_pDevice->Present(pSourceRect, pDestRect, hDestWindowOverride, pDirtyRegion);
 }
 
@@ -283,6 +270,19 @@ HRESULT __stdcall IDirect3DDevice8Hook::BeginScene()
 
 HRESULT __stdcall IDirect3DDevice8Hook::EndScene()
 {	
+
+	DWORD token = 0;
+    CreateStateBlock ( D3DSBT_ALL, &token );
+
+	if(pGUI) pGUI->Render();
+
+    // Restore the render states
+    if ( token != 0 )
+    {
+		ApplyStateBlock(token);
+    }
+
+	DeleteStateBlock(token);
 	TheSceneEnd();
 	return m_pDevice->EndScene();
 }

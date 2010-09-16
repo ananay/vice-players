@@ -121,7 +121,7 @@ public:
 	CGUIMultiColumnList * CreateGUIMultiColumnList(CEGUI::String &sName, CEGUI::Window * pParentWindow = NULL);
 	CGUIMultiColumnList * CreateGUIMultiColumnList(CEGUI::Window * pParentWindow = NULL);
 	void SetCursorVisible(bool bVisible);
-	bool IsCursorVisible(bool bVisible);
+	bool IsCursorVisible();
 	void OnLostDevice();
 	void OnResetDevice();
 	void MsgProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
