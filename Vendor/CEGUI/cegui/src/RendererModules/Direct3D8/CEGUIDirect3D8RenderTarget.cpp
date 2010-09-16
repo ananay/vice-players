@@ -1,7 +1,7 @@
 /***********************************************************************
     filename:   CEGUIDirect3D8RenderTarget.cpp
-    created:    Thu Aug 19 2010
-    author:     Justin "ReGeX" Snyder
+    created:    Thu Jul 29 2010
+    author:     Mark Rohrbacher
 *************************************************************************/
 /***************************************************************************
  *   Copyright (C) 2004 - 2009 Paul D Turner & The CEGUI Development Team
@@ -69,27 +69,17 @@ const Rect& Direct3D8RenderTarget::getArea() const
     return d_area;
 }
 
-static const D3DMATRIX s_identityMatrix =
-{
-    1.0, 0.0, 0.0, 0.0,
-    0.0, 1.0, 0.0, 0.0,
-    0.0, 0.0, 1.0, 0.0,
-    0.0, 0.0, 0.0, 1.0
-};
-
 //----------------------------------------------------------------------------//
 void Direct3D8RenderTarget::activate()
 {
-	D3DVIEWPORT8 vp;
-    setupViewport(vp);
-    d_device->SetViewport(&vp);
-
     if (!d_matrixValid)
         updateMatrix();
 
-    //
+    D3DVIEWPORT8 vp;
+    setupViewport(vp);
+    d_device->SetViewport(&vp);
+
     d_owner.getDevice()->SetTransform(D3DTS_PROJECTION, &d_matrix);
-	d_owner.getDevice()->SetTransform(D3DTS_VIEW, &s_identityMatrix);
 }
 
 //----------------------------------------------------------------------------//
@@ -108,11 +98,8 @@ void Direct3D8RenderTarget::unprojectPoint(const GeometryBuffer& buff,
     const Direct3D8GeometryBuffer& gb =
         static_cast<const Direct3D8GeometryBuffer&>(buff);
 
-
-
     D3DVIEWPORT8 vp;
     setupViewport(vp);
-	d_device->SetViewport(&vp);
 
     D3DXVECTOR3 in_vec;
     in_vec.z = 0.0f;
@@ -161,25 +148,24 @@ void Direct3D8RenderTarget::unprojectPoint(const GeometryBuffer& buff,
 //----------------------------------------------------------------------------//
 void Direct3D8RenderTarget::updateMatrix() const
 {
-	const float w = d_area.getWidth();
+    const float fov = 0.523598776f;
+    const float w = d_area.getWidth();
     const float h = d_area.getHeight();
     const float aspect = w / h;
     const float midx = w * 0.5f;
     const float midy = h * 0.5f;
     d_viewDistance = midx / (aspect * 0.267949192431123f);
 
-	D3DXMatrixPerspectiveFovRH(&d_matrix, 0.523598776f, aspect,
-                                                   d_viewDistance * 0.5f,
-                                                   d_viewDistance * 2.0f);
-
-	D3DXMATRIX tmp;
-
     D3DXVECTOR3 eye(midx, midy, -d_viewDistance);
     D3DXVECTOR3 at(midx, midy, 1);
     D3DXVECTOR3 up(0, -1, 0);
 
-	D3DXMatrixLookAtRH(&tmp, &eye, &at, &up);
-	D3DXMatrixMultiply(&d_matrix, &tmp, &d_matrix);
+    D3DXMATRIX tmp;
+    D3DXMatrixMultiply(&d_matrix,
+        D3DXMatrixLookAtRH(&d_matrix, &eye, &at, &up),
+        D3DXMatrixPerspectiveFovRH(&tmp, fov, aspect,
+                                   d_viewDistance * 0.5f,
+                                   d_viewDistance * 2.0f));
 
     d_matrixValid = true;
 }
@@ -192,7 +178,7 @@ void Direct3D8RenderTarget::setupViewport(D3DVIEWPORT8& vp) const
     vp.Width = static_cast<DWORD>(d_area.getWidth());
     vp.Height = static_cast<DWORD>(d_area.getHeight());
     vp.MinZ = 0.0f;
-    vp.MaxZ = 0.0f;
+    vp.MaxZ = 1.0f;
 }
 
 //----------------------------------------------------------------------------//

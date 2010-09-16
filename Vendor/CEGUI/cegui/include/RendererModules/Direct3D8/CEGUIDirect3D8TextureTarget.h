@@ -1,7 +1,7 @@
 /***********************************************************************
     filename:   CEGUIDirect3D8TextureTarget.h
-    created:    Thu Aug 19 2010
-    author:     Justin "ReGeX" Snyder
+    created:    Thu Jul 29 2010
+    author:     Mark Rohrbacher
 *************************************************************************/
 /***************************************************************************
  *   Copyright (C) 2004 - 2009 Paul D Turner & The CEGUI Development Team
@@ -31,7 +31,7 @@
 #include "CEGUIDirect3D8RenderTarget.h"
 #include "../../CEGUITextureTarget.h"
 #include "../../CEGUIRect.h"
-#include <d3d9.h>
+#include <d3d8.h>
 
 #if defined(_MSC_VER)
 #   pragma warning(push)
@@ -45,17 +45,17 @@ namespace CEGUI
 class Direct3D8Texture;
 
 //! Direct3D8TextureTarget - allows rendering to an Direct3D8 texture via .
-class Direct3D8_GUIRENDERER_API Direct3D8TextureTarget : public Direct3D8RenderTarget,
+class DIRECT3D8_GUIRENDERER_API Direct3D8TextureTarget : public Direct3D8RenderTarget,
                                                          public TextureTarget
 {
 public:
     Direct3D8TextureTarget(Direct3D8Renderer& owner);
     virtual ~Direct3D8TextureTarget();
 
-    //! auto called via the Renderer prior to Reset on the Direct3DDevice9.
+    //! auto called via the Renderer prior to Reset on the Direct3DDevice8.
     void preD3DReset();
 
-    //! auto called via the Renderer after Reset on the Direct3DDevice9.
+    //! auto called via the Renderer after Reset on the Direct3DDevice8.
     void postD3DReset();
 
     // overrides from Direct3D8RenderTarget
@@ -93,6 +93,7 @@ protected:
     Direct3D8Texture* d_CEGUITexture;
     //! colour surface that was in use before this target was activated.
     LPDIRECT3DSURFACE8 d_prevColourSurface;
+    LPDIRECT3DSURFACE8 d_prevDepthStencilSurface;
 };
 
 } // End of  CEGUI namespace section

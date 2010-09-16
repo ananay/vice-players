@@ -12,12 +12,12 @@
 #include "CGUI.h"
 
 #define LOG_PATH "CEGUI.log"
-//#define STYLE_SCHEME "VanillaSkin.scheme"
-#define STYLE_SCHEME "WindowsLook.scheme"
-//#define STYLE_PREFIX "Vanilla"
-#define STYLE_PREFIX "WindowsLook"
-//#define STYLE_IMAGES "Vanilla-Images"
-#define STYLE_IMAGES "WindowsLook"
+#define STYLE_SCHEME "VanillaSkin.scheme"
+//#define STYLE_SCHEME "WindowsLook.scheme"
+#define STYLE_PREFIX "Vanilla"
+//#define STYLE_PREFIX "WindowsLook"
+#define STYLE_IMAGES "Vanilla-Images"
+//#define STYLE_IMAGES "WindowsLook"
 
 extern HWND hWND;
 

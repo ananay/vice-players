@@ -78,3 +78,16 @@ SQInteger sq_showCursor(SQVM * pVM)
 	sq_pushbool(pVM, true);
 	return 1;
 }
+
+SQInteger sq_showMessage(SQVM * pVM)
+{
+	const char * message;
+	const char * title;
+	sq_getstring(pVM, -2, &title);
+	sq_getstring(pVM, -1, &message);
+
+	pGUI->ShowMessageBox(message, title);
+
+	sq_pushbool(pVM, true);
+	return 1;
+}

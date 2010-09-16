@@ -72,19 +72,21 @@ HRESULT STDMETHODCALLTYPE IDirectInputDevice8Hook::Unacquire()
 
 HRESULT STDMETHODCALLTYPE IDirectInputDevice8Hook::GetDeviceState(DWORD p0, LPVOID p1)
 {
-	if(pGUI->IsCursorVisible())
-		memset(p1, 0, p0);
-
 	HRESULT hResult = m_pDIDevice->GetDeviceState(p0, p1);
+	if(!pGUI->IsCursorVisible())
+	{
+		memset(p1, 0, p0);
+	}
 	return hResult;
 }
 
 HRESULT STDMETHODCALLTYPE IDirectInputDevice8Hook::GetDeviceData(DWORD p0, LPDIDEVICEOBJECTDATA p1, LPDWORD p2, DWORD p3)
 {
-	if(pGUI->IsCursorVisible())
-		memset(p1, 0, (p0 * (*p2)));
-
 	HRESULT hResult = m_pDIDevice->GetDeviceData(p0, p1, p2, p3);
+	if(!pGUI->IsCursorVisible())
+	{
+		memset(p1, 0, (p0 * (*p2)));
+	}
 	return hResult;
 }
 
