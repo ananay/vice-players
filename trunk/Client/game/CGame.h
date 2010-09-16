@@ -60,6 +60,8 @@ public:
 		
 	int		GetWeaponModelFromWeapon(int iWeaponID);
 	void	ToggleKeyInputsDisabled(BOOL bDisable);
+	void	SetInputsEnabled(bool bEnabled) { m_bInputsEnabled = bEnabled; };
+	bool	IsInputsEnabled() { return m_bInputsEnabled; };
 	void	StartGame();
 	BOOL	IsMenuActive();
 	void	RequestModel(int iModelID);
@@ -134,6 +136,8 @@ private:
 
 	CCamera			*m_pInternalCamera;
 	CPlayerPed		*m_pInternalPlayer;
+
+	bool			m_bInputsEnabled;
 };
 
 //-----------------------------------------------------------

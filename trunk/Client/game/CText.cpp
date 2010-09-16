@@ -9,9 +9,11 @@
 //-----------------------------------------------------
 
 #include "../main.h"
+#include "../GUI/CGUI.h"
 
 extern IDirect3DDevice8 *pD3DDevice;
 extern CChatWindow * pChatWindow;
+extern CGUI * pGUI;
 
 CText::CText(EntityId TextID, DWORD color, char * szFontName, int iSize, float fRelativePosX, float fRelativePosY, char * szText)
 {

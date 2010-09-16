@@ -74,6 +74,7 @@ SQInteger sq_showCursor(SQVM * pVM)
 	sq_getbool(pVM, -1, &show);
 
 	pGUI->SetCursorVisible(show != 0);
+	pGame->SetInputsEnabled(!show != 0);
 
 	sq_pushbool(pVM, true);
 	return 1;
