@@ -9,6 +9,7 @@
 
 #include "sq_graphic_natives.h"
 #include "../main.h"
+#include "../GUI/CGUI.h"
 #include "../game/util.h"
 
 extern CGame *pGame;
@@ -16,6 +17,8 @@ extern CNetGame *pNetGame;
 extern CChatWindow *pChatWindow;
 extern IDirect3DDevice8 *pD3DDevice;
 extern D3DDISPLAYMODE D3DDisplayMode;
+
+extern CGUI *pGUI;
 
 using namespace RakNet;
 
@@ -62,5 +65,16 @@ SQInteger sq_getResolution(SQVM * pVM)
 	sq_pushinteger(pVM, mode.Height);
 	sq_arrayappend(pVM, -2);
 	sq_push(pVM, -1);
+	return 1;
+}
+
+SQInteger sq_showCursor(SQVM * pVM)
+{
+	SQBool show;
+	sq_getbool(pVM, -1, &show);
+
+	pGUI->SetCursorVisible(show != 0);
+
+	sq_pushbool(pVM, true);
 	return 1;
 }

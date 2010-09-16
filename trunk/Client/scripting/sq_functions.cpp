@@ -35,6 +35,7 @@ int sq_register_natives(SQVM * pVM)
 	RegisterFunction(pVM, "getResolution", sq_getResolution, -1, NULL);
 	RegisterFunction(pVM, "drawText", sq_drawText, 8, ".nnsiiii");
 	RegisterFunction(pVM, "drawBox", sq_drawBox, 9, ".nnnniiii");
+	RegisterFunction(pVM, "showCursor", sq_showCursor, 2, ".b");
 
 	return 1;
 }
