@@ -542,6 +542,11 @@ void Pause(RakNet::BitStream *bitStream, Packet *packet)
 	bitStream->Read(Pause);
 
 	pPlayer->SetPause(Pause);
+
+	if(Pause)
+		pScripts->onPlayerPause(playerID);
+	else
+		pScripts->onPlayerUnpause(playerID);
 }
 
 //----------------------------------------------------

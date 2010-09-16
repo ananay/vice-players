@@ -70,4 +70,7 @@ public:
 
 	void onCheckpointEnter(int playerId, int cpId);
 	void onCheckpointLeave(int playerId, int cpId);
+
+	void onPlayerPause(int playerId);
+	void onPlayerUnpause(int playerId);
 };

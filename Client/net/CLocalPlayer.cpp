@@ -138,8 +138,9 @@ BOOL CLocalPlayer::Process()
 		pNetGame->GetGameLogic()->HandleClassSelection(this);
 		return TRUE;
 	}
-	if (pGame->IsMenuActive() != m_bPause)
+	if (m_bIsActive && !m_bIsWasted && pGame->IsMenuActive() != m_bPause)
 	{
+		logprintf("ismenuactive: %i m_bPause %i", pGame->IsMenuActive(), m_bPause);
 		m_bPause = pGame->IsMenuActive();
 		SendPauseNotification(m_bPause);
 	}

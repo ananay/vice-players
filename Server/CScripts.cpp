@@ -1163,3 +1163,71 @@ void CScripts::onCheckpointLeave(int playerId, int cpId)
 		}
 	}
 }
+
+void CScripts::onPlayerPause(int playerId)
+{
+	for(int i = 0; i < MAX_SCRIPTS; i++) {
+		if(m_pScripts[i]) {
+			// get the script vm pointer
+			SQVM * pVM = m_pScripts[i]->GetVM();
+
+			// Get the stack top
+			int iTop = sq_gettop(pVM);
+
+			// Push the root table onto the stack
+			sq_pushroottable(pVM);
+
+			// Push the function name onto the stack
+			sq_pushstring(pVM, "onPlayerPause", -1);
+
+			// Get the closure for the function
+			if(SQ_SUCCEEDED(sq_get(pVM, -2))) {
+				// Push the root table onto the stack
+				sq_pushroottable(pVM);
+
+				// Push the player id id onto the stack
+				sq_pushinteger(pVM, playerId);
+
+				// Call the function
+				sq_call(pVM, 2, true, true);
+			}
+
+			// Restore the stack top
+			sq_settop(pVM, iTop);
+		}
+	}
+}
+
+void CScripts::onPlayerUnpause(int playerId)
+{
+	for(int i = 0; i < MAX_SCRIPTS; i++) {
+		if(m_pScripts[i]) {
+			// get the script vm pointer
+			SQVM * pVM = m_pScripts[i]->GetVM();
+
+			// Get the stack top
+			int iTop = sq_gettop(pVM);
+
+			// Push the root table onto the stack
+			sq_pushroottable(pVM);
+
+			// Push the function name onto the stack
+			sq_pushstring(pVM, "onPlayerUnpause", -1);
+
+			// Get the closure for the function
+			if(SQ_SUCCEEDED(sq_get(pVM, -2))) {
+				// Push the root table onto the stack
+				sq_pushroottable(pVM);
+
+				// Push the player id id onto the stack
+				sq_pushinteger(pVM, playerId);
+
+				// Call the function
+				sq_call(pVM, 2, true, true);
+			}
+
+			// Restore the stack top
+			sq_settop(pVM, iTop);
+		}
+	}
+}
