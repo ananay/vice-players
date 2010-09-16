@@ -52,6 +52,8 @@ CGame::CGame()
 
 	// Install all hooks
 	GameInstallHooks();
+
+	m_bInputsEnabled = true;
 }
 
 //-----------------------------------------------------------
@@ -87,7 +89,7 @@ BYTE byteEnableInput[] = { 0x8B, 0x4C, 0x24, 0x04, 0x8B, 0x54 };
 
 void CGame::ToggleKeyInputsDisabled(BOOL bDisable)
 {
-	Unprotect(0x602510, 6);
+	/*Unprotect(0x602510, 6);
 
 	if(bDisable)
 	{
@@ -96,7 +98,8 @@ void CGame::ToggleKeyInputsDisabled(BOOL bDisable)
 	else
 	{
 		memcpy((PVOID)0x602510, byteEnableInput, 6);
-	}
+	}*/
+
 }
 
 //-----------------------------------------------------------
