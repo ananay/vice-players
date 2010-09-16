@@ -11,6 +11,7 @@
 
 #include "main.h"
 #include "CScreenshot.h"
+#include "GUI/CGUI.h"
 #include <string>
 #include <windowsx.h>
 
@@ -20,6 +21,7 @@ extern CCmdWindow		*pCmdWindow;
 extern IDirect3DDevice8 *pD3DDevice;
 extern BOOL				bShowNameTags;
 extern CNetGame			*pNetGame;
+extern CGUI				*pGUI;
 
 WNDPROC hOldProc;
 LRESULT APIENTRY NewWndProc(HWND,UINT,WPARAM,LPARAM);
@@ -140,6 +142,7 @@ BOOL SubclassGameWindow(HWND hWnd)
 LRESULT APIENTRY NewWndProc( HWND hwnd,UINT uMsg,
 							 WPARAM wParam,LPARAM lParam ) 
 { 
+	if(pGUI) pGUI->MsgProc(hwnd, uMsg, wParam, lParam);
 	switch(uMsg) {
 		case WM_KEYUP:
 			{

@@ -12,6 +12,7 @@
 
 #include "main.h"
 #include <process.h>
+#include "GUI/CGUI.h"
 
 CGame					*pGame=0;
 GAME_SETTINGS			tSettings;
@@ -27,8 +28,9 @@ bool					D3DInited=FALSE;
 
 IDirect3DDevice8		*pD3DDevice;
 IDirectInput8			*pDirectInput;
+CGUI					*pGUI = NULL;
 
-HANDLE					hInstance;
+HANDLE					g_hInstance;
 CScoreBoard				*pScoreBoard;
 CNameTags				*pNameTags;
 CNetStats				*pNetStats;
@@ -59,7 +61,7 @@ BOOL WINAPI DllMain(HINSTANCE hinstDLL, DWORD fdwReason, LPVOID lpvReserved)
 {
 	if(fdwReason == DLL_PROCESS_ATTACH)
 	{
-		hInstance = hinstDLL;
+		g_hInstance = hinstDLL;
 		
 		// Initialize the settings from the command line
 		InitSettings();
@@ -114,6 +116,26 @@ BOOL WINAPI DllMain(HINSTANCE hinstDLL, DWORD fdwReason, LPVOID lpvReserved)
 
 void InitD3DStuff()
 {
+	pGUI = new CGUI(pD3DDevice);
+	pGUI->Initialize();
+
+
+	CGUIStaticText * pVersion = pGUI->CreateGUIStaticText();
+	pVersion->setText("Vice City: Players - Development Version (" __TIME__ ", " __DATE__ ")");
+	CEGUI::Font * pFont = pGUI->GetTahomaBoldFont();
+	float fTextWidth = pFont->getTextExtent("Vice City: Players - Development Version (" __TIME__ ", " __DATE__ ")");
+	float fTextHeight = pFont->getFontHeight();
+	pVersion->setSize(CEGUI::UVector2(CEGUI::UDim(0, fTextWidth), CEGUI::UDim(0, fTextHeight)));
+	float fTextX = pFont->getTextExtent("_");
+	float fTextY = -(fTextX + fTextHeight);
+	pVersion->setPosition(CEGUI::UVector2(CEGUI::UDim(0, fTextX), CEGUI::UDim(1, fTextY)));
+	pVersion->setProperty("BackgroundEnabled", "false");
+	pVersion->setProperty("FrameEnabled", "false");
+	pVersion->setProperty("Font", "Tahoma-Bold");
+	pVersion->setProperty("TextColours", "tl:FFFFFFFF tr:FFFFFFFF bl:FFFFFFFF br:FFFFFFFF");
+	pVersion->setAlpha(155);
+	pVersion->setVisible(true);
+
 	// Create instances of the chat and input classes.
 	pChatWindow = new CChatWindow(pD3DDevice);
 	pCmdWindow = new CCmdWindow(pD3DDevice);

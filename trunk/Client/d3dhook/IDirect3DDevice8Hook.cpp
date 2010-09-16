@@ -8,6 +8,7 @@
 
 // Includes
 #include "../main.h"
+#include "../GUI/CGUI.h"
 
 // Externals
 extern BOOL bWindowedMode;
@@ -18,6 +19,8 @@ extern CChatWindow   *pChatWindow;
 extern CCmdWindow	 *pCmdWindow;
 extern CBBFont		 *bbfont;
 extern D3DMATRIX	 matView;
+
+extern CGUI			 *pGUI;
 
 extern DWORD BarOldStateBlock;
 extern DWORD BarNewStateBlock;
@@ -125,6 +128,9 @@ HRESULT __stdcall IDirect3DDevice8Hook::Reset(D3DPRESENT_PARAMETERS* pPresentati
 		SetWindowPos(pPresentationParameters->hDeviceWindow, HWND_NOTOPMOST, 0, 0, pPresentationParameters->BackBufferWidth, pPresentationParameters->BackBufferHeight, SWP_SHOWWINDOW);
 	}
 
+	if(pGUI)
+		pGUI->OnLostDevice();
+
 	if(bbfont)
 	{
 		delete bbfont;
@@ -155,11 +161,28 @@ HRESULT __stdcall IDirect3DDevice8Hook::Reset(D3DPRESENT_PARAMETERS* pPresentati
 
 	HRESULT hr = m_pDevice->Reset(pPresentationParameters);
 
+	if(pGUI)
+		pGUI->OnResetDevice();
+
 	return hr;
 }
 
 HRESULT __stdcall IDirect3DDevice8Hook::Present(CONST RECT* pSourceRect, CONST RECT* pDestRect, HWND hDestWindowOverride, CONST RGNDATA* pDirtyRegion)
 {
+
+	DWORD token = 0;
+    CreateStateBlock ( D3DSBT_ALL, &token );
+
+	if(pGUI) pGUI->Render();
+
+    // Restore the render states
+    if ( token != 0 )
+    {
+		ApplyStateBlock(token);
+    }
+
+	DeleteStateBlock(token);
+
 	return m_pDevice->Present(pSourceRect, pDestRect, hDestWindowOverride, pDirtyRegion);
 }
 

@@ -14,7 +14,7 @@
 #include "resource.h"
 
 PCONTEXT pContextRecord;
-extern	 HANDLE  hInstance;
+extern	 HANDLE  g_hInstance;
 extern   CGame * pGame;
 extern   BOOL bDisableGTAWndProc;
 //----------------------------------------------------
@@ -92,7 +92,7 @@ LONG WINAPI exc_handler(_EXCEPTION_POINTERS* exc_inf)
 	pContextRecord = exc_inf->ContextRecord;
 	
 	ShowWindow(pGame->GetMainWindowHwnd(),SW_HIDE);
-	DialogBox((HINSTANCE)hInstance,MAKEINTRESOURCE(IDD_DIALOG1),pGame->GetMainWindowHwnd(),(DLGPROC)GuiDlgProcMain);
+	DialogBox((HINSTANCE)g_hInstance,MAKEINTRESOURCE(IDD_DIALOG1),pGame->GetMainWindowHwnd(),(DLGPROC)GuiDlgProcMain);
 
 	return EXCEPTION_CONTINUE_SEARCH;
 }

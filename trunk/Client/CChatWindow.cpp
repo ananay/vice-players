@@ -78,8 +78,8 @@ void CChatWindow::Draw()
 				m_szChatWindowBuffer[x]);
 
 			pD3DDevice->GetDisplayMode(&DisplayMode);
-			m_pD3DFont->DrawText(m_fDrawStartX,((float)(DisplayMode.Height)-20),D3DCOLOR_ARGB(255,255,255,255),
-				"Vice City: Players - Development Version (" __TIME__ ", " __DATE__ ")");
+			//m_pD3DFont->DrawText(m_fDrawStartX,((float)(DisplayMode.Height)-20),D3DCOLOR_ARGB(255,255,255,255),
+			//	"Vice City: Players - Development Version (" __TIME__ ", " __DATE__ ")");
 
 			fDrawY+=m_sizeText.cy+m_fDrawPadding;
 		
