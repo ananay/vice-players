@@ -12,8 +12,8 @@
 #define NOMINMAX
 #define DIRECTINPUT_VERSION 0x0800
 #include <list>
-#include <d3d8.h>
-#include <d3dx8.h>
+#include "../d3d8/include/d3d8.h"
+#include "../d3d8/include/d3dx8.h"
 #include <CEGUI.h>
 #include <dinput.h>
 #include <RendererModules/Direct3D8/CEGUIDirect3D8Renderer.h>
