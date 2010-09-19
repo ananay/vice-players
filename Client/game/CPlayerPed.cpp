@@ -1048,13 +1048,13 @@ BYTE CPlayerPed::FindDeathReasonAndResponsiblePlayer(EntityId * nPlayer)
 	if(pPed) {
 		BYTE byteDeathReason;
 		EntityId playerIDWhoKilled;
-		CVehiclePool *pVehiclePool;
-		CPlayerPool *pPlayerPool;
+		CVehicleManager *pVehicleManager;
+		CPlayerManager *pPlayerManager;
 
 		// grab the vehicle/player pool now anyway, even though we may not need it.
 		if(pNetGame) {
-			pVehiclePool = pNetGame->GetVehiclePool();
-			pPlayerPool = pNetGame->GetPlayerPool();
+			pVehicleManager = pNetGame->GetVehicleManager();
+			pPlayerManager = pNetGame->GetPlayerManager();
 		}
 		else { // just leave if there's no netgame.
 			*nPlayer = INVALID_ENTITY_ID;
@@ -1069,7 +1069,7 @@ BYTE CPlayerPed::FindDeathReasonAndResponsiblePlayer(EntityId * nPlayer)
 
 				if(pPed->pDamageEntity) { // check for a player pointer.
 					
-					playerIDWhoKilled = pPlayerPool->
+					playerIDWhoKilled = pPlayerManager->
 						FindPlayerIDFromGtaPtr((PED_TYPE *)pPed->pDamageEntity);
 
 					if(playerIDWhoKilled != INVALID_ENTITY_ID) {
@@ -1093,11 +1093,11 @@ BYTE CPlayerPed::FindDeathReasonAndResponsiblePlayer(EntityId * nPlayer)
 					// now, if we can find the vehicle
 					// we can probably derive the responsible player.
 					// Look in the vehicle pool for this vehicle.
-					if(pVehiclePool->FindIDFromGtaPtr((VEHICLE_TYPE *)pPed->pDamageEntity) != INVALID_ENTITY_ID)
+					if(pVehicleManager->FindIDFromGtaPtr((VEHICLE_TYPE *)pPed->pDamageEntity) != INVALID_ENTITY_ID)
 					{
 						VEHICLE_TYPE *pGtaVehicle = (VEHICLE_TYPE *)pPed->pDamageEntity;
 
-						playerIDWhoKilled = pPlayerPool->
+						playerIDWhoKilled = pPlayerManager->
 							FindPlayerIDFromGtaPtr((PED_TYPE *)pGtaVehicle->pDriver);
 												
 						if(playerIDWhoKilled != INVALID_ENTITY_ID) {
@@ -1110,11 +1110,11 @@ BYTE CPlayerPed::FindDeathReasonAndResponsiblePlayer(EntityId * nPlayer)
 			else if(byteDeathReason == WEAPON_COLLISION) {
 
 				if(pPed->pDamageEntity) {
-					if(pVehiclePool->FindIDFromGtaPtr((VEHICLE_TYPE *)pPed->pDamageEntity) != INVALID_ENTITY_ID)
+					if(pVehicleManager->FindIDFromGtaPtr((VEHICLE_TYPE *)pPed->pDamageEntity) != INVALID_ENTITY_ID)
 					{
 						VEHICLE_TYPE *pGtaVehicle = (VEHICLE_TYPE *)pPed->pDamageEntity;
 											
-						playerIDWhoKilled = pPlayerPool->
+						playerIDWhoKilled = pPlayerManager->
 							FindPlayerIDFromGtaPtr((PED_TYPE *)pGtaVehicle->pDriver);
 							
 						if(playerIDWhoKilled != INVALID_ENTITY_ID) {

@@ -45,18 +45,18 @@ CNetGame::CNetGame(PCHAR szHostOrIp, int iPort,
 				   PCHAR szPlayerName, PCHAR szPass)
 {
 	// Setup player pool
-	m_pPlayerPool = new CPlayerPool();
-	m_pPlayerPool->SetLocalPlayerName(szPlayerName);
+	m_pPlayerManager = new CPlayerManager();
+	m_pPlayerManager->SetLocalPlayerName(szPlayerName);
 
-	m_pVehiclePool = new CVehiclePool();
+	m_pVehicleManager = new CVehicleManager();
 
-	m_pObjectPool = new CObjectPool();
+	m_pObjectManager = new CObjectManager();
 
-	m_pTextPool = new CTextPool();
+	m_pTextManager = new CTextManager();
 	
 	m_pCheckpoints = new CCheckpoints();
 
-	m_pPickupPool = new CPickupPool();
+	m_pPickupManager = new CPickupManager();
 
 	m_pRakPeer = RakPeerInterface::GetInstance();
 	m_pRPC4 = RPC4::GetInstance();
@@ -98,7 +98,7 @@ CNetGame::~CNetGame()
 	UnRegisterRPCs();
 	RPC4::DestroyInstance(m_pRPC4);
 	RakPeerInterface::DestroyInstance(m_pRakPeer);
-	delete m_pPlayerPool;
+	delete m_pPlayerManager;
 	delete m_pGameLogic;
 }
 
@@ -116,8 +116,8 @@ void CNetGame::Process()
 	UpdateNetwork();
 
 	if(GetGameState() == GAMESTATE_CONNECTED) {
-		if(m_pPlayerPool) m_pPlayerPool->Process();
-		if(m_pVehiclePool) m_pVehiclePool->Process();
+		if(m_pPlayerManager) m_pPlayerManager->Process();
+		if(m_pVehicleManager) m_pVehicleManager->Process();
 		if(pScripts) pScripts->onPulse();
 		if(m_pCheckpoints) m_pCheckpoints->Process();
 	}
@@ -202,7 +202,7 @@ void CNetGame::PlayerSync(Packet *p)
 	bsPlayerSync.IgnoreBytes(sizeof(MessageID));
 	bsPlayerSync.Read(bytePlayerID);
 
-	pPlayer = GetPlayerPool()->GetAt(bytePlayerID);
+	pPlayer = GetPlayerManager()->GetAt(bytePlayerID);
 	if(pPlayer)
 	{
 		PLAYER_SYNC_DATA playerSyncData;
@@ -242,7 +242,7 @@ void CNetGame::VehicleSync(Packet *p)
 	bsVehicleSync.IgnoreBytes(sizeof(MessageID));
 	bsVehicleSync.Read(bytePlayerID);
 
-	pPlayer = GetPlayerPool()->GetAt(bytePlayerID);
+	pPlayer = GetPlayerManager()->GetAt(bytePlayerID);
 	if(pPlayer)
 	{
 		VEHICLE_SYNC_DATA vehicleSyncData;
@@ -265,12 +265,12 @@ void CNetGame::ConnectionSucceeded(Packet *p)
 	m_iGameState = GAMESTATE_AWAIT_JOIN;
 
 	BYTE byteVersion = NETGAME_VERSION;
-	BYTE byteNameLen = (BYTE)strlen(m_pPlayerPool->GetLocalPlayerName());
+	BYTE byteNameLen = (BYTE)strlen(m_pPlayerManager->GetLocalPlayerName());
 	
 	BitStream bsSend;
 	bsSend.Write(byteVersion);
 	bsSend.Write(byteNameLen);
-	bsSend.Write(m_pPlayerPool->GetLocalPlayerName(),byteNameLen);
+	bsSend.Write(m_pPlayerManager->GetLocalPlayerName(),byteNameLen);
 
 	unsigned long VolumeSerialNumber;
 	char volumeSerial[20];

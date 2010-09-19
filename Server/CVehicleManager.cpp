@@ -14,7 +14,7 @@ extern CScripts	*pScripts;
 
 //----------------------------------------------------
 
-CVehiclePool::CVehiclePool()
+CVehicleManager::CVehicleManager()
 {
 	for(EntityId i = 0; i < MAX_VEHICLES; i++)
 	{
@@ -25,7 +25,7 @@ CVehiclePool::CVehiclePool()
 
 //----------------------------------------------------
 
-CVehiclePool::~CVehiclePool()
+CVehicleManager::~CVehicleManager()
 {	
 	for(EntityId i = 0; i < MAX_VEHICLES; i++)
 	{
@@ -35,14 +35,14 @@ CVehiclePool::~CVehiclePool()
 
 //----------------------------------------------------
 
-BOOL CVehiclePool::New(EntityId vehicleID, BYTE byteVehicleType,
+BOOL CVehicleManager::New(EntityId vehicleID, BYTE byteVehicleType,
 					   Vector3 * vecPos, float fRotation,
 					   int iColor1, int iColor2)
 {
 	m_pVehicles[vehicleID] = new CVehicle(byteVehicleType,vecPos,fRotation,iColor1,iColor2);
 
 	/*
-	logprintf("CVehiclePool::New(%u,%.2f,%.2f,%.2f,%.2f,%d,%d)",
+	logprintf("CVehicleManager::New(%u,%.2f,%.2f,%.2f,%.2f,%d,%d)",
 		byteVehicleType,vecPos->X,vecPos->Y,vecPos->Z,fRotation,iColor1,iColor2);*/
 
 	if(m_pVehicles[vehicleID])
@@ -60,7 +60,7 @@ BOOL CVehiclePool::New(EntityId vehicleID, BYTE byteVehicleType,
 
 //----------------------------------------------------
 
-BYTE CVehiclePool::New(BYTE byteVehicleType,
+BYTE CVehicleManager::New(BYTE byteVehicleType,
 					   Vector3 * vecPos, float fRotation,
 					   int iColor1, int iColor2)
 {
@@ -73,7 +73,7 @@ BYTE CVehiclePool::New(BYTE byteVehicleType,
 
 //----------------------------------------------------
 
-BOOL CVehiclePool::Delete(EntityId vehicleID)
+BOOL CVehicleManager::Delete(EntityId vehicleID)
 {
 	if(!GetSlotState(vehicleID) || !m_pVehicles[vehicleID])
 	{
@@ -90,7 +90,7 @@ BOOL CVehiclePool::Delete(EntityId vehicleID)
 
 //----------------------------------------------------
 
-void CVehiclePool::FlagForRespawn(EntityId vehicleID)
+void CVehicleManager::FlagForRespawn(EntityId vehicleID)
 {
 	if(GetSlotState(vehicleID)) {
 		m_pVehicles[vehicleID]->SetWasted(TRUE);
@@ -100,7 +100,7 @@ void CVehiclePool::FlagForRespawn(EntityId vehicleID)
 
 //----------------------------------------------------
 
-void CVehiclePool::Process()
+void CVehicleManager::Process()
 {
 	for(BYTE x = 0; x < MAX_VEHICLES; x++) {
 		if(m_pVehicles[x]) {
@@ -133,7 +133,7 @@ void CVehiclePool::Process()
 
 //----------------------------------------------------
 
-BYTE CVehiclePool::GetFreeSlot()
+BYTE CVehicleManager::GetFreeSlot()
 {
 	for(BYTE id = 0; id < MAX_VEHICLES; id++)
 	{

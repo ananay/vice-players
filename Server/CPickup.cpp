@@ -47,11 +47,11 @@ void CPickup::DestroyForPlayer(EntityId playerId)
 
 void CPickup::SpawnForWorld()
 {
-	CPlayerPool * pPlayerPool = pNetGame->GetPlayerPool();
+	CPlayerManager * pPlayerManager = pNetGame->GetPlayerManager();
 
 	for(EntityId i = 0; i < MAX_PLAYERS; i++)
 	{
-		if(pPlayerPool->GetSlotState(i))
+		if(pPlayerManager->GetSlotState(i))
 		{
 			SpawnForPlayer(i);
 		}
@@ -60,11 +60,11 @@ void CPickup::SpawnForWorld()
 
 void CPickup::DestroyForWorld()
 {
-	CPlayerPool * pPlayerPool = pNetGame->GetPlayerPool();
+	CPlayerManager * pPlayerManager = pNetGame->GetPlayerManager();
 
 	for(EntityId i = 0; i < MAX_PLAYERS; i++)
 	{
-		if(pPlayerPool->GetSlotState(i))
+		if(pPlayerManager->GetSlotState(i))
 		{
 			DestroyForPlayer(i);
 		}

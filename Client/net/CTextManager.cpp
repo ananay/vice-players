@@ -14,7 +14,7 @@
 
 extern CNetGame *pNetGame;
 
-CTextPool::CTextPool()
+CTextManager::CTextManager()
 {
 	for(EntityId textID = 0; textID < MAX_TEXTS; textID++) 
 	{
@@ -23,7 +23,7 @@ CTextPool::CTextPool()
 	}
 }
 
-CTextPool::~CTextPool()
+CTextManager::~CTextManager()
 {
 	for(EntityId i = 0; i < MAX_TEXTS; i++)
 	{
@@ -31,7 +31,7 @@ CTextPool::~CTextPool()
 	}
 }
 
-EntityId CTextPool::New(EntityId TextID, DWORD color, char * szFontName, int iSize, float posX, float posY, char * szText)
+EntityId CTextManager::New(EntityId TextID, DWORD color, char * szFontName, int iSize, float posX, float posY, char * szText)
 {
 	if(TextID == MAX_TEXTS) return -1;		
 
@@ -45,7 +45,7 @@ EntityId CTextPool::New(EntityId TextID, DWORD color, char * szFontName, int iSi
 	return -1;
 }
 
-EntityId CTextPool::GetFreeSlot()
+EntityId CTextManager::GetFreeSlot()
 {
 	for(EntityId id = 0; id < MAX_TEXTS; id++)
 	{
@@ -55,7 +55,7 @@ EntityId CTextPool::GetFreeSlot()
 	return false;
 }
 
-void CTextPool::Process()
+void CTextManager::Process()
 {
 	for(EntityId id = 0; id < MAX_TEXTS; id++)
 	{
@@ -66,7 +66,7 @@ void CTextPool::Process()
 	}
 }
 
-bool CTextPool::Delete(EntityId TextID)
+bool CTextManager::Delete(EntityId TextID)
 {
 	if(TextID > MAX_TEXTS || !m_pTexts[TextID])
 	{

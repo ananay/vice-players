@@ -64,7 +64,7 @@ SQInteger sq_loadClientScript(SQVM * pVM)
 	sq_getinteger(pVM, -2, &playerSystemAddress);
 	sq_getstring(pVM, -1, &szScript);
 
-	if(pNetGame->GetPlayerPool()->GetSlotState(playerSystemAddress))
+	if(pNetGame->GetPlayerManager()->GetSlotState(playerSystemAddress))
 	{
 		long nameSize;
 		std::string str = "clientscripts/";

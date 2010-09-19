@@ -21,7 +21,7 @@ typedef struct _VEHICLE_SPAWN_INFO
 
 //----------------------------------------------------
 
-class CVehiclePool
+class CVehicleManager
 {
 private:	
 	BOOL				m_bVehicleSlotState[MAX_VEHICLES];
@@ -32,8 +32,8 @@ private:
 
 public:
 	
-	CVehiclePool();
-	~CVehiclePool();
+	CVehicleManager();
+	~CVehicleManager();
 
 	BOOL New(EntityId vehicleID, BYTE byteVehicleType,
 			 Vector3 * vecPos, float fRotation,

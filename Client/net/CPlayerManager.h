@@ -12,7 +12,7 @@
 
 //----------------------------------------------------
 
-class CPlayerPool
+class CPlayerManager
 {
 private:
 	
@@ -84,8 +84,8 @@ public:
 	EntityId GetLocalPlayerID() { return m_localPlayerID; };
 	ULONG GetIPAddress(EntityId playerID) { return m_ulIPAddress[playerID]; };
 
-	CPlayerPool();
-	~CPlayerPool();
+	CPlayerManager();
+	~CPlayerManager();
 };
 
 //----------------------------------------------------

@@ -12,7 +12,7 @@
 
 //----------------------------------------------------
 
-class CVehiclePool
+class CVehicleManager
 {
 private:
 	
@@ -23,8 +23,8 @@ private:
 
 public:
 	
-	CVehiclePool();
-	~CVehiclePool();
+	CVehicleManager();
+	~CVehicleManager();
 
 	BOOL New(EntityId vehicleID, BYTE byteVehicleType, Vector3 * vecPos, float fRotation, int iColor1, int iColor2);
 	BYTE New(BYTE byteVehicleType, Vector3 * vecPos, float fRotation, int iColor1, int iColor2);

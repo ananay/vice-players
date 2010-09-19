@@ -41,7 +41,7 @@ void cmdDefaultCmdProc(PCHAR szCmd)
 {
 	if(pNetGame) {
 		CLocalPlayer *pLocalPlayer;
-		pLocalPlayer = pNetGame->GetPlayerPool()->GetLocalPlayer();
+		pLocalPlayer = pNetGame->GetPlayerManager()->GetLocalPlayer();
 		pLocalPlayer->Say(szCmd);
 	}
 }
@@ -219,14 +219,14 @@ void cmdGetIP(PCHAR szCmd)
 	sscanf(szCmd,"%u",&playerID);
 	
 	if(pNetGame) {
-		CPlayerPool *pPlayerPool = pNetGame->GetPlayerPool();
-		if(pPlayerPool->GetSlotState(playerID)) {
+		CPlayerManager *pPlayerManager = pNetGame->GetPlayerManager();
+		if(pPlayerManager->GetSlotState(playerID)) {
 
 			char ret[30];
-			DWORD ip = pPlayerPool->GetIPAddress(playerID);
+			DWORD ip = pPlayerManager->GetIPAddress(playerID);
 			IP2String(ip,ret);
 			pChatWindow->AddDebugMessage("%s is: %s",
-				pPlayerPool->GetPlayerName(playerID),ret);
+				pPlayerManager->GetPlayerName(playerID),ret);
 
 		} else {
 			pChatWindow->AddDebugMessage("That player doesn't appear to be active.");
@@ -245,9 +245,9 @@ void cmdGenComp(PCHAR szCmd)
 
 void cmdNewPlayer(PCHAR szCmd)
 {
-	CPlayerPool *pPlayerPool = pNetGame->GetPlayerPool();
-	pPlayerPool->New(1, "jaja");
-	CRemotePlayer *pRemotePlayer = pPlayerPool->GetAt(1);
+	CPlayerManager *pPlayerManager = pNetGame->GetPlayerManager();
+	pPlayerManager->New(1, "jaja");
+	CRemotePlayer *pRemotePlayer = pPlayerManager->GetAt(1);
 	CPlayerPed *pPlayerPed = pGame->FindPlayerPed();
 	BYTE byteSkin = (BYTE)pPlayerPed->GetModelIndex();
 	Vector3 vPos;

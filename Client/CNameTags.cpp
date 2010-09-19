@@ -154,12 +154,12 @@ void CNameTags::Draw()
 
 	if(pNetGame) 
 	{ 
-		CPlayerPool* pPlayerPool = pNetGame->GetPlayerPool(); 
+		CPlayerManager* pPlayerManager = pNetGame->GetPlayerManager(); 
 		for(int x = 0; x < MAX_PLAYERS; x++)
 		{ 
-			if(pPlayerPool->GetSlotState(x) == TRUE)
+			if(pPlayerManager->GetSlotState(x) == TRUE)
 			{ // Player is in use
-				CRemotePlayer* Player = pPlayerPool->GetAt(x); 
+				CRemotePlayer* Player = pPlayerManager->GetAt(x); 
 
 				if(Player->IsActive() && (Player->GetDistanceFromLocalPlayer() <= 80.0f))
 				{ // Active and within reasonable distance 
@@ -230,8 +230,8 @@ void CNameTags::Draw()
 						// Draw the name tag
 						if(bbfont) { 
 							bbfont->Begin(); 
-							//bbfont->Draw(pPlayerPool->GetPlayerName(x), 0.285f, 0xFF000000);
-							bbfont->Draw(pPlayerPool->GetPlayerName(x), 0.300f, Player->GetTeamColorAsARGB()); 
+							//bbfont->Draw(pPlayerManager->GetPlayerName(x), 0.285f, 0xFF000000);
+							bbfont->Draw(pPlayerManager->GetPlayerName(x), 0.300f, Player->GetTeamColorAsARGB()); 
 							bbfont->End(); 
 						} 
 					} 

@@ -13,7 +13,7 @@
 extern CGame *pGame;
 extern CNetGame *pNetGame;
 
-CPickupPool::CPickupPool()
+CPickupManager::CPickupManager()
 {
 	for(EntityId i = 0; i < MAX_PICKUPS; i++) 
 	{
@@ -22,7 +22,7 @@ CPickupPool::CPickupPool()
 	}
 }
 
-CPickupPool::~CPickupPool()
+CPickupManager::~CPickupManager()
 {
 	for(EntityId i = 0; i < MAX_PICKUPS; i++)
 	{
@@ -30,7 +30,7 @@ CPickupPool::~CPickupPool()
 	}
 }
 
-bool CPickupPool::New(EntityId PickupID, int iModel, int iType, Vector3 * vecPos)
+bool CPickupManager::New(EntityId PickupID, int iModel, int iType, Vector3 * vecPos)
 {
 	if(m_bPickupSlotState[PickupID] == true)
 	{
@@ -49,7 +49,7 @@ bool CPickupPool::New(EntityId PickupID, int iModel, int iType, Vector3 * vecPos
 	return false;
 }
 
-bool CPickupPool::Delete(EntityId PickupID)
+bool CPickupManager::Delete(EntityId PickupID)
 {
 	if(PickupID > MAX_PICKUPS || !m_pPickups[PickupID])
 	{

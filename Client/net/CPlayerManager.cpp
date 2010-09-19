@@ -22,7 +22,7 @@ char szQuitReasons[][32] = {
 
 //----------------------------------------------------
 
-CPlayerPool::CPlayerPool()
+CPlayerManager::CPlayerManager()
 {
 	m_pLocalPlayer = new CLocalPlayer();
 
@@ -35,7 +35,7 @@ CPlayerPool::CPlayerPool()
 
 //----------------------------------------------------
 
-CPlayerPool::~CPlayerPool()
+CPlayerManager::~CPlayerManager()
 {
 	delete m_pLocalPlayer;
 
@@ -47,7 +47,7 @@ CPlayerPool::~CPlayerPool()
 
 //----------------------------------------------------
 
-BOOL CPlayerPool::New(EntityId playerID, PCHAR szPlayerName)
+BOOL CPlayerManager::New(EntityId playerID, PCHAR szPlayerName)
 {
 	m_pPlayers[playerID] = new CRemotePlayer();
 
@@ -71,7 +71,7 @@ BOOL CPlayerPool::New(EntityId playerID, PCHAR szPlayerName)
 
 //----------------------------------------------------
 
-BOOL CPlayerPool::Delete(EntityId playerID, BYTE byteReason)
+BOOL CPlayerManager::Delete(EntityId playerID, BYTE byteReason)
 {
 	if(!GetSlotState(playerID) || !m_pPlayers[playerID]) {
 		return FALSE;
@@ -87,7 +87,7 @@ BOOL CPlayerPool::Delete(EntityId playerID, BYTE byteReason)
 
 //----------------------------------------------------
 
-BOOL CPlayerPool::Process()
+BOOL CPlayerManager::Process()
 {
 	m_pLocalPlayer->Process();
 
@@ -102,7 +102,7 @@ BOOL CPlayerPool::Process()
 
 //----------------------------------------------------
 
-EntityId CPlayerPool::FindPlayerIDFromGtaPtr(PED_TYPE * pActor)
+EntityId CPlayerManager::FindPlayerIDFromGtaPtr(PED_TYPE * pActor)
 {
 	for(EntityId i = 0; i < MAX_PLAYERS; i++)
 	{

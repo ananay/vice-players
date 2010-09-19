@@ -26,11 +26,11 @@ CText::CText(DWORD color, const char * szFontName, int iSize, float posX, float 
 
 CText::~CText()
 {
-	CPlayerPool * pPlayerPool = pNetGame->GetPlayerPool();
+	CPlayerManager * pPlayerManager = pNetGame->GetPlayerManager();
 
 	for(EntityId i = 0; i < MAX_PLAYERS; i++)
 	{
-		if(pPlayerPool->GetSlotState(i))
+		if(pPlayerManager->GetSlotState(i))
 		{
 			DestroyForPlayer(i);
 		}
@@ -64,9 +64,9 @@ void CText::InitForPlayer(EntityId playerId)
 
 void CText::InitForWorld()
 {
-	CPlayerPool * pPlayerPool = pNetGame->GetPlayerPool();
+	CPlayerManager * pPlayerManager = pNetGame->GetPlayerManager();
 	for(EntityId i = 0; i < MAX_PLAYERS; i++) {
-		if(pPlayerPool->GetSlotState(i)) {
+		if(pPlayerManager->GetSlotState(i)) {
 			InitForPlayer(i);
 		}
 	}
@@ -90,9 +90,9 @@ void CText::SetText(const char * szText)
 {
 	m_szText = szText;
 
-	CPlayerPool * pPlayerPool = pNetGame->GetPlayerPool();
+	CPlayerManager * pPlayerManager = pNetGame->GetPlayerManager();
 	for(EntityId i = 0; i < MAX_PLAYERS; i++) {
-		if(pPlayerPool->GetSlotState(i)) {
+		if(pPlayerManager->GetSlotState(i)) {
 			BitStream bsSend;
 			bsSend.Write(m_iID);
 			bsSend.Write(strlen(szText));
@@ -106,9 +106,9 @@ void CText::Show(bool show)
 {
 	m_bShow = show;
 
-	CPlayerPool * pPlayerPool = pNetGame->GetPlayerPool();
+	CPlayerManager * pPlayerManager = pNetGame->GetPlayerManager();
 	for(EntityId i = 0; i < MAX_PLAYERS; i++) {
-		if(pPlayerPool->GetSlotState(i)) {
+		if(pPlayerManager->GetSlotState(i)) {
 			BitStream bsSend;
 			bsSend.Write(m_iID);
 			bsSend.Write(m_bShow);
@@ -122,9 +122,9 @@ void CText::SetPosition(float fPosX, float fPosY)
 	m_fRelativePosX = fPosX;
 	m_fRelativePosY = fPosY;
 
-	CPlayerPool * pPlayerPool = pNetGame->GetPlayerPool();
+	CPlayerManager * pPlayerManager = pNetGame->GetPlayerManager();
 	for(EntityId i = 0; i < MAX_PLAYERS; i++) {
-		if(pPlayerPool->GetSlotState(i)) {
+		if(pPlayerManager->GetSlotState(i)) {
 			BitStream bsSend;
 			bsSend.Write(m_iID);
 			bsSend.Write(fPosX);
@@ -140,9 +140,9 @@ void CText::SetColor(DWORD color)
 
 	logprintf("color %d", color);
 
-	CPlayerPool * pPlayerPool = pNetGame->GetPlayerPool();
+	CPlayerManager * pPlayerManager = pNetGame->GetPlayerManager();
 	for(EntityId i = 0; i < MAX_PLAYERS; i++) {
-		if(pPlayerPool->GetSlotState(i)) {
+		if(pPlayerManager->GetSlotState(i)) {
 			BitStream bsSend;
 			bsSend.Write(m_iID);
 			bsSend.Write(color);

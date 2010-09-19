@@ -60,7 +60,7 @@ int CSpawnSelection::AddPlayerClass(int team, int model, float x, float y, float
 int CSpawnSelection::HandleSpawnClassRequest(EntityId playerID, int iSpawnType)
 {
 	CPlayer *pPlayer;
-	pPlayer = pNetGame->GetPlayerPool()->GetAt(playerID);
+	pPlayer = pNetGame->GetPlayerManager()->GetAt(playerID);
 
 	if(iSpawnType < 0) {
 		iSpawnType = (m_iAvailableSpawnCount - 1);

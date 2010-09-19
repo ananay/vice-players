@@ -2506,43 +2506,27 @@
 				>
 			</File>
 			<File
-				RelativePath=".\net\CObjectPool.cpp"
+				RelativePath=".\net\CObjectManager.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\net\CObjectPool.h"
+				RelativePath=".\net\CObjectManager.h"
 				>
 			</File>
 			<File
-				RelativePath=".\net\CPickupPool.cpp"
+				RelativePath=".\net\CPickupManager.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\net\CPickupPool.h"
+				RelativePath=".\net\CPickupManager.h"
 				>
 			</File>
 			<File
-				RelativePath=".\net\CPlayerPool.cpp"
+				RelativePath=".\net\CPlayerManager.cpp"
 				>
-				<FileConfiguration
-					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						PreprocessorDefinitions=""
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						PreprocessorDefinitions=""
-					/>
-				</FileConfiguration>
 			</File>
 			<File
-				RelativePath=".\net\CPlayerPool.h"
+				RelativePath=".\net\CPlayerManager.h"
 				>
 			</File>
 			<File
@@ -2578,35 +2562,19 @@
 				>
 			</File>
 			<File
-				RelativePath=".\net\CTextPool.cpp"
+				RelativePath=".\net\CTextManager.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\net\CTextPool.h"
+				RelativePath=".\net\CTextManager.h"
 				>
 			</File>
 			<File
-				RelativePath=".\net\CVehiclePool.cpp"
+				RelativePath=".\net\CVehicleManager.cpp"
 				>
-				<FileConfiguration
-					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						PreprocessorDefinitions=""
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						PreprocessorDefinitions=""
-					/>
-				</FileConfiguration>
 			</File>
 			<File
-				RelativePath=".\net\CVehiclePool.h"
+				RelativePath=".\net\CVehicleManager.h"
 				>
 			</File>
 			<File

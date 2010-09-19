@@ -134,9 +134,9 @@ void CVehicle::DestroyForPlayer(EntityId forPlayerID)
 
 void CVehicle::SpawnForWorld()
 {
-	CPlayerPool * pPlayerPool = pNetGame->GetPlayerPool();
+	CPlayerManager * pPlayerManager = pNetGame->GetPlayerManager();
 	for(EntityId i = 0; i < MAX_PLAYERS; i++) {
-		if(pPlayerPool->GetSlotState(i)) {
+		if(pPlayerManager->GetSlotState(i)) {
 			SpawnForPlayer(i);
 		}
 	}
@@ -146,9 +146,9 @@ void CVehicle::SpawnForWorld()
 
 void CVehicle::DestroyForWorld()
 {
-	CPlayerPool * pPlayerPool = pNetGame->GetPlayerPool();
+	CPlayerManager * pPlayerManager = pNetGame->GetPlayerManager();
 	for(EntityId i = 0; i < MAX_PLAYERS; i++) {
-		if(pPlayerPool->GetSlotState(i)) {
+		if(pPlayerManager->GetSlotState(i)) {
 			DestroyForPlayer(i);
 		}
 	}

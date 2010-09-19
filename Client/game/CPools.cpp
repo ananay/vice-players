@@ -51,7 +51,7 @@ VEHICLE_TYPE * VCMP_SAFECALL CPools::GetVehicleFromIndex(int iIndex)
 	DWORD dwFunc = FUNC_CPool_CVehicle_AtHandle;
 	_asm
 	{
-		mov ebx, VAR_VehiclePool
+		mov ebx, VAR_VehicleManager
 		mov ecx, [ebx]
 		push iIndex
 		call dwFunc
@@ -68,7 +68,7 @@ int VCMP_SAFECALL CPools::GetIndexFromVehicle(VEHICLE_TYPE * pVehicle)
 	DWORD dwFunc = FUNC_CPool_CVehicle__HandleOf;
 	_asm
 	{
-		mov ebx, VAR_VehiclePool
+		mov ebx, VAR_VehicleManager
 		mov ecx, [ebx]
 		push pVehicle
 		call dwFunc
@@ -86,7 +86,7 @@ ENTITY_TYPE * VCMP_SAFECALL CPools::GetObjectFromIndex(int iIndex)
 
 	_asm
 	{
-		mov ebx, VAR_ObjectPool
+		mov ebx, VAR_ObjectManager
 		mov ecx, [ebx]
 		push iIndex
 		call dwFunc

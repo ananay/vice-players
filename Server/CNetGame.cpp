@@ -71,20 +71,20 @@ CNetGame::CNetGame(int iMaxPlayers, int iPort, char * szPassword, char * szHostn
 	RegisterRPCs();
 
 	// Setup player pool
-	m_pPlayerPool = new CPlayerPool();
+	m_pPlayerManager = new CPlayerManager();
 
 	// Setup vehicle pool
-	m_pVehiclePool = new CVehiclePool();
-	//m_pVehiclePool->InitialiseFromConfig(pServerConfig);
+	m_pVehicleManager = new CVehicleManager();
+	//m_pVehicleManager->InitialiseFromConfig(pServerConfig);
 
 	// Setup object pool
-	m_pObjectPool = new CObjectPool();
+	m_pObjectManager = new CObjectManager();
 
 	// Setup pickup pool
-	m_pPickupPool = new CPickupPool();
+	m_pPickupManager = new CPickupManager();
 
 	// Setup text pool
-	m_pTextPool = new CTextPool();
+	m_pTextManager = new CTextManager();
 
 	// Setup timer pool
 	m_pTimerPool = new CTimerPool();
@@ -128,7 +128,7 @@ CNetGame::~CNetGame()
 	UnRegisterRPCs();
 	RPC4::DestroyInstance(m_pRPC4);
 	RakPeerInterface::DestroyInstance(m_pRakPeer);
-	delete m_pPlayerPool;
+	delete m_pPlayerManager;
 }
 
 //----------------------------------------------------
@@ -139,10 +139,10 @@ void CNetGame::Process()
 	UpdateNetwork();
 
 	// Process the Players.
-	m_pPlayerPool->Process();
+	m_pPlayerManager->Process();
 
 	// Process the Vehicles.
-	m_pVehiclePool->Process();
+	m_pVehicleManager->Process();
 
 	// Process the timers
 	m_pTimerPool->Process();
@@ -165,10 +165,10 @@ void CNetGame::UpdateNetwork()
 			logprintf("Incoming connection from %s", p->systemAddress.ToString(true));
 			break;
 		case ID_DISCONNECTION_NOTIFICATION:
-			m_pPlayerPool->Delete((BYTE)p->systemAddress.systemIndex,1);
+			m_pPlayerManager->Delete((BYTE)p->systemAddress.systemIndex,1);
 			break;
 		case ID_CONNECTION_LOST:
-			m_pPlayerPool->Delete((BYTE)p->systemAddress.systemIndex,0);
+			m_pPlayerManager->Delete((BYTE)p->systemAddress.systemIndex,0);
 			break;
 		case ID_PLAYER_SYNC:
 			PlayerSync(p);
@@ -197,9 +197,9 @@ void CNetGame::BroadcastData( BitStream *bitStream,
 
 	for(EntityId i = 0; i < MAX_PLAYERS; i++)
 	{
-		if(i != excludedPlayer && m_pPlayerPool->GetSlotState(i))
+		if(i != excludedPlayer && m_pPlayerManager->GetSlotState(i))
 		{
-			if(m_pPlayerPool->GetDistanceFromPlayerToPlayer(excludedPlayer, i) >= 250.0f)
+			if(m_pPlayerManager->GetDistanceFromPlayerToPlayer(excludedPlayer, i) >= 250.0f)
 			{
 				// If not within said distance, broadcast
 				// randomly once in ten.
@@ -221,7 +221,7 @@ void CNetGame::BroadcastData( BitStream *bitStream,
 void CNetGame::PlayerSync(Packet *p)
 {
 	// get the player pointer
-	CPlayer * pPlayer = GetPlayerPool()->GetAt((EntityId)p->systemAddress.systemIndex);
+	CPlayer * pPlayer = GetPlayerManager()->GetAt((EntityId)p->systemAddress.systemIndex);
 
 	// make sure player is in player pool
 	if(!pPlayer)
@@ -266,7 +266,7 @@ void CNetGame::PlayerSync(Packet *p)
 void CNetGame::VehicleSync(Packet *p)
 {
 	// get the player pointer
-	CPlayer * pPlayer = GetPlayerPool()->GetAt((EntityId)p->systemAddress.systemIndex);
+	CPlayer * pPlayer = GetPlayerManager()->GetAt((EntityId)p->systemAddress.systemIndex);
 
 	// make sure player is in player pool
 	if(!pPlayer)
@@ -294,7 +294,7 @@ void CNetGame::VehicleSync(Packet *p)
 
 void CNetGame::PassengerSync(Packet *p)
 {
-	CPlayer * pPlayer = GetPlayerPool()->GetAt((EntityId)p->systemAddress.systemIndex);
+	CPlayer * pPlayer = GetPlayerManager()->GetAt((EntityId)p->systemAddress.systemIndex);
 	BitStream bsPassengerSync(p->data, p->length, FALSE);
 	BitStream bsPassengerSend;
 
@@ -364,9 +364,9 @@ void CNetGame::KickPlayer(EntityId playerID)
 {
 	if(playerID < MAX_PLAYERS)
 	{
-		if (m_pPlayerPool->GetSlotState(playerID))
+		if (m_pPlayerManager->GetSlotState(playerID))
 		{
-			m_pPlayerPool->Delete(playerID, 2);
+			m_pPlayerManager->Delete(playerID, 2);
 			pScripts->onKick(playerID);
 		}
 	}
