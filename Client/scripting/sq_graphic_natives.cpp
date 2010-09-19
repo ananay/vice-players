@@ -7,10 +7,7 @@
 //
 //-----------------------------------------------------
 
-#include "sq_graphic_natives.h"
-#include "../main.h"
-#include "../GUI/CGUI.h"
-#include "../game/util.h"
+#include "StdInc.h"
 
 extern CGame *pGame;
 extern CNetGame *pNetGame;

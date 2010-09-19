@@ -10,7 +10,7 @@
 //
 //----------------------------------------------------
 
-#include "main.h"
+#include "StdInc.h"
 #include "resource.h"
 
 PCONTEXT pContextRecord;

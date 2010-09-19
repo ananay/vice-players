@@ -8,12 +8,7 @@
 //
 //----------------------------------------------------------
 
-#include "../../raknet/WindowsIncludes.h"
-
-#include "../main.h"
-#include "CGame.h"
-#include "util.h"
-#include "CPools.h"
+#include "StdInc.h"
 
 extern CGame *pGame;
 extern CNetGame *pNetGame;

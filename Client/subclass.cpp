@@ -9,9 +9,7 @@
 //
 //----------------------------------------------------
 
-#include "main.h"
-#include "CScreenshot.h"
-#include "GUI/CGUI.h"
+#include "StdInc.h"
 #include <string>
 #include <windowsx.h>
 

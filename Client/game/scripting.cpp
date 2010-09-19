@@ -8,7 +8,7 @@
 //
 //----------------------------------------------------------
 
-#include "../main.h"
+#include "StdInc.h"
 
 // Globals
 const FARPROC ProcessOneCommand	= (FARPROC)0x44FBE0;	// tnx for the name CyQ.

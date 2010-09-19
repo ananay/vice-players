@@ -7,7 +7,7 @@
 */
 
 // Includes
-#include "../main.h"
+#include "StdInc.h"
 
 // Externals
 extern BOOL					bWindowedMode;

@@ -12,11 +12,7 @@
 //
 //----------------------------------------------------
 
-
-#include <stdio.h>
-#include <windows.h>
-#include "d3d8/include/d3dfont.h"
-#include "CScreenshot.h"
+#include "StdInc.h"
 
 #define SAFERELEASE(x) if (x) { x->Release(); x = NULL; x; }
 

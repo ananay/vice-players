@@ -10,13 +10,7 @@
 //----------------------------------------------------------
 // TODO: Create/Destroy/SetModelIndex functions
 
-#include "../../raknet/WindowsIncludes.h"
-#include <math.h>
-#include <stdio.h>
-#include "../main.h"
-#include "util.h"
-#include "CPools.h"
-#include "CWorld.h"
+#include "StdInc.h"
 
 extern CGame		*pGame;
 extern CChatWindow  *pChatWindow;

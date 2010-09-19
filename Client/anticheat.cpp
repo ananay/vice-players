@@ -8,7 +8,7 @@
 //
 //----------------------------------------------------------
 
-#include "anticheat.h"
+#include "StdInc.h"
 
 extern CChatWindow *pChatWindow;
 extern BOOL			bAntiCheat;

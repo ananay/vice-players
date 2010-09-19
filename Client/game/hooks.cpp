@@ -9,10 +9,7 @@
 //
 //----------------------------------------------------------
 
-#include "../main.h"
-#include "CGame.h"
-#include "util.h"
-#include "KeySync.h"
+#include "StdInc.h"
 
 extern CNetGame * pNetGame;
 extern CGame *    pGame;

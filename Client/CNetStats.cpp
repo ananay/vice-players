@@ -8,9 +8,8 @@
 //
 //----------------------------------------------------
 
-#include "main.h"
+#include "StdInc.h"
 #include "../raknet/GetTime.h"
-#include <stdio.h>
 
 using namespace RakNet;
 

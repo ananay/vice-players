@@ -8,12 +8,7 @@
 //
 //----------------------------------------------------
 
-#include <stdio.h>
-#include "../../raknet/WindowsIncludes.h"
-#include "../main.h"
-#include "common.h"
-#include "AimSync.h"
-#include "CGame.h"
+#include "StdInc.h"
 
 //-----------------------------------------------------------
 

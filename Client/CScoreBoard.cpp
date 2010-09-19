@@ -8,8 +8,7 @@
 //
 //----------------------------------------------------
 
-#include "main.h"
-#include <stdio.h>
+#include "StdInc.h"
 
 extern CNetGame* pNetGame;
 extern GAME_SETTINGS tSettings;

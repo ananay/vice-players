@@ -8,8 +8,7 @@
 //
 //----------------------------------------------------------
 
-#include "../main.h"
-#include "../game/util.h"
+#include "StdInc.h"
 
 // Sync send rates
 #define INCAR_SENDRATE_IDLE 200

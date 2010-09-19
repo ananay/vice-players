@@ -7,6 +7,7 @@
 //
 //----------------------------------------------------------
 
+#include "StdInc.h"
 #include "IDirectInput8Hook.h"
 
 IDirectInput8Hook::IDirectInput8Hook(IDirectInput8 * dinput)

@@ -10,7 +10,8 @@
 
 #pragma once
 
-#include "../main.h"
+#include "StdInc.h"
+
 extern CNetGame *pNetGame;
 
 CTextPool::CTextPool()

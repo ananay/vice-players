@@ -8,8 +8,7 @@
 //
 //----------------------------------------------------------
 
-#include "../main.h"
-#include "CGUI.h"
+#include "StdInc.h"
 
 #define LOG_PATH "CEGUI.log"
 #define STYLE_SCHEME "VanillaSkin.scheme"

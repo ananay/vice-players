@@ -8,8 +8,7 @@
 //
 //----------------------------------------------------
 
-#include "../main.h"
-#include "../game/CPools.h"
+#include "StdInc.h"
 
 extern CGame *pGame;
 extern CNetGame *pNetGame;

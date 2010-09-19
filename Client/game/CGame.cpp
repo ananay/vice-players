@@ -8,10 +8,7 @@
 //
 //----------------------------------------------------------
 
-#include "../main.h"
-#include "CGame.h"
-#include "util.h"
-#include "KeySync.h"
+#include "StdInc.h"
 
 //-----------------------------------------------------------
 
@@ -89,7 +86,7 @@ BYTE byteEnableInput[] = { 0x8B, 0x4C, 0x24, 0x04, 0x8B, 0x54 };
 
 void CGame::ToggleKeyInputsDisabled(BOOL bDisable)
 {
-	/*Unprotect(0x602510, 6);
+	Unprotect(0x602510, 6);
 
 	if(bDisable)
 	{
@@ -98,7 +95,7 @@ void CGame::ToggleKeyInputsDisabled(BOOL bDisable)
 	else
 	{
 		memcpy((PVOID)0x602510, byteEnableInput, 6);
-	}*/
+	}
 
 }
 
@@ -248,11 +245,11 @@ void GameInstallPatches()
 	memset((PVOID)0x4A4FFC, 0x90, 7); // nop * 7
 
 	// Allow camera movement in vehicles (Test)
-	/*Unprotect(0x4A45FA, 5);
+	Unprotect(0x4A45FA, 5);
 	*(DWORD *)0x4A45FA = 0x9090C030; // xor al, al, nop nop
 	*(BYTE *)(0x4A45FA + 4) = 0x90;  // nop
 	Unprotect(0x4A4601, 1);
-	*(BYTE *)0x4A4601 = 0x75; // jz to jnz*/
+	*(BYTE *)0x4A4601 = 0x75; // jz to jnz
 
 	// Disable plane traffic
 	Unprotect(0x4A4515, 5);
