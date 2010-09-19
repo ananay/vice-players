@@ -7,7 +7,7 @@ SOURCES+=$(wildcard ../RakNet/*.cpp)
 OBJECTS=$(SOURCES:.cpp=.o)
 EXECUTABLE=../bin/vcp-svr
 
-all: $(SOURCES) $(EXECUTABLE)
+all: prepare $(SOURCES) $(EXECUTABLE)
 
 $(EXECUTABLE): $(OBJECTS) 
 	$(CC) $(LDFLAGS) $(OBJECTS) -o $@
@@ -18,3 +18,5 @@ $(EXECUTABLE): $(OBJECTS)
 clean:
 	rm -Rf *.o $(EXECUTABLE) ../RakNet/*.o ../squirrel/*.o
 
+prepare:
+	$(CC) -c StdInc.h -o StdInc.h.gch
