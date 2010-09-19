@@ -12,7 +12,7 @@
 
 extern CNetGame *pNetGame;
 
-CPickupPool::CPickupPool()
+CPickupManager::CPickupManager()
 {
 	for(EntityId i = 0; i < MAX_PICKUPS; i++) 
 	{
@@ -21,7 +21,7 @@ CPickupPool::CPickupPool()
 	}
 }
 
-CPickupPool::~CPickupPool()
+CPickupManager::~CPickupManager()
 {
 	// Loop through all pickup slots
 	for(EntityId i = 0; i < MAX_PICKUPS; i++)
@@ -36,7 +36,7 @@ CPickupPool::~CPickupPool()
 }
 
 
-EntityId CPickupPool::New(int iModel, int iType, Vector3 * vecPos)
+EntityId CPickupManager::New(int iModel, int iType, Vector3 * vecPos)
 {
 	// Loop through all pickup slots
 	for(EntityId i = 0; i < MAX_PICKUPS; i++)
@@ -69,7 +69,7 @@ EntityId CPickupPool::New(int iModel, int iType, Vector3 * vecPos)
 	return -1;
 }
 
-bool CPickupPool::Delete(EntityId PickupID)
+bool CPickupManager::Delete(EntityId PickupID)
 {
 	// Is this slot used?
 	if(!GetSlotState(PickupID))
@@ -88,7 +88,7 @@ bool CPickupPool::Delete(EntityId PickupID)
 	return true;
 }
 
-void CPickupPool::InitForPlayer(EntityId playerId)
+void CPickupManager::InitForPlayer(EntityId playerId)
 {
 	// Loop through all pickup slots
 	for(EntityId i = 0; i < MAX_PICKUPS; i++)

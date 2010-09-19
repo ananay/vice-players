@@ -16,7 +16,7 @@ extern CChatWindow *pChatWindow;
 
 //----------------------------------------------------
 
-CVehiclePool::CVehiclePool()
+CVehicleManager::CVehicleManager()
 {
 	for(EntityId i = 0; i < MAX_VEHICLES; i++)
 	{
@@ -27,7 +27,7 @@ CVehiclePool::CVehiclePool()
 
 //----------------------------------------------------
 
-CVehiclePool::~CVehiclePool()
+CVehicleManager::~CVehicleManager()
 {	
 	for(EntityId i = 0; i < MAX_VEHICLES; i++)
 	{
@@ -40,7 +40,7 @@ CVehiclePool::~CVehiclePool()
 
 //----------------------------------------------------
 
-BOOL CVehiclePool::New( EntityId vehicleID, BYTE byteVehicleType,
+BOOL CVehicleManager::New( EntityId vehicleID, BYTE byteVehicleType,
 					    Vector3 * vecPos, float fRotation,
 					    int iColor1, int iColor2,
 					    Vector3 * vecSpawnPos, float fSpawnRotation )
@@ -61,7 +61,7 @@ BOOL CVehiclePool::New( EntityId vehicleID, BYTE byteVehicleType,
 
 //----------------------------------------------------
 
-BOOL CVehiclePool::Delete(EntityId vehicleID)
+BOOL CVehicleManager::Delete(EntityId vehicleID)
 {
 	if(!GetSlotState(vehicleID) || !m_pVehicles[vehicleID]) {
 		return FALSE;
@@ -76,7 +76,7 @@ BOOL CVehiclePool::Delete(EntityId vehicleID)
 
 //----------------------------------------------------
 
-BOOL CVehiclePool::Spawn( EntityId vehicleID, BYTE byteVehicleType,
+BOOL CVehicleManager::Spawn( EntityId vehicleID, BYTE byteVehicleType,
 					      Vector3 * vecPos, float fRotation,
 					      int iColor1, int iColor2 )
 {	
@@ -108,7 +108,7 @@ BOOL CVehiclePool::Spawn( EntityId vehicleID, BYTE byteVehicleType,
 
 //----------------------------------------------------
 
-EntityId CVehiclePool::FindIDFromGtaPtr(VEHICLE_TYPE * pGtaVehicle)
+EntityId CVehicleManager::FindIDFromGtaPtr(VEHICLE_TYPE * pGtaVehicle)
 {
 	for(EntityId i = 1; i < MAX_VEHICLES; i++)
 	{
@@ -126,7 +126,7 @@ EntityId CVehiclePool::FindIDFromGtaPtr(VEHICLE_TYPE * pGtaVehicle)
 
 //----------------------------------------------------
 
-int CVehiclePool::FindGtaIDFromID(EntityId vehicleID)
+int CVehicleManager::FindGtaIDFromID(EntityId vehicleID)
 {
 	if(m_pVehicles[vehicleID]) {
 		return CPools::GetIndexFromVehicle(m_pVehicles[vehicleID]->GetVehicle());
@@ -138,7 +138,7 @@ int CVehiclePool::FindGtaIDFromID(EntityId vehicleID)
 
 //----------------------------------------------------
 
-void CVehiclePool::SendVehicleDeath(EntityId vehicleID)
+void CVehicleManager::SendVehicleDeath(EntityId vehicleID)
 {
 	BitStream bsVehicleDeath;
 	bsVehicleDeath.Write(vehicleID);
@@ -148,7 +148,7 @@ void CVehiclePool::SendVehicleDeath(EntityId vehicleID)
 
 //----------------------------------------------------
 
-void CVehiclePool::Process()
+void CVehicleManager::Process()
 {
 	CVehicle *pVehicle;
 	DWORD dwThisTime = GetTickCount();

@@ -12,15 +12,15 @@
 
 #define MAX_PICKUPS 128
 
-class CPickupPool
+class CPickupManager
 {
 private:
 	bool m_bPickupSlotState[MAX_PICKUPS];
 	CPickup * m_pPickups[MAX_PICKUPS];
 
 public:
-	CPickupPool();
-	~CPickupPool();
+	CPickupManager();
+	~CPickupManager();
 
 	EntityId New(int iModel, int iType, Vector3 * vecPos);
 	bool Delete(EntityId PickupID);

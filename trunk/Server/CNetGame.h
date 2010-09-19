@@ -14,16 +14,16 @@
 
 #include "main.h"
 #include "CPlayer.h"
-#include "CPlayerPool.h"
+#include "CPlayerManager.h"
 #include "CVehicle.h"
-#include "CVehiclePool.h"
+#include "CVehicleManager.h"
 #include "CObject.h"
-#include "CObjectPool.h"
+#include "CObjectManager.h"
 #include "CTimerPool.h"
 #include "CText.h"
-#include "CTextPool.h"
+#include "CTextManager.h"
 #include "CPickup.h"
-#include "CPickupPool.h"
+#include "CPickupManager.h"
 #include "CCheckPoints.h"
 #include "../RakNet/MessageIdentifiers.h"
 #include "netrpc.h"
@@ -48,12 +48,12 @@ class CNetGame
 {
 private:
 
-	CPlayerPool					*m_pPlayerPool;
-	CVehiclePool				*m_pVehiclePool;
+	CPlayerManager					*m_pPlayerManager;
+	CVehicleManager				*m_pVehicleManager;
 	CTimerPool					*m_pTimerPool;
-	CObjectPool					*m_pObjectPool;
-	CPickupPool					*m_pPickupPool;
-	CTextPool					*m_pTextPool;
+	CObjectManager					*m_pObjectManager;
+	CPickupManager					*m_pPickupManager;
+	CTextManager					*m_pTextManager;
 	CCheckpoints				*m_pCheckpoints;
 	RakPeerInterface			*m_pRakPeer;
 	static RPC4					*m_pRPC4;
@@ -84,11 +84,11 @@ public:
 	~CNetGame();
 
 	int GetGameState() { return m_iGameState; };
-	CPlayerPool * GetPlayerPool() { return m_pPlayerPool; };
-	CVehiclePool * GetVehiclePool() { return m_pVehiclePool; };
-	CObjectPool * GetObjectPool() { return m_pObjectPool; };
-	CPickupPool * GetPickupPool() { return m_pPickupPool; };
-	CTextPool * GetTextPool() { return m_pTextPool; };
+	CPlayerManager * GetPlayerManager() { return m_pPlayerManager; };
+	CVehicleManager * GetVehicleManager() { return m_pVehicleManager; };
+	CObjectManager * GetObjectManager() { return m_pObjectManager; };
+	CPickupManager * GetPickupManager() { return m_pPickupManager; };
+	CTextManager * GetTextManager() { return m_pTextManager; };
 	CCheckpoints * GetCheckpoints() { return m_pCheckpoints; };
 	CTimerPool * GetTimerPool() { return m_pTimerPool; };
 	RakPeerInterface * GetRakPeer() { return m_pRakPeer; };

@@ -23,7 +23,7 @@ SQInteger sq_setGameTime(SQVM * pVM)
 	sq_getinteger(pVM, -2, &h);
 	sq_getinteger(pVM, -1, &m);
 
-	pNetGame->GetPlayerPool()->SetGameTime(h, m);
+	pNetGame->GetPlayerManager()->SetGameTime(h, m);
 	sq_pushbool(pVM, true);
 	return 1;
 }
@@ -52,7 +52,7 @@ SQInteger sq_createObject(SQVM * pVM)
 	sq_getfloat(pVM, -2, &vecRot.Y);
 	sq_getfloat(pVM, -1, &vecRot.Z);
 
-	EntityId object = pNetGame->GetObjectPool()->New(model, &vecPos, &vecRot);
+	EntityId object = pNetGame->GetObjectManager()->New(model, &vecPos, &vecRot);
 
 	sq_pushinteger(pVM, object);
 	return 1;
@@ -64,7 +64,7 @@ SQInteger sq_destroyObject(SQVM * pVM)
 
 	sq_getinteger(pVM, -1, &objId);
 
-	pNetGame->GetObjectPool()->Delete(objId);
+	pNetGame->GetObjectManager()->Delete(objId);
 
 	sq_pushbool(pVM, true);
 	return 1;
@@ -80,7 +80,7 @@ SQInteger sq_createPickup(SQVM * pVM)
 	sq_getfloat(pVM, -2, &vecPos.Y);
 	sq_getfloat(pVM, -1, &vecPos.Z);
 
-	EntityId pickup = pNetGame->GetPickupPool()->New(model, type, &vecPos);
+	EntityId pickup = pNetGame->GetPickupManager()->New(model, type, &vecPos);
 
 	sq_pushinteger(pVM, pickup);
 	return 1;
@@ -92,7 +92,7 @@ SQInteger sq_destroyPickup(SQVM * pVM)
 
 	sq_getinteger(pVM, -1, &pickupId);
 
-	pNetGame->GetPickupPool()->Delete(pickupId);
+	pNetGame->GetPickupManager()->Delete(pickupId);
 
 	sq_pushbool(pVM, true);
 	return 1;

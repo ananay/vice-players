@@ -131,17 +131,17 @@ void CRcon::Packet_RconCommand(RakNet::Packet* pPacket)
 	{
 		if (stricmp(rconcmd, "players") == 0)
 		{
-			CPlayerPool* pPlayerPool = pNetGame->GetPlayerPool();
+			CPlayerManager* pPlayerManager = pNetGame->GetPlayerManager();
 			RakPeerInterface* pRak = pNetGame->GetRakPeer();
 			ConsoleOutput("\n id\tname\t\tip");
 			ConsoleOutput(" --\t----\t\t--\n");
 			char output[1024];
 			for (int x=0; x<MAX_PLAYERS; x++)
 			{
-				if (pPlayerPool->GetSlotState(x))
+				if (pPlayerManager->GetSlotState(x))
 				{
 					sprintf(output, " %d\t%s\t\t%s", x,
-						pPlayerPool->GetPlayerName(x), pRak->GetSystemAddressFromIndex(x).ToString(true));
+						pPlayerManager->GetPlayerName(x), pRak->GetSystemAddressFromIndex(x).ToString(true));
 					ConsoleOutput(output);
 				}
 			}
@@ -206,7 +206,7 @@ void CRcon::Packet_RconCommand(RakNet::Packet* pPacket)
 
 void CRcon::OutputDeathMessage(int iDeathType,BYTE byteWhoDied,BYTE byteWhoKilled)
 {
-	CPlayerPool *pPool = pNetGame->GetPlayerPool();
+	CPlayerManager *pPool = pNetGame->GetPlayerManager();
 	CPlayer *pPlayerWhoDied;
 	CPlayer *pPlayerWhoKilled;
 

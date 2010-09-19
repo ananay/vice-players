@@ -14,7 +14,7 @@
 extern CNetGame *pNetGame;
 
 
-CObjectPool::CObjectPool()
+CObjectManager::CObjectManager()
 {
 	for(EntityId objectID = 0; objectID < MAX_OBJECTS; objectID++) 
 	{
@@ -23,7 +23,7 @@ CObjectPool::CObjectPool()
 	}
 }
 
-CObjectPool::~CObjectPool()
+CObjectManager::~CObjectManager()
 {
 	// Loop through all object slots
 	for(EntityId i = 0; i < MAX_OBJECTS; i++)
@@ -38,7 +38,7 @@ CObjectPool::~CObjectPool()
 }
 
 
-EntityId CObjectPool::New(int iModel, Vector3 * vecPos, Vector3 * vecRot)
+EntityId CObjectManager::New(int iModel, Vector3 * vecPos, Vector3 * vecRot)
 {
 	EntityId ObjectID;
 
@@ -61,7 +61,7 @@ EntityId CObjectPool::New(int iModel, Vector3 * vecPos, Vector3 * vecRot)
 	return -1;
 }
 
-EntityId CObjectPool::GetFreeSlot()
+EntityId CObjectManager::GetFreeSlot()
 {
 	for(EntityId id = 0; id < MAX_OBJECTS; id++)
 	{
@@ -71,7 +71,7 @@ EntityId CObjectPool::GetFreeSlot()
 	return false;
 }
 
-void CObjectPool::InitForPlayer(EntityId playerId)
+void CObjectManager::InitForPlayer(EntityId playerId)
 {
 	for(EntityId ObjectID = 0; ObjectID < MAX_OBJECTS; ObjectID++)
 	{
@@ -82,7 +82,7 @@ void CObjectPool::InitForPlayer(EntityId playerId)
 	}
 }
 
-bool CObjectPool::Delete(EntityId ObjectID)
+bool CObjectManager::Delete(EntityId ObjectID)
 {
 	// Is this slot used?
 	if(!GetSlotState(ObjectID))

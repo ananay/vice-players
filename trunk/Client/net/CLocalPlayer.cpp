@@ -49,7 +49,7 @@ BOOL CLocalPlayer::Process()
 {
 	CSpawnSelection *pGameLogic;
 	CVehicle *pGameVehicle;
-	CVehiclePool *pVehiclePool;
+	CVehicleManager *pVehicleManager;
 
 	EntityId vehicleID;
 
@@ -80,10 +80,10 @@ BOOL CLocalPlayer::Process()
 					// DRIVING VEHICLE
 
 					// VEHICLE WORLD BOUNDS STUFF
-					pVehiclePool = pNetGame->GetVehiclePool();
-					vehicleID = pVehiclePool->FindIDFromGtaPtr(m_pPlayerPed->GetGtaVehicle());
+					pVehicleManager = pNetGame->GetVehicleManager();
+					vehicleID = pVehicleManager->FindIDFromGtaPtr(m_pPlayerPed->GetGtaVehicle());
 					if(vehicleID != INVALID_ENTITY_ID) {
-						pGameVehicle = pVehiclePool->GetAt(vehicleID);
+						pGameVehicle = pVehicleManager->GetAt(vehicleID);
 						pGameVehicle->EnforceWorldBoundries(
 							pNetGame->m_WorldBounds[0],pNetGame->m_WorldBounds[1],
 							pNetGame->m_WorldBounds[2],pNetGame->m_WorldBounds[3]);
@@ -218,13 +218,13 @@ void CLocalPlayer::SendInCarFullSyncData()
 		RakNet::BitStream bsVehicleSync;
 		VEHICLE_SYNC_DATA vehicleSyncData;
 		MATRIX4X4 matVehicle;
-		CVehiclePool * pVehiclePool = pNetGame->GetVehiclePool();
+		CVehicleManager * pVehicleManager = pNetGame->GetVehicleManager();
 		CVehicle * pGameVehicle = NULL;
 
 		// write packet id
 		bsVehicleSync.Write((MessageID)ID_VEHICLE_SYNC);
 
-		vehicleSyncData.vehicleID = pVehiclePool->FindIDFromGtaPtr(m_pPlayerPed->GetGtaVehicle());
+		vehicleSyncData.vehicleID = pVehicleManager->FindIDFromGtaPtr(m_pPlayerPed->GetGtaVehicle());
 
 		// make sure we have a valid vehicle
 		if(vehicleSyncData.vehicleID == INVALID_ENTITY_ID)
@@ -236,7 +236,7 @@ void CLocalPlayer::SendInCarFullSyncData()
 		vehicleSyncData.wKeys = m_pPlayerPed->GetKeys();
 
 		// get the vehicle pointer
-		pGameVehicle = pVehiclePool->GetAt(vehicleSyncData.vehicleID);
+		pGameVehicle = pVehicleManager->GetAt(vehicleSyncData.vehicleID);
 
 		// make sure the vehicle pointer is valid
 		if(!pGameVehicle)
@@ -286,9 +286,9 @@ void CLocalPlayer::SendInCarPassengerData()
 {
 	RakNet::BitStream bsPassengerSync;
 	Vector3 vPos;
-	CVehiclePool *pVehiclePool = pNetGame->GetVehiclePool();
+	CVehicleManager *pVehicleManager = pNetGame->GetVehicleManager();
 
-	EntityId vehicleID = pVehiclePool->FindIDFromGtaPtr(m_pPlayerPed->GetGtaVehicle());
+	EntityId vehicleID = pVehicleManager->FindIDFromGtaPtr(m_pPlayerPed->GetGtaVehicle());
 	if(vehicleID == INVALID_ENTITY_ID) return;
 
 	BYTE bytePassengerSeat = m_pPlayerPed->GetPassengerSeat();
@@ -306,15 +306,15 @@ void CLocalPlayer::SendInCarPassengerData()
 
 int CLocalPlayer::GetOptimumInCarSendRate()
 {
-	CVehiclePool *pVehiclePool = pNetGame->GetVehiclePool();
+	CVehicleManager *pVehicleManager = pNetGame->GetVehicleManager();
 	CVehicle	 *pGameVehicle=NULL;
 	Vector3		 vecMoveSpeed;
 	EntityId		 vehicleID=0;
 
 	if(m_pPlayerPed)
 	{
-		vehicleID = pVehiclePool->FindIDFromGtaPtr(m_pPlayerPed->GetGtaVehicle());
-		pGameVehicle = pVehiclePool->GetAt(vehicleID);
+		vehicleID = pVehicleManager->FindIDFromGtaPtr(m_pPlayerPed->GetGtaVehicle());
+		pGameVehicle = pVehicleManager->GetAt(vehicleID);
 
 		if(pGameVehicle)
 		{

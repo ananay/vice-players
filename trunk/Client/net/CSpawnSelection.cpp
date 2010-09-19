@@ -23,7 +23,7 @@ CSpawnSelection::CSpawnSelection()
 {
 	m_iSelectedClass = 0;
 	m_dwLastSpawnSelectionTick = GetTickCount();
-	HandleClassSelection(pNetGame->GetPlayerPool()->GetLocalPlayer());
+	HandleClassSelection(pNetGame->GetPlayerManager()->GetLocalPlayer());
 }
 
 //----------------------------------------------------------

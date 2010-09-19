@@ -36,11 +36,11 @@ class CNetGame
 {
 private:
 
-	CPlayerPool			*m_pPlayerPool;
-	CVehiclePool		*m_pVehiclePool;
-	CObjectPool			*m_pObjectPool;
-	CPickupPool			*m_pPickupPool;
-	CTextPool			*m_pTextPool;
+	CPlayerManager			*m_pPlayerManager;
+	CVehicleManager		*m_pVehicleManager;
+	CObjectManager			*m_pObjectManager;
+	CPickupManager			*m_pPickupManager;
+	CTextManager			*m_pTextManager;
 	CCheckpoints		*m_pCheckpoints;
 	RakPeerInterface	*m_pRakPeer;
 	static RPC4			*m_pRPC4;
@@ -76,11 +76,11 @@ public:
 	int GetGameState() { return m_iGameState; };
 	void SetGameState(int iGameState) { m_iGameState = iGameState; };
 
-	CPlayerPool * GetPlayerPool() { return m_pPlayerPool; };
-	CVehiclePool * GetVehiclePool() { return m_pVehiclePool; };
-	CObjectPool * GetObjectPool() { return m_pObjectPool; };
-	CPickupPool * GetPickupPool() { return m_pPickupPool; };
-	CTextPool * GetTextPool() { return m_pTextPool; };
+	CPlayerManager * GetPlayerManager() { return m_pPlayerManager; };
+	CVehicleManager * GetVehicleManager() { return m_pVehicleManager; };
+	CObjectManager * GetObjectManager() { return m_pObjectManager; };
+	CPickupManager * GetPickupManager() { return m_pPickupManager; };
+	CTextManager * GetTextManager() { return m_pTextManager; };
 	CCheckpoints * GetCheckpoints() { return m_pCheckpoints; };
 	RakPeerInterface * GetRakPeer() { return m_pRakPeer; };
 	RPC4 * GetRPC4() { return m_pRPC4; };

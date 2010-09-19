@@ -134,7 +134,7 @@ void CPlayer::BroadcastSyncData()
 void CPlayer::StoreOnFootFullSyncData(PLAYER_SYNC_DATA * pPlayerSyncData)
 {
 	if(m_vehicleID != 0) {
-		pNetGame->GetVehiclePool()->GetAt(m_vehicleID)->SetDriverId(INVALID_ENTITY_ID);
+		pNetGame->GetVehicleManager()->GetAt(m_vehicleID)->SetDriverId(INVALID_ENTITY_ID);
 		m_vehicleID = 0;
 	}
 
@@ -173,7 +173,7 @@ void CPlayer::StoreAimSyncData(S_CAMERA_AIM * pAim)
 void CPlayer::StoreInCarFullSyncData(VEHICLE_SYNC_DATA * pVehicleSyncData)
 {
 	// get the vehicle pointer
-	CVehicle * pVehicle = pNetGame->GetVehiclePool()->GetAt(pVehicleSyncData->vehicleID);
+	CVehicle * pVehicle = pNetGame->GetVehicleManager()->GetAt(pVehicleSyncData->vehicleID);
 
 	// make sure vehicle is valid
 	if(!pVehicle)
@@ -240,7 +240,7 @@ void CPlayer::HandleDeath(BYTE byteReason, BYTE byteWhoWasResponsible)
 	BYTE byteScoringModifier;
 
 	byteScoringModifier = 
-		pNetGame->GetPlayerPool()->AddResponsibleDeath(byteWhoWasResponsible,m_bytePlayerID);
+		pNetGame->GetPlayerManager()->AddResponsibleDeath(byteWhoWasResponsible,m_bytePlayerID);
 
 	bsPlayerDeath.Write(m_bytePlayerID);
 	bsPlayerDeath.Write(byteReason);
@@ -251,7 +251,7 @@ void CPlayer::HandleDeath(BYTE byteReason, BYTE byteWhoWasResponsible)
 	pNetGame->GetRPC4()->Call("Death", &bsPlayerDeath,HIGH_PRIORITY,RELIABLE,0,playerid,true);
 	
 	logprintf("<%s> died",
-		pNetGame->GetPlayerPool()->GetPlayerName(m_bytePlayerID),
+		pNetGame->GetPlayerManager()->GetPlayerName(m_bytePlayerID),
 		byteReason,byteWhoWasResponsible,byteScoringModifier);
 }
 

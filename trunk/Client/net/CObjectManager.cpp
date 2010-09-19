@@ -14,7 +14,7 @@ extern CGame *pGame;
 extern CNetGame *pNetGame;
 extern CChatWindow *pChatWindow;
 
-CObjectPool::CObjectPool()
+CObjectManager::CObjectManager()
 {
 	for(EntityId ObjectID = 0; ObjectID < MAX_OBJECTS; ObjectID++) 
 	{
@@ -23,7 +23,7 @@ CObjectPool::CObjectPool()
 	}
 }
 
-CObjectPool::~CObjectPool()
+CObjectManager::~CObjectManager()
 {
 	for(EntityId i = 0; i < MAX_OBJECTS; i++)
 	{
@@ -31,7 +31,7 @@ CObjectPool::~CObjectPool()
 	}
 }
 
-BOOL CObjectPool::New(EntityId ObjectID, int iModel, Vector3 vecPos, Vector3 vecRot)
+BOOL CObjectManager::New(EntityId ObjectID, int iModel, Vector3 vecPos, Vector3 vecRot)
 {
 	if(m_pObjects[ObjectID])
 	{
@@ -50,7 +50,7 @@ BOOL CObjectPool::New(EntityId ObjectID, int iModel, Vector3 vecPos, Vector3 vec
 	return FALSE;
 }
 
-BOOL CObjectPool::Delete(EntityId ObjectID)
+BOOL CObjectManager::Delete(EntityId ObjectID)
 {
 	if(!m_pObjects[ObjectID])
 	{

@@ -24,7 +24,7 @@ using namespace RakNet;
 
 //----------------------------------------------------
 
-CPlayerPool::CPlayerPool()
+CPlayerManager::CPlayerManager()
 {
 	for(EntityId i = 0; i < MAX_PLAYERS; i++)
 	{
@@ -35,7 +35,7 @@ CPlayerPool::CPlayerPool()
 
 //----------------------------------------------------
 
-CPlayerPool::~CPlayerPool()
+CPlayerManager::~CPlayerManager()
 {	
 	for(EntityId i = 0; i < MAX_PLAYERS; i++)
 	{
@@ -45,7 +45,7 @@ CPlayerPool::~CPlayerPool()
 
 //----------------------------------------------------
 
-BOOL CPlayerPool::New(EntityId playerID, PCHAR szPlayerName, PCHAR szSerial)
+BOOL CPlayerManager::New(EntityId playerID, PCHAR szPlayerName, PCHAR szSerial)
 {
 	m_pPlayers[playerID] = new CPlayer();
 
@@ -80,7 +80,7 @@ BOOL CPlayerPool::New(EntityId playerID, PCHAR szPlayerName, PCHAR szSerial)
 
 //----------------------------------------------------
 
-BOOL CPlayerPool::Delete(EntityId playerID, BYTE byteReason)
+BOOL CPlayerManager::Delete(EntityId playerID, BYTE byteReason)
 {
 	if(!GetSlotState(playerID) || !m_pPlayers[playerID])
 	{
@@ -106,7 +106,7 @@ BOOL CPlayerPool::Delete(EntityId playerID, BYTE byteReason)
 
 //----------------------------------------------------
 
-void CPlayerPool::Process()
+void CPlayerManager::Process()
 {
 	EntityId playerID = 0;
 
@@ -122,7 +122,7 @@ void CPlayerPool::Process()
 // Add information to the pool about a kill.
 // Return constant describing the scoring.
 
-BYTE CPlayerPool::AddResponsibleDeath(BYTE byteWhoKilled, BYTE byteWhoDied)
+BYTE CPlayerManager::AddResponsibleDeath(BYTE byteWhoKilled, BYTE byteWhoDied)
 {
 	CPlayer *pWhoKilled;
 	CPlayer *pWhoDied;
@@ -173,7 +173,7 @@ BYTE CPlayerPool::AddResponsibleDeath(BYTE byteWhoKilled, BYTE byteWhoDied)
 
 //----------------------------------------------------
 
-float CPlayerPool::GetDistanceFromPlayerToPlayer(EntityId player1, EntityId player2)
+float CPlayerManager::GetDistanceFromPlayerToPlayer(EntityId player1, EntityId player2)
 {
 	Vector3	*vecFromPlayer;
 	Vector3	*vecThisPlayer;
@@ -193,7 +193,7 @@ float CPlayerPool::GetDistanceFromPlayerToPlayer(EntityId player1, EntityId play
 
 //----------------------------------------------------
 
-BOOL CPlayerPool::IsNickInUse(PCHAR szNick)
+BOOL CPlayerManager::IsNickInUse(PCHAR szNick)
 {
 	for(EntityId i = 0; i < MAX_PLAYERS; i++)
 	{
@@ -211,7 +211,7 @@ BOOL CPlayerPool::IsNickInUse(PCHAR szNick)
 
 //----------------------------------------------------
 
-BOOL CPlayerPool::IsConnected(EntityId playerID)
+BOOL CPlayerManager::IsConnected(EntityId playerID)
 {
 	if(!GetSlotState(playerID) || !m_pPlayers[playerID])
 	{
@@ -222,12 +222,12 @@ BOOL CPlayerPool::IsConnected(EntityId playerID)
 
 //----------------------------------------------------
 
-void CPlayerPool::SetGameTime(BYTE hours, BYTE minutes)
+void CPlayerManager::SetGameTime(BYTE hours, BYTE minutes)
 {
-	CPlayerPool * pPlayerPool = pNetGame->GetPlayerPool();
+	CPlayerManager * pPlayerManager = pNetGame->GetPlayerManager();
 	for(BYTE i = 0; i < MAX_PLAYERS; i++) {
-		if(pPlayerPool->GetSlotState(i)) {
-			pPlayerPool->GetAt(i)->SetGameTime(hours, minutes);
+		if(pPlayerManager->GetSlotState(i)) {
+			pPlayerManager->GetAt(i)->SetGameTime(hours, minutes);
 		}
 	}
 }

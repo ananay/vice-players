@@ -11,11 +11,11 @@
 
 #define MAX_OBJECTS 100
 
-class CObjectPool
+class CObjectManager
 {
 public:
-	CObjectPool();
-	~CObjectPool();
+	CObjectManager();
+	~CObjectManager();
 
 	BOOL New(EntityId ObjectID, int iModel, Vector3 vecPos, Vector3 vecRot);
 	BOOL Delete(EntityId ObjectID);

@@ -16,7 +16,7 @@
 
 //----------------------------------------------------
 
-class CPlayerPool
+class CPlayerManager
 {
 private:
 	
@@ -27,8 +27,8 @@ private:
 	BOOL	m_bIsAnAdmin[MAX_PLAYERS];
 public:
 	
-	CPlayerPool();
-	~CPlayerPool();
+	CPlayerManager();
+	~CPlayerManager();
 
 	void Process();
 

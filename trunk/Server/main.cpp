@@ -376,7 +376,7 @@ void HandleServerQuery(const QueryJob &job)
 			iWriteLength += iMapLen;
 
 			// Write the player count
-			int iPlayerCount = pNetGame->GetPlayerPool()->GetPlayerCount();
+			int iPlayerCount = pNetGame->GetPlayerManager()->GetPlayerCount();
 			memcpy((szSend + iWriteLength), &iPlayerCount, sizeof(int));
 			iWriteLength += sizeof(int);
 

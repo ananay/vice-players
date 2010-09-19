@@ -34,9 +34,9 @@ CCheckpoint::CCheckpoint(EntityId id, Vector3 vecPos, BYTE type, float radius)
 
 CCheckpoint::~CCheckpoint()
 {
-	CPlayerPool * pPlayerPool = pNetGame->GetPlayerPool();
+	CPlayerManager * pPlayerManager = pNetGame->GetPlayerManager();
 	for(EntityId i = 0; i < MAX_PLAYERS; i++) {
-		if(pPlayerPool->GetSlotState(i)) {
+		if(pPlayerManager->GetSlotState(i)) {
 			BitStream bsSend;
 			bsSend.Write(m_iID);
 			pNetGame->GetRPC4()->Call("DestroyCheckpoint", &bsSend, HIGH_PRIORITY, RELIABLE, 0, pNetGame->GetRakPeer()->GetSystemAddressFromIndex(i), 0);
@@ -62,9 +62,9 @@ void CCheckpoint::InitForPlayer(EntityId playerId)
 
 void CCheckpoint::InitForWorld()
 {
-	CPlayerPool * pPlayerPool = pNetGame->GetPlayerPool();
+	CPlayerManager * pPlayerManager = pNetGame->GetPlayerManager();
 	for(EntityId i = 0; i < MAX_PLAYERS; i++) {
-		if(pPlayerPool->GetSlotState(i)) {
+		if(pPlayerManager->GetSlotState(i)) {
 			InitForPlayer(i);
 		}
 	}

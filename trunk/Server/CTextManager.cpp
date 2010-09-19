@@ -16,7 +16,7 @@
 
 extern CNetGame *pNetGame;
 
-CTextPool::CTextPool()
+CTextManager::CTextManager()
 {
 	for(EntityId textID = 0; textID < MAX_TEXTS; textID++) 
 	{
@@ -25,7 +25,7 @@ CTextPool::CTextPool()
 	}
 }
 
-CTextPool::~CTextPool()
+CTextManager::~CTextManager()
 {
 	// Loop through all pickup slots
 	for(EntityId i = 0; i < MAX_TEXTS; i++)
@@ -39,7 +39,7 @@ CTextPool::~CTextPool()
 	}
 }
 
-EntityId CTextPool::New(DWORD color, const char * szFontName, int iSize, float posX, float posY, const char * szText)
+EntityId CTextManager::New(DWORD color, const char * szFontName, int iSize, float posX, float posY, const char * szText)
 {
 	EntityId TextID;
 
@@ -62,7 +62,7 @@ EntityId CTextPool::New(DWORD color, const char * szFontName, int iSize, float p
 	return -1;
 }
 
-void CTextPool::InitForPlayer(EntityId playerId)
+void CTextManager::InitForPlayer(EntityId playerId)
 {
 	for(EntityId id = 0; id < MAX_TEXTS; id++)
 	{
@@ -73,7 +73,7 @@ void CTextPool::InitForPlayer(EntityId playerId)
 	}
 }
 
-void CTextPool::InitForWorld()
+void CTextManager::InitForWorld()
 {
 	for(EntityId id = 0; id < MAX_TEXTS; id++)
 	{
@@ -84,7 +84,7 @@ void CTextPool::InitForWorld()
 	}
 }
 
-EntityId CTextPool::GetFreeSlot()
+EntityId CTextManager::GetFreeSlot()
 {
 	for(EntityId id = 0; id < MAX_TEXTS; id++)
 	{
@@ -94,7 +94,7 @@ EntityId CTextPool::GetFreeSlot()
 	return false;
 }
 
-bool CTextPool::Delete(EntityId TextID)
+bool CTextManager::Delete(EntityId TextID)
 {
 	// Is this slot used?
 	if(!GetSlotState(TextID))

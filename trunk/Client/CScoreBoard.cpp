@@ -19,7 +19,7 @@ extern CChatWindow * pChatWindow;
 
 void CScoreBoard::Draw()
 {
-	CPlayerPool* pPlayerPool = pNetGame->GetPlayerPool();
+	CPlayerManager* pPlayerManager = pNetGame->GetPlayerManager();
 	//DWORD dwNickColor;
 	//char * szNick;
 	DWORD dwChatColor = 0xFFFFFFFF;
@@ -60,29 +60,29 @@ void CScoreBoard::Draw()
 	pFont->DrawText((float)(((DisplayMode.Width / 4) + ((DisplayMode.Width / 8) * 3)) - (size.cx / 2)), (float)((DisplayMode.Height / 4) + (DisplayMode.Height / 20)), 0xFFFFFFFF, szPingTitleText);
 
 	// Format the local player name
-	/*dwNickColor = pPlayerPool->GetLocalPlayer()->GetTeamColorAsARGB();
-	szNick = pPlayerPool->GetLocalPlayerName();
+	/*dwNickColor = pPlayerManager->GetLocalPlayer()->GetTeamColorAsARGB();
+	szNick = pPlayerManager->GetLocalPlayerName();
 	*szNameText = '\01'; szNameText++; // color start
 	memcpy(szNameText, &dwNickColor, sizeof(DWORD)); szNameText += 4; // nick color
 	memcpy(szNameText, szNick, strlen(szNick)); szNameText += strlen(szNick); // nick string
 	*szNameText = '\01'; szNameText++; // color start
 	memcpy(szNameText, &dwChatColor, sizeof(DWORD)); szNameText += 4; // chat color
 	*szNameText = '\0';*/
-	sprintf(szNameText, "%s", pPlayerPool->GetLocalPlayerName());
+	sprintf(szNameText, "%s", pPlayerManager->GetLocalPlayerName());
 
 	// Draw the local player name
 	pFont->GetTextExtent(szNameText, &size);
 	pFont->DrawText((float)(((DisplayMode.Width / 4) + (DisplayMode.Width / 8)) - (size.cx / 2)), (float)((DisplayMode.Height / 4) + (DisplayMode.Height / 14) + ((DisplayMode.Height / 60) * iCurrent)), 0xFFFFFFFF, szNameText);
 
 	// Format the local player score
-	sprintf(szScoreText, "%d", pPlayerPool->GetLocalPlayerScore());
+	sprintf(szScoreText, "%d", pPlayerManager->GetLocalPlayerScore());
 
 	// Draw the local player score
 	pFont->GetTextExtent(szScoreText, &size);
 	pFont->DrawText((float)(((DisplayMode.Width / 4) + ((DisplayMode.Width / 8) * 2)) - (size.cx / 2)), (float)((DisplayMode.Height / 4) + (DisplayMode.Height / 14) + ((DisplayMode.Height / 60) * iCurrent)), 0xFFFFFFFF, szScoreText);
 
 	// Format the local player ping
-	sprintf(szPingText, "%d", pPlayerPool->GetLocalPlayerPing());
+	sprintf(szPingText, "%d", pPlayerManager->GetLocalPlayerPing());
 
 	// Draw the local player ping
 	pFont->GetTextExtent(szPingText, &size);
@@ -91,31 +91,31 @@ void CScoreBoard::Draw()
 	iCurrent ++;
 
 	for(BYTE i = 0; i < MAX_PLAYERS; i++) {
-		if(pPlayerPool->GetSlotState(i)) {
+		if(pPlayerManager->GetSlotState(i)) {
 			// Format the player name
-			/*dwNickColor = pPlayerPool->GetAt(i)->GetTeamColorAsARGB();
-			szNick = pPlayerPool->GetPlayerName(i);
+			/*dwNickColor = pPlayerManager->GetAt(i)->GetTeamColorAsARGB();
+			szNick = pPlayerManager->GetPlayerName(i);
 			*szNameText = '\01'; szNameText++; // color start
 			memcpy(szNameText, &dwNickColor, sizeof(DWORD)); szNameText += 4; // nick color
 			memcpy(szNameText, szNick, strlen(szNick)); szNameText += strlen(szNick); // nick string
 			*szNameText = '\01'; szNameText++; // color start
 			memcpy(szNameText, &dwChatColor, sizeof(DWORD)); szNameText += 4; // chat color
 			*szNameText = '\0';*/
-			sprintf(szNameText, "%s", pPlayerPool->GetPlayerName(i));
+			sprintf(szNameText, "%s", pPlayerManager->GetPlayerName(i));
 
 			// Draw the player name
 			pFont->GetTextExtent(szNameText, &size);
 			pFont->DrawText((float)(((DisplayMode.Width / 4) + (DisplayMode.Width / 8)) - (size.cx / 2)), (float)((DisplayMode.Height / 4) + (DisplayMode.Height / 14) + ((DisplayMode.Height / 60) * iCurrent)), 0xFFFFFFFF, szNameText);
 
 			// Format the player score
-			sprintf(szScoreText, "%d", pPlayerPool->GetScore(i));
+			sprintf(szScoreText, "%d", pPlayerManager->GetScore(i));
 
 			// Draw the player score
 			pFont->GetTextExtent(szScoreText, &size);
 			pFont->DrawText((float)(((DisplayMode.Width / 4) + ((DisplayMode.Width / 8) * 2)) - (size.cx / 2)), (float)((DisplayMode.Height / 4) + (DisplayMode.Height / 14) + ((DisplayMode.Height / 60) * iCurrent)), 0xFFFFFFFF, szScoreText);
 
 			// Format the player ping
-			sprintf(szPingText, "%d", pPlayerPool->GetPing(i));
+			sprintf(szPingText, "%d", pPlayerManager->GetPing(i));
 
 			// Draw the player ping
 			pFont->GetTextExtent(szPingText, &size);

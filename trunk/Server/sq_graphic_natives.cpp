@@ -28,7 +28,7 @@ SQInteger sq_createText(SQVM * pVM)
 	sq_getfloat(pVM, -2, &posY);
 	sq_getstring(pVM, -1, &messageValue);
 
-	EntityId text = pNetGame->GetTextPool()->New(colourMessage, fontName, size, posX, posY, messageValue);
+	EntityId text = pNetGame->GetTextManager()->New(colourMessage, fontName, size, posX, posY, messageValue);
 
 	if(text != -1)
 	{
@@ -46,7 +46,7 @@ SQInteger sq_destroyText(SQVM * pVM)
 
 	sq_getinteger(pVM, -1, &textId);
 
-	pNetGame->GetTextPool()->Delete(textId);
+	pNetGame->GetTextManager()->Delete(textId);
 
 	sq_pushbool(pVM, true);
 	return 1;
@@ -63,7 +63,7 @@ SQInteger sq_toggleTextForPlayer(SQVM * pVM)
 	sq_getinteger(pVM, -2, &textId);
 	sq_getinteger(pVM, -3, &playerId);
 
-	if(pNetGame->GetPlayerPool()->GetSlotState(playerId))
+	if(pNetGame->GetPlayerManager()->GetSlotState(playerId))
 	{
 		RakNet::BitStream bsSend;
 		bsSend.Write((EntityId)textId);
@@ -87,9 +87,9 @@ SQInteger sq_toggleTextForAll(SQVM * pVM)
 	sq_getbool(pVM, -1, &show);
 	sq_getinteger(pVM, -2, &textId);
 
-	if(pNetGame->GetTextPool()->GetSlotState(textId))
+	if(pNetGame->GetTextManager()->GetSlotState(textId))
 	{
-		pNetGame->GetTextPool()->GetAt(textId)->Show(show != 0);
+		pNetGame->GetTextManager()->GetAt(textId)->Show(show != 0);
 
 		sq_pushbool(pVM, true);
 		return 1;
@@ -107,9 +107,9 @@ SQInteger sq_setTextForAll(SQVM * pVM)
 	sq_getstring(pVM, -1, &szText);
 	sq_getinteger(pVM, -2, &textId);
 
-	if(pNetGame->GetTextPool()->GetSlotState(textId))
+	if(pNetGame->GetTextManager()->GetSlotState(textId))
 	{
-		pNetGame->GetTextPool()->GetAt(textId)->SetText(szText);
+		pNetGame->GetTextManager()->GetAt(textId)->SetText(szText);
 
 		sq_pushbool(pVM, true);
 		return 1;
@@ -129,7 +129,7 @@ SQInteger sq_setTextForPlayer(SQVM * pVM)
 	sq_getinteger(pVM, -2, &textId);
 	sq_getinteger(pVM, -3, &playerId);
 
-	if(pNetGame->GetPlayerPool()->GetSlotState(playerId))
+	if(pNetGame->GetPlayerManager()->GetSlotState(playerId))
 	{
 		RakNet::BitStream bsSend;
 		bsSend.Write((EntityId)textId);
@@ -153,9 +153,9 @@ SQInteger sq_setTextColorForAll(SQVM * pVM)
 	sq_getinteger(pVM, -1, &color);
 	sq_getinteger(pVM, -2, &textId);
 
-	if(pNetGame->GetTextPool()->GetSlotState(textId))
+	if(pNetGame->GetTextManager()->GetSlotState(textId))
 	{
-		pNetGame->GetTextPool()->GetAt(textId)->SetColor(color);
+		pNetGame->GetTextManager()->GetAt(textId)->SetColor(color);
 
 		sq_pushbool(pVM, true);
 		return 1;
@@ -175,7 +175,7 @@ SQInteger sq_setTextColorForPlayer(SQVM * pVM)
 	sq_getinteger(pVM, -2, &textId);
 	sq_getinteger(pVM, -3, &playerId);
 
-	if(pNetGame->GetPlayerPool()->GetSlotState(playerId))
+	if(pNetGame->GetPlayerManager()->GetSlotState(playerId))
 	{
 		RakNet::BitStream bsSend;
 		bsSend.Write((EntityId)textId);
@@ -199,9 +199,9 @@ SQInteger sq_setTextPositionForAll(SQVM * pVM)
 	sq_getfloat(pVM, -2, &x);
 	sq_getinteger(pVM, -3, &textId);
 
-	if(pNetGame->GetTextPool()->GetSlotState(textId))
+	if(pNetGame->GetTextManager()->GetSlotState(textId))
 	{
-		pNetGame->GetTextPool()->GetAt(textId)->SetPosition(x, y);
+		pNetGame->GetTextManager()->GetAt(textId)->SetPosition(x, y);
 	}
 
 	sq_pushbool(pVM, false);
@@ -219,7 +219,7 @@ SQInteger sq_setTextPositionForPlayer(SQVM * pVM)
 	sq_getinteger(pVM, -3, &textId);
 	sq_getinteger(pVM, -4, &playerId);
 
-	if(pNetGame->GetPlayerPool()->GetSlotState(playerId))
+	if(pNetGame->GetPlayerManager()->GetSlotState(playerId))
 	{
 		RakNet::BitStream bsSend;
 		bsSend.Write((EntityId)textId);

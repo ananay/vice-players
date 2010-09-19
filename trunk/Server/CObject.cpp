@@ -23,11 +23,11 @@ CObject::CObject(int iModel, Vector3 * vecPos, Vector3 * vecRot)
 
 CObject::~CObject()
 {
-	CPlayerPool * pPlayerPool = pNetGame->GetPlayerPool();
+	CPlayerManager * pPlayerManager = pNetGame->GetPlayerManager();
 
 	for(EntityId i = 0; i < MAX_PLAYERS; i++)
 	{
-		if(pPlayerPool->GetSlotState(i))
+		if(pPlayerManager->GetSlotState(i))
 		{
 			DestroyForPlayer(i);
 		}
@@ -48,9 +48,9 @@ void CObject::SpawnForPlayer(EntityId playerId)
 
 void CObject::SpawnForWorld()
 {
-	CPlayerPool * pPlayerPool = pNetGame->GetPlayerPool();
+	CPlayerManager * pPlayerManager = pNetGame->GetPlayerManager();
 	for(EntityId i = 0; i < MAX_PLAYERS; i++) {
-		if(pPlayerPool->GetSlotState(i)) {
+		if(pPlayerManager->GetSlotState(i)) {
 			SpawnForPlayer(i);
 		}
 	}
