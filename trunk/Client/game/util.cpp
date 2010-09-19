@@ -8,12 +8,7 @@
 //
 //----------------------------------------------------------
 
-#include "../../raknet/WindowsIncludes.h"
-#include <stdio.h>
-#include "../main.h"
-#include "CGame.h"
-#include "CPools.h"
-#include "util.h"
+#include "StdInc.h"
 
 DWORD dwPlayerPedPtrs[MAX_PLAYERS];
 

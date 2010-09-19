@@ -8,8 +8,7 @@
 //
 //----------------------------------------------------------
 
-#include "../main.h"
-#include "../game/KeySync.h"
+#include "StdInc.h"
 
 extern CGame		 *pGame;
 extern CChatWindow   *pChatWindow;

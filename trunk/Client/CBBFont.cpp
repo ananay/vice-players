@@ -3,8 +3,7 @@
 	Based off code by DrunkenHyena - Many thanks :)
 */
 
-#include "CBBFont.h"
-#include <stdio.h>
+#include "StdInc.h"
 
 extern D3DMATRIX matView;
 

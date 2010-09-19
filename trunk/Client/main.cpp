@@ -10,9 +10,8 @@
 //
 //----------------------------------------------------
 
-#include "main.h"
-#include <process.h>
-#include "GUI/CGUI.h"
+#include "StdInc.h"
+
 
 CGame					*pGame=0;
 GAME_SETTINGS			tSettings;

@@ -8,7 +8,7 @@
 //
 //----------------------------------------------------------
 
-#include "../main.h"
+#include "StdInc.h"
 #include "../detours/detours.h"
 
 typedef IDirect3D8 * (WINAPI * Direct3DCreate8_t)(UINT SDKVersion);

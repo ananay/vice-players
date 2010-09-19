@@ -9,11 +9,11 @@
 //
 //----------------------------------------------------------
 
+#include "StdInc.h"
 #include "CEntity.h"
 #include "util.h"
 #include "address.h"
 #include "CWorld.h"
-#include "../main.h"
 
 extern CGame * pGame;
 

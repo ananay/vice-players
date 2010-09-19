@@ -8,8 +8,7 @@
 //
 //----------------------------------------------------
 
-#include "../main.h"
-#include <stdlib.h>
+#include "StdInc.h"
 
 #define NETGAME_VERSION 7
 

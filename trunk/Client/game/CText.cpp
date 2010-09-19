@@ -8,8 +8,7 @@
 //
 //-----------------------------------------------------
 
-#include "../main.h"
-#include "../GUI/CGUI.h"
+#include "StdInc.h"
 
 extern IDirect3DDevice8 *pD3DDevice;
 extern CChatWindow * pChatWindow;

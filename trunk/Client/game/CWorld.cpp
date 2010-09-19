@@ -8,7 +8,7 @@
 //
 //----------------------------------------------------
 
-#include "CWorld.h"
+#include "StdInc.h"
 
 void CWorld::Add(ENTITY_TYPE * pEntity)
 {

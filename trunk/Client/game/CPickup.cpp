@@ -8,8 +8,7 @@
 //
 //-----------------------------------------------------
 
-#include "../main.h"
-#include "CGame.h"
+#include "StdInc.h"
 
 CPickup::CPickup(int iModel, int iType, Vector3 * vecPos)
 {

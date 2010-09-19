@@ -7,9 +7,8 @@
 //
 //----------------------------------------------------------
 
-#include "../main.h"
+#include "StdInc.h"
 #include "IDirectInputDevice8Hook.h"
-#include "../GUI/CGUI.h"
 extern CGUI *pGUI;
 extern CGame *pGame;
 
@@ -75,20 +74,20 @@ HRESULT STDMETHODCALLTYPE IDirectInputDevice8Hook::Unacquire()
 HRESULT STDMETHODCALLTYPE IDirectInputDevice8Hook::GetDeviceState(DWORD p0, LPVOID p1)
 {
 	HRESULT hResult = m_pDIDevice->GetDeviceState(p0, p1);
-	if(!pGame->IsInputsEnabled())
+	/*if(!pGame->IsInputsEnabled())
 	{
 		memset(p1, 0, p0);
-	}
+	}*/
 	return hResult;
 }
 
 HRESULT STDMETHODCALLTYPE IDirectInputDevice8Hook::GetDeviceData(DWORD p0, LPDIDEVICEOBJECTDATA p1, LPDWORD p2, DWORD p3)
 {
 	HRESULT hResult = m_pDIDevice->GetDeviceData(p0, p1, p2, p3);
-	if(!pGame->IsInputsEnabled())
+	/*if(!pGame->IsInputsEnabled())
 	{
 		memset(p1, 0, (p0 * (*p2)));
-	}
+	}*/
 	return hResult;
 }
 

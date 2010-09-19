@@ -8,7 +8,7 @@
 //
 //----------------------------------------------------
 
-#include "main.h"
+#include "StdInc.h"
 
 extern CGame *pGame;
 extern IDirect3DDevice8 *pD3DDevice;

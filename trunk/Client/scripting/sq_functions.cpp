@@ -10,9 +10,7 @@
 //
 //-----------------------------------------------------
 
-#include "sq_functions.h"
-#include "../main.h"
-#include "sq_utils.h"
+#include "StdInc.h"
 extern CNetGame *pNetGame;
 
 using namespace RakNet;

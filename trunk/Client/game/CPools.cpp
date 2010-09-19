@@ -8,7 +8,7 @@
 //
 //----------------------------------------------------------
 
-#include "CPools.h"
+#include "StdInc.h"
 
 PED_TYPE * VCMP_SAFECALL CPools::GetPedFromIndex(int iIndex)
 {

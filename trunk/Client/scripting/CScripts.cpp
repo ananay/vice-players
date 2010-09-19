@@ -8,15 +8,9 @@
 //
 //-----------------------------------------------------
 
-#include "../../raknet/WindowsIncludes.h"
-#include "../main.h"
+#include "StdInc.h"
 
 extern CNetGame *pNetGame;
-
-#include <stdio.h>
-#include "CScripts.h"
-
-#include "sq_functions.h"
 
 void logprintf(char * format, ...);
 void fatal_exit(char * szError);
