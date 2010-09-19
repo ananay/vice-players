@@ -8,7 +8,7 @@
 //
 //----------------------------------------------------------
 
-#include "CConfig.h"
+#include "StdInc.h"
 
 #ifndef WIN32
 #	define stricmp strcasecmp

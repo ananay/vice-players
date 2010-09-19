@@ -10,9 +10,7 @@
 //
 //-----------------------------------------------------
 
-#include "sq_functions.h"
-#include "sq_utils.h"
-#include "CNetGame.h"
+#include "StdInc.h"
 
 extern CNetGame *pNetGame;
 

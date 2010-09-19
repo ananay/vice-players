@@ -8,7 +8,7 @@
 //
 //----------------------------------------------------
 
-#include "CNetGame.h"
+#include "StdInc.h"
 
 extern CNetGame *pNetGame;
 extern CScripts	*pScripts;

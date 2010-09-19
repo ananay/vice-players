@@ -9,9 +9,7 @@
 //
 //----------------------------------------------------
 
-#include "CNetGame.h"
-#include "CRcon.h"
-#include "CScripts.h"
+#include "StdInc.h"
 
 using namespace RakNet;
 

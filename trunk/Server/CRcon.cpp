@@ -12,11 +12,7 @@
 
 */
 
-#include "main.h"
-#include "CRcon.h"
-#include "CNetGame.h"
-#include "CScripts.h"
-#include "../RakNet/MessageIdentifiers.h"
+#include "StdInc.h"
 
 using namespace RakNet;
 

@@ -9,8 +9,7 @@
 //
 //-----------------------------------------------------
 
-#include "main.h"
-#include "CMasterList.h"
+#include "StdInc.h"
 
 CMasterList::CMasterList(char * szAddress, char * szPath, int iServerPort)
 {

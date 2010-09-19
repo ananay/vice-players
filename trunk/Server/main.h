@@ -10,11 +10,7 @@
 
 #pragma once
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <math.h>
-#include <stdarg.h>
-#include <string>
+
 
 #define SAFE_DELETE(mem) if(mem) { delete mem; mem = NULL; }
 
@@ -26,13 +22,6 @@
 typedef unsigned char EntityId;
 
 #define INVALID_ENTITY_ID 255
-
-#include "../RakNet/RakPeer.h"
-#include "../RakNet/RPC4Plugin.h"
-#include "../RakNet/BitStream.h"
-
-#include "system.h"
-#include "CConfig.h"
 
 #define DEFAULT_CONFIG_FILE "server.ini"
 #define DEFAULT_MAX_PLAYERS 32

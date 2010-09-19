@@ -9,8 +9,7 @@
 //
 //-----------------------------------------------------
 
-#include "sq_player_natives.h"
-#include "CNetGame.h"
+#include "StdInc.h"
 
 extern CNetGame *pNetGame;
 

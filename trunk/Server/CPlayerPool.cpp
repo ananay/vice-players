@@ -8,9 +8,7 @@
 //
 //----------------------------------------------------
 
-#include "CNetGame.h"
-#include "CRcon.h"
-#include "CScripts.h"
+#include "StdInc.h"
 
 extern CNetGame *pNetGame;
 extern CRcon	*pRcon;

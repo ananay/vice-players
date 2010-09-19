@@ -9,20 +9,9 @@
 //
 //-----------------------------------------------------
 
-#include "../RakNet/WindowsIncludes.h"
-#include "CNetGame.h"
-#include "CPlugins.h"
+#include "StdInc.h"
 extern CNetGame *pNetGame;
 extern CPlugins *pPlugins;
-
-#include <stdio.h>
-#include "CScript.h"
-#include "../squirrel/sqstdaux.h"
-#include "../squirrel/sqstdblob.h"
-#include "../squirrel/sqstdio.h"
-#include "../squirrel/sqstdmath.h"
-#include "../squirrel/sqstdstring.h"
-#include "../squirrel/sqstdsystem.h"
 
 void printfunc(SQVM * pVM, const char * szFormat, ...)
 {

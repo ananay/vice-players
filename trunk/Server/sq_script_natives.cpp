@@ -7,10 +7,7 @@
 //
 //-----------------------------------------------------
 
-#include "sq_timer_natives.h"
-#include "CScripts.h"
-#include "CNetGame.h"
-#include "../squirrel/sqstring.h"
+#include "StdInc.h"
 
 extern CNetGame *pNetGame;
 extern CScripts *pScripts;
