@@ -8,7 +8,7 @@
 //
 //----------------------------------------------------------
 
-#include "CHttpClient.h"
+#include "StdInc.h"
 
 CHttpClient::CHttpClient()
 {

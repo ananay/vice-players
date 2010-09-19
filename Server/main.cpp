@@ -8,24 +8,7 @@
 //
 //-----------------------------------------------------
 
-#ifdef WIN32
-#include <stdio.h>
-#include "../RakNet/WindowsIncludes.h"
-#else
-#include <dlfcn.h>
-#include <stdlib.h>
-#include <unistd.h>
-#define Sleep(x) usleep(x * 1000)
-#endif
-
-#include "main.h"
-#include "CNetGame.h"
-#include "CRcon.h"
-#include "CScripts.h"
-#include "CPlugins.h"
-
-#include "../RakNet/BitStream.h"
-#include "../RakNet/RakPeerInterface.h"
+#include "StdInc.h"
 
 void fatal_exit(char * szError);
 

@@ -8,9 +8,7 @@
 // License: See LICENSE in root directory
 //
 //-----------------------------------------------------
-#include "../RakNet/WindowsIncludes.h"
-#include "CNetGame.h"
-#include "CPlugins.h"
+#include "StdInc.h"
 
 CPlugins::CPlugins()
 {

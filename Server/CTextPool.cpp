@@ -11,7 +11,9 @@
 
 #pragma once
 
-#include "CNetGame.h"
+#include "StdInc.h"
+
+
 extern CNetGame *pNetGame;
 
 CTextPool::CTextPool()

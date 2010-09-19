@@ -8,7 +8,8 @@
 // License: See LICENSE in root directory
 //
 //-----------------------------------------------------
-#include "CNetGame.h"
+#include "StdInc.h"
+
 extern CNetGame *pNetGame;
 
 CText::CText(DWORD color, const char * szFontName, int iSize, float posX, float posY, const char * szText)

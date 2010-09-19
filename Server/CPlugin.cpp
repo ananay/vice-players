@@ -9,10 +9,7 @@
 //
 //-----------------------------------------------------
 
-#include "../RakNet/WindowsIncludes.h"
-#include "CNetGame.h"
-#include <stdio.h>
-#include "CPlugin.h"
+#include "StdInc.h"
 
 extern CNetGame *pNetGame;
 

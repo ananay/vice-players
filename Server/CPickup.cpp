@@ -8,7 +8,8 @@
 //
 //-----------------------------------------------------
 
-#include "CNetGame.h"
+#include "StdInc.h"
+
 extern CNetGame *pNetGame;
 
 CPickup::CPickup(int iModel, int iType, Vector3 * vecPos)

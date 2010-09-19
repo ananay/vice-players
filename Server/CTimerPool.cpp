@@ -9,9 +9,7 @@
 //
 //-----------------------------------------------------
 
-#include "CNetGame.h"
-#include "CScripts.h"
-#include "CTimerPool.h"
+#include "StdInc.h"
 
 
 extern CNetGame *pNetGame;

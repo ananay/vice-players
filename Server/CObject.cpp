@@ -7,7 +7,8 @@
 // License: See LICENSE in root directory
 //
 //-----------------------------------------------------
-#include "CNetGame.h"
+#include "StdInc.h"
+
 extern CNetGame *pNetGame;
 
 CObject::CObject(int iModel, Vector3 * vecPos, Vector3 * vecRot)

@@ -8,17 +8,11 @@
 //
 //----------------------------------------------------
 
-#include <stdlib.h>
-#include <math.h>
-#include <time.h>
+#include "StdInc.h"
+
 #ifndef WIN32
 #define Sleep(x) usleep(x * 1000)
 #endif
-
-#include "CNetGame.h"
-#include "../RakNet/RPC4Plugin.h"
-#include "CScripts.h"
-#include "CMasterList.h"
 
 using namespace RakNet;
 

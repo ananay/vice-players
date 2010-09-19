@@ -9,9 +9,7 @@
 //
 //-----------------------------------------------------
 
-#include "sq_misc_natives.h"
-#include "CNetGame.h"
-#include "CPlugins.h"
+#include "StdInc.h"
 
 extern CNetGame *pNetGame;
 extern CPlugins *pPlugins;
