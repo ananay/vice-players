@@ -4,12 +4,14 @@
 // Copyright 2010 GTA:Online team
 //
 // File Authors: adamix
-//
+//                       jenksta
 // License: See LICENSE in root directory
 //
 //-----------------------------------------------------
 
 #include "sq_utils.h"
+
+extern SQVM * g_VMs[];
 
 void RegisterFunction(HSQUIRRELVM pVM, char * szFunc, SQFUNCTION func, int params, const char * szTemplate)
 {

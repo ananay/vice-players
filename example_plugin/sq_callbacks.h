@@ -9,16 +9,5 @@
 //
 //-----------------------------------------------------
 
-#include "sq_functions.h"
-#include "sq_utils.h"
-#include "sq_callbacks.h"
-#include <stdio.h>
-
-SQInteger sq_helloworld(HSQUIRRELVM pVM)
-{
-	printf("Hello world from example module!\n");
-
-	OnHelloWorld("Hallo!");
-	sq_pushbool(pVM, true);
-	return 1;
-}
+#include "main.h"
+void OnHelloWorld(const char * teststring);

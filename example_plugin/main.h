@@ -14,4 +14,9 @@
 #else
   #define EXPORT extern "C"
 #endif
+
+#define MAX_SCRIPTS 16
+
 #include "../squirrel/squirrel.h"
+#include <stdio.h>
+#include <stdarg.h>
