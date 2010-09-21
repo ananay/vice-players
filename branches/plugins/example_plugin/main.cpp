@@ -14,10 +14,16 @@
 #include "sq_utils.h"
 #include "sq_functions.h"
 
+SQVM * g_VMs[MAX_SCRIPTS];
+
 char * g_szName = NULL;
 
 EXPORT void OnPluginLoad(char * szName)
 {
+	for(int i = 0; i < MAX_SCRIPTS; i++)
+	{
+		g_VMs[i] = NULL;
+	}
 	printf(">> Hello world from %s plugin!\n", szName);
 	g_szName = szName;
 }
@@ -29,6 +35,14 @@ EXPORT void OnPluginUnload()
 
 EXPORT void OnScriptLoad(SQVM * pVM)
 {
+	for(int i = 0; i < MAX_SCRIPTS; i++)
+	{
+		if(g_VMs[i] == NULL)
+		{
+			g_VMs[i] = pVM;
+			break;
+		}
+	}
 	RegisterFunction(pVM, "HelloWorld", sq_helloworld, -1, NULL);
 }
 

@@ -170,6 +170,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\sq_callbacks.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\sq_functions.cpp"
 				>
 			</File>
@@ -189,6 +193,10 @@
 			>
 			<File
 				RelativePath=".\main.h"
+				>
+			</File>
+			<File
+				RelativePath=".\sq_callbacks.h"
 				>
 			</File>
 			<File
