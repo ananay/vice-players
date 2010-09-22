@@ -535,13 +535,13 @@ void Pause(RakNet::BitStream *bitStream, Packet *packet)
 
 	CPlayer	*pPlayer = pNetGame->GetPlayerManager()->GetAt(playerID);
 
-	bool Pause;
+	int iPause;
 
-	bitStream->Read(Pause);
+	bitStream->Read(iPause);
 
-	pPlayer->SetPause(Pause);
+	pPlayer->SetPause(iPause);
 
-	if(Pause)
+	if(iPause)
 		pScripts->onPlayerPause(playerID);
 	else
 		pScripts->onPlayerUnpause(playerID);

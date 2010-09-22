@@ -86,7 +86,7 @@ private:
 	int						m_iMoney;
 	float					m_iGravity;
 	std::string				m_szSerial;
-	bool					m_bIsPaused;
+	int						m_iIsPaused;
 
 public:
 
@@ -158,8 +158,8 @@ public:
 	std::string GetSerial() { return m_szSerial; };
 	void SetSerial(const char * szSerial) { m_szSerial = szSerial; };
 
-	bool IsPaused() { return m_bIsPaused; };
-	void SetPause(bool bPause) { m_bIsPaused = bPause; };
+	int IsPaused() { return m_iIsPaused; };
+	void SetPause(int bPause) { m_iIsPaused = bPause; };
 
 	void HandleDeath(BYTE byteReason, BYTE byteWhoWasResponsible);
 	void Spawn();
