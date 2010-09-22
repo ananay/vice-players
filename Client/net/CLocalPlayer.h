@@ -66,7 +66,7 @@ private:
 	WORD					m_wLastKeys;
 	DWORD					m_dwLastSendTick;
 	DWORD					m_dwLastPassengerSendTick;
-	BOOL					m_bPause;
+	int						m_iPause;
 
 public:
 
@@ -113,7 +113,7 @@ public:
 
 	void CLocalPlayer::SendInflictedDamageNotification(EntityId playerID, EntityId vehicleID, int iWeapon, float fUnk, int iPedPieces, BYTE byteUnk);
 
-	void SendPauseNotification(BOOL bPause);
+	void SendPauseNotification(int bPause);
 };
 
 

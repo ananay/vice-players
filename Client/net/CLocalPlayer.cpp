@@ -137,14 +137,14 @@ BOOL CLocalPlayer::Process()
 		pNetGame->GetGameLogic()->HandleClassSelection(this);
 		return TRUE;
 	}
-	if (m_bIsActive && !m_bIsWasted && pGame->IsMenuActive() != m_bPause)
+	if (pGame->IsMenuActive() != m_iPause)
 	{
-		logprintf("ismenuactive: %i m_bPause %i", pGame->IsMenuActive(), m_bPause);
-		m_bPause = pGame->IsMenuActive();
-		SendPauseNotification(m_bPause);
+		m_iPause = pGame->IsMenuActive();
+		SendPauseNotification(m_iPause);
 	}
 
 	pGameLogic = pNetGame->GetGameLogic();
+
 	if(pGameLogic) pGameLogic->ProcessLocalPlayer(this);
 
 	return TRUE;
@@ -526,7 +526,7 @@ void CLocalPlayer::SendInflictedDamageNotification(EntityId playerID, EntityId v
 
 //----------------------------------------------------------
 
-void CLocalPlayer::SendPauseNotification(BOOL bPause)
+void CLocalPlayer::SendPauseNotification(int bPause)
 {
 	RakNet::BitStream bsSend;
 	bsSend.Write(bPause);
