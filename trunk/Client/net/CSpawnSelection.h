@@ -9,7 +9,7 @@
 //----------------------------------------------------------
 
 #pragma once
-
+#include "../GUI/CGUI.h"
 
 class CSpawnSelection
 {
@@ -18,6 +18,7 @@ private:
 	int m_iSelectedClass;
 	DWORD m_dwLastSpawnSelectionTick; // delays left and right selection
 	DWORD m_dwInitialSelectionTick; // delays initial selection
+	CGUIStaticText * m_pGUIText;
 
 public:
 	CSpawnSelection();
