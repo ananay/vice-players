@@ -25,6 +25,7 @@ CSpawnSelection::CSpawnSelection()
 	m_iSelectedClass = 0;
 	m_dwLastSpawnSelectionTick = GetTickCount();
 	HandleClassSelection(pNetGame->GetPlayerManager()->GetLocalPlayer());
+	m_pGUIText = NULL;
 }
 
 //----------------------------------------------------------
@@ -59,6 +60,7 @@ void CSpawnSelection::ProcessLocalPlayer(CLocalPlayer *pLocalPlayer)
 			pGame->PlaySound(10, vPlayerPos);
 			pGame->ToggleKeyInputsDisabled(FALSE);
 			pGamePlayer->TogglePlayerControllable(TRUE);
+			m_pGUIText->setVisible(false);
 			return;
 		}
 		else if(m_bClearedToSpawn) // WE ARE CLEARED TO SPAWN OR SELECT ANOTHER CLASS
@@ -68,8 +70,8 @@ void CSpawnSelection::ProcessLocalPlayer(CLocalPlayer *pLocalPlayer)
 
 			// SHOW INFO ABOUT THE SELECTED CLASS..
 			szMsg[0] = '\0';
-			strcat(szMsg, ">>> Use Left and Right arrow keys to select a class. <<<\n");
-			strcat(szMsg, ">> Press Shift button when ready to spawn. <<\n");
+			strcat(szMsg, "> Use Left and Right arrow keys to select a class.\n");
+			strcat(szMsg, "> Press Shift button when ready to spawn.\n");
 
 			if(!m_pGUIText)
 			{
@@ -86,11 +88,10 @@ void CSpawnSelection::ProcessLocalPlayer(CLocalPlayer *pLocalPlayer)
 				m_pGUIText->setProperty("FrameEnabled", "false");
 				m_pGUIText->setProperty("Font", "Tahoma-Bold-10");
 				m_pGUIText->setProperty("TextColours", "tl:FFFFFFFF tr:FFFFFFFF bl:FFFFFFFF br:FFFFFFFF");
-				m_pGUIText->setAlpha(255);
+				m_pGUIText->setAlpha(155);
+				m_pGUIText->setVisible(true);
 			}
 
-			m_pGUIText->setVisible(true);
-			//m_pGUIText->setVisible(true);
 			CD3DFont *pD3DFont = pChatWindow->m_pD3DFont;
 			//pD3DFont->DrawText(fDrawX,fDrawY,0xFFFFFFFF,szMsg);
 
@@ -125,12 +126,7 @@ void CSpawnSelection::ProcessLocalPlayer(CLocalPlayer *pLocalPlayer)
 				pLocalPlayer->RequestClass(m_iSelectedClass);
 				return;
 			}	
-
 		}
-	}
-	else if(m_pGUIText)
-	{
-		m_pGUIText->setVisible(false);
 	}
 }
 
