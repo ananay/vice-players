@@ -116,9 +116,9 @@ void GameInstallPatches()
 	Unprotect(0x4FF970, 1);
 	*(BYTE *)0x4FF970 = 0x9D; // turns mov [eax+.. to mov [ebp+..
 
-	// Player weapon pickups.
+	/* Player weapon pickups.
 	Unprotect(0x4F6538, 1);
-	*(BYTE *)0x4F6538 = 0x75;
+	*(BYTE *)0x4F6538 = 0x75; */
 
 	// Patch CUserDisplay::Process() to not call CPlacename::Process()
 	Unprotect(0x4D1405, 5);
