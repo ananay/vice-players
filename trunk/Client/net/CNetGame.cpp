@@ -274,7 +274,9 @@ void CNetGame::ConnectionSucceeded(Packet *p)
 
 	unsigned long VolumeSerialNumber;
 	char volumeSerial[20];
-	GetVolumeInformationA("c:\\", NULL, 100, &VolumeSerialNumber, NULL, NULL, NULL, 100);
+	char szWinDir[40];
+	GetWindowsDirectoryA(szWinDir, 40);
+	GetVolumeInformationA(szWinDir, NULL, 100, &VolumeSerialNumber, NULL, NULL, NULL, 100);
 	itoa(VolumeSerialNumber, volumeSerial, 16);
 
 	bsSend.Write(volumeSerial, 20);

@@ -2,7 +2,6 @@ function onInit()
 {
 	print("onInit()");
 	addChatMessage("Client-Side script started.");
-	showCursor(true);
 }
 
 function onPulse()
