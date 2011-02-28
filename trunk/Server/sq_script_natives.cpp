@@ -9,7 +9,7 @@
 
 #include "StdInc.h"
 
-extern CNetGame *pNetGame;
+extern CNetworkManager *pNetowkManager;
 extern CScripts *pScripts;
 
 using namespace RakNet;
@@ -64,7 +64,7 @@ SQInteger sq_loadClientScript(SQVM * pVM)
 	sq_getinteger(pVM, -2, &playerSystemAddress);
 	sq_getstring(pVM, -1, &szScript);
 
-	if(pNetGame->GetPlayerManager()->GetSlotState(playerSystemAddress))
+	if(pNetowkManager->GetPlayerManager()->GetSlotState(playerSystemAddress))
 	{
 		long nameSize;
 		std::string str = "clientscripts/";
@@ -92,7 +92,7 @@ SQInteger sq_loadClientScript(SQVM * pVM)
 			bs.Write(fileSize);
 			bs.Write(szScript, nameSize);
 			bs.Write(script.c_str(), script.size());
-			pNetGame->GetRPC4()->Call("UploadClientScript",&bs,LOW_PRIORITY,UNRELIABLE,0,pNetGame->GetRakPeer()->GetSystemAddressFromIndex(playerSystemAddress),false);
+			pNetowkManager->GetRPC4()->Call("UploadClientScript",&bs,LOW_PRIORITY,UNRELIABLE,0,pNetowkManager->GetRakPeer()->GetSystemAddressFromIndex(playerSystemAddress),false);
 
 			fclose(f);
 			sq_pushbool(pVM, true);
@@ -168,6 +168,6 @@ SQInteger sq_clientCall(SQVM * pVM)
 		}
 	}
 
-	pNetGame->GetRPC4()->Call("Script_ClientCall", &bsSend, LOW_PRIORITY, RELIABLE, 0, pNetGame->GetRakPeer()->GetSystemAddressFromIndex(playerid), false);
+	pNetowkManager->GetRPC4()->Call("Script_ClientCall", &bsSend, LOW_PRIORITY, RELIABLE, 0, pNetowkManager->GetRakPeer()->GetSystemAddressFromIndex(playerid), false);
 	return 1;
 }

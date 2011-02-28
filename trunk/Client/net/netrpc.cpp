@@ -17,7 +17,7 @@ extern CPlayerPed	 *pLocalPlayer;
 extern CScripts		 *pScripts;
 
 using namespace RakNet;
-extern CNetGame* pNetGame;
+extern CNetworkManager* pNetowkManager;
 
 #define REJECT_REASON_BAD_VERSION   1
 #define REJECT_REASON_BAD_NICKNAME  2
@@ -28,7 +28,7 @@ extern CNetGame* pNetGame;
 
 void ServerJoin(RakNet::BitStream *bitStream, Packet *packet)
 {
-	CPlayerManager *pPlayerManager = pNetGame->GetPlayerManager();
+	CPlayerManager *pPlayerManager = pNetowkManager->GetPlayerManager();
 	CHAR szPlayerName[MAX_PLAYER_NAME];
 	EntityId playerID;
 	UINT uiNameLength;
@@ -50,7 +50,7 @@ void ServerJoin(RakNet::BitStream *bitStream, Packet *packet)
 
 void ServerQuit(RakNet::BitStream *bitStream, Packet *packet)
 {
-	CPlayerManager *pPlayerManager = pNetGame->GetPlayerManager();
+	CPlayerManager *pPlayerManager = pNetowkManager->GetPlayerManager();
 	EntityId playerID;
 	BYTE byteReason;
 
@@ -67,25 +67,25 @@ void ServerQuit(RakNet::BitStream *bitStream, Packet *packet)
 
 void InitGame(RakNet::BitStream *bitStream, Packet *packet)
 {
-	CPlayerManager *pPlayerManager = pNetGame->GetPlayerManager();
+	CPlayerManager *pPlayerManager = pNetowkManager->GetPlayerManager();
 	EntityId myPlayerID;
 
-	bitStream->Read((char *)&pNetGame->m_vecInitPlayerPos, sizeof(Vector3));
-	bitStream->Read((char *)&pNetGame->m_vecInitCameraPos, sizeof(Vector3));
-	bitStream->Read((char *)&pNetGame->m_vecInitCameraLook, sizeof(Vector3));
-	bitStream->Read(pNetGame->m_WorldBounds[0]);
-	bitStream->Read(pNetGame->m_WorldBounds[1]);
-	bitStream->Read(pNetGame->m_WorldBounds[2]);
-	bitStream->Read(pNetGame->m_WorldBounds[3]);
-	bitStream->Read(pNetGame->m_byteFriendlyFire);
-	bitStream->Read(pNetGame->m_byteShowOnRadar);
+	bitStream->Read((char *)&pNetowkManager->m_vecInitPlayerPos, sizeof(Vector3));
+	bitStream->Read((char *)&pNetowkManager->m_vecInitCameraPos, sizeof(Vector3));
+	bitStream->Read((char *)&pNetowkManager->m_vecInitCameraLook, sizeof(Vector3));
+	bitStream->Read(pNetowkManager->m_WorldBounds[0]);
+	bitStream->Read(pNetowkManager->m_WorldBounds[1]);
+	bitStream->Read(pNetowkManager->m_WorldBounds[2]);
+	bitStream->Read(pNetowkManager->m_WorldBounds[3]);
+	bitStream->Read(pNetowkManager->m_byteFriendlyFire);
+	bitStream->Read(pNetowkManager->m_byteShowOnRadar);
 	bitStream->Read(myPlayerID);
 
 	pPlayerManager->SetLocalPlayerID(myPlayerID);
 
 	pGame->FadeScreen(1, 0);
-	pNetGame->InitGameLogic();
-	pNetGame->SetGameState(GAMESTATE_CONNECTED);
+	pNetowkManager->InitGameLogic();
+	pNetowkManager->SetGameState(GAMESTATE_CONNECTED);
 }
 
 //----------------------------------------------------
@@ -103,14 +103,14 @@ void Chat(RakNet::BitStream *bitStream, Packet *packet)
 
 	szText[byteTextLen] = '\0';
 
-	CPlayerManager * pPlayerManager = pNetGame->GetPlayerManager();
+	CPlayerManager * pPlayerManager = pNetowkManager->GetPlayerManager();
 	if(playerID == pPlayerManager->GetLocalPlayerID()) {
-		pChatWindow->AddChatMessage(pNetGame->GetPlayerManager()->GetLocalPlayerName(),
+		pChatWindow->AddChatMessage(pNetowkManager->GetPlayerManager()->GetLocalPlayerName(),
 			pPlayerManager->GetLocalPlayer()->GetTeamColorAsARGB(),szText);
 	}
 	else
 	{
-		CRemotePlayer *pRemotePlayer = pNetGame->GetPlayerManager()->GetAt(playerID);
+		CRemotePlayer *pRemotePlayer = pNetowkManager->GetPlayerManager()->GetAt(playerID);
 		if(pRemotePlayer) {
 			pRemotePlayer->Say(szText);	
 		}
@@ -131,7 +131,7 @@ void Passenger(RakNet::BitStream *bitStream, Packet *packet)
 	bitStream->Read(vehicleID);
 	bitStream->Read(byteSeat);
 	
-	CRemotePlayer * pRemotePlayer = pNetGame->GetPlayerManager()->GetAt(playerID);
+	CRemotePlayer * pRemotePlayer = pNetowkManager->GetPlayerManager()->GetAt(playerID);
 
 	if(pRemotePlayer) {
 		pRemotePlayer->StorePassengerData(vehicleID, byteSeat);
@@ -146,8 +146,8 @@ void RequestClass(RakNet::BitStream *bitStream, Packet *packet)
 	BYTE byteOutcome;
 	int iRequestedClass;
 	PLAYER_SPAWN_INFO SpawnInfo;
-	CLocalPlayer * pPlayer = pNetGame->GetPlayerManager()->GetLocalPlayer();
-	CSpawnSelection * pGameLogic = pNetGame->GetGameLogic();
+	CLocalPlayer * pPlayer = pNetowkManager->GetPlayerManager()->GetLocalPlayer();
+	CSpawnSelection * pGameLogic = pNetowkManager->GetGameLogic();
 
 	bitStream->Read(byteOutcome);
 	if(byteOutcome) {
@@ -190,7 +190,7 @@ void Spawn(RakNet::BitStream *bitStream, Packet *packet)
 	bitStream->Read(iSpawnWeapons3);
 	bitStream->Read(iSpawnWeaponsAmmo3);
 
-	pRemotePlayer = pNetGame->GetPlayerManager()->GetAt(playerID);
+	pRemotePlayer = pNetowkManager->GetPlayerManager()->GetAt(playerID);
 
 	if(pRemotePlayer) {
 		pRemotePlayer->SpawnPlayer(byteTeam,byteSkin,&vecPos,fRotation,
@@ -215,7 +215,7 @@ void Death(RakNet::BitStream *bitStream, Packet *packet)
 	bitStream->Read(byteWhoKilled);
 	bitStream->Read(byteScoringModifier);
 
-	CRemotePlayer *pRemotePlayer = pNetGame->GetPlayerManager()->GetAt(playerID);
+	CRemotePlayer *pRemotePlayer = pNetowkManager->GetPlayerManager()->GetAt(playerID);
 	if(pRemotePlayer) {
 		pRemotePlayer->HandleDeath(byteReason,byteWhoKilled,byteScoringModifier);
 	}
@@ -234,8 +234,8 @@ void EnterVehicle(RakNet::BitStream *bitStream, Packet *packet)
 	bitStream->Read(vehicleID);
 	bitStream->Read(bytePassenger);
 
-	CRemotePlayer *pRemotePlayer = pNetGame->GetPlayerManager()->GetAt(playerID);
-	CVehicleManager *pVehicleManager = pNetGame->GetVehicleManager();
+	CRemotePlayer *pRemotePlayer = pNetowkManager->GetPlayerManager()->GetAt(playerID);
+	CVehicleManager *pVehicleManager = pNetowkManager->GetVehicleManager();
 
 	if(pRemotePlayer) {
 		if(!bytePassenger) {
@@ -257,8 +257,8 @@ void ExitVehicle(RakNet::BitStream *bitStream, Packet *packet)
 	bitStream->Read(playerID);
 	bitStream->Read(vehicleID);
 
-	CRemotePlayer *pRemotePlayer = pNetGame->GetPlayerManager()->GetAt(playerID);
-	CVehicleManager *pVehicleManager = pNetGame->GetVehicleManager();
+	CRemotePlayer *pRemotePlayer = pNetowkManager->GetPlayerManager()->GetAt(playerID);
+	CVehicleManager *pVehicleManager = pNetowkManager->GetVehicleManager();
 
 	if(pRemotePlayer) {
 		pRemotePlayer->GetPlayerPed()->ExitCurrentVehicle();
@@ -269,7 +269,7 @@ void ExitVehicle(RakNet::BitStream *bitStream, Packet *packet)
 
 void VehicleSpawn(RakNet::BitStream *bitStream, Packet *packet)
 {
-	CVehicleManager *pVehicleManager = pNetGame->GetVehicleManager();
+	CVehicleManager *pVehicleManager = pNetowkManager->GetVehicleManager();
 	EntityId vehicleID=0;
 	BYTE byteVehicleType;
 	Vector3 vecPos;
@@ -302,7 +302,7 @@ void VehicleSpawn(RakNet::BitStream *bitStream, Packet *packet)
 
 void VehicleDestroy(RakNet::BitStream *bitStream, Packet *packet)
 {
-	CVehicleManager *pVehicleManager = pNetGame->GetVehicleManager();
+	CVehicleManager *pVehicleManager = pNetowkManager->GetVehicleManager();
 	EntityId vehicleID=0;
 
 	bitStream->Read(vehicleID);
@@ -314,7 +314,7 @@ void VehicleDestroy(RakNet::BitStream *bitStream, Packet *packet)
 
 void UpdateScoreAndPing(RakNet::BitStream *bitStream, Packet *packet)
 {	
-	CPlayerManager * pPlayerManager = pNetGame->GetPlayerManager();
+	CPlayerManager * pPlayerManager = pNetowkManager->GetPlayerManager();
 	EntityId playerID;
 	int iPlayerScore;
 	int iPlayerPing;
@@ -353,8 +353,8 @@ void ConnectionRejected(RakNet::BitStream *bitStream, Packet *packet)
 		pChatWindow->AddInfoMessage("YOUR NICKNAME IS INVALID");
 	}
 
-	if(pNetGame) {
-		pNetGame->Shutdown();
+	if(pNetowkManager) {
+		pNetowkManager->Shutdown();
 	}
 }
 
@@ -453,7 +453,7 @@ void UploadClientScript(RakNet::BitStream *bitStream, Packet *packet)
 
 void ObjectSpawn(RakNet::BitStream *bitStream, Packet *packet)
 {
-	CObjectManager *pObjectManager = pNetGame->GetObjectManager();
+	CObjectManager *pObjectManager = pNetowkManager->GetObjectManager();
 	EntityId ObjectID=0;
 	int iModel;
 	Vector3 vecPos, vecRot;
@@ -467,7 +467,7 @@ void ObjectSpawn(RakNet::BitStream *bitStream, Packet *packet)
 
 void ObjectDestroy(RakNet::BitStream *bitStream, Packet *packet)
 {
-	CObjectManager *pObjectManager = pNetGame->GetObjectManager();
+	CObjectManager *pObjectManager = pNetowkManager->GetObjectManager();
 	EntityId objId=0;
 
 	bitStream->Read(objId);
@@ -477,7 +477,7 @@ void ObjectDestroy(RakNet::BitStream *bitStream, Packet *packet)
 
 void PickupSpawn(RakNet::BitStream *bitStream, Packet *packet)
 {
-	CPickupManager *pPickupManager = pNetGame->GetPickupManager();
+	CPickupManager *pPickupManager = pNetowkManager->GetPickupManager();
 	EntityId PickupID=0;
 	int iModel, iType;
 	Vector3 vecPos;
@@ -491,7 +491,7 @@ void PickupSpawn(RakNet::BitStream *bitStream, Packet *packet)
 
 void PickupDestroy(RakNet::BitStream *bitStream, Packet *packet)
 {
-	CPickupManager *pPickupManager = pNetGame->GetPickupManager();
+	CPickupManager *pPickupManager = pNetowkManager->GetPickupManager();
 	EntityId PickupID=0;
 
 	bitStream->Read(PickupID);
@@ -522,7 +522,7 @@ void Script_SetVehicleHealth(RakNet::BitStream *bitStream, Packet *packet)
 	bitStream->Read(vehicle);
 	bitStream->Read(newHealth);
 	
-	CVehicle *pVehicle = pNetGame->GetVehicleManager()->GetAt(vehicle);
+	CVehicle *pVehicle = pNetowkManager->GetVehicleManager()->GetAt(vehicle);
 	pVehicle->SetHealth(newHealth);
 }
 
@@ -583,7 +583,7 @@ void Script_PutInVehicle(RakNet::BitStream *bitStream, Packet *packet)
 
 	bitStream->Read(vehID);
 
-	pPlayer->PutDirectlyInVehicle(pNetGame->GetVehicleManager()->FindGtaIDFromID(vehID));
+	pPlayer->PutDirectlyInVehicle(pNetowkManager->GetVehicleManager()->FindGtaIDFromID(vehID));
 }
 
 // GiveWeapon
@@ -700,7 +700,7 @@ void Script_ClientMessage(RakNet::BitStream *bitStream, Packet *packet)
 // createText
 void CreateText(RakNet::BitStream *bitStream, Packet *packet)
 {
-	CTextManager *pTextManager = pNetGame->GetTextManager();
+	CTextManager *pTextManager = pNetowkManager->GetTextManager();
 	EntityId TextID=0;
 	DWORD dwColor;
 	CHAR szFontName[64], szMessage[256];
@@ -725,7 +725,7 @@ void CreateText(RakNet::BitStream *bitStream, Packet *packet)
 
 void DestroyText(RakNet::BitStream *bitStream, Packet *packet)
 {
-	CTextManager *pTextManager = pNetGame->GetTextManager();
+	CTextManager *pTextManager = pNetowkManager->GetTextManager();
 	EntityId text;
 
 	bitStream->Read(text);
@@ -738,8 +738,8 @@ void DestroyText(RakNet::BitStream *bitStream, Packet *packet)
 
 void InflictDamage(RakNet::BitStream * bitStream, Packet * packet)
 {
-	CPlayerManager * pPlayerManager = pNetGame->GetPlayerManager();
-	CVehicleManager * pVehicleManager = pNetGame->GetVehicleManager();
+	CPlayerManager * pPlayerManager = pNetowkManager->GetPlayerManager();
+	CVehicleManager * pVehicleManager = pNetowkManager->GetVehicleManager();
 	EntityId playerID;
 	bool bPlayerVehicleDamager;
 	EntityId damagerID;
@@ -787,9 +787,9 @@ void Script_toggleTextForPlayer(RakNet::BitStream *bitStream, Packet *packet)
 	bitStream->Read(textId);
 	bitStream->Read(show);
 
-	if(pNetGame->GetTextManager()->GetSlotState(textId))
+	if(pNetowkManager->GetTextManager()->GetSlotState(textId))
 	{
-		pNetGame->GetTextManager()->GetAt(textId)->Show(show);
+		pNetowkManager->GetTextManager()->GetAt(textId)->Show(show);
 	}
 }
 
@@ -804,9 +804,9 @@ void Script_SetText(RakNet::BitStream *bitStream, Packet *packet)
 	bitStream->Read(szText, len);
 	szText[len] = '\0';
 
-	if(pNetGame->GetTextManager()->GetSlotState(textId))
+	if(pNetowkManager->GetTextManager()->GetSlotState(textId))
 	{
-		pNetGame->GetTextManager()->GetAt(textId)->SetText(szText);
+		pNetowkManager->GetTextManager()->GetAt(textId)->SetText(szText);
 	}
 }
 
@@ -819,9 +819,9 @@ void Script_SetTextPosition(RakNet::BitStream *bitStream, Packet *packet)
 	bitStream->Read(fPosX);
 	bitStream->Read(fPosY);
 
-	if(pNetGame->GetTextManager()->GetSlotState(textId))
+	if(pNetowkManager->GetTextManager()->GetSlotState(textId))
 	{
-		pNetGame->GetTextManager()->GetAt(textId)->SetPosition(fPosX, fPosY);
+		pNetowkManager->GetTextManager()->GetAt(textId)->SetPosition(fPosX, fPosY);
 	}
 }
 
@@ -833,9 +833,9 @@ void Script_SetTextColor(RakNet::BitStream *bitStream, Packet *packet)
 	bitStream->Read(textId);
 	bitStream->Read(color);
 
-	if(pNetGame->GetTextManager()->GetSlotState(textId))
+	if(pNetowkManager->GetTextManager()->GetSlotState(textId))
 	{
-		pNetGame->GetTextManager()->GetAt(textId)->SetColor(color);
+		pNetowkManager->GetTextManager()->GetAt(textId)->SetColor(color);
 	}
 }
 
@@ -866,7 +866,7 @@ void Script_SetVehicleColor(RakNet::BitStream *bitStream, Packet *packet)
 	bitStream->Read(color1);
 	bitStream->Read(color2);
 	
-	CVehicle *pVehicle = pNetGame->GetVehicleManager()->GetAt(vehicle);
+	CVehicle *pVehicle = pNetowkManager->GetVehicleManager()->GetAt(vehicle);
 	pVehicle->SetColor(color1, color2);
 }
 
@@ -878,7 +878,7 @@ void Script_SetVehiclePos(RakNet::BitStream *bitStream, Packet *packet)
 	bitStream->Read(vehicle);
 	bitStream->Read((char *)&pos, sizeof(Vector3));
 
-	CVehicleManager *pPool = pNetGame->GetVehicleManager();
+	CVehicleManager *pPool = pNetowkManager->GetVehicleManager();
 	if(pPool->GetSlotState(vehicle))
 	{
 		pPool->GetAt(vehicle)->SetPosition(pos);
@@ -893,7 +893,7 @@ void Script_SetVehicleTurnSpeed(RakNet::BitStream *bitStream, Packet *packet)
 	bitStream->Read(vehicle);
 	bitStream->Read((char *)&speed, sizeof(Vector3));
 
-	CVehicleManager *pPool = pNetGame->GetVehicleManager();
+	CVehicleManager *pPool = pNetowkManager->GetVehicleManager();
 	if(pPool->GetSlotState(vehicle))
 	{
 		pPool->GetAt(vehicle)->SetTurnSpeed(speed);
@@ -908,7 +908,7 @@ void Script_SetVehicleMoveSpeed(RakNet::BitStream *bitStream, Packet *packet)
 	bitStream->Read(vehicle);
 	bitStream->Read((char *)&speed, sizeof(Vector3));
 
-	CVehicleManager *pPool = pNetGame->GetVehicleManager();
+	CVehicleManager *pPool = pNetowkManager->GetVehicleManager();
 	if(pPool->GetSlotState(vehicle))
 	{
 		pPool->GetAt(vehicle)->SetMoveSpeed(speed);
@@ -921,7 +921,7 @@ void Script_DestroyVehicle(RakNet::BitStream *bitStream, Packet *packet)
 	BYTE vehicle;
 	bitStream->Read(vehicle);
 	
-	pNetGame->GetVehicleManager()->Delete(vehicle);
+	pNetowkManager->GetVehicleManager()->Delete(vehicle);
 }
 
 // Play sound
@@ -964,8 +964,8 @@ void Script_FlashItem(RakNet::BitStream *bitStream, Packet *packet)
 // forceClassSelection Native.
 void Script_forceClassSelection(RakNet::BitStream *bitStream, Packet *packet)
 {
-	CLocalPlayer *pLocalPlayer = pNetGame->GetPlayerManager()->GetLocalPlayer();
-	pNetGame->GetGameLogic()->HandleClassSelection(pLocalPlayer);
+	CLocalPlayer *pLocalPlayer = pNetowkManager->GetPlayerManager()->GetLocalPlayer();
+	pNetowkManager->GetGameLogic()->HandleClassSelection(pLocalPlayer);
 }
 
 // togglePlayerBleeding Native.
@@ -976,16 +976,16 @@ void Script_togglePlayerBleeding(RakNet::BitStream *bitStream, Packet *packet)
 	bitStream->Read(player);
 	bitStream->Read(toggle);
 
-	if(player == pNetGame->GetPlayerManager()->GetLocalPlayerID())
+	if(player == pNetowkManager->GetPlayerManager()->GetLocalPlayerID())
 	{
-		CLocalPlayer * pPlayer = pNetGame->GetPlayerManager()->GetLocalPlayer();
+		CLocalPlayer * pPlayer = pNetowkManager->GetPlayerManager()->GetLocalPlayer();
 		pPlayer->GetPlayerPed()->SetActorBleeding(toggle);
 	} 
-	else if(pNetGame->GetPlayerManager()->GetSlotState(player))
+	else if(pNetowkManager->GetPlayerManager()->GetSlotState(player))
 	{
-		if(player != pNetGame->GetPlayerManager()->GetLocalPlayerID())
+		if(player != pNetowkManager->GetPlayerManager()->GetLocalPlayerID())
 		{
-			CRemotePlayer * pPlayer = pNetGame->GetPlayerManager()->GetAt(player);
+			CRemotePlayer * pPlayer = pNetowkManager->GetPlayerManager()->GetAt(player);
 			pPlayer->GetPlayerPed()->SetActorBleeding(toggle);
 		}
 	}
@@ -998,7 +998,7 @@ void Script_popVehicleTrunk(RakNet::BitStream *bitStream, Packet *packet)
 
 	bitStream->Read(vehicle);
 	
-	CVehicle *pVehicle = pNetGame->GetVehicleManager()->GetAt(vehicle);
+	CVehicle *pVehicle = pNetowkManager->GetVehicleManager()->GetAt(vehicle);
 	pVehicle->PopTrunk();
 }
 
@@ -1080,7 +1080,7 @@ void CreateCheckpoint(RakNet::BitStream *bitStream, Packet *packet)
 	bitStream->Read((char*)&vecPos, sizeof(Vector3));
 	bitStream->Read(fRadius);
 
-	pNetGame->GetCheckpoints()->New(cpId, vecPos, 0, fRadius);
+	pNetowkManager->GetCheckpoints()->New(cpId, vecPos, 0, fRadius);
 }
 
 void DestroyCheckpoint(RakNet::BitStream *bitStream, Packet *packet)
@@ -1088,150 +1088,150 @@ void DestroyCheckpoint(RakNet::BitStream *bitStream, Packet *packet)
 	EntityId cpId;
 	bitStream->Read(cpId);
 
-	pNetGame->GetCheckpoints()->Delete(cpId);
+	pNetowkManager->GetCheckpoints()->Delete(cpId);
 }
 
 void RegisterRPCs()
 {
-	pNetGame->GetRPC4()->RegisterFunction("ServerJoin",ServerJoin);
-	pNetGame->GetRPC4()->RegisterFunction("ServerQuit",ServerQuit);	
-	pNetGame->GetRPC4()->RegisterFunction("InitGame",InitGame);
-	pNetGame->GetRPC4()->RegisterFunction("Chat",Chat);
-	pNetGame->GetRPC4()->RegisterFunction("RequestClass",RequestClass);
-	pNetGame->GetRPC4()->RegisterFunction("Spawn",Spawn);
-	pNetGame->GetRPC4()->RegisterFunction("Death",Death);
-	pNetGame->GetRPC4()->RegisterFunction("EnterVehicle",EnterVehicle);
-	pNetGame->GetRPC4()->RegisterFunction("ExitVehicle",ExitVehicle);
-	pNetGame->GetRPC4()->RegisterFunction("VehicleSpawn",VehicleSpawn);
-	pNetGame->GetRPC4()->RegisterFunction("VehicleDestroy",VehicleDestroy);
-	pNetGame->GetRPC4()->RegisterFunction("UpdateScoreAndPing",UpdateScoreAndPing);
-	pNetGame->GetRPC4()->RegisterFunction("ConnectionRejected",ConnectionRejected);
-	pNetGame->GetRPC4()->RegisterFunction("Passenger",Passenger);
-	pNetGame->GetRPC4()->RegisterFunction("SetGameTime",SetGameTime);
-	pNetGame->GetRPC4()->RegisterFunction("SetCameraPosition",SetCameraPosition);
-	pNetGame->GetRPC4()->RegisterFunction("SetCameraRotation",SetCameraRotation);
-	pNetGame->GetRPC4()->RegisterFunction("SetCameraLookAt",SetCameraLookAt);
-	pNetGame->GetRPC4()->RegisterFunction("SetCameraBehindPlayer",SetCameraBehindPlayer);
-	pNetGame->GetRPC4()->RegisterFunction("UploadClientScript",UploadClientScript);
-	pNetGame->GetRPC4()->RegisterFunction("ObjectSpawn", ObjectSpawn);
-	pNetGame->GetRPC4()->RegisterFunction("ObjectDestroy", ObjectDestroy);
-	pNetGame->GetRPC4()->RegisterFunction("CreateText", CreateText);
-	pNetGame->GetRPC4()->RegisterFunction("DestroyText", DestroyText);
-	pNetGame->GetRPC4()->RegisterFunction("InflictDamage", InflictDamage);
-	pNetGame->GetRPC4()->RegisterFunction("CreateCheckpoint", CreateCheckpoint);
-	pNetGame->GetRPC4()->RegisterFunction("DestroyCheckpoint", DestroyCheckpoint);
-	pNetGame->GetRPC4()->RegisterFunction("PickupSpawn", PickupSpawn);
-	pNetGame->GetRPC4()->RegisterFunction("PickupDestroy", PickupDestroy);
+	pNetowkManager->GetRPC4()->RegisterFunction("ServerJoin",ServerJoin);
+	pNetowkManager->GetRPC4()->RegisterFunction("ServerQuit",ServerQuit);	
+	pNetowkManager->GetRPC4()->RegisterFunction("InitGame",InitGame);
+	pNetowkManager->GetRPC4()->RegisterFunction("Chat",Chat);
+	pNetowkManager->GetRPC4()->RegisterFunction("RequestClass",RequestClass);
+	pNetowkManager->GetRPC4()->RegisterFunction("Spawn",Spawn);
+	pNetowkManager->GetRPC4()->RegisterFunction("Death",Death);
+	pNetowkManager->GetRPC4()->RegisterFunction("EnterVehicle",EnterVehicle);
+	pNetowkManager->GetRPC4()->RegisterFunction("ExitVehicle",ExitVehicle);
+	pNetowkManager->GetRPC4()->RegisterFunction("VehicleSpawn",VehicleSpawn);
+	pNetowkManager->GetRPC4()->RegisterFunction("VehicleDestroy",VehicleDestroy);
+	pNetowkManager->GetRPC4()->RegisterFunction("UpdateScoreAndPing",UpdateScoreAndPing);
+	pNetowkManager->GetRPC4()->RegisterFunction("ConnectionRejected",ConnectionRejected);
+	pNetowkManager->GetRPC4()->RegisterFunction("Passenger",Passenger);
+	pNetowkManager->GetRPC4()->RegisterFunction("SetGameTime",SetGameTime);
+	pNetowkManager->GetRPC4()->RegisterFunction("SetCameraPosition",SetCameraPosition);
+	pNetowkManager->GetRPC4()->RegisterFunction("SetCameraRotation",SetCameraRotation);
+	pNetowkManager->GetRPC4()->RegisterFunction("SetCameraLookAt",SetCameraLookAt);
+	pNetowkManager->GetRPC4()->RegisterFunction("SetCameraBehindPlayer",SetCameraBehindPlayer);
+	pNetowkManager->GetRPC4()->RegisterFunction("UploadClientScript",UploadClientScript);
+	pNetowkManager->GetRPC4()->RegisterFunction("ObjectSpawn", ObjectSpawn);
+	pNetowkManager->GetRPC4()->RegisterFunction("ObjectDestroy", ObjectDestroy);
+	pNetowkManager->GetRPC4()->RegisterFunction("CreateText", CreateText);
+	pNetowkManager->GetRPC4()->RegisterFunction("DestroyText", DestroyText);
+	pNetowkManager->GetRPC4()->RegisterFunction("InflictDamage", InflictDamage);
+	pNetowkManager->GetRPC4()->RegisterFunction("CreateCheckpoint", CreateCheckpoint);
+	pNetowkManager->GetRPC4()->RegisterFunction("DestroyCheckpoint", DestroyCheckpoint);
+	pNetowkManager->GetRPC4()->RegisterFunction("PickupSpawn", PickupSpawn);
+	pNetowkManager->GetRPC4()->RegisterFunction("PickupDestroy", PickupDestroy);
 
-	pNetGame->GetRPC4()->RegisterFunction("Script_SetHealth",Script_SetHealth);
-	pNetGame->GetRPC4()->RegisterFunction("Script_SetArmour",Script_SetArmour);
-	pNetGame->GetRPC4()->RegisterFunction("Script_SetPos",Script_SetPos);
-	pNetGame->GetRPC4()->RegisterFunction("Script_SetTurnSpeed",Script_SetTurnSpeed);
-	pNetGame->GetRPC4()->RegisterFunction("Script_SetMoveSpeed",Script_SetMoveSpeed);
-	pNetGame->GetRPC4()->RegisterFunction("Script_PutInVehicle",Script_PutInVehicle);
-	pNetGame->GetRPC4()->RegisterFunction("Script_GivePlayerWeapon",Script_GivePlayerWeapon);
-	pNetGame->GetRPC4()->RegisterFunction("Script_SetPlayerSkin",Script_SetPlayerSkin);
-	pNetGame->GetRPC4()->RegisterFunction("Script_SetPlayerZAngle",Script_SetPlayerZAngle);
-	pNetGame->GetRPC4()->RegisterFunction("Script_SetPlayerAction",Script_SetPlayerAction);
-	pNetGame->GetRPC4()->RegisterFunction("Script_SetPlayerRotation",Script_SetPlayerRotation);
-	pNetGame->GetRPC4()->RegisterFunction("Script_SetArmedWeapon",Script_SetArmedWeapon);
-	pNetGame->GetRPC4()->RegisterFunction("Script_RemoveFromVehicle",Script_RemoveFromVehicle);
-	pNetGame->GetRPC4()->RegisterFunction("Script_ToggleControls",Script_ToggleControls);
-	pNetGame->GetRPC4()->RegisterFunction("Script_ClientMessage",Script_ClientMessage);
-	pNetGame->GetRPC4()->RegisterFunction("Script_WorldBounds",Script_WorldBounds);
-	pNetGame->GetRPC4()->RegisterFunction("Script_SetVehicleHealth",Script_SetVehicleHealth);
-	pNetGame->GetRPC4()->RegisterFunction("Script_SetVehicleColor",Script_SetVehicleColor);
-	pNetGame->GetRPC4()->RegisterFunction("Script_SetVehiclePos",Script_SetVehiclePos);
-	pNetGame->GetRPC4()->RegisterFunction("Script_SetVehicleTurnSpeed",Script_SetVehicleTurnSpeed);
-	pNetGame->GetRPC4()->RegisterFunction("Script_SetVehicleMoveSpeed",Script_SetVehicleMoveSpeed);
-	pNetGame->GetRPC4()->RegisterFunction("Script_DestroyVehicle",Script_DestroyVehicle);
-	pNetGame->GetRPC4()->RegisterFunction("Script_PlaySound",Script_PlaySound);
-	pNetGame->GetRPC4()->RegisterFunction("Script_FadeScreen",Script_FadeScreen);
-	pNetGame->GetRPC4()->RegisterFunction("Script_ClientCall", Script_ClientCall);
-	pNetGame->GetRPC4()->RegisterFunction("Script_forceClassSelection",Script_forceClassSelection);
-	pNetGame->GetRPC4()->RegisterFunction("Script_togglePlayerBleeding",Script_togglePlayerBleeding);
-	pNetGame->GetRPC4()->RegisterFunction("Script_FlashItem",Script_FlashItem);
-	pNetGame->GetRPC4()->RegisterFunction("Script_popVehicleTrunk", Script_popVehicleTrunk);
-	pNetGame->GetRPC4()->RegisterFunction("Script_setSkyColor", Script_setSkyColor);
-	pNetGame->GetRPC4()->RegisterFunction("Script_SetPlayerCash", Script_setPlayerCash);
-	pNetGame->GetRPC4()->RegisterFunction("Script_toggleDriveByState", Script_toggleDriveByState);
-	pNetGame->GetRPC4()->RegisterFunction("Script_toggleCellPhone", Script_toggleCellPhone);
-	pNetGame->GetRPC4()->RegisterFunction("Script_SetCameraShakeIntensity", Script_SetCameraShakeIntensity);
-	pNetGame->GetRPC4()->RegisterFunction("Script_SetPlayerGravity", Script_setPlayerGravity);
-	pNetGame->GetRPC4()->RegisterFunction("Script_toggleTextForPlayer", Script_toggleTextForPlayer);
-	pNetGame->GetRPC4()->RegisterFunction("Script_SetText", Script_SetText);
-	pNetGame->GetRPC4()->RegisterFunction("Script_SetTextPosition", Script_SetTextPosition);
-	pNetGame->GetRPC4()->RegisterFunction("Script_SetTextColor", Script_SetTextColor);
+	pNetowkManager->GetRPC4()->RegisterFunction("Script_SetHealth",Script_SetHealth);
+	pNetowkManager->GetRPC4()->RegisterFunction("Script_SetArmour",Script_SetArmour);
+	pNetowkManager->GetRPC4()->RegisterFunction("Script_SetPos",Script_SetPos);
+	pNetowkManager->GetRPC4()->RegisterFunction("Script_SetTurnSpeed",Script_SetTurnSpeed);
+	pNetowkManager->GetRPC4()->RegisterFunction("Script_SetMoveSpeed",Script_SetMoveSpeed);
+	pNetowkManager->GetRPC4()->RegisterFunction("Script_PutInVehicle",Script_PutInVehicle);
+	pNetowkManager->GetRPC4()->RegisterFunction("Script_GivePlayerWeapon",Script_GivePlayerWeapon);
+	pNetowkManager->GetRPC4()->RegisterFunction("Script_SetPlayerSkin",Script_SetPlayerSkin);
+	pNetowkManager->GetRPC4()->RegisterFunction("Script_SetPlayerZAngle",Script_SetPlayerZAngle);
+	pNetowkManager->GetRPC4()->RegisterFunction("Script_SetPlayerAction",Script_SetPlayerAction);
+	pNetowkManager->GetRPC4()->RegisterFunction("Script_SetPlayerRotation",Script_SetPlayerRotation);
+	pNetowkManager->GetRPC4()->RegisterFunction("Script_SetArmedWeapon",Script_SetArmedWeapon);
+	pNetowkManager->GetRPC4()->RegisterFunction("Script_RemoveFromVehicle",Script_RemoveFromVehicle);
+	pNetowkManager->GetRPC4()->RegisterFunction("Script_ToggleControls",Script_ToggleControls);
+	pNetowkManager->GetRPC4()->RegisterFunction("Script_ClientMessage",Script_ClientMessage);
+	pNetowkManager->GetRPC4()->RegisterFunction("Script_WorldBounds",Script_WorldBounds);
+	pNetowkManager->GetRPC4()->RegisterFunction("Script_SetVehicleHealth",Script_SetVehicleHealth);
+	pNetowkManager->GetRPC4()->RegisterFunction("Script_SetVehicleColor",Script_SetVehicleColor);
+	pNetowkManager->GetRPC4()->RegisterFunction("Script_SetVehiclePos",Script_SetVehiclePos);
+	pNetowkManager->GetRPC4()->RegisterFunction("Script_SetVehicleTurnSpeed",Script_SetVehicleTurnSpeed);
+	pNetowkManager->GetRPC4()->RegisterFunction("Script_SetVehicleMoveSpeed",Script_SetVehicleMoveSpeed);
+	pNetowkManager->GetRPC4()->RegisterFunction("Script_DestroyVehicle",Script_DestroyVehicle);
+	pNetowkManager->GetRPC4()->RegisterFunction("Script_PlaySound",Script_PlaySound);
+	pNetowkManager->GetRPC4()->RegisterFunction("Script_FadeScreen",Script_FadeScreen);
+	pNetowkManager->GetRPC4()->RegisterFunction("Script_ClientCall", Script_ClientCall);
+	pNetowkManager->GetRPC4()->RegisterFunction("Script_forceClassSelection",Script_forceClassSelection);
+	pNetowkManager->GetRPC4()->RegisterFunction("Script_togglePlayerBleeding",Script_togglePlayerBleeding);
+	pNetowkManager->GetRPC4()->RegisterFunction("Script_FlashItem",Script_FlashItem);
+	pNetowkManager->GetRPC4()->RegisterFunction("Script_popVehicleTrunk", Script_popVehicleTrunk);
+	pNetowkManager->GetRPC4()->RegisterFunction("Script_setSkyColor", Script_setSkyColor);
+	pNetowkManager->GetRPC4()->RegisterFunction("Script_SetPlayerCash", Script_setPlayerCash);
+	pNetowkManager->GetRPC4()->RegisterFunction("Script_toggleDriveByState", Script_toggleDriveByState);
+	pNetowkManager->GetRPC4()->RegisterFunction("Script_toggleCellPhone", Script_toggleCellPhone);
+	pNetowkManager->GetRPC4()->RegisterFunction("Script_SetCameraShakeIntensity", Script_SetCameraShakeIntensity);
+	pNetowkManager->GetRPC4()->RegisterFunction("Script_SetPlayerGravity", Script_setPlayerGravity);
+	pNetowkManager->GetRPC4()->RegisterFunction("Script_toggleTextForPlayer", Script_toggleTextForPlayer);
+	pNetowkManager->GetRPC4()->RegisterFunction("Script_SetText", Script_SetText);
+	pNetowkManager->GetRPC4()->RegisterFunction("Script_SetTextPosition", Script_SetTextPosition);
+	pNetowkManager->GetRPC4()->RegisterFunction("Script_SetTextColor", Script_SetTextColor);
 }
 
 //----------------------------------------------------
 
 void UnRegisterRPCs()
 {
-	pNetGame->GetRPC4()->UnregisterFunction("ServerJoin");
-	pNetGame->GetRPC4()->UnregisterFunction("ServerQuit");
-	pNetGame->GetRPC4()->UnregisterFunction("InitGame");
-	pNetGame->GetRPC4()->UnregisterFunction("Chat");
-	pNetGame->GetRPC4()->UnregisterFunction("RequestClass");
-	pNetGame->GetRPC4()->UnregisterFunction("Spawn");
-	pNetGame->GetRPC4()->UnregisterFunction("Death");
-	pNetGame->GetRPC4()->UnregisterFunction("EnterVehicle");
-	pNetGame->GetRPC4()->UnregisterFunction("ExitVehicle");
-	pNetGame->GetRPC4()->UnregisterFunction("VehicleSpawn");
-	pNetGame->GetRPC4()->UnregisterFunction("VehicleDestroy");
-	pNetGame->GetRPC4()->UnregisterFunction("UpdateScoreAndPing");
-	pNetGame->GetRPC4()->UnregisterFunction("ConnectionRejected");
-	pNetGame->GetRPC4()->UnregisterFunction("Passenger");
-	pNetGame->GetRPC4()->UnregisterFunction("SetGameTime");
-	pNetGame->GetRPC4()->UnregisterFunction("SetCameraPosition");
-	pNetGame->GetRPC4()->UnregisterFunction("SetCameraRotation");
-	pNetGame->GetRPC4()->UnregisterFunction("SetCameraLookAt");
-	pNetGame->GetRPC4()->UnregisterFunction("SetCameraBehindPlayer");
-	pNetGame->GetRPC4()->UnregisterFunction("UploadClientScript");
-	pNetGame->GetRPC4()->UnregisterFunction("ObjectSpawn");
-	pNetGame->GetRPC4()->UnregisterFunction("ObjectDestroy");
-	pNetGame->GetRPC4()->UnregisterFunction("CreateText");
-	pNetGame->GetRPC4()->UnregisterFunction("DestroyText");
-	pNetGame->GetRPC4()->UnregisterFunction("InflictDamage");
-	pNetGame->GetRPC4()->UnregisterFunction("CreateCheckpoint");
-	pNetGame->GetRPC4()->UnregisterFunction("DestroyCheckpoint");
-	pNetGame->GetRPC4()->UnregisterFunction("PickupSpawn");
-	pNetGame->GetRPC4()->UnregisterFunction("PickupDestroy");
+	pNetowkManager->GetRPC4()->UnregisterFunction("ServerJoin");
+	pNetowkManager->GetRPC4()->UnregisterFunction("ServerQuit");
+	pNetowkManager->GetRPC4()->UnregisterFunction("InitGame");
+	pNetowkManager->GetRPC4()->UnregisterFunction("Chat");
+	pNetowkManager->GetRPC4()->UnregisterFunction("RequestClass");
+	pNetowkManager->GetRPC4()->UnregisterFunction("Spawn");
+	pNetowkManager->GetRPC4()->UnregisterFunction("Death");
+	pNetowkManager->GetRPC4()->UnregisterFunction("EnterVehicle");
+	pNetowkManager->GetRPC4()->UnregisterFunction("ExitVehicle");
+	pNetowkManager->GetRPC4()->UnregisterFunction("VehicleSpawn");
+	pNetowkManager->GetRPC4()->UnregisterFunction("VehicleDestroy");
+	pNetowkManager->GetRPC4()->UnregisterFunction("UpdateScoreAndPing");
+	pNetowkManager->GetRPC4()->UnregisterFunction("ConnectionRejected");
+	pNetowkManager->GetRPC4()->UnregisterFunction("Passenger");
+	pNetowkManager->GetRPC4()->UnregisterFunction("SetGameTime");
+	pNetowkManager->GetRPC4()->UnregisterFunction("SetCameraPosition");
+	pNetowkManager->GetRPC4()->UnregisterFunction("SetCameraRotation");
+	pNetowkManager->GetRPC4()->UnregisterFunction("SetCameraLookAt");
+	pNetowkManager->GetRPC4()->UnregisterFunction("SetCameraBehindPlayer");
+	pNetowkManager->GetRPC4()->UnregisterFunction("UploadClientScript");
+	pNetowkManager->GetRPC4()->UnregisterFunction("ObjectSpawn");
+	pNetowkManager->GetRPC4()->UnregisterFunction("ObjectDestroy");
+	pNetowkManager->GetRPC4()->UnregisterFunction("CreateText");
+	pNetowkManager->GetRPC4()->UnregisterFunction("DestroyText");
+	pNetowkManager->GetRPC4()->UnregisterFunction("InflictDamage");
+	pNetowkManager->GetRPC4()->UnregisterFunction("CreateCheckpoint");
+	pNetowkManager->GetRPC4()->UnregisterFunction("DestroyCheckpoint");
+	pNetowkManager->GetRPC4()->UnregisterFunction("PickupSpawn");
+	pNetowkManager->GetRPC4()->UnregisterFunction("PickupDestroy");
 
-	pNetGame->GetRPC4()->UnregisterFunction("Script_SetHealth");
-	pNetGame->GetRPC4()->UnregisterFunction("Script_SetArmour");
-	pNetGame->GetRPC4()->UnregisterFunction("Script_SetPos");
-	pNetGame->GetRPC4()->UnregisterFunction("Script_PutInVehicle");
-	pNetGame->GetRPC4()->UnregisterFunction("Script_GivePlayerWeapon");
-	pNetGame->GetRPC4()->UnregisterFunction("Script_SetPlayerSkin");
-	pNetGame->GetRPC4()->UnregisterFunction("Script_SetPlayerZAngle");
-	pNetGame->GetRPC4()->UnregisterFunction("Script_SetPlayerAction");
-	pNetGame->GetRPC4()->UnregisterFunction("Script_SetPlayerRotation");
-	pNetGame->GetRPC4()->UnregisterFunction("Script_SetArmedWeapon");
-	pNetGame->GetRPC4()->UnregisterFunction("Script_RemoveFromVehicle");
-	pNetGame->GetRPC4()->UnregisterFunction("Script_ToggleControls");
-	pNetGame->GetRPC4()->UnregisterFunction("Script_ClientMessage");
-	pNetGame->GetRPC4()->UnregisterFunction("Script_WorldBounds");
-	pNetGame->GetRPC4()->UnregisterFunction("Script_SetVehicleHealth");
-	pNetGame->GetRPC4()->UnregisterFunction("Script_SetVehicleColor");
-	pNetGame->GetRPC4()->UnregisterFunction("Script_DestroyVehicle");
-	pNetGame->GetRPC4()->UnregisterFunction("Script_PlaySound");
-	pNetGame->GetRPC4()->UnregisterFunction("Script_FadeScreen");
-	pNetGame->GetRPC4()->UnregisterFunction("Script_ClientCall");
-	pNetGame->GetRPC4()->UnregisterFunction("Script_forceClassSelection");
-	pNetGame->GetRPC4()->UnregisterFunction("Script_togglePlayerBleeding");
-	pNetGame->GetRPC4()->UnregisterFunction("Script_FlashItem");
-	pNetGame->GetRPC4()->UnregisterFunction("Script_popVehicleTrunk");
-	pNetGame->GetRPC4()->UnregisterFunction("Script_setSkyColor");
-	pNetGame->GetRPC4()->UnregisterFunction("Script_SetPlayerCash");
-	pNetGame->GetRPC4()->UnregisterFunction("Script_toggleDriveByState");
-	pNetGame->GetRPC4()->UnregisterFunction("Script_toggleCellPhone");
-	pNetGame->GetRPC4()->UnregisterFunction("Script_SetCameraShakeIntensity");
-	pNetGame->GetRPC4()->UnregisterFunction("Script_SetPlayerGravity");
-	pNetGame->GetRPC4()->UnregisterFunction("Script_toggleTextForPlayer");
-	pNetGame->GetRPC4()->UnregisterFunction("Script_SetText");
-	pNetGame->GetRPC4()->UnregisterFunction("Script_SetTextPosition");
-	pNetGame->GetRPC4()->UnregisterFunction("Script_SetTextColor");
+	pNetowkManager->GetRPC4()->UnregisterFunction("Script_SetHealth");
+	pNetowkManager->GetRPC4()->UnregisterFunction("Script_SetArmour");
+	pNetowkManager->GetRPC4()->UnregisterFunction("Script_SetPos");
+	pNetowkManager->GetRPC4()->UnregisterFunction("Script_PutInVehicle");
+	pNetowkManager->GetRPC4()->UnregisterFunction("Script_GivePlayerWeapon");
+	pNetowkManager->GetRPC4()->UnregisterFunction("Script_SetPlayerSkin");
+	pNetowkManager->GetRPC4()->UnregisterFunction("Script_SetPlayerZAngle");
+	pNetowkManager->GetRPC4()->UnregisterFunction("Script_SetPlayerAction");
+	pNetowkManager->GetRPC4()->UnregisterFunction("Script_SetPlayerRotation");
+	pNetowkManager->GetRPC4()->UnregisterFunction("Script_SetArmedWeapon");
+	pNetowkManager->GetRPC4()->UnregisterFunction("Script_RemoveFromVehicle");
+	pNetowkManager->GetRPC4()->UnregisterFunction("Script_ToggleControls");
+	pNetowkManager->GetRPC4()->UnregisterFunction("Script_ClientMessage");
+	pNetowkManager->GetRPC4()->UnregisterFunction("Script_WorldBounds");
+	pNetowkManager->GetRPC4()->UnregisterFunction("Script_SetVehicleHealth");
+	pNetowkManager->GetRPC4()->UnregisterFunction("Script_SetVehicleColor");
+	pNetowkManager->GetRPC4()->UnregisterFunction("Script_DestroyVehicle");
+	pNetowkManager->GetRPC4()->UnregisterFunction("Script_PlaySound");
+	pNetowkManager->GetRPC4()->UnregisterFunction("Script_FadeScreen");
+	pNetowkManager->GetRPC4()->UnregisterFunction("Script_ClientCall");
+	pNetowkManager->GetRPC4()->UnregisterFunction("Script_forceClassSelection");
+	pNetowkManager->GetRPC4()->UnregisterFunction("Script_togglePlayerBleeding");
+	pNetowkManager->GetRPC4()->UnregisterFunction("Script_FlashItem");
+	pNetowkManager->GetRPC4()->UnregisterFunction("Script_popVehicleTrunk");
+	pNetowkManager->GetRPC4()->UnregisterFunction("Script_setSkyColor");
+	pNetowkManager->GetRPC4()->UnregisterFunction("Script_SetPlayerCash");
+	pNetowkManager->GetRPC4()->UnregisterFunction("Script_toggleDriveByState");
+	pNetowkManager->GetRPC4()->UnregisterFunction("Script_toggleCellPhone");
+	pNetowkManager->GetRPC4()->UnregisterFunction("Script_SetCameraShakeIntensity");
+	pNetowkManager->GetRPC4()->UnregisterFunction("Script_SetPlayerGravity");
+	pNetowkManager->GetRPC4()->UnregisterFunction("Script_toggleTextForPlayer");
+	pNetowkManager->GetRPC4()->UnregisterFunction("Script_SetText");
+	pNetowkManager->GetRPC4()->UnregisterFunction("Script_SetTextPosition");
+	pNetowkManager->GetRPC4()->UnregisterFunction("Script_SetTextColor");
 }
 
 //----------------------------------------------------

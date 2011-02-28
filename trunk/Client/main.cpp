@@ -17,7 +17,7 @@ CGame					*pGame=0;
 GAME_SETTINGS			tSettings;
 CChatWindow				*pChatWindow=0;
 CCmdWindow				*pCmdWindow=0;
-CNetGame				*pNetGame=0;
+CNetworkManager				*pNetowkManager=0;
 
 BOOL					bGameInited=FALSE;
 BOOL					bWindowedMode=FALSE;
@@ -101,10 +101,10 @@ BOOL WINAPI DllMain(HINSTANCE hinstDLL, DWORD fdwReason, LPVOID lpvReserved)
 		// Uninstall the d3d8 hook
 		UninstallD3D8Hook();
 
-		if(pNetGame)
+		if(pNetowkManager)
 		{
 			pScripts->onExit();
-			pNetGame->Shutdown();
+			pNetowkManager->Shutdown();
 		}
 	}
 
@@ -159,7 +159,7 @@ void TheSceneEnd()
 		{
 			if(!tSettings.bDebug)
 			{
-				pNetGame = new CNetGame(tSettings.szConnectHost,atoi(tSettings.szConnectPort),
+				pNetowkManager = new CNetworkManager(tSettings.szConnectHost,atoi(tSettings.szConnectPort),
 					tSettings.szNickName,tSettings.szConnectPass);
 			}
 
@@ -169,18 +169,18 @@ void TheSceneEnd()
 		}
 
 		// Process the netgame if it's active.
-		if(pNetGame) pNetGame->Process();
+		if(pNetowkManager) pNetowkManager->Process();
 
 		if(!pGame->IsMenuActive() && bShowNameTags) {
 			pNameTags->Draw();
 		}
 
 		if(!pGame->IsMenuActive()) {
-			if((pNetGame) && GetAsyncKeyState(VK_F5)) {
+			if((pNetowkManager) && GetAsyncKeyState(VK_F5)) {
 				pGame->DisplayHud(FALSE);
 				pScoreBoard->Draw();
 			}
-			else if((pNetGame) && GetAsyncKeyState(VK_F6)) {
+			else if((pNetowkManager) && GetAsyncKeyState(VK_F6)) {
 				pGame->DisplayHud(FALSE);
 				pNetStats->Draw();
 			} 
@@ -189,7 +189,7 @@ void TheSceneEnd()
 				pGame->DisplayHud(TRUE);
 				if(pChatWindow) pChatWindow->Draw();
 				if(pCmdWindow) pCmdWindow->Draw();
-				pNetGame->GetTextManager()->Process();
+				pNetowkManager->GetTextManager()->Process();
 			}
 			if(pScripts)
 				pScripts->onRender();

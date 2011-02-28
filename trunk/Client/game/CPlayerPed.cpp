@@ -13,7 +13,7 @@
 #include "StdInc.h"
 
 extern CGame *pGame;
-extern CNetGame *pNetGame;
+extern CNetworkManager *pNetowkManager;
 extern CChatWindow   *pChatWindow;
 
 //-----------------------------------------------------------
@@ -1052,9 +1052,9 @@ BYTE CPlayerPed::FindDeathReasonAndResponsiblePlayer(EntityId * nPlayer)
 		CPlayerManager *pPlayerManager;
 
 		// grab the vehicle/player pool now anyway, even though we may not need it.
-		if(pNetGame) {
-			pVehicleManager = pNetGame->GetVehicleManager();
-			pPlayerManager = pNetGame->GetPlayerManager();
+		if(pNetowkManager) {
+			pVehicleManager = pNetowkManager->GetVehicleManager();
+			pPlayerManager = pNetowkManager->GetPlayerManager();
 		}
 		else { // just leave if there's no netgame.
 			*nPlayer = INVALID_ENTITY_ID;

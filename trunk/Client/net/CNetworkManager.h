@@ -32,7 +32,7 @@ using namespace RakNet;
 
 //----------------------------------------------------
 
-class CNetGame
+class CNetworkManager
 {
 private:
 
@@ -70,8 +70,8 @@ private:
 	void ConnectionSucceeded(Packet *p);
 
 public:
-	CNetGame(PCHAR szHostOrIp,int iPort,PCHAR szPlayerName,PCHAR szPass);
-	~CNetGame();
+	CNetworkManager(PCHAR szHostOrIp,int iPort,PCHAR szPlayerName,PCHAR szPass);
+	~CNetworkManager();
 
 	int GetGameState() { return m_iGameState; };
 	void SetGameState(int iGameState) { m_iGameState = iGameState; };

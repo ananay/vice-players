@@ -11,7 +11,7 @@
 #include "StdInc.h"
 
 extern CGame *pGame;
-extern CNetGame *pNetGame;
+extern CNetworkManager *pNetowkManager;
 extern CChatWindow *pChatWindow;
 
 //----------------------------------------------------
@@ -142,7 +142,7 @@ void CVehicleManager::SendVehicleDeath(EntityId vehicleID)
 {
 	BitStream bsVehicleDeath;
 	bsVehicleDeath.Write(vehicleID);
-	pNetGame->GetRPC4()->Call("VehicleDeath", &bsVehicleDeath, HIGH_PRIORITY, RELIABLE_ORDERED, 0, 
+	pNetowkManager->GetRPC4()->Call("VehicleDeath", &bsVehicleDeath, HIGH_PRIORITY, RELIABLE_ORDERED, 0, 
 		UNASSIGNED_SYSTEM_ADDRESS, true);
 }
 

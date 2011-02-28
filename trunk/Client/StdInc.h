@@ -50,7 +50,7 @@
 #include "net/CPickupManager.h"
 #include "net/CTextManager.h"
 #include "net/CCheckpoints.h"
-#include "net/CNetGame.h"
+#include "net/CNetworkManager.h"
 
 // Scripting
 #include "scripting/CScripts.h"

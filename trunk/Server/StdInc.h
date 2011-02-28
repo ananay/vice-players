@@ -28,7 +28,7 @@
 #include "main.h"
 #include "system.h"
 #include "CConfig.h"
-#include "CNetGame.h"
+#include "CNetworkManager.h"
 #include "CRcon.h"
 #include "CScripts.h"
 #include "CPlugins.h"

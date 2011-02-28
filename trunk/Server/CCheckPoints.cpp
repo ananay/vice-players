@@ -10,7 +10,7 @@
 
 #include "StdInc.h"
 
-extern CNetGame *pNetGame;
+extern CNetworkManager *pNetowkManager;
 extern CScripts *pScripts;
 
 float GetDistanceBetweenPoints3D(float x, float y, float z, float xx, float yy, float zz)
@@ -34,12 +34,12 @@ CCheckpoint::CCheckpoint(EntityId id, Vector3 vecPos, BYTE type, float radius)
 
 CCheckpoint::~CCheckpoint()
 {
-	CPlayerManager * pPlayerManager = pNetGame->GetPlayerManager();
+	CPlayerManager * pPlayerManager = pNetowkManager->GetPlayerManager();
 	for(EntityId i = 0; i < MAX_PLAYERS; i++) {
 		if(pPlayerManager->GetSlotState(i)) {
 			BitStream bsSend;
 			bsSend.Write(m_iID);
-			pNetGame->GetRPC4()->Call("DestroyCheckpoint", &bsSend, HIGH_PRIORITY, RELIABLE, 0, pNetGame->GetRakPeer()->GetSystemAddressFromIndex(i), 0);
+			pNetowkManager->GetRPC4()->Call("DestroyCheckpoint", &bsSend, HIGH_PRIORITY, RELIABLE, 0, pNetowkManager->GetRakPeer()->GetSystemAddressFromIndex(i), 0);
 		}
 	}
 }
@@ -57,12 +57,12 @@ void CCheckpoint::InitForPlayer(EntityId playerId)
 	bsSend.Write((char*)&m_vecPos, sizeof(Vector3));
 	bsSend.Write(m_fRadius);
 	
-	pNetGame->GetRPC4()->Call("CreateCheckpoint", &bsSend, HIGH_PRIORITY, RELIABLE, 0, pNetGame->GetRakPeer()->GetSystemAddressFromIndex(playerId), 0);
+	pNetowkManager->GetRPC4()->Call("CreateCheckpoint", &bsSend, HIGH_PRIORITY, RELIABLE, 0, pNetowkManager->GetRakPeer()->GetSystemAddressFromIndex(playerId), 0);
 }
 
 void CCheckpoint::InitForWorld()
 {
-	CPlayerManager * pPlayerManager = pNetGame->GetPlayerManager();
+	CPlayerManager * pPlayerManager = pNetowkManager->GetPlayerManager();
 	for(EntityId i = 0; i < MAX_PLAYERS; i++) {
 		if(pPlayerManager->GetSlotState(i)) {
 			InitForPlayer(i);

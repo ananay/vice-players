@@ -10,7 +10,7 @@
 //-----------------------------------------------------
 #include "StdInc.h"
 
-extern CNetGame *pNetGame;
+extern CNetworkManager *pNetowkManager;
 
 CText::CText(DWORD color, const char * szFontName, int iSize, float posX, float posY, const char * szText)
 {
@@ -26,7 +26,7 @@ CText::CText(DWORD color, const char * szFontName, int iSize, float posX, float 
 
 CText::~CText()
 {
-	CPlayerManager * pPlayerManager = pNetGame->GetPlayerManager();
+	CPlayerManager * pPlayerManager = pNetowkManager->GetPlayerManager();
 
 	for(EntityId i = 0; i < MAX_PLAYERS; i++)
 	{
@@ -51,20 +51,20 @@ void CText::InitForPlayer(EntityId playerId)
 	bsSend.Write(m_szText.size());
 	bsSend.Write(m_szText.c_str(), m_szText.size());
 	
-	pNetGame->GetRPC4()->Call("CreateText", &bsSend, HIGH_PRIORITY, RELIABLE, 0, pNetGame->GetRakPeer()->GetSystemAddressFromIndex(playerId), 0);
+	pNetowkManager->GetRPC4()->Call("CreateText", &bsSend, HIGH_PRIORITY, RELIABLE, 0, pNetowkManager->GetRakPeer()->GetSystemAddressFromIndex(playerId), 0);
 	
 	if(m_bShow)
 	{
 		BitStream bsSend;
 		bsSend.Write(m_iID);
 		bsSend.Write(true);
-		pNetGame->GetRPC4()->Call("Script_toggleTextForPlayer", &bsSend, HIGH_PRIORITY, RELIABLE, 0, pNetGame->GetRakPeer()->GetSystemAddressFromIndex(playerId), 0);
+		pNetowkManager->GetRPC4()->Call("Script_toggleTextForPlayer", &bsSend, HIGH_PRIORITY, RELIABLE, 0, pNetowkManager->GetRakPeer()->GetSystemAddressFromIndex(playerId), 0);
 	}
 }
 
 void CText::InitForWorld()
 {
-	CPlayerManager * pPlayerManager = pNetGame->GetPlayerManager();
+	CPlayerManager * pPlayerManager = pNetowkManager->GetPlayerManager();
 	for(EntityId i = 0; i < MAX_PLAYERS; i++) {
 		if(pPlayerManager->GetSlotState(i)) {
 			InitForPlayer(i);
@@ -78,7 +78,7 @@ void CText::DestroyForPlayer(EntityId playerId)
 
 	bsSend.Write(m_iID);
 
-	pNetGame->GetRPC4()->Call("DestroyText", &bsSend, HIGH_PRIORITY, RELIABLE, 0, pNetGame->GetRakPeer()->GetSystemAddressFromIndex(playerId), 0);
+	pNetowkManager->GetRPC4()->Call("DestroyText", &bsSend, HIGH_PRIORITY, RELIABLE, 0, pNetowkManager->GetRakPeer()->GetSystemAddressFromIndex(playerId), 0);
 }
 
 void CText::SetID(EntityId id)
@@ -90,14 +90,14 @@ void CText::SetText(const char * szText)
 {
 	m_szText = szText;
 
-	CPlayerManager * pPlayerManager = pNetGame->GetPlayerManager();
+	CPlayerManager * pPlayerManager = pNetowkManager->GetPlayerManager();
 	for(EntityId i = 0; i < MAX_PLAYERS; i++) {
 		if(pPlayerManager->GetSlotState(i)) {
 			BitStream bsSend;
 			bsSend.Write(m_iID);
 			bsSend.Write(strlen(szText));
 			bsSend.Write(szText, strlen(szText));
-			pNetGame->GetRPC4()->Call("Script_SetText", &bsSend, HIGH_PRIORITY, RELIABLE, 0, pNetGame->GetRakPeer()->GetSystemAddressFromIndex(i), 0);
+			pNetowkManager->GetRPC4()->Call("Script_SetText", &bsSend, HIGH_PRIORITY, RELIABLE, 0, pNetowkManager->GetRakPeer()->GetSystemAddressFromIndex(i), 0);
 		}
 	}
 }
@@ -106,13 +106,13 @@ void CText::Show(bool show)
 {
 	m_bShow = show;
 
-	CPlayerManager * pPlayerManager = pNetGame->GetPlayerManager();
+	CPlayerManager * pPlayerManager = pNetowkManager->GetPlayerManager();
 	for(EntityId i = 0; i < MAX_PLAYERS; i++) {
 		if(pPlayerManager->GetSlotState(i)) {
 			BitStream bsSend;
 			bsSend.Write(m_iID);
 			bsSend.Write(m_bShow);
-			pNetGame->GetRPC4()->Call("Script_toggleTextForPlayer", &bsSend, HIGH_PRIORITY, RELIABLE, 0, pNetGame->GetRakPeer()->GetSystemAddressFromIndex(i), 0);
+			pNetowkManager->GetRPC4()->Call("Script_toggleTextForPlayer", &bsSend, HIGH_PRIORITY, RELIABLE, 0, pNetowkManager->GetRakPeer()->GetSystemAddressFromIndex(i), 0);
 		}
 	}
 }
@@ -122,14 +122,14 @@ void CText::SetPosition(float fPosX, float fPosY)
 	m_fRelativePosX = fPosX;
 	m_fRelativePosY = fPosY;
 
-	CPlayerManager * pPlayerManager = pNetGame->GetPlayerManager();
+	CPlayerManager * pPlayerManager = pNetowkManager->GetPlayerManager();
 	for(EntityId i = 0; i < MAX_PLAYERS; i++) {
 		if(pPlayerManager->GetSlotState(i)) {
 			BitStream bsSend;
 			bsSend.Write(m_iID);
 			bsSend.Write(fPosX);
 			bsSend.Write(fPosY);
-			pNetGame->GetRPC4()->Call("Script_SetTextPosition", &bsSend, HIGH_PRIORITY, RELIABLE, 0, pNetGame->GetRakPeer()->GetSystemAddressFromIndex(i), 0);
+			pNetowkManager->GetRPC4()->Call("Script_SetTextPosition", &bsSend, HIGH_PRIORITY, RELIABLE, 0, pNetowkManager->GetRakPeer()->GetSystemAddressFromIndex(i), 0);
 		}
 	}
 }
@@ -140,13 +140,13 @@ void CText::SetColor(DWORD color)
 
 	logprintf("color %d", color);
 
-	CPlayerManager * pPlayerManager = pNetGame->GetPlayerManager();
+	CPlayerManager * pPlayerManager = pNetowkManager->GetPlayerManager();
 	for(EntityId i = 0; i < MAX_PLAYERS; i++) {
 		if(pPlayerManager->GetSlotState(i)) {
 			BitStream bsSend;
 			bsSend.Write(m_iID);
 			bsSend.Write(color);
-			pNetGame->GetRPC4()->Call("Script_SetTextColor", &bsSend, HIGH_PRIORITY, RELIABLE, 0, pNetGame->GetRakPeer()->GetSystemAddressFromIndex(i), 0);
+			pNetowkManager->GetRPC4()->Call("Script_SetTextColor", &bsSend, HIGH_PRIORITY, RELIABLE, 0, pNetowkManager->GetRakPeer()->GetSystemAddressFromIndex(i), 0);
 		}
 	}
 }

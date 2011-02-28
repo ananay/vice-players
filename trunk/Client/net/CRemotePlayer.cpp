@@ -15,7 +15,7 @@ extern CChatWindow   *pChatWindow;
 extern CCmdWindow	 *pCmdWindow;
 
 using namespace RakNet;
-extern CNetGame* pNetGame;
+extern CNetworkManager* pNetowkManager;
 
 //----------------------------------------------------
 
@@ -53,8 +53,8 @@ CRemotePlayer::~CRemotePlayer()
 
 void CRemotePlayer::Process()
 {
-	CPlayerManager *pPool = pNetGame->GetPlayerManager();
-	CVehicleManager *pVehicleManager = pNetGame->GetVehicleManager();
+	CPlayerManager *pPool = pNetowkManager->GetPlayerManager();
+	CVehicleManager *pVehicleManager = pNetowkManager->GetVehicleManager();
 	CLocalPlayer *pLocalPlayer = pPool->GetLocalPlayer();
 
 	if(m_bIsActive)
@@ -77,7 +77,7 @@ void CRemotePlayer::Process()
 				if(m_byteHealth == 0) {
 
 					//pChatWindow->AddDebugMessage("%s has 0 health so killing\n",
-						//pNetGame->GetPlayerManager()->GetAt(m_playerID));
+						//pNetowkManager->GetPlayerManager()->GetAt(m_playerID));
 
 					m_wKeys = 0;
 					m_vehicleID = 0;
@@ -140,7 +140,7 @@ void CRemotePlayer::Process()
 
 void CRemotePlayer::HandleVehicleEntryExit()
 {
-	CVehicleManager *pVehicleManager = pNetGame->GetVehicleManager();
+	CVehicleManager *pVehicleManager = pNetowkManager->GetVehicleManager();
 
 	if(m_vehicleID == 0 && m_pPlayerPed->IsInVehicle())
 	{
@@ -197,7 +197,7 @@ void CRemotePlayer::StoreAimSyncData(CAMERA_AIM * pAim)
 void CRemotePlayer::UpdateInCarMatrixAndSpeed(MATRIX4X4 * matWorld, Vector3 * vecMoveSpeed, Vector3 * vecTurnSpeed)
 {
 	MATRIX4X4 matVehicle;
-	CVehicle * pVehicle = pNetGame->GetVehicleManager()->GetAt(m_vehicleID);
+	CVehicle * pVehicle = pNetowkManager->GetVehicleManager()->GetAt(m_vehicleID);
 	float fDif;
 
 	if(pVehicle) {
@@ -289,7 +289,7 @@ BOOL CRemotePlayer::SpawnPlayer( BYTE byteTeam, BYTE byteSkin,
 	
 	if(pGamePlayer) 
 	{
-		if(pNetGame->m_byteShowOnRadar) {
+		if(pNetowkManager->m_byteShowOnRadar) {
 			pGamePlayer->ShowMarker(byteTeam);
 		}
 
@@ -321,11 +321,11 @@ BOOL CRemotePlayer::SpawnPlayer( BYTE byteTeam, BYTE byteSkin,
 void CRemotePlayer::HandleDeath(BYTE byteReason, BYTE byteWhoKilled, BYTE byteScoringModifier)
 {
 
-	char * szPlayerName = pNetGame->GetPlayerManager()->GetPlayerName(m_playerID);
+	char * szPlayerName = pNetowkManager->GetPlayerManager()->GetPlayerName(m_playerID);
 	char * szWhoKilledName;
 
 	if(byteWhoKilled != INVALID_ENTITY_ID) {
-		szWhoKilledName = pNetGame->GetPlayerManager()->GetPlayerName(byteWhoKilled);
+		szWhoKilledName = pNetowkManager->GetPlayerManager()->GetPlayerName(byteWhoKilled);
 	}
 
 	switch(byteScoringModifier) {
@@ -359,7 +359,7 @@ void CRemotePlayer::HandleDeath(BYTE byteReason, BYTE byteWhoKilled, BYTE byteSc
 
 void CRemotePlayer::Say(char *szText)
 {
-	char * szPlayerName = pNetGame->GetPlayerManager()->GetPlayerName(m_playerID);
+	char * szPlayerName = pNetowkManager->GetPlayerManager()->GetPlayerName(m_playerID);
 	pChatWindow->AddChatMessage(szPlayerName,GetTeamColorAsARGB(),szText);
 }
 
@@ -392,7 +392,7 @@ float CRemotePlayer::GetDistanceFromLocalPlayer()
 	Vector3 vecFromPlayer;
 	float  fSX,fSY;
 
-	CLocalPlayer *pLocalPlayer = pNetGame->GetPlayerManager()->GetLocalPlayer();
+	CLocalPlayer *pLocalPlayer = pNetowkManager->GetPlayerManager()->GetLocalPlayer();
 	CPlayerPed *pLocalPlayerPed = pLocalPlayer->GetPlayerPed();
 
 	if(!m_pPlayerPed) return 10000.0f; // very far away
@@ -431,11 +431,11 @@ void CRemotePlayer::InflictDamage(bool bPlayerVehicleDamager, EntityId damagerID
 
 	if(bPlayerVehicleDamager)
 	{
-		dwEntity = (DWORD)pNetGame->GetPlayerManager()->GetAt(damagerID)->GetPlayerPed()->GetEntity();		
+		dwEntity = (DWORD)pNetowkManager->GetPlayerManager()->GetAt(damagerID)->GetPlayerPed()->GetEntity();		
 	}
 	else
 	{
-		dwEntity = (DWORD)pNetGame->GetVehicleManager()->GetAt(damagerID)->GetVehicle();
+		dwEntity = (DWORD)pNetowkManager->GetVehicleManager()->GetAt(damagerID)->GetVehicle();
 	}
 
 	// Enable CPed::InflictDamage for remote players

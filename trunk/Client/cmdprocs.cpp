@@ -13,7 +13,7 @@
 extern CGame		 *pGame;
 extern CChatWindow   *pChatWindow;
 extern CCmdWindow	 *pCmdWindow;
-extern CNetGame		 *pNetGame;
+extern CNetworkManager		 *pNetowkManager;
 
 DWORD dwPlayerIncrementer=2;
 extern GAME_SETTINGS tSettings;
@@ -39,9 +39,9 @@ void WriteCompression(ULONG *ulWrite)
 
 void cmdDefaultCmdProc(PCHAR szCmd)
 {
-	if(pNetGame) {
+	if(pNetowkManager) {
 		CLocalPlayer *pLocalPlayer;
-		pLocalPlayer = pNetGame->GetPlayerManager()->GetLocalPlayer();
+		pLocalPlayer = pNetowkManager->GetPlayerManager()->GetLocalPlayer();
 		pLocalPlayer->Say(szCmd);
 	}
 }
@@ -50,8 +50,8 @@ void cmdDefaultCmdProc(PCHAR szCmd)
 
 void cmdQuit(PCHAR szCmd)
 {
-	if(pNetGame) {
-		pNetGame->Shutdown();
+	if(pNetowkManager) {
+		pNetowkManager->Shutdown();
 	}
 
 	ExitProcess(0);
@@ -183,12 +183,12 @@ void cmdAdmin(PCHAR szCmd)
 	int iPassLen=0;
 	RakNet::BitStream bsSend;
 
-	if(pNetGame) {
+	if(pNetowkManager) {
 		iPassLen = strlen(szCmd);
 		if(iPassLen > 64) return;
 		bsSend.Write(iPassLen);
 		bsSend.Write(szCmd,iPassLen);
-		pNetGame->GetRPC4()->Call("Admin",&bsSend,HIGH_PRIORITY,RELIABLE,0,UNASSIGNED_SYSTEM_ADDRESS,TRUE);
+		pNetowkManager->GetRPC4()->Call("Admin",&bsSend,HIGH_PRIORITY,RELIABLE,0,UNASSIGNED_SYSTEM_ADDRESS,TRUE);
 	}
 }
 
@@ -218,8 +218,8 @@ void cmdGetIP(PCHAR szCmd)
 	EntityId playerID;
 	sscanf(szCmd,"%u",&playerID);
 	
-	if(pNetGame) {
-		CPlayerManager *pPlayerManager = pNetGame->GetPlayerManager();
+	if(pNetowkManager) {
+		CPlayerManager *pPlayerManager = pNetowkManager->GetPlayerManager();
 		if(pPlayerManager->GetSlotState(playerID)) {
 
 			char ret[30];
@@ -245,7 +245,7 @@ void cmdGenComp(PCHAR szCmd)
 
 void cmdNewPlayer(PCHAR szCmd)
 {
-	CPlayerManager *pPlayerManager = pNetGame->GetPlayerManager();
+	CPlayerManager *pPlayerManager = pNetowkManager->GetPlayerManager();
 	pPlayerManager->New(1, "jaja");
 	CRemotePlayer *pRemotePlayer = pPlayerManager->GetAt(1);
 	CPlayerPed *pPlayerPed = pGame->FindPlayerPed();

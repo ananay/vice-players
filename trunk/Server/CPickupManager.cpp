@@ -10,7 +10,7 @@
 
 #include "StdInc.h"
 
-extern CNetGame *pNetGame;
+extern CNetworkManager *pNetowkManager;
 
 CPickupManager::CPickupManager()
 {

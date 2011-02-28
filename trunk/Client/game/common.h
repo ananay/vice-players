@@ -24,9 +24,107 @@ typedef struct _RGBA {
 	unsigned char r,g,b,a;
 } RGBA, *PRGBA;
 
-typedef struct _Vector3 {
-	float X,Y,Z;
-} Vector3, *PVector3;
+
+struct Vector3
+{
+	float X;
+	float Y;
+	float Z;
+
+	Vector3()
+	{
+		X = Y = Z = 0;
+	}
+
+	Vector3(float fX, float fY, float fZ)
+	{
+		X = fX; Y = fY; Z = fZ;
+	}
+
+	bool IsEmpty() const
+	{
+		return (X == 0 && Y == 0 && Z == 0);
+	}
+
+	float Length() const
+	{
+		return sqrt((X * X) + (Y * Y) + (Z * Z));
+		return 0;
+	}
+
+	Vector3 operator+ (const Vector3& vecRight) const
+	{
+		return Vector3(X + vecRight.X, Y + vecRight.Y, Z + vecRight.Z);
+	}
+
+	Vector3 operator+ (float fRight) const
+	{
+		return Vector3(X + fRight, Y + fRight, Z + fRight);
+	}
+
+	Vector3 operator- (const Vector3& vecRight) const
+	{
+		return Vector3(X - vecRight.X, Y - vecRight.Y, Z - vecRight.Z);
+	}
+
+	Vector3 operator- (float fRight) const
+	{
+		return Vector3(X - fRight, Y - fRight, Z - fRight);
+	}
+
+	Vector3 operator* (const Vector3& vecRight) const
+	{
+		return Vector3(X * vecRight.X, Y * vecRight.Y, Z * vecRight.Z);
+	}
+
+	Vector3 operator* (float fRight) const
+	{
+		return Vector3(X * fRight, Y * fRight, Z * fRight);
+	}
+
+	Vector3 operator/ (const Vector3& vecRight) const
+	{
+		return Vector3(X / vecRight.X, Y / vecRight.Y, Z / vecRight.Z);
+	}
+
+	Vector3 operator/ (float fRight) const
+	{
+		return Vector3(X / fRight, Y / fRight, Z / fRight);
+	}
+
+	Vector3 operator - () const
+	{
+		return Vector3(-X, -Y, -Z);
+	}
+
+	void operator += (float fRight)
+	{
+		X += fRight;
+		Y += fRight;
+		Z += fRight;
+	}
+
+	void operator -= (float fRight)
+	{
+		X -= fRight;
+		Y -= fRight;
+		Z -= fRight;
+	}
+
+	void operator *= (float fRight)
+	{
+		X *= fRight;
+		Y *= fRight;
+		Z *= fRight;
+	}
+
+	void operator /= (float fRight)
+	{
+		X /= fRight;
+		Y /= fRight;
+		Z /= fRight;
+	}
+};
 
 typedef struct _MATRIX4X4 {
 	Vector3 vLookRight;
@@ -38,6 +136,45 @@ typedef struct _MATRIX4X4 {
 	Vector3 vPos;
 	float  pad_p;
 } MATRIX4X4, *PMATRIX4X4;
+
+inline float GetOffsetDegrees ( float a, float b )
+{
+    float c = ( b > a ) ? b - a : 0.0f - ( a - b );
+    if ( c > 180.0f )
+        c = 0.0f - ( 360.0f - c );
+    else if ( c <= -180.0f )
+        c = ( 360.0f + c );
+    return c;
+}
+
+template< class T >
+T Lerp ( const T& from, float fAlpha, const T& to )
+{
+    return ( to - from ) * fAlpha + from;
+}
+
+// Clamps a value between two other values ( min < a < max )
+template < class T >
+T Clamp ( const T& min, const T& a, const T& max )
+{
+    return a < min ? min : a > max ? max : a;
+}
+
+// Find the relative position of Pos between From and To
+inline const float Unlerp ( const double dFrom, const double dPos, const double dTo )
+{
+    // Avoid dividing by 0 (results in INF values)
+    if ( dFrom == dTo ) return 1.0f;
+
+	return static_cast < float > ( ( dPos - dFrom ) / ( dTo - dFrom ) );
+}
+
+// Unlerp avoiding extrapolation
+inline const float UnlerpClamped ( const double dFrom, const double dPos, const double dTo )
+{
+    return Clamp ( 0.0f, Unlerp( dFrom, dPos, dTo ), 1.0f );
+}
+
 
 //-----------------------------------------------------------
 

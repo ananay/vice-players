@@ -11,7 +11,7 @@
 
 #include "StdInc.h"
 
-extern CNetGame *pNetGame;
+extern CNetworkManager *pNetowkManager;
 
 using namespace RakNet;
 
@@ -26,11 +26,11 @@ SQInteger sq_setPlayerHealth(SQVM * pVM)
 	sq_getinteger(pVM, -2, &playerSystemAddress);
     sq_getfloat(pVM, -1, &newHealthValue);
 
-	if(pNetGame->GetPlayerManager()->GetSlotState(playerSystemAddress))
+	if(pNetowkManager->GetPlayerManager()->GetSlotState(playerSystemAddress))
 	{
 		RakNet::BitStream bsSend;
 		bsSend.Write(newHealthValue);
-		pNetGame->GetRPC4()->Call("Script_SetHealth",&bsSend,HIGH_PRIORITY,RELIABLE,0,pNetGame->GetRakPeer()->GetSystemAddressFromIndex(playerSystemAddress),false);
+		pNetowkManager->GetRPC4()->Call("Script_SetHealth",&bsSend,HIGH_PRIORITY,RELIABLE,0,pNetowkManager->GetRakPeer()->GetSystemAddressFromIndex(playerSystemAddress),false);
 
 		sq_pushbool(pVM, true);
 		return 1;
@@ -49,11 +49,11 @@ SQInteger sq_setPlayerArmour(SQVM * pVM)
 	sq_getinteger(pVM, -2, &playerSystemAddress);
     sq_getfloat(pVM, -1, &newArmourValue);
 
-	if(pNetGame->GetPlayerManager()->GetSlotState(playerSystemAddress))
+	if(pNetowkManager->GetPlayerManager()->GetSlotState(playerSystemAddress))
 	{
 		RakNet::BitStream bsSend;
 		bsSend.Write(newArmourValue);
-		pNetGame->GetRPC4()->Call("Script_SetArmour",&bsSend,HIGH_PRIORITY,RELIABLE,0,pNetGame->GetRakPeer()->GetSystemAddressFromIndex(playerSystemAddress),false);
+		pNetowkManager->GetRPC4()->Call("Script_SetArmour",&bsSend,HIGH_PRIORITY,RELIABLE,0,pNetowkManager->GetRakPeer()->GetSystemAddressFromIndex(playerSystemAddress),false);
 
 		sq_pushbool(pVM, true);
 		return 1;
@@ -75,11 +75,11 @@ SQInteger sq_setPlayerPosition(SQVM * pVM)
 	sq_getfloat(pVM, -2, &pVec.Y);
 	sq_getfloat(pVM, -1, &pVec.Z);
 
-	if(pNetGame->GetPlayerManager()->GetSlotState(playerSystemAddress))
+	if(pNetowkManager->GetPlayerManager()->GetSlotState(playerSystemAddress))
 	{
 		RakNet::BitStream bsSend;
 		bsSend.Write((char *)&pVec, sizeof(Vector3));
-		pNetGame->GetRPC4()->Call("Script_SetPos",&bsSend,HIGH_PRIORITY,RELIABLE,0,pNetGame->GetRakPeer()->GetSystemAddressFromIndex(playerSystemAddress),false);
+		pNetowkManager->GetRPC4()->Call("Script_SetPos",&bsSend,HIGH_PRIORITY,RELIABLE,0,pNetowkManager->GetRakPeer()->GetSystemAddressFromIndex(playerSystemAddress),false);
 
 		sq_pushbool(pVM, true);
 		return 1;
@@ -101,11 +101,11 @@ SQInteger sq_setPlayerTurnSpeed(SQVM * pVM)
 	sq_getfloat(pVM, -2, &pVec.Y);
 	sq_getfloat(pVM, -1, &pVec.Z);
 
-	if(pNetGame->GetPlayerManager()->GetSlotState(playerSystemAddress))
+	if(pNetowkManager->GetPlayerManager()->GetSlotState(playerSystemAddress))
 	{
 		RakNet::BitStream bsSend;
 		bsSend.Write((char *)&pVec, sizeof(Vector3));
-		pNetGame->GetRPC4()->Call("Script_SetTurnSpeed",&bsSend,HIGH_PRIORITY,RELIABLE,0,pNetGame->GetRakPeer()->GetSystemAddressFromIndex(playerSystemAddress),false);
+		pNetowkManager->GetRPC4()->Call("Script_SetTurnSpeed",&bsSend,HIGH_PRIORITY,RELIABLE,0,pNetowkManager->GetRakPeer()->GetSystemAddressFromIndex(playerSystemAddress),false);
 
 		sq_pushbool(pVM, true);
 		return 1;
@@ -127,11 +127,11 @@ SQInteger sq_setPlayerMoveSpeed(SQVM * pVM)
 	sq_getfloat(pVM, -2, &pVec.Y);
 	sq_getfloat(pVM, -1, &pVec.Z);
 
-	if(pNetGame->GetPlayerManager()->GetSlotState(playerSystemAddress))
+	if(pNetowkManager->GetPlayerManager()->GetSlotState(playerSystemAddress))
 	{
 		RakNet::BitStream bsSend;
 		bsSend.Write((char *)&pVec, sizeof(Vector3));
-		pNetGame->GetRPC4()->Call("Script_SetMoveSpeed",&bsSend,HIGH_PRIORITY,RELIABLE,0,pNetGame->GetRakPeer()->GetSystemAddressFromIndex(playerSystemAddress),false);
+		pNetowkManager->GetRPC4()->Call("Script_SetMoveSpeed",&bsSend,HIGH_PRIORITY,RELIABLE,0,pNetowkManager->GetRakPeer()->GetSystemAddressFromIndex(playerSystemAddress),false);
 
 		sq_pushbool(pVM, true);
 		return 1;
@@ -148,9 +148,9 @@ SQInteger sq_getPlayerPosition(SQVM * pVM)
 	SQInteger playerSystemAddress;
 	sq_getinteger(pVM, -1, &playerSystemAddress);
 
-	if(pNetGame->GetPlayerManager()->GetSlotState(playerSystemAddress))
+	if(pNetowkManager->GetPlayerManager()->GetSlotState(playerSystemAddress))
 	{
-		CPlayer *pPlayer = pNetGame->GetPlayerManager()->GetAt(playerSystemAddress);
+		CPlayer *pPlayer = pNetowkManager->GetPlayerManager()->GetAt(playerSystemAddress);
 		pPlayer->GetPosition(&pos);
 
 		sq_newarray(pVM, 0);
@@ -178,11 +178,11 @@ SQInteger sq_setPlayerZAngle(SQVM * pVM)
 	sq_getinteger(pVM, -2, &playerSystemAddress);
 	sq_getfloat(pVM, -1, &fZAngle);
 
-	if(pNetGame->GetPlayerManager()->GetSlotState(playerSystemAddress))
+	if(pNetowkManager->GetPlayerManager()->GetSlotState(playerSystemAddress))
 	{
 		RakNet::BitStream bsSend;
 		bsSend.Write(fZAngle);
-		pNetGame->GetRPC4()->Call("Script_SetPlayerZAngle",&bsSend,HIGH_PRIORITY,RELIABLE,0,pNetGame->GetRakPeer()->GetSystemAddressFromIndex(playerSystemAddress),false);
+		pNetowkManager->GetRPC4()->Call("Script_SetPlayerZAngle",&bsSend,HIGH_PRIORITY,RELIABLE,0,pNetowkManager->GetRakPeer()->GetSystemAddressFromIndex(playerSystemAddress),false);
 
 		sq_pushbool(pVM, true);
 		return 1;
@@ -200,9 +200,9 @@ SQInteger sq_getPlayerSkin(SQVM *pVM)
 
 	sq_getinteger(pVM, -1, &playerSystemAddress);
 
-	if(pNetGame->GetPlayerManager()->GetSlotState(playerSystemAddress))
+	if(pNetowkManager->GetPlayerManager()->GetSlotState(playerSystemAddress))
 	{
-		iSkin = pNetGame->GetPlayerManager()->GetAt(playerSystemAddress)->GetSkin();
+		iSkin = pNetowkManager->GetPlayerManager()->GetAt(playerSystemAddress)->GetSkin();
 
 		sq_pushinteger(pVM, iSkin);
 		return 1;
@@ -221,12 +221,12 @@ SQInteger sq_setPlayerSkin(SQVM * pVM)
 	sq_getinteger(pVM, -2, &playerSystemAddress);
     sq_getinteger(pVM, -1, &newSkinID);
 
-	if(pNetGame->GetPlayerManager()->GetSlotState(playerSystemAddress))
+	if(pNetowkManager->GetPlayerManager()->GetSlotState(playerSystemAddress))
 	{
 		RakNet::BitStream bsSend;
 		bsSend.Write(newSkinID);
-		pNetGame->GetRPC4()->Call("Script_SetPlayerSkin",&bsSend,HIGH_PRIORITY,RELIABLE,0,pNetGame->GetRakPeer()->GetSystemAddressFromIndex(playerSystemAddress),false);
-		pNetGame->GetPlayerManager()->GetAt(playerSystemAddress)->SetSpawnSkin(newSkinID);
+		pNetowkManager->GetRPC4()->Call("Script_SetPlayerSkin",&bsSend,HIGH_PRIORITY,RELIABLE,0,pNetowkManager->GetRakPeer()->GetSystemAddressFromIndex(playerSystemAddress),false);
+		pNetowkManager->GetPlayerManager()->GetAt(playerSystemAddress)->SetSpawnSkin(newSkinID);
 
 		sq_pushbool(pVM, true);
 		return 1;
@@ -245,11 +245,11 @@ SQInteger sq_setPlayerAction(SQVM * pVM)
 	sq_getinteger(pVM, -2, &playerSystemAddress);
     sq_getinteger(pVM, -1, &newActionID);
 
-	if(pNetGame->GetPlayerManager()->GetSlotState(playerSystemAddress))
+	if(pNetowkManager->GetPlayerManager()->GetSlotState(playerSystemAddress))
 	{
 		RakNet::BitStream bsSend;
 		bsSend.Write(newActionID);
-		pNetGame->GetRPC4()->Call("Script_SetPlayerAction",&bsSend,HIGH_PRIORITY,RELIABLE,0,pNetGame->GetRakPeer()->GetSystemAddressFromIndex(playerSystemAddress),false);
+		pNetowkManager->GetRPC4()->Call("Script_SetPlayerAction",&bsSend,HIGH_PRIORITY,RELIABLE,0,pNetowkManager->GetRakPeer()->GetSystemAddressFromIndex(playerSystemAddress),false);
 
 		sq_pushbool(pVM, true);
 		return 1;
@@ -268,11 +268,11 @@ SQInteger sq_setPlayerRotation(SQVM * pVM)
 	sq_getinteger(pVM, -2, &playerSystemAddress);
     sq_getfloat(pVM, -1, &newRot);
 
-	if(pNetGame->GetPlayerManager()->GetSlotState(playerSystemAddress))
+	if(pNetowkManager->GetPlayerManager()->GetSlotState(playerSystemAddress))
 	{
 		RakNet::BitStream bsSend;
 		bsSend.Write(newRot);
-		pNetGame->GetRPC4()->Call("Script_SetPlayerRotation",&bsSend,HIGH_PRIORITY,RELIABLE,0,pNetGame->GetRakPeer()->GetSystemAddressFromIndex(playerSystemAddress),false);
+		pNetowkManager->GetRPC4()->Call("Script_SetPlayerRotation",&bsSend,HIGH_PRIORITY,RELIABLE,0,pNetowkManager->GetRakPeer()->GetSystemAddressFromIndex(playerSystemAddress),false);
 
 		sq_pushbool(pVM, true);
 		return 1;
@@ -290,9 +290,9 @@ SQInteger sq_getPlayerRotation(SQVM *pVM)
 
 	sq_getinteger(pVM, -1, &playerSystemAddress);
 
-	if(pNetGame->GetPlayerManager()->GetSlotState(playerSystemAddress))
+	if(pNetowkManager->GetPlayerManager()->GetSlotState(playerSystemAddress))
 	{
-		fRot = pNetGame->GetPlayerManager()->GetAt(playerSystemAddress)->GetRotation();
+		fRot = pNetowkManager->GetPlayerManager()->GetAt(playerSystemAddress)->GetRotation();
 
 		sq_pushfloat(pVM, fRot);
 		return 1;
@@ -309,9 +309,9 @@ SQInteger sq_resetPlayerWeapons(SQVM * pVM)
 
 	sq_getinteger(pVM, -1, &playerSystemAddress);
 
-	if(pNetGame->GetPlayerManager()->GetSlotState(playerSystemAddress))
+	if(pNetowkManager->GetPlayerManager()->GetSlotState(playerSystemAddress))
 	{
-		pNetGame->GetRPC4()->Call("Script_ResetWeapons",NULL,HIGH_PRIORITY,RELIABLE,0,pNetGame->GetRakPeer()->GetSystemAddressFromIndex(playerSystemAddress),false);
+		pNetowkManager->GetRPC4()->Call("Script_ResetWeapons",NULL,HIGH_PRIORITY,RELIABLE,0,pNetowkManager->GetRakPeer()->GetSystemAddressFromIndex(playerSystemAddress),false);
 
 		sq_pushbool(pVM, true);
 		return 1;
@@ -329,11 +329,11 @@ SQInteger sq_setPlayerArmedWeapon(SQVM * pVM)
 	sq_getinteger(pVM, -2, &playerSystemAddress);
     sq_getinteger(pVM, -1, &newWeaponID);
 
-	if(pNetGame->GetPlayerManager()->GetSlotState(playerSystemAddress))
+	if(pNetowkManager->GetPlayerManager()->GetSlotState(playerSystemAddress))
 	{
 		RakNet::BitStream bsSend;
 		bsSend.Write(newWeaponID);
-		pNetGame->GetRPC4()->Call("Script_SetArmedWeapon",&bsSend,HIGH_PRIORITY,RELIABLE,0,pNetGame->GetRakPeer()->GetSystemAddressFromIndex(playerSystemAddress),false);
+		pNetowkManager->GetRPC4()->Call("Script_SetArmedWeapon",&bsSend,HIGH_PRIORITY,RELIABLE,0,pNetowkManager->GetRakPeer()->GetSystemAddressFromIndex(playerSystemAddress),false);
 
 		sq_pushbool(pVM, true);
 		return 1;
@@ -354,12 +354,12 @@ SQInteger sq_givePlayerWeapon(SQVM * pVM)
 	sq_getinteger(pVM, -2, &Ammo);
     sq_getinteger(pVM, -1, &newWeaponID);
 
-	if(pNetGame->GetPlayerManager()->GetSlotState(playerSystemAddress))
+	if(pNetowkManager->GetPlayerManager()->GetSlotState(playerSystemAddress))
 	{
 		RakNet::BitStream bsSend;
 		bsSend.Write(newWeaponID);
 		bsSend.Write(Ammo);
-		pNetGame->GetRPC4()->Call("Script_GivePlayerWeapon",&bsSend,HIGH_PRIORITY,RELIABLE,0,pNetGame->GetRakPeer()->GetSystemAddressFromIndex(playerSystemAddress),false);
+		pNetowkManager->GetRPC4()->Call("Script_GivePlayerWeapon",&bsSend,HIGH_PRIORITY,RELIABLE,0,pNetowkManager->GetRakPeer()->GetSystemAddressFromIndex(playerSystemAddress),false);
 
 		sq_pushbool(pVM, true);
 		return 1;
@@ -376,9 +376,9 @@ SQInteger sq_removePlayerFromVehicle(SQVM * pVM)
 
 	sq_getinteger(pVM, -1, &playerSystemAddress);
 
-	if(pNetGame->GetPlayerManager()->GetSlotState(playerSystemAddress))
+	if(pNetowkManager->GetPlayerManager()->GetSlotState(playerSystemAddress))
 	{
-		pNetGame->GetRPC4()->Call("Script_RemoveFromVehicle",NULL,HIGH_PRIORITY,RELIABLE,0,pNetGame->GetRakPeer()->GetSystemAddressFromIndex(playerSystemAddress),false);
+		pNetowkManager->GetRPC4()->Call("Script_RemoveFromVehicle",NULL,HIGH_PRIORITY,RELIABLE,0,pNetowkManager->GetRakPeer()->GetSystemAddressFromIndex(playerSystemAddress),false);
 
 		sq_pushbool(pVM, true);
 		return 1;
@@ -397,12 +397,12 @@ SQInteger sq_putPlayerInVehicle(SQVM * pVM)
 	sq_getinteger(pVM, -2, &playerSystemAddress);
 	sq_getinteger(pVM, -1, &vehID);
 
-	if(pNetGame->GetPlayerManager()->GetSlotState(playerSystemAddress))
+	if(pNetowkManager->GetPlayerManager()->GetSlotState(playerSystemAddress))
 	{
 		RakNet::BitStream bsSend;
 		bsSend.Write(vehID);
 
-		pNetGame->GetRPC4()->Call("Script_PutInVehicle",&bsSend,HIGH_PRIORITY,RELIABLE,0,pNetGame->GetRakPeer()->GetSystemAddressFromIndex(playerSystemAddress),false);
+		pNetowkManager->GetRPC4()->Call("Script_PutInVehicle",&bsSend,HIGH_PRIORITY,RELIABLE,0,pNetowkManager->GetRakPeer()->GetSystemAddressFromIndex(playerSystemAddress),false);
 
 		sq_pushbool(pVM, true);
 		return 1;
@@ -421,11 +421,11 @@ SQInteger sq_togglePlayerControls(SQVM * pVM)
 	sq_getinteger(pVM, -2, &playerSystemAddress);
 	sq_getinteger(pVM, -1, &toggleValue);
 
-	if(pNetGame->GetPlayerManager()->GetSlotState(playerSystemAddress))
+	if(pNetowkManager->GetPlayerManager()->GetSlotState(playerSystemAddress))
 	{
 		RakNet::BitStream bsSend;
 		bsSend.Write(toggleValue);
-		pNetGame->GetRPC4()->Call("Script_ToggleControls",&bsSend,HIGH_PRIORITY,RELIABLE,0,pNetGame->GetRakPeer()->GetSystemAddressFromIndex(playerSystemAddress),false);
+		pNetowkManager->GetRPC4()->Call("Script_ToggleControls",&bsSend,HIGH_PRIORITY,RELIABLE,0,pNetowkManager->GetRakPeer()->GetSystemAddressFromIndex(playerSystemAddress),false);
 
 		sq_pushbool(pVM, true);
 		return 1;
@@ -446,13 +446,13 @@ SQInteger sq_sendPlayerMessage(SQVM * pVM)
 	sq_getinteger(pVM, -2, &colourMessage);
 	sq_getstring(pVM, -1, &messageValue);
 
-	if(pNetGame->GetPlayerManager()->GetSlotState(playerSystemAddress))
+	if(pNetowkManager->GetPlayerManager()->GetSlotState(playerSystemAddress))
 	{
 		RakNet::BitStream bsSend;
 		bsSend.Write((DWORD)colourMessage);
 		bsSend.Write(strlen(messageValue));
 		bsSend.Write(messageValue,strlen(messageValue));
-		pNetGame->GetRPC4()->Call("Script_ClientMessage",&bsSend,HIGH_PRIORITY,RELIABLE,0,pNetGame->GetRakPeer()->GetSystemAddressFromIndex(playerSystemAddress),false);
+		pNetowkManager->GetRPC4()->Call("Script_ClientMessage",&bsSend,HIGH_PRIORITY,RELIABLE,0,pNetowkManager->GetRakPeer()->GetSystemAddressFromIndex(playerSystemAddress),false);
 
 		sq_pushbool(pVM, true);
 		return 1;
@@ -471,11 +471,11 @@ SQInteger sq_sendMessageAsPlayer(SQVM * pVM)
 	sq_getinteger(pVM, -2, &playerSystemAddress);
 	sq_getstring(pVM, -1, &Message);
 
-	if(pNetGame->GetPlayerManager()->GetSlotState(playerSystemAddress))
+	if(pNetowkManager->GetPlayerManager()->GetSlotState(playerSystemAddress))
 	{
 		RakNet::BitStream bsSend;
 		bsSend.Write(Message);
-		pNetGame->GetRPC4()->Call("Script_sendMessageAsPlayer",&bsSend,HIGH_PRIORITY,RELIABLE,0,pNetGame->GetRakPeer()->GetSystemAddressFromIndex(playerSystemAddress),false);
+		pNetowkManager->GetRPC4()->Call("Script_sendMessageAsPlayer",&bsSend,HIGH_PRIORITY,RELIABLE,0,pNetowkManager->GetRakPeer()->GetSystemAddressFromIndex(playerSystemAddress),false);
 
 		sq_pushbool(pVM, true);
 		return 1;
@@ -499,12 +499,12 @@ SQInteger sq_sendPlayerMessageToAll(SQVM * pVM)
 	bsSend.Write(strlen(messageValue));
 	bsSend.Write(messageValue,strlen(messageValue));
 
-	CPlayerManager *pPlayerManager = pNetGame->GetPlayerManager();
+	CPlayerManager *pPlayerManager = pNetowkManager->GetPlayerManager();
 	for(BYTE i = 0; i < MAX_PLAYERS; i++)
 	{
 		if(pPlayerManager->GetSlotState(i))
 		{
-			pNetGame->GetRPC4()->Call("Script_ClientMessage",&bsSend,HIGH_PRIORITY,RELIABLE,0,pNetGame->GetRakPeer()->GetSystemAddressFromIndex(i),false);
+			pNetowkManager->GetRPC4()->Call("Script_ClientMessage",&bsSend,HIGH_PRIORITY,RELIABLE,0,pNetowkManager->GetRakPeer()->GetSystemAddressFromIndex(i),false);
 		}
 	}
 	sq_pushbool(pVM, true);
@@ -526,14 +526,14 @@ SQInteger sq_setPlayerWorldBounds(SQVM * pVM)
 	sq_getfloat(pVM, -3, &LowY);
 	sq_getfloat(pVM, -4, &LowX);
 
-	if(pNetGame->GetPlayerManager()->GetSlotState(playerSystemAddress))
+	if(pNetowkManager->GetPlayerManager()->GetSlotState(playerSystemAddress))
 	{
 		RakNet::BitStream bsSend;
 		bsSend.Write(LowX);
 		bsSend.Write(LowY);
 		bsSend.Write(HighX);
 		bsSend.Write(HighY);
-		pNetGame->GetRPC4()->Call("Script_WorldBounds",&bsSend,HIGH_PRIORITY,RELIABLE,0,pNetGame->GetRakPeer()->GetSystemAddressFromIndex(playerSystemAddress),false);
+		pNetowkManager->GetRPC4()->Call("Script_WorldBounds",&bsSend,HIGH_PRIORITY,RELIABLE,0,pNetowkManager->GetRakPeer()->GetSystemAddressFromIndex(playerSystemAddress),false);
 
 		sq_pushbool(pVM, true);
 		return 1;
@@ -553,9 +553,9 @@ SQInteger sq_setPlayerTime(SQVM * pVM)
 	sq_getinteger(pVM, -2, &h);
 	sq_getinteger(pVM, -1, &m);
 
-	if(pNetGame->GetPlayerManager()->GetSlotState(playerSystemAddress))
+	if(pNetowkManager->GetPlayerManager()->GetSlotState(playerSystemAddress))
 	{
-		pNetGame->GetPlayerManager()->GetAt(playerSystemAddress)->SetGameTime(h, m);
+		pNetowkManager->GetPlayerManager()->GetAt(playerSystemAddress)->SetGameTime(h, m);
 		sq_pushbool(pVM, true);
 	}
 
@@ -568,9 +568,9 @@ SQInteger sq_getPlayerHealth(SQVM * pVM)
 {
 	SQInteger playerSystemAddress;
 	sq_getinteger(pVM, -1, &playerSystemAddress);
-	if(pNetGame->GetPlayerManager()->GetSlotState(playerSystemAddress))
+	if(pNetowkManager->GetPlayerManager()->GetSlotState(playerSystemAddress))
 	{
-		int health = pNetGame->GetPlayerManager()->GetAt(playerSystemAddress)->GetHealth();
+		int health = pNetowkManager->GetPlayerManager()->GetAt(playerSystemAddress)->GetHealth();
 
 		sq_pushinteger(pVM, health);
 		return 1;
@@ -585,9 +585,9 @@ SQInteger sq_getPlayerArmour(SQVM * pVM)
 {
 	SQInteger playerSystemAddress;
 	sq_getinteger(pVM, -1, &playerSystemAddress);
-	if(pNetGame->GetPlayerManager()->GetSlotState(playerSystemAddress))
+	if(pNetowkManager->GetPlayerManager()->GetSlotState(playerSystemAddress))
 	{
-		int armour = pNetGame->GetPlayerManager()->GetAt(playerSystemAddress)->GetArmour();
+		int armour = pNetowkManager->GetPlayerManager()->GetAt(playerSystemAddress)->GetArmour();
 
 		sq_pushinteger(pVM, armour);
 		return 1;
@@ -602,9 +602,9 @@ SQInteger sq_getPlayerName(SQVM * pVM)
 {
 	SQInteger playerSystemAddress;
 	sq_getinteger(pVM, -1, &playerSystemAddress);
-	if(pNetGame->GetPlayerManager()->GetSlotState(playerSystemAddress))
+	if(pNetowkManager->GetPlayerManager()->GetSlotState(playerSystemAddress))
 	{
-		const char *pName = pNetGame->GetPlayerManager()->GetPlayerName(playerSystemAddress);
+		const char *pName = pNetowkManager->GetPlayerManager()->GetPlayerName(playerSystemAddress);
 
 		sq_pushstring(pVM, pName, -1);
 		return 1;
@@ -619,9 +619,9 @@ SQInteger sq_getPlayerIP(SQVM * pVM)
 {
 	SQInteger playerSystemAddress;
 	sq_getinteger(pVM, -1, &playerSystemAddress);
-	if(pNetGame->GetPlayerManager()->GetSlotState(playerSystemAddress))
+	if(pNetowkManager->GetPlayerManager()->GetSlotState(playerSystemAddress))
 	{
-		const char *ip = pNetGame->GetRakPeer()->GetSystemAddressFromIndex(playerSystemAddress).ToString(false);
+		const char *ip = pNetowkManager->GetRakPeer()->GetSystemAddressFromIndex(playerSystemAddress).ToString(false);
 
 		sq_pushstring(pVM, ip, -1);
 		return 1;
@@ -637,7 +637,7 @@ SQInteger sq_isConnected(SQVM * pVM)
 	SQInteger playerSystemAddress;
 	sq_getinteger(pVM, -1, &playerSystemAddress);
 
-	BOOL connected = pNetGame->GetPlayerManager()->GetSlotState(playerSystemAddress);
+	BOOL connected = pNetowkManager->GetPlayerManager()->GetSlotState(playerSystemAddress);
 	sq_pushbool(pVM, connected);
 	return 1;
 }
@@ -647,9 +647,9 @@ SQInteger sq_isPlayerInVehicle(SQVM * pVM)
 {
 	SQInteger playerSystemAddress;
 	sq_getinteger(pVM, -1, &playerSystemAddress);
-	if(pNetGame->GetPlayerManager()->GetSlotState(playerSystemAddress))
+	if(pNetowkManager->GetPlayerManager()->GetSlotState(playerSystemAddress))
 	{
-		BOOL inVehicle = pNetGame->GetPlayerManager()->GetAt(playerSystemAddress)->IsInVehicle();
+		BOOL inVehicle = pNetowkManager->GetPlayerManager()->GetAt(playerSystemAddress)->IsInVehicle();
 		sq_pushbool(pVM, inVehicle);
 		return 1;
 	}
@@ -662,9 +662,9 @@ SQInteger sq_getPlayerVehicleID(SQVM * pVM)
 {
 	SQInteger playerSystemAddress;
 	sq_getinteger(pVM, -1, &playerSystemAddress);
-	if(pNetGame->GetPlayerManager()->GetSlotState(playerSystemAddress))
+	if(pNetowkManager->GetPlayerManager()->GetSlotState(playerSystemAddress))
 	{
-		CPlayer *pPlayer = pNetGame->GetPlayerManager()->GetAt(playerSystemAddress);
+		CPlayer *pPlayer = pNetowkManager->GetPlayerManager()->GetAt(playerSystemAddress);
 		if(pPlayer->IsInVehicle())
 		{
 			BYTE vehID = pPlayer->GetVehicleID();
@@ -690,13 +690,13 @@ SQInteger sq_setPlayerCameraPos(SQVM * pVM)
 	sq_getfloat(pVM, -2, &Y);
 	sq_getfloat(pVM, -1, &Z);
 
-	if(pNetGame->GetPlayerManager()->GetSlotState(playerSystemAddress))
+	if(pNetowkManager->GetPlayerManager()->GetSlotState(playerSystemAddress))
 	{
 		Vector3 vPos;
 		vPos.X = X;
 		vPos.Y = Y;
 		vPos.Z = Z;
-		pNetGame->GetPlayerManager()->GetAt(playerSystemAddress)->SetCameraPos(vPos);
+		pNetowkManager->GetPlayerManager()->GetAt(playerSystemAddress)->SetCameraPos(vPos);
 		sq_pushbool(pVM, true);
 	}
 
@@ -715,13 +715,13 @@ SQInteger sq_setPlayerCameraRot(SQVM * pVM)
 	sq_getfloat(pVM, -2, &Y);
 	sq_getfloat(pVM, -1, &Z);
 
-	if(pNetGame->GetPlayerManager()->GetSlotState(playerSystemAddress))
+	if(pNetowkManager->GetPlayerManager()->GetSlotState(playerSystemAddress))
 	{
 		Vector3 vRot;
 		vRot.X = X;
 		vRot.Y = Y;
 		vRot.Z = Z;
-		pNetGame->GetPlayerManager()->GetAt(playerSystemAddress)->SetCameraRot(vRot);
+		pNetowkManager->GetPlayerManager()->GetAt(playerSystemAddress)->SetCameraRot(vRot);
 		sq_pushbool(pVM, true);
 	}
 
@@ -740,13 +740,13 @@ SQInteger sq_setPlayerCameraLookAt(SQVM * pVM)
 	sq_getfloat(pVM, -2, &Y);
 	sq_getfloat(pVM, -1, &Z);
 
-	if(pNetGame->GetPlayerManager()->GetSlotState(playerSystemAddress))
+	if(pNetowkManager->GetPlayerManager()->GetSlotState(playerSystemAddress))
 	{
 		Vector3 vPoint;
 		vPoint.X = X;
 		vPoint.Y = Y;
 		vPoint.Z = Z;
-		pNetGame->GetPlayerManager()->GetAt(playerSystemAddress)->SetCameraLookAt(vPoint);
+		pNetowkManager->GetPlayerManager()->GetAt(playerSystemAddress)->SetCameraLookAt(vPoint);
 		sq_pushbool(pVM, true);
 	}
 
@@ -761,9 +761,9 @@ SQInteger sq_setCameraBehindPlayer(SQVM * pVM)
 
 	sq_getinteger(pVM, -1, &playerSystemAddress);
 
-	if(pNetGame->GetPlayerManager()->GetSlotState(playerSystemAddress))
+	if(pNetowkManager->GetPlayerManager()->GetSlotState(playerSystemAddress))
 	{
-		pNetGame->GetPlayerManager()->GetAt(playerSystemAddress)->SetCameraBehindPlayer();
+		pNetowkManager->GetPlayerManager()->GetAt(playerSystemAddress)->SetCameraBehindPlayer();
 		sq_pushbool(pVM, true);
 	}
 
@@ -784,14 +784,14 @@ SQInteger sq_playSound(SQVM * pVM)
 	sq_getfloat(pVM, -2, &Y);
 	sq_getfloat(pVM, -1, &Z);
 
-	if(pNetGame->GetPlayerManager()->GetSlotState(playerSystemAddress))
+	if(pNetowkManager->GetPlayerManager()->GetSlotState(playerSystemAddress))
 	{
 		RakNet::BitStream bsSend;
 		bsSend.Write(sound);
 		bsSend.Write(X);
 		bsSend.Write(Y);
 		bsSend.Write(Z);
-		pNetGame->GetRPC4()->Call("Script_PlaySound",&bsSend,HIGH_PRIORITY,RELIABLE,0,pNetGame->GetRakPeer()->GetSystemAddressFromIndex(playerSystemAddress),false);
+		pNetowkManager->GetRPC4()->Call("Script_PlaySound",&bsSend,HIGH_PRIORITY,RELIABLE,0,pNetowkManager->GetRakPeer()->GetSystemAddressFromIndex(playerSystemAddress),false);
 
 		sq_pushbool(pVM, true);
 		return 1;
@@ -811,12 +811,12 @@ SQInteger sq_fadeScreen(SQVM * pVM)
 	sq_getinteger(pVM, -2, &type);
 	sq_getinteger(pVM, -1, &time);
 
-	if(pNetGame->GetPlayerManager()->GetSlotState(playerSystemAddress))
+	if(pNetowkManager->GetPlayerManager()->GetSlotState(playerSystemAddress))
 	{
 		RakNet::BitStream bsSend;
 		bsSend.Write(type);
 		bsSend.Write(time);
-		pNetGame->GetRPC4()->Call("Script_FadeScreen",&bsSend,HIGH_PRIORITY,RELIABLE,0,pNetGame->GetRakPeer()->GetSystemAddressFromIndex(playerSystemAddress),false);
+		pNetowkManager->GetRPC4()->Call("Script_FadeScreen",&bsSend,HIGH_PRIORITY,RELIABLE,0,pNetowkManager->GetRakPeer()->GetSystemAddressFromIndex(playerSystemAddress),false);
 
 		sq_pushbool(pVM, true);
 		return 1;
@@ -833,9 +833,9 @@ SQInteger sq_kickPlayer(SQVM * pVM)
 
 	sq_getinteger(pVM, -1, &playerSystemAddress);
 
-	if(pNetGame->GetPlayerManager()->GetSlotState(playerSystemAddress))
+	if(pNetowkManager->GetPlayerManager()->GetSlotState(playerSystemAddress))
 	{
-		pNetGame->KickPlayer(playerSystemAddress);
+		pNetowkManager->KickPlayer(playerSystemAddress);
 		sq_pushbool(pVM, true);
 		return 1;
 	}
@@ -849,7 +849,7 @@ SQInteger sq_banIP(SQVM * pVM)
 	const char * banmask;
 	sq_getstring(pVM, -1, &banmask);
 
-	pNetGame->AddBan((char*)banmask);
+	pNetowkManager->AddBan((char*)banmask);
 	sq_pushbool(pVM, true);
 	return 1;
 }
@@ -862,9 +862,9 @@ SQInteger sq_getPlayerTeam(SQVM * pVM)
 
 	sq_getinteger(pVM, -1, &playerSystemAddress);
 
-	if(pNetGame->GetPlayerManager()->GetSlotState(playerSystemAddress))
+	if(pNetowkManager->GetPlayerManager()->GetSlotState(playerSystemAddress))
 	{
-		sq_pushbool(pVM, pNetGame->GetPlayerManager()->GetAt(playerSystemAddress)->GetTeam());
+		sq_pushbool(pVM, pNetowkManager->GetPlayerManager()->GetAt(playerSystemAddress)->GetTeam());
 		return 1;
 	}
 	sq_pushbool(pVM, false);
@@ -878,9 +878,9 @@ SQInteger sq_getPlayerTurnSpeed(SQVM * pVM)
 	SQInteger playerSystemAddress;
 	sq_getinteger(pVM, -1, &playerSystemAddress);
 
-	if(pNetGame->GetPlayerManager()->GetSlotState(playerSystemAddress))
+	if(pNetowkManager->GetPlayerManager()->GetSlotState(playerSystemAddress))
 	{
-		CPlayer *pPlayer = pNetGame->GetPlayerManager()->GetAt(playerSystemAddress);
+		CPlayer *pPlayer = pNetowkManager->GetPlayerManager()->GetAt(playerSystemAddress);
 		pPlayer->GetTurnSpeed(&speed);
 
 		sq_newarray(pVM, 0);
@@ -905,9 +905,9 @@ SQInteger sq_getPlayerMoveSpeed(SQVM * pVM)
 	SQInteger playerSystemAddress;
 	sq_getinteger(pVM, -1, &playerSystemAddress);
 
-	if(pNetGame->GetPlayerManager()->GetSlotState(playerSystemAddress))
+	if(pNetowkManager->GetPlayerManager()->GetSlotState(playerSystemAddress))
 	{
-		CPlayer *pPlayer = pNetGame->GetPlayerManager()->GetAt(playerSystemAddress);
+		CPlayer *pPlayer = pNetowkManager->GetPlayerManager()->GetAt(playerSystemAddress);
 		pPlayer->GetMoveSpeed(&speed);
 
 		sq_newarray(pVM, 0);
@@ -948,7 +948,7 @@ SQInteger sq_addPlayerClass(SQVM * pVM)
 	sq_getinteger(pVM, -2, &iWeapons[2]);
 	sq_getinteger(pVM, -1, &iAmmo[2]);
 
-	int classid = pNetGame->GetGameLogic()->AddPlayerClass(iTeam, iModel, vecPosition.X, vecPosition.Y, vecPosition.Z, 
+	int classid = pNetowkManager->GetGameLogic()->AddPlayerClass(iTeam, iModel, vecPosition.X, vecPosition.Y, vecPosition.Z, 
 		fRotation, iWeapons[0], iAmmo[0], iWeapons[1], iAmmo[1], iWeapons[2], iAmmo[2]);
 
 	sq_pushinteger(pVM, classid);
@@ -963,9 +963,9 @@ SQInteger sq_forceClassSelection(SQVM * pVM)
 
 	sq_getinteger(pVM, -1, &playerSystemAddress);
 
-	if(pNetGame->GetPlayerManager()->GetSlotState(playerSystemAddress))
+	if(pNetowkManager->GetPlayerManager()->GetSlotState(playerSystemAddress))
 	{
-		pNetGame->GetRPC4()->Call("Script_forceClassSelection",NULL,HIGH_PRIORITY,RELIABLE,0,pNetGame->GetRakPeer()->GetSystemAddressFromIndex(playerSystemAddress),false);
+		pNetowkManager->GetRPC4()->Call("Script_forceClassSelection",NULL,HIGH_PRIORITY,RELIABLE,0,pNetowkManager->GetRakPeer()->GetSystemAddressFromIndex(playerSystemAddress),false);
 
 		sq_pushbool(pVM, true);
 		return 1;
@@ -991,9 +991,9 @@ SQInteger sq_togglePlayerBleeding(SQVM * pVM)
 
 	for(BYTE i = 0; i < MAX_PLAYERS; i++)
 	{
-		if(pNetGame->GetPlayerManager()->GetSlotState(i))
+		if(pNetowkManager->GetPlayerManager()->GetSlotState(i))
 		{
-			pNetGame->GetRPC4()->Call("Script_togglePlayerBleeding",&bsSend,HIGH_PRIORITY,RELIABLE,0,pNetGame->GetRakPeer()->GetSystemAddressFromIndex(i),false);
+			pNetowkManager->GetRPC4()->Call("Script_togglePlayerBleeding",&bsSend,HIGH_PRIORITY,RELIABLE,0,pNetowkManager->GetRakPeer()->GetSystemAddressFromIndex(i),false);
 		}
 	}
 
@@ -1017,9 +1017,9 @@ SQInteger sq_toggleDriveByState(SQVM * pVM)
 
 	for(BYTE i = 0; i < MAX_PLAYERS; i++)
 	{
-		if(pNetGame->GetPlayerManager()->GetSlotState(i))
+		if(pNetowkManager->GetPlayerManager()->GetSlotState(i))
 		{
-			pNetGame->GetRPC4()->Call("Script_toggleDriveByState",&bsSend,HIGH_PRIORITY,RELIABLE,0,pNetGame->GetRakPeer()->GetSystemAddressFromIndex(i),false);
+			pNetowkManager->GetRPC4()->Call("Script_toggleDriveByState",&bsSend,HIGH_PRIORITY,RELIABLE,0,pNetowkManager->GetRakPeer()->GetSystemAddressFromIndex(i),false);
 		}
 	}
 
@@ -1037,11 +1037,11 @@ SQInteger sq_setItemFlashing(SQVM * pVM)
 	sq_getinteger(pVM, -2, &playerSystemAddress);
     sq_getinteger(pVM, -1, &item);
 
-	if(pNetGame->GetPlayerManager()->GetSlotState(playerSystemAddress))
+	if(pNetowkManager->GetPlayerManager()->GetSlotState(playerSystemAddress))
 	{
 		RakNet::BitStream bsSend;
 		bsSend.Write(item);
-		pNetGame->GetRPC4()->Call("Script_FlashItem",&bsSend,HIGH_PRIORITY,RELIABLE,0,pNetGame->GetRakPeer()->GetSystemAddressFromIndex(playerSystemAddress),false);
+		pNetowkManager->GetRPC4()->Call("Script_FlashItem",&bsSend,HIGH_PRIORITY,RELIABLE,0,pNetowkManager->GetRakPeer()->GetSystemAddressFromIndex(playerSystemAddress),false);
 
 		sq_pushbool(pVM, true);
 		return 1;
@@ -1063,14 +1063,14 @@ SQInteger sq_setPlayerSkyColor(SQVM * pVM)
     sq_getinteger(pVM, -2, &iColor);
 	sq_getinteger(pVM, -1, &iType);
 
-	if(pNetGame->GetPlayerManager()->GetSlotState(playerSystemAddress))
+	if(pNetowkManager->GetPlayerManager()->GetSlotState(playerSystemAddress))
 	{
 		RakNet::BitStream bsSend;
 
 		bsSend.Write(iColor);
 		bsSend.Write(iType);
 
-		pNetGame->GetRPC4()->Call("Script_setSkyColor",&bsSend,HIGH_PRIORITY,RELIABLE,0,pNetGame->GetRakPeer()->GetSystemAddressFromIndex(playerSystemAddress),false);
+		pNetowkManager->GetRPC4()->Call("Script_setSkyColor",&bsSend,HIGH_PRIORITY,RELIABLE,0,pNetowkManager->GetRakPeer()->GetSystemAddressFromIndex(playerSystemAddress),false);
 
 		sq_pushbool(pVM, true);
 		return 1;
@@ -1089,9 +1089,9 @@ SQInteger sq_setPlayerCash(SQVM * pVM)
 	sq_getinteger(pVM, -2, &playerSystemAddr);
 	sq_getinteger(pVM, -1, &iCash);
 
-	if(pNetGame->GetPlayerManager()->GetSlotState(playerSystemAddr))
+	if(pNetowkManager->GetPlayerManager()->GetSlotState(playerSystemAddr))
 	{
-		CPlayer * pPlayer = pNetGame->GetPlayerManager()->GetAt(playerSystemAddr);
+		CPlayer * pPlayer = pNetowkManager->GetPlayerManager()->GetAt(playerSystemAddr);
 		pPlayer->SetCash(iCash);
 
 		sq_pushbool(pVM, true);
@@ -1108,9 +1108,9 @@ SQInteger sq_getPlayerCash(SQVM * pVM)
 {
 	SQInteger playerSystemAddress;
 	sq_getinteger(pVM, -1, &playerSystemAddress);
-	if(pNetGame->GetPlayerManager()->GetSlotState(playerSystemAddress))
+	if(pNetowkManager->GetPlayerManager()->GetSlotState(playerSystemAddress))
 	{
-		int cash = pNetGame->GetPlayerManager()->GetAt(playerSystemAddress)->GetCash();
+		int cash = pNetowkManager->GetPlayerManager()->GetAt(playerSystemAddress)->GetCash();
 
 		sq_pushinteger(pVM, cash);
 		return 1;
@@ -1137,9 +1137,9 @@ SQInteger sq_toggleCellPhone(SQVM * pVM)
 
 	for(BYTE i = 0; i < MAX_PLAYERS; i++)
 	{
-		if(pNetGame->GetPlayerManager()->GetSlotState(i))
+		if(pNetowkManager->GetPlayerManager()->GetSlotState(i))
 		{
-			pNetGame->GetRPC4()->Call("Script_toggleCellPhone",&bsSend,HIGH_PRIORITY,RELIABLE,0,pNetGame->GetRakPeer()->GetSystemAddressFromIndex(i),false);
+			pNetowkManager->GetRPC4()->Call("Script_toggleCellPhone",&bsSend,HIGH_PRIORITY,RELIABLE,0,pNetowkManager->GetRakPeer()->GetSystemAddressFromIndex(i),false);
 		}
 	}
 
@@ -1156,13 +1156,13 @@ SQInteger sq_setCameraShakeIntensity(SQVM * pVM)
 	sq_getinteger(pVM, -3, &playerSystemAddress);
 	sq_getinteger(pVM, -2, &iIntensity);
 
-	if(pNetGame->GetPlayerManager()->GetSlotState(playerSystemAddress))
+	if(pNetowkManager->GetPlayerManager()->GetSlotState(playerSystemAddress))
 	{
 		RakNet::BitStream bsSend;
 		
 		bsSend.Write(iIntensity);
 		
-		pNetGame->GetRPC4()->Call("Script_SetCameraShakeIntensity",&bsSend,HIGH_PRIORITY,RELIABLE,0,pNetGame->GetRakPeer()->GetSystemAddressFromIndex(playerSystemAddress),false);
+		pNetowkManager->GetRPC4()->Call("Script_SetCameraShakeIntensity",&bsSend,HIGH_PRIORITY,RELIABLE,0,pNetowkManager->GetRakPeer()->GetSystemAddressFromIndex(playerSystemAddress),false);
 		
 		sq_pushbool(pVM, true);
 
@@ -1183,9 +1183,9 @@ SQInteger sq_setPlayerGravity(SQVM * pVM)
 	sq_getinteger(pVM, -2, &playerSystemAddr);
 	sq_getfloat(pVM, -1, &iGrav);
 
-	if(pNetGame->GetPlayerManager()->GetSlotState(playerSystemAddr))
+	if(pNetowkManager->GetPlayerManager()->GetSlotState(playerSystemAddr))
 	{
-		CPlayer * pPlayer = pNetGame->GetPlayerManager()->GetAt(playerSystemAddr);
+		CPlayer * pPlayer = pNetowkManager->GetPlayerManager()->GetAt(playerSystemAddr);
 		pPlayer->SetGravity(iGrav);
 
 		sq_pushbool(pVM, true);
@@ -1200,9 +1200,9 @@ SQInteger sq_getPlayerGravity(SQVM * pVM)
 {
 	SQInteger playerSystemAddress;
 	sq_getinteger(pVM, -1, &playerSystemAddress);
-	if(pNetGame->GetPlayerManager()->GetSlotState(playerSystemAddress))
+	if(pNetowkManager->GetPlayerManager()->GetSlotState(playerSystemAddress))
 	{
-		float amount = pNetGame->GetPlayerManager()->GetAt(playerSystemAddress)->GetGravity();
+		float amount = pNetowkManager->GetPlayerManager()->GetAt(playerSystemAddress)->GetGravity();
 
 		sq_pushfloat(pVM, amount);
 		return 1;
@@ -1216,9 +1216,9 @@ SQInteger sq_getPlayerSerial(SQVM * pVM)
 {
 	SQInteger playerSystemAddress;
 	sq_getinteger(pVM, -1, &playerSystemAddress);
-	if(pNetGame->GetPlayerManager()->GetSlotState(playerSystemAddress))
+	if(pNetowkManager->GetPlayerManager()->GetSlotState(playerSystemAddress))
 	{
-		sq_pushstring(pVM, pNetGame->GetPlayerManager()->GetAt(playerSystemAddress)->GetSerial().c_str(), -1);
+		sq_pushstring(pVM, pNetowkManager->GetPlayerManager()->GetAt(playerSystemAddress)->GetSerial().c_str(), -1);
 		return 1;
 	}
 
@@ -1231,9 +1231,9 @@ SQInteger sq_isPlayerPaused(SQVM * pVM)
 	SQInteger playerSystemAddress;
 	sq_getinteger(pVM, -1, &playerSystemAddress);
 
-	if(pNetGame->GetPlayerManager()->GetSlotState(playerSystemAddress))
+	if(pNetowkManager->GetPlayerManager()->GetSlotState(playerSystemAddress))
 	{
-		sq_pushbool(pVM, pNetGame->GetPlayerManager()->GetAt(playerSystemAddress)->IsPaused());
+		sq_pushbool(pVM, pNetowkManager->GetPlayerManager()->GetAt(playerSystemAddress)->IsPaused());
 		return 1;
 	}
 

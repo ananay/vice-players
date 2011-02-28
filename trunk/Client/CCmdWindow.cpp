@@ -12,7 +12,7 @@
 
 extern CGame		 *pGame;
 extern CChatWindow   *pChatWindow;
-extern CNetGame		 *pNetGame;
+extern CNetworkManager		 *pNetowkManager;
 
 //----------------------------------------------------
 
@@ -157,12 +157,12 @@ void CCmdWindow::ProcessInput()
 					}
 				}
 				if(bSendToServer) {
-					if(pNetGame->IsConnected()) {
+					if(pNetowkManager->IsConnected()) {
 											RakNet::BitStream bsSend;
 											BYTE byteTextLen = strlen(command);
 											bsSend.Write(byteTextLen);
 											bsSend.Write(command,byteTextLen);
-											pNetGame->GetRPC4()->Call("ChatCommand",&bsSend,HIGH_PRIORITY,RELIABLE,0,UNASSIGNED_SYSTEM_ADDRESS,TRUE);
+											pNetowkManager->GetRPC4()->Call("ChatCommand",&bsSend,HIGH_PRIORITY,RELIABLE,0,UNASSIGNED_SYSTEM_ADDRESS,TRUE);
 									} else {
 											pChatWindow->AddInfoMessage("Not connected");
 									}

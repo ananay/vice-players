@@ -16,7 +16,7 @@ extern CCmdWindow	 *pCmdWindow;
 extern CGUI			 *pGUI;
 
 using namespace RakNet;
-extern CNetGame* pNetGame;
+extern CNetworkManager* pNetowkManager;
 
 //----------------------------------------------------------
 
@@ -24,7 +24,7 @@ CSpawnSelection::CSpawnSelection()
 {
 	m_iSelectedClass = 0;
 	m_dwLastSpawnSelectionTick = GetTickCount();
-	HandleClassSelection(pNetGame->GetPlayerManager()->GetLocalPlayer());
+	HandleClassSelection(pNetowkManager->GetPlayerManager()->GetLocalPlayer());
 	m_pGUIText = NULL;
 }
 
@@ -141,8 +141,8 @@ void CSpawnSelection::HandleClassSelection(CLocalPlayer *pLocalPlayer)
 	pGame->DisplayHud(FALSE);
 
 	if(pGameCamera)	{
-		pGameCamera->SetPosition(pNetGame->m_vecInitCameraPos);
-		pGameCamera->LookAtPoint(pNetGame->m_vecInitCameraLook, 1);
+		pGameCamera->SetPosition(pNetowkManager->m_vecInitCameraPos);
+		pGameCamera->LookAtPoint(pNetowkManager->m_vecInitCameraLook, 1);
 	}
 
 	pLocalPlayer->RequestClass(m_iSelectedClass);
@@ -159,8 +159,8 @@ void CSpawnSelection::HandleClassSelectionOutcome(PLAYER_SPAWN_INFO *pSpawnInfo,
 	if(bOutcome) {
 		if(pGamePlayer)	{
 			pGamePlayer->ClearAllWeapons();
-			pGamePlayer->Teleport(pNetGame->m_vecInitPlayerPos.X, pNetGame->m_vecInitPlayerPos.Y, 
-				pNetGame->m_vecInitPlayerPos.Z);
+			pGamePlayer->Teleport(pNetowkManager->m_vecInitPlayerPos.X, pNetowkManager->m_vecInitPlayerPos.Y, 
+				pNetowkManager->m_vecInitPlayerPos.Z);
 			pGamePlayer->SetRotation(0.0f);
 			pGamePlayer->SetModel(pSpawnInfo->byteSkin);
 			if(pSpawnInfo->iSpawnWeapons[0] != (-1)) {

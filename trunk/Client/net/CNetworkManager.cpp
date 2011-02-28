@@ -18,7 +18,7 @@ extern CGame		 *pGame;
 extern CChatWindow   *pChatWindow;
 extern CCmdWindow	 *pCmdWindow;
 extern CScripts		 *pScripts;
-RPC4				 *CNetGame::m_pRPC4;
+RPC4				 *CNetworkManager::m_pRPC4;
 extern bool D3DInited;
 
 //----------------------------------------------------
@@ -41,7 +41,7 @@ void DecompressVector1(Vector3 * vec, C_VECTOR1 * c1)
 
 //----------------------------------------------------
 
-CNetGame::CNetGame(PCHAR szHostOrIp, int iPort, 
+CNetworkManager::CNetworkManager(PCHAR szHostOrIp, int iPort, 
 				   PCHAR szPlayerName, PCHAR szPass)
 {
 	// Setup player pool
@@ -91,7 +91,7 @@ CNetGame::CNetGame(PCHAR szHostOrIp, int iPort,
 
 //----------------------------------------------------
 
-CNetGame::~CNetGame()
+CNetworkManager::~CNetworkManager()
 {
 	Shutdown();
 	m_pRakPeer->DetachPlugin(m_pRPC4);
@@ -104,14 +104,14 @@ CNetGame::~CNetGame()
 
 //----------------------------------------------------
 
-void CNetGame::InitGameLogic()
+void CNetworkManager::InitGameLogic()
 {
 	m_pGameLogic = new CSpawnSelection();
 }
 
 //----------------------------------------------------
 
-void CNetGame::Process()
+void CNetworkManager::Process()
 {
 	UpdateNetwork();
 
@@ -131,7 +131,7 @@ void CNetGame::Process()
 
 //----------------------------------------------------
 
-void CNetGame::UpdateNetwork()
+void CNetworkManager::UpdateNetwork()
 {
 	Packet* pkt=NULL;
 
@@ -193,7 +193,7 @@ void CNetGame::UpdateNetwork()
 
 //----------------------------------------------------
 
-void CNetGame::PlayerSync(Packet *p)
+void CNetworkManager::PlayerSync(Packet *p)
 {
 	CRemotePlayer * pPlayer;
 	BitStream bsPlayerSync(p->data, p->length, FALSE);
@@ -233,7 +233,7 @@ void CNetGame::PlayerSync(Packet *p)
 
 //----------------------------------------------------
 
-void CNetGame::VehicleSync(Packet *p)
+void CNetworkManager::VehicleSync(Packet *p)
 {
 	CRemotePlayer * pPlayer;
 	BitStream bsVehicleSync(p->data, p->length, FALSE);
@@ -256,7 +256,7 @@ void CNetGame::VehicleSync(Packet *p)
 
 //----------------------------------------------------
 
-void CNetGame::ConnectionSucceeded(Packet *p)
+void CNetworkManager::ConnectionSucceeded(Packet *p)
 {
 	if(pChatWindow) {
 		pChatWindow->AddDebugMessage("Connection success. Loading network game...");
@@ -286,7 +286,7 @@ void CNetGame::ConnectionSucceeded(Packet *p)
 
 //----------------------------------------------------
 
-void CNetGame::UpdatePlayerScoresAndPings()
+void CNetworkManager::UpdatePlayerScoresAndPings()
 {
 	if( (GetTickCount() - m_dwLastScoreUpdateTick) > 1000 ) {
 		m_dwLastScoreUpdateTick = GetTickCount();
@@ -297,7 +297,7 @@ void CNetGame::UpdatePlayerScoresAndPings()
 
 //----------------------------------------------------
 
-void CNetGame::Connect()
+void CNetworkManager::Connect()
 {
 	if(m_pRakPeer) {
 		m_pRakPeer->Connect(m_szHostOrIp, m_iPort, m_szPass, strlen(m_szPass));
@@ -307,7 +307,7 @@ void CNetGame::Connect()
 
 //----------------------------------------------------
 
-bool CNetGame::IsConnected()
+bool CNetworkManager::IsConnected()
 {
 	if(GetGameState() == GAMESTATE_CONNECTED) {
 		return true;
@@ -317,7 +317,7 @@ bool CNetGame::IsConnected()
 
 //----------------------------------------------------
 
-void CNetGame::Shutdown()
+void CNetworkManager::Shutdown()
 {
 	if(m_pRakPeer && m_iGameState == GAMESTATE_CONNECTED) {
 		m_pRakPeer->Shutdown(500);

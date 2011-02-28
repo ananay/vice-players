@@ -17,7 +17,7 @@
 using namespace RakNet;
 
 extern CConfig *pServerConfig;
-RPC4		   *CNetGame::m_pRPC4;
+RPC4		   *CNetworkManager::m_pRPC4;
 extern CScripts *pScripts;
 CMasterList * pMasterList = NULL;
 
@@ -40,7 +40,7 @@ void * MasterlistThread(void * pParams)
 
 //----------------------------------------------------
 
-CNetGame::CNetGame(int iMaxPlayers, int iPort, char * szPassword, char * szHostname, BYTE byteFriendlyFire, BYTE byteShowOnRadar)
+CNetworkManager::CNetworkManager(int iMaxPlayers, int iPort, char * szPassword, char * szHostname, BYTE byteFriendlyFire, BYTE byteShowOnRadar)
 {
 	// Setup raknet
 	m_pRakPeer = RakPeerInterface::GetInstance();
@@ -121,7 +121,7 @@ CNetGame::CNetGame(int iMaxPlayers, int iPort, char * szPassword, char * szHostn
 
 //----------------------------------------------------
 
-CNetGame::~CNetGame()
+CNetworkManager::~CNetworkManager()
 {
 	logprintf("--- Server Shutting Down.");
 	m_pRakPeer->DetachPlugin(m_pRPC4);
@@ -133,7 +133,7 @@ CNetGame::~CNetGame()
 
 //----------------------------------------------------
 
-void CNetGame::Process()
+void CNetworkManager::Process()
 {
 	// Process the Network
 	UpdateNetwork();
@@ -153,7 +153,7 @@ void CNetGame::Process()
 
 //----------------------------------------------------
 
-void CNetGame::UpdateNetwork()
+void CNetworkManager::UpdateNetwork()
 {
 	Packet* p=NULL;
 
@@ -187,7 +187,7 @@ void CNetGame::UpdateNetwork()
 
 //----------------------------------------------------
 
-void CNetGame::BroadcastData( BitStream *bitStream,
+void CNetworkManager::BroadcastData( BitStream *bitStream,
 							  PacketPriority priority,
 							  PacketReliability reliability,
 							  char orderingStream,
@@ -218,7 +218,7 @@ void CNetGame::BroadcastData( BitStream *bitStream,
 
 //----------------------------------------------------
 
-void CNetGame::PlayerSync(Packet *p)
+void CNetworkManager::PlayerSync(Packet *p)
 {
 	// get the player pointer
 	CPlayer * pPlayer = GetPlayerManager()->GetAt((EntityId)p->systemAddress.systemIndex);
@@ -263,7 +263,7 @@ void CNetGame::PlayerSync(Packet *p)
 
 //----------------------------------------------------
 
-void CNetGame::VehicleSync(Packet *p)
+void CNetworkManager::VehicleSync(Packet *p)
 {
 	// get the player pointer
 	CPlayer * pPlayer = GetPlayerManager()->GetAt((EntityId)p->systemAddress.systemIndex);
@@ -292,7 +292,7 @@ void CNetGame::VehicleSync(Packet *p)
 
 //----------------------------------------------------
 
-void CNetGame::PassengerSync(Packet *p)
+void CNetworkManager::PassengerSync(Packet *p)
 {
 	CPlayer * pPlayer = GetPlayerManager()->GetAt((EntityId)p->systemAddress.systemIndex);
 	BitStream bsPassengerSync(p->data, p->length, FALSE);
@@ -321,7 +321,7 @@ void CNetGame::PassengerSync(Packet *p)
 
 //----------------------------------------------------
 
-void CNetGame::SetupInitPositions()
+void CNetworkManager::SetupInitPositions()
 {	
 	char *szParseMe;
 
@@ -360,7 +360,7 @@ void CNetGame::SetupInitPositions()
 
 //----------------------------------------------------
 
-void CNetGame::KickPlayer(EntityId playerID)
+void CNetworkManager::KickPlayer(EntityId playerID)
 {
 	if(playerID < MAX_PLAYERS)
 	{
@@ -374,7 +374,7 @@ void CNetGame::KickPlayer(EntityId playerID)
 
 //----------------------------------------------------
 
-void CNetGame::AddBan(char * ip_mask)
+void CNetworkManager::AddBan(char * ip_mask)
 {
 	m_pRakPeer->AddToBanList(ip_mask);
 	
@@ -390,7 +390,7 @@ void CNetGame::AddBan(char * ip_mask)
 
 //----------------------------------------------------
 
-void CNetGame::LoadBanList()
+void CNetworkManager::LoadBanList()
 {
 	FILE * fileBanList = fopen("vcp-svr.banlist","r");
 	if(!fileBanList) return;

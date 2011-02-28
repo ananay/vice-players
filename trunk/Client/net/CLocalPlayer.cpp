@@ -21,7 +21,7 @@ extern CChatWindow   *pChatWindow;
 extern CCmdWindow	 *pCmdWindow;
 
 using namespace RakNet;
-extern CNetGame* pNetGame;
+extern CNetworkManager* pNetowkManager;
 
 //----------------------------------------------------------
 
@@ -80,13 +80,13 @@ BOOL CLocalPlayer::Process()
 					// DRIVING VEHICLE
 
 					// VEHICLE WORLD BOUNDS STUFF
-					pVehicleManager = pNetGame->GetVehicleManager();
+					pVehicleManager = pNetowkManager->GetVehicleManager();
 					vehicleID = pVehicleManager->FindIDFromGtaPtr(m_pPlayerPed->GetGtaVehicle());
 					if(vehicleID != INVALID_ENTITY_ID) {
 						pGameVehicle = pVehicleManager->GetAt(vehicleID);
 						pGameVehicle->EnforceWorldBoundries(
-							pNetGame->m_WorldBounds[0],pNetGame->m_WorldBounds[1],
-							pNetGame->m_WorldBounds[2],pNetGame->m_WorldBounds[3]);
+							pNetowkManager->m_WorldBounds[0],pNetowkManager->m_WorldBounds[1],
+							pNetowkManager->m_WorldBounds[2],pNetowkManager->m_WorldBounds[3]);
 					}
 
 					if((dwThisTick - m_dwLastSendTick) > (UINT)GetOptimumInCarSendRate()) {
@@ -134,7 +134,7 @@ BOOL CLocalPlayer::Process()
 			(m_pPlayerPed->GetAction() != ACTION_WASTED))
 	{
 		m_bIsWasted = FALSE;
-		pNetGame->GetGameLogic()->HandleClassSelection(this);
+		pNetowkManager->GetGameLogic()->HandleClassSelection(this);
 		return TRUE;
 	}
 	if (pGame->IsMenuActive() != m_iPause)
@@ -143,7 +143,7 @@ BOOL CLocalPlayer::Process()
 		SendPauseNotification(m_iPause);
 	}
 
-	pGameLogic = pNetGame->GetGameLogic();
+	pGameLogic = pNetowkManager->GetGameLogic();
 
 	if(pGameLogic) pGameLogic->ProcessLocalPlayer(this);
 
@@ -205,7 +205,7 @@ void CLocalPlayer::SendOnFootFullSyncData()
 		}
 
 		// send sync data
-		pNetGame->GetRakPeer()->Send(&bsPlayerSync,HIGH_PRIORITY,UNRELIABLE_SEQUENCED,0,UNASSIGNED_SYSTEM_ADDRESS,TRUE);
+		pNetowkManager->GetRakPeer()->Send(&bsPlayerSync,HIGH_PRIORITY,UNRELIABLE_SEQUENCED,0,UNASSIGNED_SYSTEM_ADDRESS,TRUE);
 	}
 }
 
@@ -218,7 +218,7 @@ void CLocalPlayer::SendInCarFullSyncData()
 		RakNet::BitStream bsVehicleSync;
 		VEHICLE_SYNC_DATA vehicleSyncData;
 		MATRIX4X4 matVehicle;
-		CVehicleManager * pVehicleManager = pNetGame->GetVehicleManager();
+		CVehicleManager * pVehicleManager = pNetowkManager->GetVehicleManager();
 		CVehicle * pGameVehicle = NULL;
 
 		// write packet id
@@ -276,7 +276,7 @@ void CLocalPlayer::SendInCarFullSyncData()
 		bsVehicleSync.Write((char *)&vehicleSyncData, sizeof(VEHICLE_SYNC_DATA));
 
 		// send sync data
-		pNetGame->GetRakPeer()->Send(&bsVehicleSync,HIGH_PRIORITY,UNRELIABLE_SEQUENCED,0,UNASSIGNED_SYSTEM_ADDRESS,TRUE);
+		pNetowkManager->GetRakPeer()->Send(&bsVehicleSync,HIGH_PRIORITY,UNRELIABLE_SEQUENCED,0,UNASSIGNED_SYSTEM_ADDRESS,TRUE);
 	}
 }
 
@@ -286,7 +286,7 @@ void CLocalPlayer::SendInCarPassengerData()
 {
 	RakNet::BitStream bsPassengerSync;
 	Vector3 vPos;
-	CVehicleManager *pVehicleManager = pNetGame->GetVehicleManager();
+	CVehicleManager *pVehicleManager = pNetowkManager->GetVehicleManager();
 
 	EntityId vehicleID = pVehicleManager->FindIDFromGtaPtr(m_pPlayerPed->GetGtaVehicle());
 	if(vehicleID == INVALID_ENTITY_ID) return;
@@ -299,14 +299,14 @@ void CLocalPlayer::SendInCarPassengerData()
 	bsPassengerSync.Write(vehicleID);
 	bsPassengerSync.Write(bytePassengerSeat);
 	bsPassengerSync.Write((char *)&vPos, sizeof(Vector3));
-	pNetGame->GetRakPeer()->Send(&bsPassengerSync, HIGH_PRIORITY, UNRELIABLE_SEQUENCED, 0, UNASSIGNED_SYSTEM_ADDRESS, true);
+	pNetowkManager->GetRakPeer()->Send(&bsPassengerSync, HIGH_PRIORITY, UNRELIABLE_SEQUENCED, 0, UNASSIGNED_SYSTEM_ADDRESS, true);
 }
 
 //----------------------------------------------------------
 
 int CLocalPlayer::GetOptimumInCarSendRate()
 {
-	CVehicleManager *pVehicleManager = pNetGame->GetVehicleManager();
+	CVehicleManager *pVehicleManager = pNetowkManager->GetVehicleManager();
 	CVehicle	 *pGameVehicle=NULL;
 	Vector3		 vecMoveSpeed;
 	EntityId		 vehicleID=0;
@@ -364,9 +364,9 @@ void CLocalPlayer::SendWastedNotification()
 	
 	bsPlayerDeath.Write(byteDeathReason);
 	bsPlayerDeath.Write(byteWhoWasResponsible);
-	pNetGame->GetRPC4()->Call("Death",&bsPlayerDeath,HIGH_PRIORITY,RELIABLE_SEQUENCED,0,UNASSIGNED_SYSTEM_ADDRESS,TRUE);
+	pNetowkManager->GetRPC4()->Call("Death",&bsPlayerDeath,HIGH_PRIORITY,RELIABLE_SEQUENCED,0,UNASSIGNED_SYSTEM_ADDRESS,TRUE);
 	
-	pGameLogic = pNetGame->GetGameLogic();
+	pGameLogic = pNetowkManager->GetGameLogic();
 }
 
 //----------------------------------------------------------
@@ -375,7 +375,7 @@ void CLocalPlayer::RequestClass(int iClass)
 {
 	RakNet::BitStream bsSpawnRequest;
 	bsSpawnRequest.Write(iClass);
-	pNetGame->GetRPC4()->Call("RequestClass",&bsSpawnRequest,HIGH_PRIORITY,RELIABLE,0,UNASSIGNED_SYSTEM_ADDRESS,TRUE);
+	pNetowkManager->GetRPC4()->Call("RequestClass",&bsSpawnRequest,HIGH_PRIORITY,RELIABLE,0,UNASSIGNED_SYSTEM_ADDRESS,TRUE);
 }
 
 //----------------------------------------------------------
@@ -439,7 +439,7 @@ BOOL CLocalPlayer::SpawnPlayer(PLAYER_SPAWN_INFO * pSpawnInfo)
 
 	// Let the rest of the network know we're spawning.
 	RakNet::BitStream bsSendSpawn;
-	pNetGame->GetRPC4()->Call("Spawn",&bsSendSpawn,HIGH_PRIORITY,RELIABLE_SEQUENCED,0,UNASSIGNED_SYSTEM_ADDRESS,TRUE);
+	pNetowkManager->GetRPC4()->Call("Spawn",&bsSendSpawn,HIGH_PRIORITY,RELIABLE_SEQUENCED,0,UNASSIGNED_SYSTEM_ADDRESS,TRUE);
 	
 	return TRUE;
 }
@@ -448,7 +448,7 @@ BOOL CLocalPlayer::SpawnPlayer(PLAYER_SPAWN_INFO * pSpawnInfo)
 
 void CLocalPlayer::Say(PCHAR szText)
 {
-	if(!pNetGame->IsConnected()) {
+	if(!pNetowkManager->IsConnected()) {
 		pChatWindow->AddInfoMessage("Not connected");
 		return;
 	}
@@ -459,7 +459,7 @@ void CLocalPlayer::Say(PCHAR szText)
 	bsSend.Write(byteTextLen);
 	bsSend.Write(szText,byteTextLen);
 
-	pNetGame->GetRPC4()->Call("Chat",&bsSend,HIGH_PRIORITY,RELIABLE,0,UNASSIGNED_SYSTEM_ADDRESS,TRUE);
+	pNetowkManager->GetRPC4()->Call("Chat",&bsSend,HIGH_PRIORITY,RELIABLE,0,UNASSIGNED_SYSTEM_ADDRESS,TRUE);
 }
 
 //----------------------------------------------------------
@@ -469,7 +469,7 @@ void CLocalPlayer::SendEnterVehicleNotification(EntityId vehicleID, bool bPassen
 	RakNet::BitStream bsSend;
 	bsSend.Write(vehicleID);
 	bsSend.Write(bPassenger);
-	pNetGame->GetRPC4()->Call("EnterVehicle",&bsSend,HIGH_PRIORITY,RELIABLE_SEQUENCED,0,UNASSIGNED_SYSTEM_ADDRESS,TRUE);
+	pNetowkManager->GetRPC4()->Call("EnterVehicle",&bsSend,HIGH_PRIORITY,RELIABLE_SEQUENCED,0,UNASSIGNED_SYSTEM_ADDRESS,TRUE);
 }
 
 //----------------------------------------------------------
@@ -478,7 +478,7 @@ void CLocalPlayer::SendExitVehicleNotification(EntityId vehicleID)
 {
 	RakNet::BitStream bsSend;
 	bsSend.Write(vehicleID);
-	pNetGame->GetRPC4()->Call("ExitVehicle",&bsSend,HIGH_PRIORITY,RELIABLE_SEQUENCED,0,UNASSIGNED_SYSTEM_ADDRESS,TRUE);
+	pNetowkManager->GetRPC4()->Call("ExitVehicle",&bsSend,HIGH_PRIORITY,RELIABLE_SEQUENCED,0,UNASSIGNED_SYSTEM_ADDRESS,TRUE);
 }
 
 //----------------------------------------------------
@@ -521,7 +521,7 @@ void CLocalPlayer::SendInflictedDamageNotification(EntityId playerID, EntityId v
 	bsSend.Write(fUnk);
 	bsSend.Write(iPedPieces);
 	bsSend.Write(byteUnk);
-	//pNetGame->GetRPC4()->Call("InflictDamage", &bsSend, HIGH_PRIORITY, RELIABLE_ORDERED, 0, UNASSIGNED_SYSTEM_ADDRESS, true);
+	//pNetowkManager->GetRPC4()->Call("InflictDamage", &bsSend, HIGH_PRIORITY, RELIABLE_ORDERED, 0, UNASSIGNED_SYSTEM_ADDRESS, true);
 }
 
 //----------------------------------------------------------
@@ -530,7 +530,7 @@ void CLocalPlayer::SendPauseNotification(int bPause)
 {
 	RakNet::BitStream bsSend;
 	bsSend.Write(bPause);
-	pNetGame->GetRPC4()->Call("Pause",&bsSend,HIGH_PRIORITY,RELIABLE_SEQUENCED,0,UNASSIGNED_SYSTEM_ADDRESS,TRUE);
+	pNetowkManager->GetRPC4()->Call("Pause",&bsSend,HIGH_PRIORITY,RELIABLE_SEQUENCED,0,UNASSIGNED_SYSTEM_ADDRESS,TRUE);
 }
 
 //----------------------------------------------------
