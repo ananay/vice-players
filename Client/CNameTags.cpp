@@ -13,7 +13,7 @@
 #define HEALTH_BAR_COLOR D3DCOLOR_XRGB(255, 153, 230)
 #define ARMOUR_BAR_COLOR D3DCOLOR_XRGB(125, 125, 125)
 
-extern CNetGame *pNetGame;
+extern CNetworkManager *pNetowkManager;
 
 //----------------------------------------------------
 
@@ -152,9 +152,9 @@ void CNameTags::Draw()
 	D3DXMatrixTranspose(&matTransposed, (D3DXMATRIX*)&matView); 
 	matTransposed._14 = matTransposed._24 = matTransposed._34 = 0.0f; 
 
-	if(pNetGame) 
+	if(pNetowkManager) 
 	{ 
-		CPlayerManager* pPlayerManager = pNetGame->GetPlayerManager(); 
+		CPlayerManager* pPlayerManager = pNetowkManager->GetPlayerManager(); 
 		for(int x = 0; x < MAX_PLAYERS; x++)
 		{ 
 			if(pPlayerManager->GetSlotState(x) == TRUE)

@@ -11,7 +11,7 @@
 
 #include "StdInc.h"
 
-extern CNetGame * pNetGame;
+extern CNetworkManager * pNetowkManager;
 extern CGame *    pGame;
 BOOL              bScriptInited=FALSE;
 
@@ -62,15 +62,15 @@ extern GTA_CONTROLSET * pGcsInternalKeys;
 
 void _stdcall DoOnFootWorldBoundsStuff()
 {
-	if(pNetGame) {
-		CLocalPlayer *pLocalPlayer = pNetGame->GetPlayerManager()->GetLocalPlayer();
+	if(pNetowkManager) {
+		CLocalPlayer *pLocalPlayer = pNetowkManager->GetPlayerManager()->GetLocalPlayer();
 		CPlayerPed *pPlayerPed = pGame->FindPlayerPed();
 
 		// Make sure they don't leave their worldy confines.
 		if(pLocalPlayer->IsActive() && !pPlayerPed->IsInVehicle()) {
 			if(pPlayerPed->EnforceWorldBoundries(
-				pNetGame->m_WorldBounds[0],pNetGame->m_WorldBounds[1],
-				pNetGame->m_WorldBounds[2],pNetGame->m_WorldBounds[3]))
+				pNetowkManager->m_WorldBounds[0],pNetowkManager->m_WorldBounds[1],
+				pNetowkManager->m_WorldBounds[2],pNetowkManager->m_WorldBounds[3]))
 			{
 				pGcsInternalKeys->wKeys1[KEY_ONFOOT_JUMP] = 0xFF;
 				pGcsInternalKeys->wKeys2[KEY_ONFOOT_JUMP] = 0xFF;
@@ -228,7 +228,7 @@ NUDE Vehicle_ProcessControl_Hook()
 void _stdcall DoVehicleEntryExitNotification(bool bEnterExit, DWORD dwVehicle, bool bPassenger)
 {
 	// Do we have a valid net game instance?
-	if(pNetGame)
+	if(pNetowkManager)
 	{
 		// Get a pointer to the local player ped
 		CPlayerPed * pPlayerPed = pGame->FindPlayerPed();
@@ -241,7 +241,7 @@ void _stdcall DoVehicleEntryExitNotification(bool bEnterExit, DWORD dwVehicle, b
 		}
 
 		// Get a pointer to the vehicle pool
-		CVehicleManager * pVehicleManager = pNetGame->GetVehicleManager();
+		CVehicleManager * pVehicleManager = pNetowkManager->GetVehicleManager();
 
 		// Get the vehicle's pool id
 		EntityId vehicleID = pVehicleManager->FindIDFromGtaPtr((VEHICLE_TYPE *)dwVehicle);
@@ -250,7 +250,7 @@ void _stdcall DoVehicleEntryExitNotification(bool bEnterExit, DWORD dwVehicle, b
 		if(vehicleID != INVALID_ENTITY_ID)
 		{
 			// Get a pointer to the local player
-			CLocalPlayer * pLocalPlayer = pNetGame->GetPlayerManager()->GetLocalPlayer();
+			CLocalPlayer * pLocalPlayer = pNetowkManager->GetPlayerManager()->GetLocalPlayer();
 
 			// Are we entering the vehicle or exiting it?
 			if(bEnterExit)
@@ -377,8 +377,8 @@ BOOL _stdcall IsFriendlyFire(PED_TYPE *pPlayer,DWORD *pdwEnt, int iWeapon, float
 	BYTE byteLocalPlayerTeam;
 
 	if(pPlayer == GamePool_FindPlayerPed()) {
-		if(pNetGame && pNetGame->GetFriendlyFire()) {
-			pPlayerManager = pNetGame->GetPlayerManager();
+		if(pNetowkManager && pNetowkManager->GetFriendlyFire()) {
+			pPlayerManager = pNetowkManager->GetPlayerManager();
 			pLocalPlayer = pPlayerManager->GetLocalPlayer();
 			byteLocalPlayerTeam = pLocalPlayer->GetTeam();
 
@@ -395,7 +395,7 @@ BOOL _stdcall IsFriendlyFire(PED_TYPE *pPlayer,DWORD *pdwEnt, int iWeapon, float
 				}
 			}
 
-			pVehicleManager = pNetGame->GetVehicleManager();
+			pVehicleManager = pNetowkManager->GetVehicleManager();
 
 			EntityId vehicleID = pVehicleManager->FindIDFromGtaPtr((VEHICLE_TYPE *)pdwEnt);
 
@@ -428,10 +428,10 @@ BOOL _stdcall IsFriendlyFire(PED_TYPE *pPlayer,DWORD *pdwEnt, int iWeapon, float
 void DoInflictedDamageNotification(DWORD * pdwEntity, int iWeapon, float fUnk, int iPedPieces, BYTE byteUnk)
 {
 	// Get the player pool pointer
-	CPlayerManager * pPlayerManager = pNetGame->GetPlayerManager();
+	CPlayerManager * pPlayerManager = pNetowkManager->GetPlayerManager();
 
 	// Get the vehicle pool pointer
-	CVehicleManager * pVehicleManager = pNetGame->GetVehicleManager();
+	CVehicleManager * pVehicleManager = pNetowkManager->GetVehicleManager();
 
 	// Try and get a player id from the entity pointer
 	EntityId playerID = pPlayerManager->FindPlayerIDFromGtaPtr((PED_TYPE *)pdwEntity);
@@ -452,7 +452,7 @@ void DoInflictedDamageNotification(DWORD * pdwEntity, int iWeapon, float fUnk, i
 	if(playerID != INVALID_ENTITY_ID || vehicleID != INVALID_ENTITY_ID)
 	{
 		// Get a pointer to the local player
-		CLocalPlayer * pLocalPlayer = pNetGame->GetPlayerManager()->GetLocalPlayer();
+		CLocalPlayer * pLocalPlayer = pNetowkManager->GetPlayerManager()->GetLocalPlayer();
 
 		// Send the inflicted damage notification
 		pLocalPlayer->SendInflictedDamageNotification(playerID, vehicleID, iWeapon, fUnk, iPedPieces, byteUnk);
@@ -490,7 +490,7 @@ NUDE CPed__InflictDamage_Hook()
 
 	// TODO: Move this to DoInflictedDamageNotification then if DoInflictedDamageNotification returns false
 	// cancel the damage infliction
-	if(pNetGame)
+	if(pNetowkManager)
 	{
 #ifdef DAMAGE_SYNC
 		// Get weather or not the inflicted player is ourself

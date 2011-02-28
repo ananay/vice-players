@@ -13,7 +13,7 @@
 
 using namespace RakNet;
 
-extern CNetGame* pNetGame;
+extern CNetworkManager* pNetowkManager;
 extern GAME_SETTINGS tSettings;
 extern IDirect3DDevice8 *pD3DDevice;
 extern CChatWindow *pChatWindow;
@@ -31,7 +31,7 @@ void CNetStats::Draw()
 {
 	char szDispBuf[1024];
 	D3DDISPLAYMODE dDisplayMode;
-	RakNetStatistics *pRakStats = pNetGame->GetRakPeer()->GetStatistics(UNASSIGNED_SYSTEM_ADDRESS);
+	RakNetStatistics *pRakStats = pNetowkManager->GetRakPeer()->GetStatistics(UNASSIGNED_SYSTEM_ADDRESS);
 
 	unsigned int uBytesPerSecondReceived = (unsigned int)pRakStats->valueOverLastSecond[ACTUAL_BYTES_RECEIVED];
 	unsigned int uBytesPerSecondSent = (unsigned int)pRakStats->valueOverLastSecond[ACTUAL_BYTES_SENT];

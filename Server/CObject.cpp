@@ -9,7 +9,7 @@
 //-----------------------------------------------------
 #include "StdInc.h"
 
-extern CNetGame *pNetGame;
+extern CNetworkManager *pNetowkManager;
 
 CObject::CObject(int iModel, Vector3 * vecPos, Vector3 * vecRot)
 {
@@ -23,7 +23,7 @@ CObject::CObject(int iModel, Vector3 * vecPos, Vector3 * vecRot)
 
 CObject::~CObject()
 {
-	CPlayerManager * pPlayerManager = pNetGame->GetPlayerManager();
+	CPlayerManager * pPlayerManager = pNetowkManager->GetPlayerManager();
 
 	for(EntityId i = 0; i < MAX_PLAYERS; i++)
 	{
@@ -43,12 +43,12 @@ void CObject::SpawnForPlayer(EntityId playerId)
 	bsSend.Write(m_vecPos);
 	bsSend.Write(m_vecRot);
 	
-	pNetGame->GetRPC4()->Call("ObjectSpawn", &bsSend, HIGH_PRIORITY, RELIABLE, 0, pNetGame->GetRakPeer()->GetSystemAddressFromIndex(playerId), 0);
+	pNetowkManager->GetRPC4()->Call("ObjectSpawn", &bsSend, HIGH_PRIORITY, RELIABLE, 0, pNetowkManager->GetRakPeer()->GetSystemAddressFromIndex(playerId), 0);
 }
 
 void CObject::SpawnForWorld()
 {
-	CPlayerManager * pPlayerManager = pNetGame->GetPlayerManager();
+	CPlayerManager * pPlayerManager = pNetowkManager->GetPlayerManager();
 	for(EntityId i = 0; i < MAX_PLAYERS; i++) {
 		if(pPlayerManager->GetSlotState(i)) {
 			SpawnForPlayer(i);
@@ -62,5 +62,5 @@ void CObject::DestroyForPlayer(EntityId playerId)
 
 	bsSend.Write(m_ObjectID);
 
-	pNetGame->GetRPC4()->Call("ObjectDestroy", &bsSend, HIGH_PRIORITY, RELIABLE, 0, pNetGame->GetRakPeer()->GetSystemAddressFromIndex(playerId), 0);
+	pNetowkManager->GetRPC4()->Call("ObjectDestroy", &bsSend, HIGH_PRIORITY, RELIABLE, 0, pNetowkManager->GetRakPeer()->GetSystemAddressFromIndex(playerId), 0);
 }

@@ -20,7 +20,7 @@ using namespace RakNet;
 #	define stricmp strcasecmp
 #endif
 
-extern CNetGame			*pNetGame;
+extern CNetworkManager			*pNetowkManager;
 extern CScripts	*pScripts;
 
 CRcon::CRcon(WORD iPort, char* szPass, WORD iMaxAdmins)
@@ -131,8 +131,8 @@ void CRcon::Packet_RconCommand(RakNet::Packet* pPacket)
 	{
 		if (stricmp(rconcmd, "players") == 0)
 		{
-			CPlayerManager* pPlayerManager = pNetGame->GetPlayerManager();
-			RakPeerInterface* pRak = pNetGame->GetRakPeer();
+			CPlayerManager* pPlayerManager = pNetowkManager->GetPlayerManager();
+			RakPeerInterface* pRak = pNetowkManager->GetRakPeer();
 			ConsoleOutput("\n id\tname\t\tip");
 			ConsoleOutput(" --\t----\t\t--\n");
 			char output[1024];
@@ -149,7 +149,7 @@ void CRcon::Packet_RconCommand(RakNet::Packet* pPacket)
 		else if (stricmp(rconcmd, "kick") == 0)
 		{
 			if(arg) {
-				pNetGame->KickPlayer((BYTE)atoi(arg));
+				pNetowkManager->KickPlayer((BYTE)atoi(arg));
 			} else {
 				ConsoleOutput("RCON: Kick Usage: kick <playerid>");
 			}
@@ -157,14 +157,14 @@ void CRcon::Packet_RconCommand(RakNet::Packet* pPacket)
 		else if (stricmp(rconcmd, "ban") == 0)
 		{
 			if(arg) {
-				pNetGame->AddBan(arg);
+				pNetowkManager->AddBan(arg);
 			} else {
 				ConsoleOutput("RCON: Ban Usage: ban <ip_mask>");
 			}
 		}
 		else if (stricmp(rconcmd, "password") == 0)
 		{
-			pNetGame->GetRakPeer()->SetIncomingPassword(arg, strlen(arg));
+			pNetowkManager->GetRakPeer()->SetIncomingPassword(arg, strlen(arg));
 			if(arg) {
 				ConsolePrintf("Password set to: %s", arg);
 			} else {
@@ -177,7 +177,7 @@ void CRcon::Packet_RconCommand(RakNet::Packet* pPacket)
 			{
 				int iMaxPlayers = atoi(arg);
 				if(iMaxPlayers > 32) iMaxPlayers = 32;
-				pNetGame->GetRakPeer()->SetMaximumIncomingConnections(iMaxPlayers);
+				pNetowkManager->GetRakPeer()->SetMaximumIncomingConnections(iMaxPlayers);
 				ConsolePrintf("MaxPlayers set to: %d", iMaxPlayers);
 			} else {
 				ConsoleOutput("RCON: MaxPlayers Usage: maxplayers <num>");
@@ -206,7 +206,7 @@ void CRcon::Packet_RconCommand(RakNet::Packet* pPacket)
 
 void CRcon::OutputDeathMessage(int iDeathType,BYTE byteWhoDied,BYTE byteWhoKilled)
 {
-	CPlayerManager *pPool = pNetGame->GetPlayerManager();
+	CPlayerManager *pPool = pNetowkManager->GetPlayerManager();
 	CPlayer *pPlayerWhoDied;
 	CPlayer *pPlayerWhoKilled;
 

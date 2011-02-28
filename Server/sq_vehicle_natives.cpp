@@ -11,7 +11,7 @@
 
 #include "StdInc.h"
 
-extern CNetGame *pNetGame;
+extern CNetworkManager *pNetowkManager;
 
 using namespace RakNet;
 
@@ -33,8 +33,8 @@ SQInteger sq_createVehicle(SQVM * pVM)
 	sq_getinteger(pVM, -1, &iColor2);
 
 
-	int vehID = pNetGame->GetVehicleManager()->New(byteVehicleType, &pos, fRotation, iColor1, iColor2);
-	CVehicle *pVehicle = pNetGame->GetVehicleManager()->GetAt(vehID);
+	int vehID = pNetowkManager->GetVehicleManager()->New(byteVehicleType, &pos, fRotation, iColor1, iColor2);
+	CVehicle *pVehicle = pNetowkManager->GetVehicleManager()->GetAt(vehID);
 	pVehicle->SpawnForWorld();
 	sq_pushinteger(pVM, vehID);
 	return 1;
@@ -45,9 +45,9 @@ SQInteger sq_destroyVehicle(SQVM * pVM)
 {
 	SQInteger byteVehicle;
 	sq_getinteger(pVM, -1, &byteVehicle);
-	if(pNetGame->GetVehicleManager()->GetSlotState(byteVehicle))
+	if(pNetowkManager->GetVehicleManager()->GetSlotState(byteVehicle))
 	{
-		pNetGame->GetVehicleManager()->Delete(byteVehicle);
+		pNetowkManager->GetVehicleManager()->Delete(byteVehicle);
 		sq_pushbool(pVM, true);
 
 		return 1;
@@ -64,9 +64,9 @@ SQInteger sq_setVehicleHealth(SQVM * pVM)
 
 	sq_getinteger(pVM, -2, &vehicle);
     sq_getfloat(pVM, -1, &newHealthValue);
-	if(pNetGame->GetVehicleManager()->GetSlotState(vehicle))
+	if(pNetowkManager->GetVehicleManager()->GetSlotState(vehicle))
 	{
-		pNetGame->GetVehicleManager()->GetAt(vehicle)->SetHealth(newHealthValue);
+		pNetowkManager->GetVehicleManager()->GetAt(vehicle)->SetHealth(newHealthValue);
 
 		sq_pushbool(pVM, true);
 		return 1;
@@ -81,9 +81,9 @@ SQInteger sq_getVehicleHealth(SQVM * pVM)
 
 	sq_getinteger(pVM, -1, &vehicle);
 
-	if(pNetGame->GetVehicleManager()->GetSlotState(vehicle))
+	if(pNetowkManager->GetVehicleManager()->GetSlotState(vehicle))
 	{
-		float fHealth = pNetGame->GetVehicleManager()->GetAt(vehicle)->GetHealth();
+		float fHealth = pNetowkManager->GetVehicleManager()->GetAt(vehicle)->GetHealth();
 
 		sq_pushfloat(pVM, fHealth);
 		return 1;
@@ -100,9 +100,9 @@ SQInteger sq_setVehicleColor(SQVM * pVM)
 	sq_getinteger(pVM, -3, &vehicle);
     sq_getinteger(pVM, -2, &color1);
 	sq_getinteger(pVM, -1, &color2);
-	if(pNetGame->GetVehicleManager()->GetSlotState(vehicle))
+	if(pNetowkManager->GetVehicleManager()->GetSlotState(vehicle))
 	{
-		pNetGame->GetVehicleManager()->GetAt(vehicle)->SetColor(color1, color2);
+		pNetowkManager->GetVehicleManager()->GetAt(vehicle)->SetColor(color1, color2);
 
 		sq_pushbool(pVM, true);
 		return 1;
@@ -117,10 +117,10 @@ SQInteger sq_getVehicleColors(SQVM * pVM)
 
 	sq_getinteger(pVM, -1, &vehicle);
 
-	if(pNetGame->GetVehicleManager()->GetSlotState(vehicle))
+	if(pNetowkManager->GetVehicleManager()->GetSlotState(vehicle))
 	{
 		int iColors[2];
-		pNetGame->GetVehicleManager()->GetAt(vehicle)->GetColor(&iColors[0], &iColors[1]);
+		pNetowkManager->GetVehicleManager()->GetAt(vehicle)->GetColor(&iColors[0], &iColors[1]);
 
 		sq_newarray(pVM, 0);
 		sq_pushinteger(pVM, iColors[0]);
@@ -141,9 +141,9 @@ SQInteger sq_getVehicleTurnSpeed(SQVM * pVM)
 	SQInteger vehicle;
 	sq_getinteger(pVM, -1, &vehicle);
 
-	if(pNetGame->GetVehicleManager()->GetSlotState(vehicle))
+	if(pNetowkManager->GetVehicleManager()->GetSlotState(vehicle))
 	{
-		CVehicle *pVehicle = pNetGame->GetVehicleManager()->GetAt(vehicle);
+		CVehicle *pVehicle = pNetowkManager->GetVehicleManager()->GetAt(vehicle);
 		pVehicle->GetTurnSpeed(&speed);
 
 		sq_newarray(pVM, 0);
@@ -168,9 +168,9 @@ SQInteger sq_getVehicleMoveSpeed(SQVM * pVM)
 	SQInteger vehicle;
 	sq_getinteger(pVM, -1, &vehicle);
 
-	if(pNetGame->GetVehicleManager()->GetSlotState(vehicle))
+	if(pNetowkManager->GetVehicleManager()->GetSlotState(vehicle))
 	{
-		CVehicle *pVehicle = pNetGame->GetVehicleManager()->GetAt(vehicle);
+		CVehicle *pVehicle = pNetowkManager->GetVehicleManager()->GetAt(vehicle);
 		pVehicle->GetMoveSpeed(&speed);
 
 		sq_newarray(pVM, 0);
@@ -195,9 +195,9 @@ SQInteger sq_getVehiclePosition(SQVM * pVM)
 	SQInteger vehicle;
 	sq_getinteger(pVM, -1, &vehicle);
 
-	if(pNetGame->GetVehicleManager()->GetSlotState(vehicle))
+	if(pNetowkManager->GetVehicleManager()->GetSlotState(vehicle))
 	{
-		CVehicle *pVehicle = pNetGame->GetVehicleManager()->GetAt(vehicle);
+		CVehicle *pVehicle = pNetowkManager->GetVehicleManager()->GetAt(vehicle);
 		pVehicle->GetPosition(&pos);
 
 		sq_newarray(pVM, 0);
@@ -227,12 +227,12 @@ SQInteger sq_setVehiclePosition(SQVM * pVM)
 	sq_getfloat(pVM, -2, &pVec.Y);
 	sq_getfloat(pVM, -1, &pVec.Z);
 
-	if(pNetGame->GetVehicleManager()->GetSlotState(vehicle))
+	if(pNetowkManager->GetVehicleManager()->GetSlotState(vehicle))
 	{
 		RakNet::BitStream bsSend;
 		bsSend.Write(vehicle);
 		bsSend.Write((char *)&pVec, sizeof(Vector3));
-		pNetGame->GetRPC4()->Call("Script_SetVehiclePos",&bsSend,HIGH_PRIORITY,RELIABLE,0,UNASSIGNED_SYSTEM_ADDRESS,true);
+		pNetowkManager->GetRPC4()->Call("Script_SetVehiclePos",&bsSend,HIGH_PRIORITY,RELIABLE,0,UNASSIGNED_SYSTEM_ADDRESS,true);
 
 		sq_pushbool(pVM, true);
 		return 1;
@@ -254,12 +254,12 @@ SQInteger sq_setVehicleTurnSpeed(SQVM * pVM)
 	sq_getfloat(pVM, -2, &pVec.Y);
 	sq_getfloat(pVM, -1, &pVec.Z);
 
-	if(pNetGame->GetVehicleManager()->GetSlotState(vehicle))
+	if(pNetowkManager->GetVehicleManager()->GetSlotState(vehicle))
 	{
 		RakNet::BitStream bsSend;
 		bsSend.Write(vehicle);
 		bsSend.Write((char *)&pVec, sizeof(Vector3));
-		pNetGame->GetRPC4()->Call("Script_SetVehicleTurnSpeed",&bsSend,HIGH_PRIORITY,RELIABLE,0,UNASSIGNED_SYSTEM_ADDRESS,true);
+		pNetowkManager->GetRPC4()->Call("Script_SetVehicleTurnSpeed",&bsSend,HIGH_PRIORITY,RELIABLE,0,UNASSIGNED_SYSTEM_ADDRESS,true);
 
 		sq_pushbool(pVM, true);
 		return 1;
@@ -281,12 +281,12 @@ SQInteger sq_setVehicleMoveSpeed(SQVM * pVM)
 	sq_getfloat(pVM, -2, &pVec.Y);
 	sq_getfloat(pVM, -1, &pVec.Z);
 
-	if(pNetGame->GetVehicleManager()->GetSlotState(vehicle))
+	if(pNetowkManager->GetVehicleManager()->GetSlotState(vehicle))
 	{
 		RakNet::BitStream bsSend;
 		bsSend.Write(vehicle);
 		bsSend.Write((char *)&pVec, sizeof(Vector3));
-		pNetGame->GetRPC4()->Call("Script_SetVehicleMoveSpeed",&bsSend,HIGH_PRIORITY,RELIABLE,0,UNASSIGNED_SYSTEM_ADDRESS,true);
+		pNetowkManager->GetRPC4()->Call("Script_SetVehicleMoveSpeed",&bsSend,HIGH_PRIORITY,RELIABLE,0,UNASSIGNED_SYSTEM_ADDRESS,true);
 
 		sq_pushbool(pVM, true);
 		return 1;
@@ -303,9 +303,9 @@ SQInteger sq_popVehicleTrunk(SQVM * pVM)
 
 	sq_getinteger(pVM, -1, &vehicle);
 
-	if(pNetGame->GetVehicleManager()->GetSlotState(vehicle))
+	if(pNetowkManager->GetVehicleManager()->GetSlotState(vehicle))
 	{
-		pNetGame->GetVehicleManager()->GetAt(vehicle)->PopTrunk();
+		pNetowkManager->GetVehicleManager()->GetAt(vehicle)->PopTrunk();
 
 		sq_pushbool(pVM, true);
 		return 1;

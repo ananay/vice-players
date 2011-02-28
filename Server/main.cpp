@@ -12,7 +12,7 @@
 
 void fatal_exit(char * szError);
 
-CNetGame	*pNetGame;
+CNetworkManager	*pNetowkManager;
 CRcon		*pRcon;
 CConfig		*pServerConfig;
 CScripts	*pScripts;
@@ -130,7 +130,7 @@ int main (int argc, char* argv[])
 	}
 
 	// Create the net game instance
-	pNetGame = new CNetGame(iMaxPlayers, iListenPort, szPass, szHostname, byteFriendlyFire, byteShowOnRadarOption);
+	pNetowkManager = new CNetworkManager(iMaxPlayers, iListenPort, szPass, szHostname, byteFriendlyFire, byteShowOnRadarOption);
 
 	// Create the plugins instance
 	pPlugins = new CPlugins();
@@ -167,11 +167,11 @@ int main (int argc, char* argv[])
 	pRcon = new CRcon(iRconPort, szAdminPass, iRconMaxUsers);
 
 	// Loop until the game state is no longer set to running
-	while(pNetGame->GetGameState() == GAMESTATE_RUNNING)
+	while(pNetowkManager->GetGameState() == GAMESTATE_RUNNING)
 	{
 		// Process the net game instance
-		if(pNetGame)
-			pNetGame->Process();
+		if(pNetowkManager)
+			pNetowkManager->Process();
 
 		// Process the rcon instance
 		if(pRcon)
@@ -218,7 +218,7 @@ int main (int argc, char* argv[])
 	SAFE_DELETE(pPlugins);
 
 	// Delete the net game instance
-	SAFE_DELETE(pNetGame);
+	SAFE_DELETE(pNetowkManager);
 
 	// Delete the config instance
 	SAFE_DELETE(pServerConfig);
@@ -349,44 +349,44 @@ void HandleServerQuery(const QueryJob &job)
 			// Write a server info response
 
 			// Write the host name length
-			int iHostNameLen = pNetGame->GetHostname().size();
+			int iHostNameLen = pNetowkManager->GetHostname().size();
 			memcpy((szSend + iWriteLength), &iHostNameLen, sizeof(int));
 			iWriteLength += sizeof(int);
 
 			// Write the host name
-			memcpy((szSend + iWriteLength), pNetGame->GetHostname().c_str(), iHostNameLen);
+			memcpy((szSend + iWriteLength), pNetowkManager->GetHostname().c_str(), iHostNameLen);
 			iWriteLength += iHostNameLen;
 
 			// Write game mode name length
-			int iModeLen = pNetGame->GetModeName().size();
+			int iModeLen = pNetowkManager->GetModeName().size();
 			memcpy((szSend + iWriteLength), &iModeLen, sizeof(int));
 			iWriteLength += sizeof(int);
 
 			// Write game mode name
-			memcpy((szSend + iWriteLength), pNetGame->GetModeName().c_str(), iModeLen);
+			memcpy((szSend + iWriteLength), pNetowkManager->GetModeName().c_str(), iModeLen);
 			iWriteLength += iModeLen;
 
 			// Write map name len
-			int iMapLen = pNetGame->GetMapName().size();
+			int iMapLen = pNetowkManager->GetMapName().size();
 			memcpy((szSend + iWriteLength), &iMapLen, sizeof(int));
 			iWriteLength += sizeof(int);
 
 			// Write map name
-			memcpy((szSend + iWriteLength), pNetGame->GetMapName().c_str(), iMapLen);
+			memcpy((szSend + iWriteLength), pNetowkManager->GetMapName().c_str(), iMapLen);
 			iWriteLength += iMapLen;
 
 			// Write the player count
-			int iPlayerCount = pNetGame->GetPlayerManager()->GetPlayerCount();
+			int iPlayerCount = pNetowkManager->GetPlayerManager()->GetPlayerCount();
 			memcpy((szSend + iWriteLength), &iPlayerCount, sizeof(int));
 			iWriteLength += sizeof(int);
 
 			// Write the max player limit
-			int iMaxPlayers = pNetGame->GetMaxPlayers();
+			int iMaxPlayers = pNetowkManager->GetMaxPlayers();
 			memcpy((szSend + iWriteLength), &iMaxPlayers, sizeof(int));
 			iWriteLength += sizeof(int);
 
 			// Write if the server is passworded or not
-			bool bPassworded = pNetGame->IsPassworded();
+			bool bPassworded = pNetowkManager->IsPassworded();
 			memcpy((szSend + iWriteLength), &bPassworded, sizeof(bool));
 			iWriteLength += sizeof(bool);
 		}

@@ -10,7 +10,7 @@
 
 #include "StdInc.h"
 
-extern CNetGame *pNetGame;
+extern CNetworkManager *pNetowkManager;
 extern CRcon	*pRcon;
 extern CScripts	*pScripts;
 
@@ -64,7 +64,7 @@ BOOL CPlayerManager::New(EntityId playerID, PCHAR szPlayerName, PCHAR szSerial)
 		bsSend.Write(playerID);
 		bsSend.Write(strlen(szPlayerName));
 		bsSend.Write(szPlayerName,strlen(szPlayerName));
-		pNetGame->GetRPC4()->Call("ServerJoin", &bsSend,HIGH_PRIORITY,RELIABLE_ORDERED,0,pNetGame->GetRakPeer()->GetSystemAddressFromIndex(playerID),true);
+		pNetowkManager->GetRPC4()->Call("ServerJoin", &bsSend,HIGH_PRIORITY,RELIABLE_ORDERED,0,pNetowkManager->GetRakPeer()->GetSystemAddressFromIndex(playerID),true);
 
 		logprintf("[join] %u %s [Serial: %s]",playerID,szPlayerName,szSerial);
 
@@ -95,7 +95,7 @@ BOOL CPlayerManager::Delete(EntityId playerID, BYTE byteReason)
 	RakNet::BitStream bsSend;
 	bsSend.Write(playerID);
 	bsSend.Write(byteReason);
-	pNetGame->GetRPC4()->Call("ServerQuit", &bsSend,HIGH_PRIORITY,RELIABLE_ORDERED,0,pNetGame->GetRakPeer()->GetSystemAddressFromIndex(playerID),true);
+	pNetowkManager->GetRPC4()->Call("ServerQuit", &bsSend,HIGH_PRIORITY,RELIABLE_ORDERED,0,pNetowkManager->GetRakPeer()->GetSystemAddressFromIndex(playerID),true);
 	
 	m_bPlayerSlotState[playerID] = FALSE;
 	delete m_pPlayers[playerID];
@@ -224,7 +224,7 @@ BOOL CPlayerManager::IsConnected(EntityId playerID)
 
 void CPlayerManager::SetGameTime(BYTE hours, BYTE minutes)
 {
-	CPlayerManager * pPlayerManager = pNetGame->GetPlayerManager();
+	CPlayerManager * pPlayerManager = pNetowkManager->GetPlayerManager();
 	for(BYTE i = 0; i < MAX_PLAYERS; i++) {
 		if(pPlayerManager->GetSlotState(i)) {
 			pPlayerManager->GetAt(i)->SetGameTime(hours, minutes);

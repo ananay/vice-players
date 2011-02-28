@@ -14,7 +14,7 @@
 #include "StdInc.h"
 
 
-extern CNetGame *pNetGame;
+extern CNetworkManager *pNetowkManager;
 
 CTextManager::CTextManager()
 {

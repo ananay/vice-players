@@ -11,7 +11,7 @@
 #include "StdInc.h"
 
 extern CGame *pGame;
-extern CNetGame *pNetGame;
+extern CNetworkManager *pNetowkManager;
 extern CChatWindow   *pChatWindow;
 
 CObject::CObject(int iModel, Vector3 * vecPos, Vector3 * vecRot)

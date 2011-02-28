@@ -9,7 +9,7 @@
 
 #include "StdInc.h"
 
-extern CNetGame *pNetGame;
+extern CNetworkManager *pNetowkManager;
 
 using namespace RakNet;
 
@@ -42,7 +42,7 @@ SQInteger sq_setTimer(SQVM * pVM)
 			pArguments[i - 3] = stack_get(pVM, -iTop + i);
 	}
 
-	int iTimerId = pNetGame->GetTimerPool()->Set(pVM, pFunction, interval, repeations, iArgCount, pArguments);
+	int iTimerId = pNetowkManager->GetTimerPool()->Set(pVM, pFunction, interval, repeations, iArgCount, pArguments);
 	if(iTimerId != -1)
 	{
 		sq_pushinteger(pVM, iTimerId);
@@ -58,7 +58,7 @@ SQInteger sq_isTimerActive(SQVM * pVM)
 	int id;
 	sq_getinteger(pVM, -1, &id);
 
-	sq_pushbool(pVM, pNetGame->GetTimerPool()->IsActive(id));
+	sq_pushbool(pVM, pNetowkManager->GetTimerPool()->IsActive(id));
 	return 1;
 }
 
@@ -68,6 +68,6 @@ SQInteger sq_killTimer(SQVM * pVM)
 	int id;
 	sq_getinteger(pVM, -1, &id);
 
-	sq_pushbool(pVM, pNetGame->GetTimerPool()->Kill(id));
+	sq_pushbool(pVM, pNetowkManager->GetTimerPool()->Kill(id));
 	return 1;
 }

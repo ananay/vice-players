@@ -9,7 +9,7 @@
 //-----------------------------------------------------
 
 #include "StdInc.h"
-extern CNetGame *pNetGame;
+extern CNetworkManager *pNetowkManager;
 
 void logprintf(char * format, ...);
 void fatal_exit(char * szError);

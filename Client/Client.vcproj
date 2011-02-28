@@ -2482,27 +2482,11 @@
 				>
 			</File>
 			<File
-				RelativePath=".\net\CNetGame.cpp"
+				RelativePath=".\net\CNetworkManager.cpp"
 				>
-				<FileConfiguration
-					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						PreprocessorDefinitions=""
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						PreprocessorDefinitions=""
-					/>
-				</FileConfiguration>
 			</File>
 			<File
-				RelativePath=".\net\CNetGame.h"
+				RelativePath=".\net\CNetworkManager.h"
 				>
 			</File>
 			<File

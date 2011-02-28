@@ -10,7 +10,7 @@
 
 #include "StdInc.h"
 
-extern CNetGame *pNetGame;
+extern CNetworkManager *pNetowkManager;
 extern CScripts * pScripts;
 
 #define PI 3.14159265
@@ -116,7 +116,7 @@ void CVehicle::SpawnForPlayer(EntityId forPlayerID)
 	bsVehicleSpawn.Write(m_SpawnInfo.vecPos.Z);
 	bsVehicleSpawn.Write(m_SpawnInfo.fRotation);
 	
-	pNetGame->GetRPC4()->Call("VehicleSpawn", &bsVehicleSpawn,HIGH_PRIORITY,RELIABLE_ORDERED,0,pNetGame->GetRakPeer()->GetSystemAddressFromIndex(forPlayerID),false);
+	pNetowkManager->GetRPC4()->Call("VehicleSpawn", &bsVehicleSpawn,HIGH_PRIORITY,RELIABLE_ORDERED,0,pNetowkManager->GetRakPeer()->GetSystemAddressFromIndex(forPlayerID),false);
 }
 
 //----------------------------------------------------------
@@ -127,14 +127,14 @@ void CVehicle::DestroyForPlayer(EntityId forPlayerID)
 
 	bsVehicleDestroy.Write(m_vehicleID);
 
-	pNetGame->GetRPC4()->Call("VehicleDestroy", &bsVehicleDestroy,HIGH_PRIORITY,RELIABLE_ORDERED,0,pNetGame->GetRakPeer()->GetSystemAddressFromIndex(forPlayerID),false);
+	pNetowkManager->GetRPC4()->Call("VehicleDestroy", &bsVehicleDestroy,HIGH_PRIORITY,RELIABLE_ORDERED,0,pNetowkManager->GetRakPeer()->GetSystemAddressFromIndex(forPlayerID),false);
 }
 
 //----------------------------------------------------------
 
 void CVehicle::SpawnForWorld()
 {
-	CPlayerManager * pPlayerManager = pNetGame->GetPlayerManager();
+	CPlayerManager * pPlayerManager = pNetowkManager->GetPlayerManager();
 	for(EntityId i = 0; i < MAX_PLAYERS; i++) {
 		if(pPlayerManager->GetSlotState(i)) {
 			SpawnForPlayer(i);
@@ -146,7 +146,7 @@ void CVehicle::SpawnForWorld()
 
 void CVehicle::DestroyForWorld()
 {
-	CPlayerManager * pPlayerManager = pNetGame->GetPlayerManager();
+	CPlayerManager * pPlayerManager = pNetowkManager->GetPlayerManager();
 	for(EntityId i = 0; i < MAX_PLAYERS; i++) {
 		if(pPlayerManager->GetSlotState(i)) {
 			DestroyForPlayer(i);
@@ -180,7 +180,7 @@ void CVehicle::SetHealth(float newHealth)
 	RakNet::BitStream bsSend;
 	bsSend.Write(m_vehicleID);
 	bsSend.Write(newHealth);
-	pNetGame->GetRPC4()->Call("Script_SetVehicleHealth",&bsSend,HIGH_PRIORITY,RELIABLE,0,UNASSIGNED_SYSTEM_ADDRESS,true);
+	pNetowkManager->GetRPC4()->Call("Script_SetVehicleHealth",&bsSend,HIGH_PRIORITY,RELIABLE,0,UNASSIGNED_SYSTEM_ADDRESS,true);
 }
 
 //----------------------------------------------------------
@@ -191,7 +191,7 @@ void CVehicle::SetColor(int color1, int color2)
 	bsSend.Write(m_vehicleID);
 	bsSend.Write(color1);
 	bsSend.Write(color2);
-	pNetGame->GetRPC4()->Call("Script_SetVehicleColor",&bsSend,HIGH_PRIORITY,RELIABLE,0,UNASSIGNED_SYSTEM_ADDRESS,true);
+	pNetowkManager->GetRPC4()->Call("Script_SetVehicleColor",&bsSend,HIGH_PRIORITY,RELIABLE,0,UNASSIGNED_SYSTEM_ADDRESS,true);
 	m_iColors[0] = color1;
 	m_iColors[1] = color2;
 }
@@ -200,7 +200,7 @@ void CVehicle::PopTrunk()
 {
 	RakNet::BitStream bsSend;
 	bsSend.Write(m_vehicleID);
-	pNetGame->GetRPC4()->Call("Script_popVehicleTrunk",&bsSend,HIGH_PRIORITY,RELIABLE,0,UNASSIGNED_SYSTEM_ADDRESS,true);
+	pNetowkManager->GetRPC4()->Call("Script_popVehicleTrunk",&bsSend,HIGH_PRIORITY,RELIABLE,0,UNASSIGNED_SYSTEM_ADDRESS,true);
 }
 
 //----------------------------------------------------------

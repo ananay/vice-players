@@ -10,7 +10,7 @@
 
 #include "StdInc.h"
 
-extern CNetGame *pNetGame;
+extern CNetworkManager *pNetowkManager;
 
 CPickup::CPickup(int iModel, int iType, Vector3 * vecPos)
 {
@@ -33,7 +33,7 @@ void CPickup::SpawnForPlayer(EntityId playerId)
 	bsSend.Write(m_iType);
 	bsSend.Write((char *)&m_vecPos, sizeof(Vector3));
 	
-	pNetGame->GetRPC4()->Call("PickupSpawn", &bsSend, HIGH_PRIORITY, RELIABLE, 0, pNetGame->GetRakPeer()->GetSystemAddressFromIndex(playerId), 0);
+	pNetowkManager->GetRPC4()->Call("PickupSpawn", &bsSend, HIGH_PRIORITY, RELIABLE, 0, pNetowkManager->GetRakPeer()->GetSystemAddressFromIndex(playerId), 0);
 }
 
 void CPickup::DestroyForPlayer(EntityId playerId)
@@ -42,12 +42,12 @@ void CPickup::DestroyForPlayer(EntityId playerId)
 
 	bsSend.Write(m_PickupID);
 
-	pNetGame->GetRPC4()->Call("PickupDestroy", &bsSend, HIGH_PRIORITY, RELIABLE, 0, pNetGame->GetRakPeer()->GetSystemAddressFromIndex(playerId), 0);
+	pNetowkManager->GetRPC4()->Call("PickupDestroy", &bsSend, HIGH_PRIORITY, RELIABLE, 0, pNetowkManager->GetRakPeer()->GetSystemAddressFromIndex(playerId), 0);
 }
 
 void CPickup::SpawnForWorld()
 {
-	CPlayerManager * pPlayerManager = pNetGame->GetPlayerManager();
+	CPlayerManager * pPlayerManager = pNetowkManager->GetPlayerManager();
 
 	for(EntityId i = 0; i < MAX_PLAYERS; i++)
 	{
@@ -60,7 +60,7 @@ void CPickup::SpawnForWorld()
 
 void CPickup::DestroyForWorld()
 {
-	CPlayerManager * pPlayerManager = pNetGame->GetPlayerManager();
+	CPlayerManager * pPlayerManager = pNetowkManager->GetPlayerManager();
 
 	for(EntityId i = 0; i < MAX_PLAYERS; i++)
 	{

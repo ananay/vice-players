@@ -10,7 +10,7 @@
 
 #include "StdInc.h"
 
-extern CNetGame *pNetGame;
+extern CNetworkManager *pNetowkManager;
 extern CScripts	*pScripts;
 
 using namespace RakNet;
@@ -106,7 +106,7 @@ void CPlayer::BroadcastSyncData()
 			bsSync.Write0();
 		}
 		
-		pNetGame->BroadcastData(&bsSync,HIGH_PRIORITY,UNRELIABLE_SEQUENCED,0,m_bytePlayerID);
+		pNetowkManager->BroadcastData(&bsSync,HIGH_PRIORITY,UNRELIABLE_SEQUENCED,0,m_bytePlayerID);
 	}
 	else if(m_byteUpdateFromNetwork == UPDATE_TYPE_FULL_INCAR)
 	{
@@ -125,7 +125,7 @@ void CPlayer::BroadcastSyncData()
 		vehicleSyncData.bytePlayerArmour = m_byteArmour;
 		bsSync.Write((char *)&vehicleSyncData, sizeof(VEHICLE_SYNC_DATA));
 
-		pNetGame->BroadcastData(&bsSync,HIGH_PRIORITY,UNRELIABLE_SEQUENCED,0,m_bytePlayerID);
+		pNetowkManager->BroadcastData(&bsSync,HIGH_PRIORITY,UNRELIABLE_SEQUENCED,0,m_bytePlayerID);
 	}	
 }
 
@@ -134,7 +134,7 @@ void CPlayer::BroadcastSyncData()
 void CPlayer::StoreOnFootFullSyncData(PLAYER_SYNC_DATA * pPlayerSyncData)
 {
 	if(m_vehicleID != 0) {
-		pNetGame->GetVehicleManager()->GetAt(m_vehicleID)->SetDriverId(INVALID_ENTITY_ID);
+		pNetowkManager->GetVehicleManager()->GetAt(m_vehicleID)->SetDriverId(INVALID_ENTITY_ID);
 		m_vehicleID = 0;
 	}
 
@@ -173,7 +173,7 @@ void CPlayer::StoreAimSyncData(S_CAMERA_AIM * pAim)
 void CPlayer::StoreInCarFullSyncData(VEHICLE_SYNC_DATA * pVehicleSyncData)
 {
 	// get the vehicle pointer
-	CVehicle * pVehicle = pNetGame->GetVehicleManager()->GetAt(pVehicleSyncData->vehicleID);
+	CVehicle * pVehicle = pNetowkManager->GetVehicleManager()->GetAt(pVehicleSyncData->vehicleID);
 
 	// make sure vehicle is valid
 	if(!pVehicle)
@@ -232,7 +232,7 @@ void CPlayer::Say(PCHAR szText, BYTE byteTextLength)
 void CPlayer::HandleDeath(BYTE byteReason, BYTE byteWhoWasResponsible)
 {
 	RakNet::BitStream bsPlayerDeath;
-	SystemAddress playerid = pNetGame->GetRakPeer()->GetSystemAddressFromIndex(m_bytePlayerID);
+	SystemAddress playerid = pNetowkManager->GetRakPeer()->GetSystemAddressFromIndex(m_bytePlayerID);
 
 	m_bIsActive = FALSE;
 	m_bIsWasted = TRUE;
@@ -240,7 +240,7 @@ void CPlayer::HandleDeath(BYTE byteReason, BYTE byteWhoWasResponsible)
 	BYTE byteScoringModifier;
 
 	byteScoringModifier = 
-		pNetGame->GetPlayerManager()->AddResponsibleDeath(byteWhoWasResponsible,m_bytePlayerID);
+		pNetowkManager->GetPlayerManager()->AddResponsibleDeath(byteWhoWasResponsible,m_bytePlayerID);
 
 	bsPlayerDeath.Write(m_bytePlayerID);
 	bsPlayerDeath.Write(byteReason);
@@ -248,10 +248,10 @@ void CPlayer::HandleDeath(BYTE byteReason, BYTE byteWhoWasResponsible)
 	bsPlayerDeath.Write(byteScoringModifier);
 	
 	// Broadcast it
-	pNetGame->GetRPC4()->Call("Death", &bsPlayerDeath,HIGH_PRIORITY,RELIABLE,0,playerid,true);
+	pNetowkManager->GetRPC4()->Call("Death", &bsPlayerDeath,HIGH_PRIORITY,RELIABLE,0,playerid,true);
 	
 	logprintf("<%s> died",
-		pNetGame->GetPlayerManager()->GetPlayerName(m_bytePlayerID),
+		pNetowkManager->GetPlayerManager()->GetPlayerName(m_bytePlayerID),
 		byteReason,byteWhoWasResponsible,byteScoringModifier);
 }
 
@@ -306,7 +306,7 @@ void CPlayer::SpawnForWorld( BYTE byteTeam, BYTE byteSkin, Vector3 * vecPos,
 							  float fRotation )
 {
 	RakNet::BitStream bsPlayerSpawn;
-	SystemAddress playerid = pNetGame->GetRakPeer()->GetSystemAddressFromIndex(m_bytePlayerID);
+	SystemAddress playerid = pNetowkManager->GetRakPeer()->GetSystemAddressFromIndex(m_bytePlayerID);
 
 	bsPlayerSpawn.Write(m_bytePlayerID);
 	bsPlayerSpawn.Write(byteTeam);
@@ -322,7 +322,7 @@ void CPlayer::SpawnForWorld( BYTE byteTeam, BYTE byteSkin, Vector3 * vecPos,
 	bsPlayerSpawn.Write(m_SpawnInfo.iSpawnWeapons[2]);
 	bsPlayerSpawn.Write(m_SpawnInfo.iSpawnWeaponsAmmo[2]);
 	
-	pNetGame->GetRPC4()->Call("Spawn", &bsPlayerSpawn,HIGH_PRIORITY,RELIABLE_ORDERED,0,playerid,true);
+	pNetowkManager->GetRPC4()->Call("Spawn", &bsPlayerSpawn,HIGH_PRIORITY,RELIABLE_ORDERED,0,playerid,true);
 
 	m_bIsActive = TRUE;
 	m_bIsWasted = FALSE;
@@ -357,7 +357,7 @@ void CPlayer::SpawnForPlayer(BYTE byteForSystemAddress)
 	bsPlayerSpawn.Write(m_SpawnInfo.iSpawnWeapons[2]);
 	bsPlayerSpawn.Write(m_SpawnInfo.iSpawnWeaponsAmmo[2]);
 
-	pNetGame->GetRPC4()->Call("Spawn", &bsPlayerSpawn,HIGH_PRIORITY,RELIABLE_ORDERED,0,pNetGame->GetRakPeer()->GetSystemAddressFromIndex(byteForSystemAddress),false);
+	pNetowkManager->GetRPC4()->Call("Spawn", &bsPlayerSpawn,HIGH_PRIORITY,RELIABLE_ORDERED,0,pNetowkManager->GetRakPeer()->GetSystemAddressFromIndex(byteForSystemAddress),false);
 }
 
 //----------------------------------------------------
@@ -365,13 +365,13 @@ void CPlayer::SpawnForPlayer(BYTE byteForSystemAddress)
 void CPlayer::EnterVehicle(EntityId vehicleID, BYTE bytePassenger)
 {
 	RakNet::BitStream bsVehicle;
-	SystemAddress playerid = pNetGame->GetRakPeer()->GetSystemAddressFromIndex(m_bytePlayerID);
+	SystemAddress playerid = pNetowkManager->GetRakPeer()->GetSystemAddressFromIndex(m_bytePlayerID);
 
 	bsVehicle.Write(m_bytePlayerID);
 	bsVehicle.Write(vehicleID);
 	bsVehicle.Write(bytePassenger);
 
-	pNetGame->GetRPC4()->Call("EnterVehicle", &bsVehicle,HIGH_PRIORITY,RELIABLE_ORDERED,0,playerid,true);
+	pNetowkManager->GetRPC4()->Call("EnterVehicle", &bsVehicle,HIGH_PRIORITY,RELIABLE_ORDERED,0,playerid,true);
 }
 
 //----------------------------------------------------
@@ -379,12 +379,12 @@ void CPlayer::EnterVehicle(EntityId vehicleID, BYTE bytePassenger)
 void CPlayer::ExitVehicle(EntityId vehicleID)
 {
 	RakNet::BitStream bsVehicle;
-	SystemAddress playerid = pNetGame->GetRakPeer()->GetSystemAddressFromIndex(m_bytePlayerID);
+	SystemAddress playerid = pNetowkManager->GetRakPeer()->GetSystemAddressFromIndex(m_bytePlayerID);
 
 	bsVehicle.Write(m_bytePlayerID);
 	bsVehicle.Write(vehicleID);
 
-	pNetGame->GetRPC4()->Call("ExitVehicle", &bsVehicle,HIGH_PRIORITY,RELIABLE_ORDERED,0,playerid,true);
+	pNetowkManager->GetRPC4()->Call("ExitVehicle", &bsVehicle,HIGH_PRIORITY,RELIABLE_ORDERED,0,playerid,true);
 }
 
 //----------------------------------------------------
@@ -469,12 +469,12 @@ BYTE CPlayer::GetVehicleID()
 void CPlayer::SetGameTime(BYTE hours, BYTE minutes)
 {
 	RakNet::BitStream bsTime;
-	SystemAddress playerid = pNetGame->GetRakPeer()->GetSystemAddressFromIndex(m_bytePlayerID);
+	SystemAddress playerid = pNetowkManager->GetRakPeer()->GetSystemAddressFromIndex(m_bytePlayerID);
 
 	bsTime.Write(hours);
 	bsTime.Write(minutes);
 
-	pNetGame->GetRPC4()->Call("SetGameTime", &bsTime,HIGH_PRIORITY,RELIABLE_ORDERED,0,playerid,false);
+	pNetowkManager->GetRPC4()->Call("SetGameTime", &bsTime,HIGH_PRIORITY,RELIABLE_ORDERED,0,playerid,false);
 }
 
 //----------------------------------------------------
@@ -482,13 +482,13 @@ void CPlayer::SetGameTime(BYTE hours, BYTE minutes)
 void CPlayer::SetCameraPos(Vector3 vPos)
 {
 	RakNet::BitStream bsSend;
-	SystemAddress playerid = pNetGame->GetRakPeer()->GetSystemAddressFromIndex(m_bytePlayerID);
+	SystemAddress playerid = pNetowkManager->GetRakPeer()->GetSystemAddressFromIndex(m_bytePlayerID);
 
 	bsSend.Write(vPos.X);
 	bsSend.Write(vPos.Y);
 	bsSend.Write(vPos.Z);
 
-	pNetGame->GetRPC4()->Call("SetCameraPosition", &bsSend,HIGH_PRIORITY,RELIABLE_ORDERED,0,playerid,false);
+	pNetowkManager->GetRPC4()->Call("SetCameraPosition", &bsSend,HIGH_PRIORITY,RELIABLE_ORDERED,0,playerid,false);
 }
 
 //----------------------------------------------------
@@ -496,13 +496,13 @@ void CPlayer::SetCameraPos(Vector3 vPos)
 void CPlayer::SetCameraRot(Vector3 vRot)
 {
 	RakNet::BitStream bsSend;
-	SystemAddress playerid = pNetGame->GetRakPeer()->GetSystemAddressFromIndex(m_bytePlayerID);
+	SystemAddress playerid = pNetowkManager->GetRakPeer()->GetSystemAddressFromIndex(m_bytePlayerID);
 
 	bsSend.Write(vRot.X);
 	bsSend.Write(vRot.Y);
 	bsSend.Write(vRot.Z);
 
-	pNetGame->GetRPC4()->Call("SetCameraRotation", &bsSend,HIGH_PRIORITY,RELIABLE_ORDERED,0,playerid,false);
+	pNetowkManager->GetRPC4()->Call("SetCameraRotation", &bsSend,HIGH_PRIORITY,RELIABLE_ORDERED,0,playerid,false);
 }
 
 //----------------------------------------------------
@@ -510,22 +510,22 @@ void CPlayer::SetCameraRot(Vector3 vRot)
 void CPlayer::SetCameraLookAt(Vector3 vPoint)
 {
 	RakNet::BitStream bsSend;
-	SystemAddress playerid = pNetGame->GetRakPeer()->GetSystemAddressFromIndex(m_bytePlayerID);
+	SystemAddress playerid = pNetowkManager->GetRakPeer()->GetSystemAddressFromIndex(m_bytePlayerID);
 
 	bsSend.Write(vPoint.X);
 	bsSend.Write(vPoint.Y);
 	bsSend.Write(vPoint.Z);
 
-	pNetGame->GetRPC4()->Call("SetCameraLookAt", &bsSend,HIGH_PRIORITY,RELIABLE_ORDERED,0,playerid,false);
+	pNetowkManager->GetRPC4()->Call("SetCameraLookAt", &bsSend,HIGH_PRIORITY,RELIABLE_ORDERED,0,playerid,false);
 }
 
 //----------------------------------------------------
 
 void CPlayer::SetCameraBehindPlayer()
 {
-	SystemAddress playerid = pNetGame->GetRakPeer()->GetSystemAddressFromIndex(m_bytePlayerID);
+	SystemAddress playerid = pNetowkManager->GetRakPeer()->GetSystemAddressFromIndex(m_bytePlayerID);
 
-	pNetGame->GetRPC4()->Call("SetCameraBehindPlayer", NULL,HIGH_PRIORITY,RELIABLE_ORDERED,0,playerid,false);
+	pNetowkManager->GetRPC4()->Call("SetCameraBehindPlayer", NULL,HIGH_PRIORITY,RELIABLE_ORDERED,0,playerid,false);
 }
 
 //----------------------------------------------------
@@ -534,8 +534,8 @@ void CPlayer::SetCash(int Cash)
 {
 	BitStream bsSend;
 	bsSend.Write(Cash);
-	SystemAddress playerid = pNetGame->GetRakPeer()->GetSystemAddressFromIndex(m_bytePlayerID);
-	pNetGame->GetRPC4()->Call("Script_SetPlayerCash",&bsSend,HIGH_PRIORITY,RELIABLE_ORDERED,0,playerid,false);
+	SystemAddress playerid = pNetowkManager->GetRakPeer()->GetSystemAddressFromIndex(m_bytePlayerID);
+	pNetowkManager->GetRPC4()->Call("Script_SetPlayerCash",&bsSend,HIGH_PRIORITY,RELIABLE_ORDERED,0,playerid,false);
 	m_iMoney = Cash;
 }
 
@@ -557,7 +557,7 @@ void CPlayer::SetGravity(float amount)
 {
 	BitStream bsSend;
 	bsSend.Write(amount);
-	SystemAddress playerid = pNetGame->GetRakPeer()->GetSystemAddressFromIndex(m_bytePlayerID);
+	SystemAddress playerid = pNetowkManager->GetRakPeer()->GetSystemAddressFromIndex(m_bytePlayerID);
 	m_iGravity = amount;
-	pNetGame->GetRPC4()->Call("Script_SetPlayerGravity",&bsSend,HIGH_PRIORITY,RELIABLE_ORDERED,0,playerid,false);
+	pNetowkManager->GetRPC4()->Call("Script_SetPlayerGravity",&bsSend,HIGH_PRIORITY,RELIABLE_ORDERED,0,playerid,false);
 }

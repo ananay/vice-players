@@ -11,7 +11,7 @@
 
 #include "StdInc.h"
 
-extern CNetGame *pNetGame;
+extern CNetworkManager *pNetowkManager;
 extern CScripts *pScripts;
 extern CChatWindow *pChatWindow;
 

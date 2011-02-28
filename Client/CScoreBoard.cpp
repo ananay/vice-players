@@ -10,7 +10,7 @@
 
 #include "StdInc.h"
 
-extern CNetGame* pNetGame;
+extern CNetworkManager* pNetowkManager;
 extern GAME_SETTINGS tSettings;
 extern IDirect3DDevice8 *pD3DDevice;
 D3DDISPLAYMODE DisplayMode;
@@ -19,7 +19,7 @@ extern CChatWindow * pChatWindow;
 
 void CScoreBoard::Draw()
 {
-	CPlayerManager* pPlayerManager = pNetGame->GetPlayerManager();
+	CPlayerManager* pPlayerManager = pNetowkManager->GetPlayerManager();
 	//DWORD dwNickColor;
 	//char * szNick;
 	DWORD dwChatColor = 0xFFFFFFFF;
@@ -28,7 +28,7 @@ void CScoreBoard::Draw()
 	char szPingText[32];
 	int iCurrent = 0;
 
-	pNetGame->UpdatePlayerScoresAndPings();
+	pNetowkManager->UpdatePlayerScoresAndPings();
 
 	pD3DDevice->GetDisplayMode(&DisplayMode);
 	// Get the d3d font pointer

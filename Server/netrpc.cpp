@@ -13,7 +13,7 @@
 
 using namespace RakNet;
 
-extern CNetGame *pNetGame;
+extern CNetworkManager *pNetowkManager;
 extern char     *szAdminPass;
 extern CRcon    *pRcon;
 extern CScripts	*pScripts;
@@ -38,8 +38,8 @@ DWORD dwLastKeyEvent[2];
 void ClientJoin(RakNet::BitStream *bitStream, Packet *packet)
 {
 	RakNet::BitStream bsReject;
-	CPlayerManager *pPlayerManager = pNetGame->GetPlayerManager();
-	CVehicleManager *pVehicleManager = pNetGame->GetVehicleManager();
+	CPlayerManager *pPlayerManager = pNetowkManager->GetPlayerManager();
+	CVehicleManager *pVehicleManager = pNetowkManager->GetVehicleManager();
 
 	CHAR szPlayerName[MAX_PLAYER_NAME];
 	CHAR szSerial[20];
@@ -53,7 +53,7 @@ void ClientJoin(RakNet::BitStream *bitStream, Packet *packet)
 	if(byteVersion != NETGAME_VERSION) {
 		byteRejectReason = REJECT_REASON_BAD_VERSION;
 		bsReject.Write(byteRejectReason);
-		pNetGame->GetRPC4()->Call("ConnectionRejected", &bsReject,HIGH_PRIORITY,RELIABLE,0,packet->guid,false);
+		pNetowkManager->GetRPC4()->Call("ConnectionRejected", &bsReject,HIGH_PRIORITY,RELIABLE,0,packet->guid,false);
 		return;
 	}
 
@@ -69,7 +69,7 @@ void ClientJoin(RakNet::BitStream *bitStream, Packet *packet)
 	if(byteNickLen==0 || byteNickLen > 16 || pPlayerManager->IsNickInUse(szPlayerName)) {
 		byteRejectReason = REJECT_REASON_BAD_NICKNAME;
 		bsReject.Write(byteRejectReason);
-		pNetGame->GetRPC4()->Call("ConnectionRejected", &bsReject,HIGH_PRIORITY,RELIABLE,0,packet->guid,false);
+		pNetowkManager->GetRPC4()->Call("ConnectionRejected", &bsReject,HIGH_PRIORITY,RELIABLE,0,packet->guid,false);
 		return;
 	}
 
@@ -80,17 +80,17 @@ void ClientJoin(RakNet::BitStream *bitStream, Packet *packet)
 
 	// Send this client back an 'InitGame' RPC
 	RakNet::BitStream bsInitGame;
-	bsInitGame.Write((char*)&pNetGame->m_vecInitPlayerPos, sizeof(Vector3));
-	bsInitGame.Write((char*)&pNetGame->m_vecInitCameraPos, sizeof(Vector3));
-	bsInitGame.Write((char*)&pNetGame->m_vecInitCameraLook, sizeof(Vector3));
-	bsInitGame.Write(pNetGame->m_WorldBounds[0]);
-	bsInitGame.Write(pNetGame->m_WorldBounds[1]);
-	bsInitGame.Write(pNetGame->m_WorldBounds[2]);
-	bsInitGame.Write(pNetGame->m_WorldBounds[3]);
-	bsInitGame.Write(pNetGame->m_byteFriendlyFire);
-	bsInitGame.Write(pNetGame->m_byteShowOnRadar);
+	bsInitGame.Write((char*)&pNetowkManager->m_vecInitPlayerPos, sizeof(Vector3));
+	bsInitGame.Write((char*)&pNetowkManager->m_vecInitCameraPos, sizeof(Vector3));
+	bsInitGame.Write((char*)&pNetowkManager->m_vecInitCameraLook, sizeof(Vector3));
+	bsInitGame.Write(pNetowkManager->m_WorldBounds[0]);
+	bsInitGame.Write(pNetowkManager->m_WorldBounds[1]);
+	bsInitGame.Write(pNetowkManager->m_WorldBounds[2]);
+	bsInitGame.Write(pNetowkManager->m_WorldBounds[3]);
+	bsInitGame.Write(pNetowkManager->m_byteFriendlyFire);
+	bsInitGame.Write(pNetowkManager->m_byteShowOnRadar);
 	bsInitGame.Write(playerID);
-	pNetGame->GetRPC4()->Call("InitGame", &bsInitGame,HIGH_PRIORITY,RELIABLE_ORDERED,0,packet->guid,false);
+	pNetowkManager->GetRPC4()->Call("InitGame", &bsInitGame,HIGH_PRIORITY,RELIABLE_ORDERED,0,packet->guid,false);
 
 	// Send this client ServerJoins for every existing player
 	RakNet::BitStream pbsExistingClient;
@@ -104,7 +104,7 @@ void ClientJoin(RakNet::BitStream *bitStream, Packet *packet)
 			size_t sNameLength = strlen(pPlayerManager->GetPlayerName(x));
 			pbsExistingClient.Write(sNameLength);
 			pbsExistingClient.Write(pPlayerManager->GetPlayerName(x), sNameLength);
-			pNetGame->GetRPC4()->Call("ServerJoin", &pbsExistingClient, HIGH_PRIORITY, RELIABLE_ORDERED, 0, packet->guid, false);
+			pNetowkManager->GetRPC4()->Call("ServerJoin", &pbsExistingClient, HIGH_PRIORITY, RELIABLE_ORDERED, 0, packet->guid, false);
 
 			// Now also spawn the player for them if they're active.
 			CPlayer * pSpawnPlayer = pPlayerManager->GetAt(x);
@@ -137,16 +137,16 @@ void ClientJoin(RakNet::BitStream *bitStream, Packet *packet)
 	}
 
 	// Spawn all objects for the player
-	pNetGame->GetObjectManager()->InitForPlayer(playerID);
+	pNetowkManager->GetObjectManager()->InitForPlayer(playerID);
 
 	// Create all texts for player
-	pNetGame->GetTextManager()->InitForPlayer(playerID);
+	pNetowkManager->GetTextManager()->InitForPlayer(playerID);
 
 	// Create all checkpoints for player
-	pNetGame->GetCheckpoints()->InitForPlayer(playerID);
+	pNetowkManager->GetCheckpoints()->InitForPlayer(playerID);
 
 	// Create all pickups for player
-	pNetGame->GetPickupManager()->InitForPlayer(playerID);
+	pNetowkManager->GetPickupManager()->InitForPlayer(playerID);
 }
 
 //----------------------------------------------------
@@ -156,7 +156,7 @@ void Chat(RakNet::BitStream *bitStream, Packet *packet)
 {
 	CHAR szText[256];
 	BYTE byteTextLen;
-	CPlayerManager *pPool = pNetGame->GetPlayerManager();
+	CPlayerManager *pPool = pNetowkManager->GetPlayerManager();
 
 	bitStream->Read(byteTextLen);
 	bitStream->Read(szText,byteTextLen);
@@ -181,7 +181,7 @@ void Chat(RakNet::BitStream *bitStream, Packet *packet)
 	bsSend.Write(byteTextLen);
 	bsSend.Write(szText,byteTextLen);
 
-	pNetGame->GetRPC4()->Call("Chat", &bsSend,HIGH_PRIORITY,RELIABLE,0,UNASSIGNED_SYSTEM_ADDRESS,true);
+	pNetowkManager->GetRPC4()->Call("Chat", &bsSend,HIGH_PRIORITY,RELIABLE,0,UNASSIGNED_SYSTEM_ADDRESS,true);
 }
 
 //----------------------------------------------------
@@ -191,7 +191,7 @@ void ChatCommand(RakNet::BitStream *bitStream, Packet *packet)
 {
 	CHAR szText[256];
 	BYTE byteTextLen;
-	CPlayerManager *pPool = pNetGame->GetPlayerManager();
+	CPlayerManager *pPool = pNetowkManager->GetPlayerManager();
 
 	EntityId playerID = (BYTE)packet->guid.systemIndex;
 
@@ -217,12 +217,12 @@ void RequestClass(RakNet::BitStream *bitStream, Packet *packet)
 	EntityId playerID = (BYTE)packet->guid.systemIndex;
 	bitStream->Read(iRequestedClass);
 
-	if(!pNetGame->GetPlayerManager()->GetSlotState(playerID)) return;
+	if(!pNetowkManager->GetPlayerManager()->GetSlotState(playerID)) return;
 	
-	iRequestedClass = pNetGame->GetGameLogic()->HandleSpawnClassRequest(playerID, iRequestedClass);
+	iRequestedClass = pNetowkManager->GetGameLogic()->HandleSpawnClassRequest(playerID, iRequestedClass);
 
 	RakNet::BitStream bsSpawnRequestReply;
-	CPlayer * pPlayer = pNetGame->GetPlayerManager()->GetAt(playerID);
+	CPlayer * pPlayer = pNetowkManager->GetPlayerManager()->GetAt(playerID);
 	PLAYER_SPAWN_INFO * SpawnInfo = pPlayer->GetSpawnInfo();
 
 	// TODO: This call should decide the outcome
@@ -233,7 +233,7 @@ void RequestClass(RakNet::BitStream *bitStream, Packet *packet)
 		bsSpawnRequestReply.Write(iRequestedClass);
 		bsSpawnRequestReply.Write((char *)SpawnInfo, sizeof(PLAYER_SPAWN_INFO));
 
-		pNetGame->GetRPC4()->Call("RequestClass", &bsSpawnRequestReply ,HIGH_PRIORITY, RELIABLE, 0, packet->guid, false);
+		pNetowkManager->GetRPC4()->Call("RequestClass", &bsSpawnRequestReply ,HIGH_PRIORITY, RELIABLE, 0, packet->guid, false);
 	}
 }
 
@@ -243,8 +243,8 @@ void RequestClass(RakNet::BitStream *bitStream, Packet *packet)
 void Spawn(RakNet::BitStream *bitStream, Packet *packet)
 {
 	EntityId playerID = (BYTE)packet->guid.systemIndex;
-	if(!pNetGame->GetPlayerManager()->GetSlotState(playerID)) return;
-	CPlayer	*pPlayer = pNetGame->GetPlayerManager()->GetAt(playerID);
+	if(!pNetowkManager->GetPlayerManager()->GetSlotState(playerID)) return;
+	CPlayer	*pPlayer = pNetowkManager->GetPlayerManager()->GetAt(playerID);
 	pPlayer->Spawn();
 
 	pScripts->onPlayerSpawn(playerID);
@@ -256,8 +256,8 @@ void Spawn(RakNet::BitStream *bitStream, Packet *packet)
 void Death(RakNet::BitStream *bitStream, Packet *packet)
 {
 	EntityId playerID = (BYTE)packet->guid.systemIndex;
-	if(!pNetGame->GetPlayerManager()->GetSlotState(playerID)) return;
-	CPlayer	*pPlayer = pNetGame->GetPlayerManager()->GetAt(playerID);
+	if(!pNetowkManager->GetPlayerManager()->GetSlotState(playerID)) return;
+	CPlayer	*pPlayer = pNetowkManager->GetPlayerManager()->GetAt(playerID);
 
 	BYTE byteDeathReason;
 	BYTE byteWhoWasResponsible;
@@ -277,13 +277,13 @@ void Death(RakNet::BitStream *bitStream, Packet *packet)
 void VehicleDeath(RakNet::BitStream *bitStream, Packet *packet)
 {
 	EntityId playerID = (BYTE)packet->guid.systemIndex;
-	if(!pNetGame->GetPlayerManager()->GetSlotState(playerID)) return;
+	if(!pNetowkManager->GetPlayerManager()->GetSlotState(playerID)) return;
 
 	EntityId vehicleID;
 
 	bitStream->Read(vehicleID);
 
-	CVehicleManager * pVehicleManager = pNetGame->GetVehicleManager();
+	CVehicleManager * pVehicleManager = pNetowkManager->GetVehicleManager();
 	CVehicle * pVehicle = pVehicleManager->GetAt(vehicleID);
 	if(pVehicle) {
 		pVehicleManager->FlagForRespawn(vehicleID);
@@ -299,8 +299,8 @@ void VehicleDeath(RakNet::BitStream *bitStream, Packet *packet)
 void EnterVehicle(RakNet::BitStream *bitStream, Packet *packet)
 {
 	EntityId playerID = (BYTE)packet->guid.systemIndex;
-	if(!pNetGame->GetPlayerManager()->GetSlotState(playerID)) return;
-	CPlayer	*pPlayer = pNetGame->GetPlayerManager()->GetAt(playerID);
+	if(!pNetowkManager->GetPlayerManager()->GetSlotState(playerID)) return;
+	CPlayer	*pPlayer = pNetowkManager->GetPlayerManager()->GetAt(playerID);
 	EntityId vehicleID;
 	BYTE bytePassenger;
 
@@ -319,8 +319,8 @@ void EnterVehicle(RakNet::BitStream *bitStream, Packet *packet)
 void ExitVehicle(RakNet::BitStream *bitStream, Packet *packet)
 {
 	EntityId playerID = (BYTE)packet->guid.systemIndex;
-	if(!pNetGame->GetPlayerManager()->GetSlotState(playerID)) return;
-	CPlayer	*pPlayer = pNetGame->GetPlayerManager()->GetAt(playerID);
+	if(!pNetowkManager->GetPlayerManager()->GetSlotState(playerID)) return;
+	CPlayer	*pPlayer = pNetowkManager->GetPlayerManager()->GetAt(playerID);
 	EntityId vehicleID;
 
 	bitStream->Read(vehicleID);
@@ -337,10 +337,10 @@ void UpdateScoreAndPing(RakNet::BitStream *bitStream, Packet *packet)
 {
 	RakNet::BitStream bsSend;
 	EntityId playerID = (EntityId)packet->guid.systemIndex;
-	if(!pNetGame->GetPlayerManager()->GetSlotState(playerID)) return;
+	if(!pNetowkManager->GetPlayerManager()->GetSlotState(playerID)) return;
 
-	CPlayerManager *pPlayerManager = pNetGame->GetPlayerManager();
-	RakPeerInterface * pRak = pNetGame->GetRakPeer();
+	CPlayerManager *pPlayerManager = pNetowkManager->GetPlayerManager();
+	RakPeerInterface * pRak = pNetowkManager->GetRakPeer();
 
 	for(EntityId i = 0; i < MAX_PLAYERS; i++)
 	{
@@ -361,16 +361,16 @@ void UpdateScoreAndPing(RakNet::BitStream *bitStream, Packet *packet)
 		}
 	}
 
-	pNetGame->GetRPC4()->Call("UpdateScoreAndPing", &bsSend, HIGH_PRIORITY, RELIABLE, 0, packet->guid, false);
+	pNetowkManager->GetRPC4()->Call("UpdateScoreAndPing", &bsSend, HIGH_PRIORITY, RELIABLE, 0, packet->guid, false);
 }
 
 //----------------------------------------------------
 
 void Admin(RakNet::BitStream *bitStream, Packet *packet)
 {
-	CPlayerManager *pPlayerManager = pNetGame->GetPlayerManager();
+	CPlayerManager *pPlayerManager = pNetowkManager->GetPlayerManager();
 	EntityId playerID = (BYTE)packet->guid.systemIndex;
-	if(!pNetGame->GetPlayerManager()->GetSlotState(playerID)) return;
+	if(!pNetowkManager->GetPlayerManager()->GetSlotState(playerID)) return;
 
 	char szPassTest[65];
 	int iPassLen;
@@ -390,15 +390,15 @@ void Admin(RakNet::BitStream *bitStream, Packet *packet)
 
 void KickPlayer(RakNet::BitStream *bitStream, Packet *packet)
 {
-	CPlayerManager *pPlayerManager = pNetGame->GetPlayerManager();
+	CPlayerManager *pPlayerManager = pNetowkManager->GetPlayerManager();
 	EntityId playerID = (BYTE)packet->guid.systemIndex;
-	if(!pNetGame->GetPlayerManager()->GetSlotState(playerID)) return;
+	if(!pNetowkManager->GetPlayerManager()->GetSlotState(playerID)) return;
 
 	BYTE byteKickPlayer;
 
 	if(pPlayerManager->IsAdmin(playerID)) {
 		bitStream->Read(byteKickPlayer);	
-		pNetGame->KickPlayer(byteKickPlayer);
+		pNetowkManager->KickPlayer(byteKickPlayer);
 	}
 }
 
@@ -407,9 +407,9 @@ void KickPlayer(RakNet::BitStream *bitStream, Packet *packet)
 void BanIPAddress(RakNet::BitStream *bitStream, Packet *packet)
 {
 	EntityId playerID = (BYTE)packet->guid.systemIndex;
-	if(!pNetGame->GetPlayerManager()->GetSlotState(playerID)) return;
+	if(!pNetowkManager->GetPlayerManager()->GetSlotState(playerID)) return;
 
-	CPlayerManager *pPlayerManager = pNetGame->GetPlayerManager();
+	CPlayerManager *pPlayerManager = pNetowkManager->GetPlayerManager();
 
 	char ban_ip[256];
 	int iBanIpLen;
@@ -419,14 +419,14 @@ void BanIPAddress(RakNet::BitStream *bitStream, Packet *packet)
 		bitStream->Read(ban_ip,iBanIpLen);
 		ban_ip[iBanIpLen] = 0;
 
-		pNetGame->AddBan(ban_ip);
+		pNetowkManager->AddBan(ban_ip);
 	}
 }
 
 void KeyEvent(RakNet::BitStream *bitStream, Packet *packet)
 {
 	EntityId playerID = (EntityId)packet->guid.systemIndex;
-	if(!pNetGame->GetPlayerManager()->GetSlotState(playerID)) return;
+	if(!pNetowkManager->GetPlayerManager()->GetSlotState(playerID)) return;
 
 	BYTE type;
 
@@ -458,7 +458,7 @@ void KeyEvent(RakNet::BitStream *bitStream, Packet *packet)
 void CheckpointEvent(RakNet::BitStream *bitStream, Packet *packet)
 {
 	EntityId playerID = (BYTE)packet->guid.systemIndex;
-	if(!pNetGame->GetPlayerManager()->GetSlotState(playerID)) return;
+	if(!pNetowkManager->GetPlayerManager()->GetSlotState(playerID)) return;
 
 	EntityId cpId;
 	bool state; // true - entered, false - left.
@@ -478,8 +478,8 @@ void CheckpointEvent(RakNet::BitStream *bitStream, Packet *packet)
 void InflictDamage(RakNet::BitStream * bitStream, Packet * packet)
 {
 	EntityId playerID = (EntityId)packet->guid.systemIndex;
-	CPlayerManager * pPlayerManager = pNetGame->GetPlayerManager();
-	CVehicleManager * pVehicleManager = pNetGame->GetVehicleManager();
+	CPlayerManager * pPlayerManager = pNetowkManager->GetPlayerManager();
+	CVehicleManager * pVehicleManager = pNetowkManager->GetVehicleManager();
 
 	if(!pPlayerManager->GetSlotState(playerID))
 	{
@@ -523,7 +523,7 @@ void InflictDamage(RakNet::BitStream * bitStream, Packet * packet)
 	bsSend.Write(fUnk);
 	bsSend.Write(iPedPieces);
 	bsSend.Write(byteUnk);
-	pNetGame->GetRPC4()->Call("InflictDamage", &bsSend, HIGH_PRIORITY, RELIABLE_ORDERED, 0, packet->guid, true);
+	pNetowkManager->GetRPC4()->Call("InflictDamage", &bsSend, HIGH_PRIORITY, RELIABLE_ORDERED, 0, packet->guid, true);
 	logprintf("InflictDamage(%d, %d, %d, %d, %f, %d, %d)", playerID, bPlayerVehicleDamager, damagerID, iWeapon, fUnk, iPedPieces, byteUnk);
 }
 
@@ -531,9 +531,9 @@ void Pause(RakNet::BitStream *bitStream, Packet *packet)
 {
 	EntityId playerID = (BYTE)packet->guid.systemIndex;
 
-	if(!pNetGame->GetPlayerManager()->GetSlotState(playerID)) return;
+	if(!pNetowkManager->GetPlayerManager()->GetSlotState(playerID)) return;
 
-	CPlayer	*pPlayer = pNetGame->GetPlayerManager()->GetAt(playerID);
+	CPlayer	*pPlayer = pNetowkManager->GetPlayerManager()->GetAt(playerID);
 
 	int iPause;
 
@@ -551,46 +551,46 @@ void Pause(RakNet::BitStream *bitStream, Packet *packet)
 
 void RegisterRPCs()
 {
-	pNetGame->GetRPC4()->RegisterFunction("ClientJoin", ClientJoin);
-	pNetGame->GetRPC4()->RegisterFunction("Chat", Chat);
-	pNetGame->GetRPC4()->RegisterFunction("ChatCommand", ChatCommand);
-	pNetGame->GetRPC4()->RegisterFunction("RequestClass", RequestClass);
-	pNetGame->GetRPC4()->RegisterFunction("Spawn", Spawn);
-	pNetGame->GetRPC4()->RegisterFunction("Death", Death);
-	pNetGame->GetRPC4()->RegisterFunction("VehicleDeath", VehicleDeath);
-	pNetGame->GetRPC4()->RegisterFunction("EnterVehicle", EnterVehicle);
-	pNetGame->GetRPC4()->RegisterFunction("ExitVehicle", ExitVehicle);
-	pNetGame->GetRPC4()->RegisterFunction("UpdateScoreAndPing", UpdateScoreAndPing);
-	pNetGame->GetRPC4()->RegisterFunction("Admin", Admin);
-	pNetGame->GetRPC4()->RegisterFunction("KickPlayer", KickPlayer);
-	pNetGame->GetRPC4()->RegisterFunction("BanIPAddress", BanIPAddress);
-	pNetGame->GetRPC4()->RegisterFunction("KeyEvent", KeyEvent);
-	pNetGame->GetRPC4()->RegisterFunction("CheckpointEvent", CheckpointEvent);
-	pNetGame->GetRPC4()->RegisterFunction("InflictDamage", InflictDamage);
-	pNetGame->GetRPC4()->RegisterFunction("Pause", Pause);
+	pNetowkManager->GetRPC4()->RegisterFunction("ClientJoin", ClientJoin);
+	pNetowkManager->GetRPC4()->RegisterFunction("Chat", Chat);
+	pNetowkManager->GetRPC4()->RegisterFunction("ChatCommand", ChatCommand);
+	pNetowkManager->GetRPC4()->RegisterFunction("RequestClass", RequestClass);
+	pNetowkManager->GetRPC4()->RegisterFunction("Spawn", Spawn);
+	pNetowkManager->GetRPC4()->RegisterFunction("Death", Death);
+	pNetowkManager->GetRPC4()->RegisterFunction("VehicleDeath", VehicleDeath);
+	pNetowkManager->GetRPC4()->RegisterFunction("EnterVehicle", EnterVehicle);
+	pNetowkManager->GetRPC4()->RegisterFunction("ExitVehicle", ExitVehicle);
+	pNetowkManager->GetRPC4()->RegisterFunction("UpdateScoreAndPing", UpdateScoreAndPing);
+	pNetowkManager->GetRPC4()->RegisterFunction("Admin", Admin);
+	pNetowkManager->GetRPC4()->RegisterFunction("KickPlayer", KickPlayer);
+	pNetowkManager->GetRPC4()->RegisterFunction("BanIPAddress", BanIPAddress);
+	pNetowkManager->GetRPC4()->RegisterFunction("KeyEvent", KeyEvent);
+	pNetowkManager->GetRPC4()->RegisterFunction("CheckpointEvent", CheckpointEvent);
+	pNetowkManager->GetRPC4()->RegisterFunction("InflictDamage", InflictDamage);
+	pNetowkManager->GetRPC4()->RegisterFunction("Pause", Pause);
 }
 
 //----------------------------------------------------
 
 void UnRegisterRPCs()
 {
-	pNetGame->GetRPC4()->UnregisterFunction("ClientJoin");
-	pNetGame->GetRPC4()->UnregisterFunction("Chat");
-	pNetGame->GetRPC4()->UnregisterFunction("ChatCommand");
-	pNetGame->GetRPC4()->UnregisterFunction("RequestClass");
-	pNetGame->GetRPC4()->UnregisterFunction("Spawn");
-	pNetGame->GetRPC4()->UnregisterFunction("Death");
-	pNetGame->GetRPC4()->UnregisterFunction("VehicleDeath");
-	pNetGame->GetRPC4()->UnregisterFunction("EnterVehicle");
-	pNetGame->GetRPC4()->UnregisterFunction("ExitVehicle");
-	pNetGame->GetRPC4()->UnregisterFunction("UpdateScoreAndPing");
-	pNetGame->GetRPC4()->UnregisterFunction("Admin");
-	pNetGame->GetRPC4()->UnregisterFunction("KickPlayer");
-	pNetGame->GetRPC4()->UnregisterFunction("BanIPAddress");
-	pNetGame->GetRPC4()->UnregisterFunction("KeyEvent");
-	pNetGame->GetRPC4()->UnregisterFunction("CheckpointEvent");
-	pNetGame->GetRPC4()->UnregisterFunction("InflictDamage");
-	pNetGame->GetRPC4()->UnregisterFunction("Pause");
+	pNetowkManager->GetRPC4()->UnregisterFunction("ClientJoin");
+	pNetowkManager->GetRPC4()->UnregisterFunction("Chat");
+	pNetowkManager->GetRPC4()->UnregisterFunction("ChatCommand");
+	pNetowkManager->GetRPC4()->UnregisterFunction("RequestClass");
+	pNetowkManager->GetRPC4()->UnregisterFunction("Spawn");
+	pNetowkManager->GetRPC4()->UnregisterFunction("Death");
+	pNetowkManager->GetRPC4()->UnregisterFunction("VehicleDeath");
+	pNetowkManager->GetRPC4()->UnregisterFunction("EnterVehicle");
+	pNetowkManager->GetRPC4()->UnregisterFunction("ExitVehicle");
+	pNetowkManager->GetRPC4()->UnregisterFunction("UpdateScoreAndPing");
+	pNetowkManager->GetRPC4()->UnregisterFunction("Admin");
+	pNetowkManager->GetRPC4()->UnregisterFunction("KickPlayer");
+	pNetowkManager->GetRPC4()->UnregisterFunction("BanIPAddress");
+	pNetowkManager->GetRPC4()->UnregisterFunction("KeyEvent");
+	pNetowkManager->GetRPC4()->UnregisterFunction("CheckpointEvent");
+	pNetowkManager->GetRPC4()->UnregisterFunction("InflictDamage");
+	pNetowkManager->GetRPC4()->UnregisterFunction("Pause");
 }
 
 //----------------------------------------------------

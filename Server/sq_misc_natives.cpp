@@ -11,7 +11,7 @@
 
 #include "StdInc.h"
 
-extern CNetGame *pNetGame;
+extern CNetworkManager *pNetowkManager;
 extern CPlugins *pPlugins;
 using namespace RakNet;
 
@@ -23,14 +23,14 @@ SQInteger sq_setGameTime(SQVM * pVM)
 	sq_getinteger(pVM, -2, &h);
 	sq_getinteger(pVM, -1, &m);
 
-	pNetGame->GetPlayerManager()->SetGameTime(h, m);
+	pNetowkManager->GetPlayerManager()->SetGameTime(h, m);
 	sq_pushbool(pVM, true);
 	return 1;
 }
 
 SQInteger sq_getMaxPlayers(SQVM * pVM)
 {
-	sq_pushinteger(pVM, pNetGame->GetMaxPlayers());
+	sq_pushinteger(pVM, pNetowkManager->GetMaxPlayers());
 	return 1;
 }
 
@@ -52,7 +52,7 @@ SQInteger sq_createObject(SQVM * pVM)
 	sq_getfloat(pVM, -2, &vecRot.Y);
 	sq_getfloat(pVM, -1, &vecRot.Z);
 
-	EntityId object = pNetGame->GetObjectManager()->New(model, &vecPos, &vecRot);
+	EntityId object = pNetowkManager->GetObjectManager()->New(model, &vecPos, &vecRot);
 
 	sq_pushinteger(pVM, object);
 	return 1;
@@ -64,7 +64,7 @@ SQInteger sq_destroyObject(SQVM * pVM)
 
 	sq_getinteger(pVM, -1, &objId);
 
-	pNetGame->GetObjectManager()->Delete(objId);
+	pNetowkManager->GetObjectManager()->Delete(objId);
 
 	sq_pushbool(pVM, true);
 	return 1;
@@ -80,7 +80,7 @@ SQInteger sq_createPickup(SQVM * pVM)
 	sq_getfloat(pVM, -2, &vecPos.Y);
 	sq_getfloat(pVM, -1, &vecPos.Z);
 
-	EntityId pickup = pNetGame->GetPickupManager()->New(model, type, &vecPos);
+	EntityId pickup = pNetowkManager->GetPickupManager()->New(model, type, &vecPos);
 
 	sq_pushinteger(pVM, pickup);
 	return 1;
@@ -92,7 +92,7 @@ SQInteger sq_destroyPickup(SQVM * pVM)
 
 	sq_getinteger(pVM, -1, &pickupId);
 
-	pNetGame->GetPickupManager()->Delete(pickupId);
+	pNetowkManager->GetPickupManager()->Delete(pickupId);
 
 	sq_pushbool(pVM, true);
 	return 1;
@@ -112,7 +112,7 @@ SQInteger sq_setModeName(SQVM * pVM)
 	const char * szMode;
 	sq_getstring(pVM, -1, &szMode);
 
-	pNetGame->m_szModeName = szMode;
+	pNetowkManager->m_szModeName = szMode;
 
 	sq_pushbool(pVM, true);
 	return 1;
@@ -123,7 +123,7 @@ SQInteger sq_setMapName(SQVM * pVM)
 	const char * szMap;
 	sq_getstring(pVM, -1, &szMap);
 
-	pNetGame->m_szMapName = szMap;
+	pNetowkManager->m_szMapName = szMap;
 
 	sq_pushbool(pVM, true);
 	return 1;
@@ -139,7 +139,7 @@ SQInteger sq_createCheckpoint(SQVM * pVM)
 	sq_getfloat(pVM, -3, &vecPos.Y);
 	sq_getfloat(pVM, -4, &vecPos.X);
 
-	pNetGame->GetCheckpoints()->New(vecPos, 0, fRadius);
+	pNetowkManager->GetCheckpoints()->New(vecPos, 0, fRadius);
 	
 	sq_pushinteger(pVM, 0);
 	return 1;
@@ -151,7 +151,7 @@ SQInteger sq_destroyCheckpoint(SQVM * pVM)
 
 	sq_getinteger(pVM, -1, &cpId);
 
-	pNetGame->GetCheckpoints()->Delete(cpId);
+	pNetowkManager->GetCheckpoints()->Delete(cpId);
 
 	sq_pushbool(pVM, true);
 	return 1;

@@ -44,7 +44,7 @@ using namespace RakNet;
 
 //----------------------------------------------------
 
-class CNetGame
+class CNetworkManager
 {
 private:
 
@@ -80,8 +80,8 @@ private:
 
 public:
 
-	CNetGame(int iMaxPlayers, int iPort, char * szPassword, char * szHostname, BYTE byteFriendlyFire, BYTE byteShowOnRadar);
-	~CNetGame();
+	CNetworkManager(int iMaxPlayers, int iPort, char * szPassword, char * szHostname, BYTE byteFriendlyFire, BYTE byteShowOnRadar);
+	~CNetworkManager();
 
 	int GetGameState() { return m_iGameState; };
 	CPlayerManager * GetPlayerManager() { return m_pPlayerManager; };

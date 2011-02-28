@@ -11,7 +11,7 @@
 
 #include "StdInc.h"
 
-extern CNetGame *pNetGame;
+extern CNetworkManager *pNetowkManager;
 
 #ifndef WIN32
 #include "dlfcn.h"

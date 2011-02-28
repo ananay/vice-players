@@ -14,7 +14,7 @@
 
 extern CGame * pGame;
 extern CChatWindow * pChatWindow;
-extern CNetGame * pNetGame;
+extern CNetworkManager * pNetowkManager;
 
 // TODO: CSphere
 #define MAX_SPHERES 16
@@ -118,7 +118,7 @@ void CCheckpoint::Process()
 			BitStream bsSend;
 			bsSend.Write(m_iID);
 			bsSend.Write(true);
-			pNetGame->GetRPC4()->Call("CheckpointEvent", &bsSend, HIGH_PRIORITY, RELIABLE, 0, UNASSIGNED_SYSTEM_ADDRESS, true);
+			pNetowkManager->GetRPC4()->Call("CheckpointEvent", &bsSend, HIGH_PRIORITY, RELIABLE, 0, UNASSIGNED_SYSTEM_ADDRESS, true);
 			m_bInCP = true;
 		}
 	}
@@ -129,7 +129,7 @@ void CCheckpoint::Process()
 			BitStream bsSend;
 			bsSend.Write(m_iID);
 			bsSend.Write(false);
-			pNetGame->GetRPC4()->Call("CheckpointEvent", &bsSend, HIGH_PRIORITY, RELIABLE, 0, UNASSIGNED_SYSTEM_ADDRESS, true);
+			pNetowkManager->GetRPC4()->Call("CheckpointEvent", &bsSend, HIGH_PRIORITY, RELIABLE, 0, UNASSIGNED_SYSTEM_ADDRESS, true);
 			m_bInCP = false;
 		}
 	}

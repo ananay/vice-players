@@ -10,7 +10,7 @@
 //-----------------------------------------------------
 
 #include "StdInc.h"
-extern CNetGame *pNetGame;
+extern CNetworkManager *pNetowkManager;
 extern CPlugins *pPlugins;
 
 void printfunc(SQVM * pVM, const char * szFormat, ...)
@@ -94,7 +94,7 @@ CScript::CScript(const char *szScriptName)
 CScript::~CScript()
 {
 	// kill all timers
-	pNetGame->GetTimerPool()->HandleScriptUnload(m_pVM);
+	pNetowkManager->GetTimerPool()->HandleScriptUnload(m_pVM);
 
 	// call the plugins
 	pPlugins->OnScriptUnload(m_pVM);

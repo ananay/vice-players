@@ -18,7 +18,7 @@ extern CChatWindow		*pChatWindow;
 extern CCmdWindow		*pCmdWindow;
 extern IDirect3DDevice8 *pD3DDevice;
 extern BOOL				bShowNameTags;
-extern CNetGame			*pNetGame;
+extern CNetworkManager			*pNetowkManager;
 extern CGUI				*pGUI;
 
 WNDPROC hOldProc;
@@ -30,8 +30,8 @@ void GetScreenshotFileName(std::string& FileName);
 
 void SendKeyEvent(DWORD key, bool state) // state: true == down, false == up.
 {
-	if(!pNetGame) return;
-	if(!pNetGame->IsConnected()) return;
+	if(!pNetowkManager) return;
+	if(!pNetowkManager->IsConnected()) return;
 	if(key < 32 || key > 128) return;
 	if(pCmdWindow->IsEnabled()) return;
 
@@ -47,7 +47,7 @@ void SendKeyEvent(DWORD key, bool state) // state: true == down, false == up.
 		bsSend.Write0();
 	}
 
-	pNetGame->GetRPC4()->Call("KeyEvent",&bsSend,LOW_PRIORITY,UNRELIABLE,0,UNASSIGNED_SYSTEM_ADDRESS,TRUE);
+	pNetowkManager->GetRPC4()->Call("KeyEvent",&bsSend,LOW_PRIORITY,UNRELIABLE,0,UNASSIGNED_SYSTEM_ADDRESS,TRUE);
 }
 
 //----------------------------------------------------
