@@ -70,12 +70,12 @@
 #include "GUI/CGUI.h"
 
 // Squirrel
-#include "../squirrel/sqstdaux.h"
-#include "../squirrel/sqstdblob.h"
-#include "../squirrel/sqstdio.h"
-#include "../squirrel/sqstdmath.h"
-#include "../squirrel/sqstdstring.h"
-#include "../squirrel/sqstdsystem.h"
+#include "../vendor/squirrel/sqstdaux.h"
+#include "../vendor/squirrel/sqstdblob.h"
+#include "../vendor/squirrel/sqstdio.h"
+#include "../vendor/squirrel/sqstdmath.h"
+#include "../vendor/squirrel/sqstdstring.h"
+#include "../vendor/squirrel/sqstdsystem.h"
 
 // TinyXML
 #include "../Shared/TinyXML/tinyxml.h"

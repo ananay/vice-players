@@ -12,7 +12,7 @@
 #pragma once
 
 extern "C" {
-#include "../jpeg/jpeglib.h"
+#include "../vendor/jpeg/jpeglib.h"
 }
 
 class CScreenshot

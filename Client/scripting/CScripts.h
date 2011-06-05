@@ -9,8 +9,8 @@
 //-----------------------------------------------------
 
 #pragma once
-#include "../../squirrel/squirrel.h"
-#include "../../squirrel/sqvm.h"
+#include "../../vendor/squirrel/squirrel.h"
+#include "../../vendor/squirrel/sqvm.h"
 #include "CScript.h"
 #include "../CTimerPool.h"
 

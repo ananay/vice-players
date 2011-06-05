@@ -6,7 +6,7 @@
 // License: See LICENSE in root directory
 //
 //-----------------------------------------------------
-#include "../squirrel/squirrel.h"
+#include "../vendor/squirrel/squirrel.h"
 #include "CConfig.h"
 
 typedef void                     (* OnPluginUnload_t)();
