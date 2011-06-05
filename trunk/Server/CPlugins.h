@@ -7,7 +7,7 @@
 //
 //-----------------------------------------------------
 #pragma once
-#include "../squirrel/squirrel.h"
+#include "../vendor/squirrel/squirrel.h"
 #include "CConfig.h"
 #include "CPlugin.h"
 

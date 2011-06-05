@@ -10,7 +10,7 @@
 //-----------------------------------------------------
 
 #pragma once
-#include "../../squirrel/squirrel.h"
+#include "../../vendor/squirrel/squirrel.h"
 #include "sq_functions.h"
 #include "../main.h"
 
