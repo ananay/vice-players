@@ -7,7 +7,7 @@
 // License: Public Domain (Taken from spookie's speedo mod)
 //
 //----------------------------------------------------------
-
+#include <windows.h>
 #pragma once
 
 #define MAX_SCRIPT_VARS	16	// Size of our variable saving array
